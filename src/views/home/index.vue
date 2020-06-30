@@ -32,6 +32,8 @@ export default {
       fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/algorithm-category.json')
     .then(res => res.json())
     .then(data => {
+      data = Object.assign(data, { label: '=1==', type: 'star', x: 0, y: 0 })
+      console.log(data, '====')
       const width = document.getElementById('container').scrollWidth;
       const height = document.getElementById('container').scrollHeight || 500;
       const graph = new G6.TreeGraph({
@@ -54,14 +56,16 @@ export default {
           ],
         },
         defaultNode: {
-          size: 26,
+          size: [50, 26],
+          type: 'rect',
+          label: '++++++++',
           anchorPoints: [
             [0, 0.5],
             [1, 0.5],
           ],
           style: {
-            fill: '#C6E5FF',
-            stroke: '#5B8FF9',
+            fill: '#FF9900',
+            stroke: '#FF9900',
           },
         },
         defaultEdge: {
@@ -92,7 +96,7 @@ export default {
       });
 
       graph.node(function(node) {
-        let position = 'right';
+        let position = 'left';
         let rotate = 0;
         if (!node.children) {
           position = 'bottom';
@@ -110,6 +114,10 @@ export default {
           },
         };
       });
+      
+      graph.on('node:click', function(event) {
+        console.log(event, '====')
+      })
 
       graph.data(data);
       graph.render();
