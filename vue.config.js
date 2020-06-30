@@ -17,9 +17,17 @@ module.exports = {
       }
     }
   },
-  configureWebpack: smp.wrap({
-    plugins: []
-  }),
+  configureWebpack: smp.wrap(function() {
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        plugins: []
+      }
+    } else {
+      return {
+        plugins: []
+      }
+    }
+  }()),
   chainWebpack: (config) => {
     // config.plugin("html").tap(arg => {
     //   return arg
