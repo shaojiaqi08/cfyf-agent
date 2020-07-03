@@ -100,7 +100,7 @@ export default {
         let rotate = 0;
         if (!node.children) {
           position = 'bottom';
-          rotate = Math.PI / 2;
+          // rotate = Math.PI / 2;
         }
         return {
           label: node.id,

@@ -1,6 +1,9 @@
 import axios from 'axios'
-import store from '../store'
+// import store from '../store'
 import { statusCode, responseCode, notification } from './code'
+import { addPending, removePending, REPEATSYMBOL } from './cancel-token-helper'
+
+let overdueFlag = false
 
 const service = axios.create({
   timeout: 60 * 1000,
@@ -10,16 +13,19 @@ const service = axios.create({
 service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
 service.interceptors.request.use(config => {
-  if (store.state.userInfo.token) {
-    config.headers['token'] = store.state.userInfo.token
-    // config.headers['Agent-Authorization'] = store.state.userInfo.agent_token
-  }
+  // if (store.state.userInfo.token) {
+  //   config.headers['token'] = store.state.userInfo.token
+  //   // config.headers['Agent-Authorization'] = store.state.userInfo.agent_token
+  // }
+
+  removePending(config, () => addPending(config))
   return config
 }, error => {
   return Promise.reject(error)
 })
 
 service.interceptors.response.use(response => {
+  removePending(response.config)
   const resCode = response.status
   if (resCode === responseCode.SUCCESS) {
     const code = response.data.code
@@ -30,7 +36,11 @@ service.interceptors.response.use(response => {
       case statusCode.PASS || statusCode.NOCONTENT:
         return Promise.resolve(data)
       case statusCode.OVERDUE:
-        notification('OVERDUE')
+        if (!overdueFlag) {
+          overdueFlag = true
+          notification('OVERDUE')
+          setTimeout(() => overdueFlag = false, 1000)
+        }
         break
       case statusCode.CODE_ERROR:
         notification('ERROR', message)
@@ -47,6 +57,9 @@ service.interceptors.response.use(response => {
 },
 error => {
   if (!error.response) {
+    if (error.message === REPEATSYMBOL) {
+      return console.log('取消重复请求')
+    }
     if (error.message.includes('timeout')) {
       notification('TIMEOUT')
     } else {

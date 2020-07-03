@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <el-button>cdsds</el-button>
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
@@ -16,10 +15,9 @@ export default {
       a: true
     };
   },
+  mounted() {
+  },
   methods: {
-    clickBtn() {
-      this.a = false
-    }
   }
 };
 </script>

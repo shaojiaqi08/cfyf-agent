@@ -9,10 +9,10 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/api': {
-        target: 'http://activity.proxy.beta.2239.com',   //代理接口
+        target: 'http://proxy.tc.2239.com/web/v1',   //代理接口
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '/api'    //代理的路径
+          '^/api': ''    //代理的路径
         }
       }
     }
