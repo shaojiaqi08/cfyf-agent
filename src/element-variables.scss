@@ -1,11 +1,64 @@
 $color-primary: #FF9000;
-$color-danger: #FF5151;
-/* 改变主题色变量 */
+$color-danger: #FF4C4C;
+$color-info: #FFBB33;
+$color-warning: #339AFF;
+$color-success: #40D659;
+$button-font-size: 14px;
+$default-font-color: #1A1A1A;
 
+/* 改变主题色变量 */
 $--color-primary: $color-primary;
 $--color-danger: $color-danger;
+$--color-info: $color-info;
+$--color-warning: $color-warning;
+$--color-success: $color-success;
+/* 按钮 */
+$--button-small-font-size: $button-font-size;
+$--button-mini-font-size: $button-font-size;
+$--button-default-border-color: #E6E6E6;
+$--button-default-font-color: $default-font-color;
 
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import "~element-ui/packages/theme-chalk/src/index";
+
+/* 按钮 */
+.el-button {
+  min-width: 72px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  &>i[class^='el-icon'] {
+    font-size: 16px;
+    vertical-align: middle;
+    &+span{
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+  }
+  &.el-button--small, &.el-button--medium{
+    height: 32px;
+  }
+  &.el-button--mini{
+    height: 28px;
+  }
+  &.el-button--default{
+    &:hover{
+      border:1px solid rgba(255,144,0,0.4);
+    }
+    &:active{
+      border: 1px solid #FF9000;
+    }
+  }
+  &.el-button--text{
+    color:$default-font-color;
+    &:hover{
+      background:rgba(255,144,0,0.1);
+      color:$color-primary;
+    }
+    &:active{
+      background:rgba(255,144,0,0.2);
+      color:$color-primary;
+    }
+  }
+}

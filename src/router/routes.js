@@ -18,5 +18,14 @@ export default [
     },
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue")
+  },
+  {
+    path: "/design",
+    name: "design",
+    meta: {
+      title: 'about'
+    },
+    component: () =>
+        import(/* webpackChunkName: "about" */ "../views/DesignSpec.vue")
   }
 ]
