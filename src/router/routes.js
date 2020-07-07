@@ -20,6 +20,23 @@ export default [
       import(/* webpackChunkName: "about" */ "../views/About.vue")
   },
   {
+    path: '/order',
+    name: 'Order',
+    meta: {
+      title: '订单'
+    },
+    component: () => import('../views/achievement/order')
+  },
+  {
+    path: '/order/detail/:id',
+    name: 'Order-Detail',
+    meta: {
+      title: '订单详情'
+    },
+    component: () => import('../views/achievement/order/detail')
+  },
+  {
+    // 样式规范
     path: "/design",
     name: "design",
     meta: {
