@@ -32,5 +32,10 @@ module.exports = {
     // config.plugin("html").tap(arg => {
     //   return arg
     // })
+    config.module
+        .rule('vue')
+        .use('vue-loader')
+        .loader('vue-loader')
+        .tap(options => options)
   }
 }
