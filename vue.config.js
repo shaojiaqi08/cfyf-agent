@@ -1,6 +1,9 @@
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin")
 const smp = new SpeedMeasurePlugin()
-
+const path = require('path');
+function resolve(dir){
+  return path.join(__dirname,dir)
+}
 
 module.exports = {
   productionSourceMap: false,
@@ -32,10 +35,10 @@ module.exports = {
     // config.plugin("html").tap(arg => {
     //   return arg
     // })
-    config.module
-        .rule('vue')
-        .use('vue-loader')
-        .loader('vue-loader')
-        .tap(options => options)
+    config.resolve.alias
+        .set('@',resolve('./src'))
+        .set('components',resolve('./src/components'))
+        .set('views',resolve('./src/views'))
+        .set('assets',resolve('./src/assets'))
   }
 }
