@@ -11,6 +11,14 @@ export default [
     component: getView('home')
   },
   {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: '登录'
+    },
+    component: getView('login')
+  },
+  {
     path: "/about",
     name: "About",
     meta: {

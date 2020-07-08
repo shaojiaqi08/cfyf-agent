@@ -17,12 +17,12 @@
 <script>
 // @ is an alias to /src
 import G6 from '@antv/g6';
-import HelloWorld from "@/components/HelloWorld.vue";
+// import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld
+    // HelloWorld
   },
   mounted() {
     this.init()
