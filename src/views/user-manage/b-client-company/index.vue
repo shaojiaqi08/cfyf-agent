@@ -1,73 +1,116 @@
 <template>
     <div class="manager-container">
         <div class="header">
-            内部管理员
-            <el-button type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
+            B端公司
+            <el-button type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
         </div>
         <div class="content">
             <div class="left-scroll-wrap">
+                <div class="search-wrap">
+                    <el-input prefix-icon="el-icon-search" placeholder="搜索B端公司"></el-input>
+                </div>
                 <el-scrollbar class="left-scroll-bar" v-loading="leftLoading">
-                    <div v-for="(item, index) in peopleData"
+                    <div v-for="(item, index) in componentData"
                          :key="index"
-                         :class="{'list-item':true, active: curSelManage && curSelManage.id === item.id}"
+                         :class="{'list-item':true, active: curSelCompany && curSelCompany.id === item.id}"
                          @click="ajaxDetail(item)">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                             <span>{{item.name}}</span>
                         </el-tooltip>
                     </div>
                 </el-scrollbar>
-                <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </div>
-            <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-tabs v-model="curTabIdx" v-if="!contentData.isSupper">
-                    <el-tab-pane name="people" label="成员"></el-tab-pane>
-                    <el-tab-pane name="permission" label="权限"></el-tab-pane>
+            <div class="right-scroll-bar" v-loading="rightLoading">
+                <el-input class="search-input" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search"></el-input>
+                <el-tabs v-model="curTabIdx">
+                    <el-tab-pane name="base" label="基本资料" class="base-info-pane">
+                        <el-scrollbar>
+                            <div class="card">
+                                <div class="header">
+                                    企业信息
+                                    <el-button type="primary"><i class="iconfont iconxiao16_bianji"></i>修改信息</el-button>
+                                </div>
+                                <div class="item">主体类型<span>公司</span></div>
+                                <div class="item">渠道<span>公司</span></div>
+                                <div class="item">企业名称<span>公司</span></div>
+                                <div class="item">企业营业执照<span>公司</span></div>
+                                <div class="item">服务费发票类型<span>公司</span></div>
+                                <div class="item">发票税点<span>公司</span></div>
+                                <div class="item">所属城市<span>公司</span></div>
+                                <div class="item">详细地址<span>公司</span></div>
+                                <div class="item">固定电话<span>公司</span></div>
+                            </div>
+                            <div class="card">
+                                <div class="header">
+                                    财务信息
+                                </div>
+                                <div class="item">账户类型<span>公司</span></div>
+                                <div class="item">户名<span>公司</span></div>
+                                <div class="item">开户地址<span>公司</span></div>
+                                <div class="item">开户银行<span>公司</span></div>
+                                <div class="item">银行卡号<span>公司</span></div>
+                            </div>
+                            <el-button type="danger" @click="removeSettled">解除入驻</el-button><br>
+                            <span class="bottom-txt">解除入驻后，该公司所有账号将无法再登录，所有数据将归档封存，此操作不可恢复</span>
+                        </el-scrollbar>
+                    </el-tab-pane>
+                    <el-tab-pane name="people" label="成员">
+                        <div class="content people-content">
+                            <div class="left-wrap">
+                               <el-scrollbar class="people-left-scroll">
+                                   <div v-for="(item, index) in peopleData"
+                                        :key="index"
+                                        :class="{'list-item':true, active: curSelManage && curSelManage.id === item.id}"
+                                        @click="ajaxDetail(item)">
+                                       <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
+                                           <span>{{item.name}}</span>
+                                       </el-tooltip>
+                                   </div>
+                               </el-scrollbar>
+                            </div>
+                            <el-scrollbar class="right-wrap">
+                                <div v-if="curSelManage && curSelManage.isSupper" class="admin-filter-bar">
+                                    <div>
+                                        <el-tag>占位置</el-tag>
+                                    </div>
+                                    <el-button>导出数据</el-button>
+                                </div>
+                                <el-table :data="contentData.tableData" border>
+                                    <el-table-column label="姓名" prop="name" align="center"></el-table-column>
+                                    <el-table-column label="账号" prop="account" align="center"></el-table-column>
+                                    <el-table-column label="管理员角色" prop="account" align="center" v-if="curSelManage && curSelManage.isSupper"></el-table-column>
+                                    <el-table-column label="系统工号" prop="account" align="center" v-if="curSelManage && !curSelManage.isSupper"></el-table-column>
+                                    <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                                    <el-table-column label="开通日期" prop="start_date" align="center"></el-table-column>
+                                    <el-table-column label="当前状态" prop="status" align="center" width="120">
+                                        <template v-slot="{row}">
+                                            <el-tag>{{statusMap[row.status]}}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column label="关闭日期" prop="expire_date" align="center"></el-table-column>
+                                    <el-table-column label="操作" fixed="right" prop="operate" v-if="curSelManage.isSupper" :width="150" align="center">
+                                        <template v-slot="{row}">
+                                            <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
+                                            <el-button type="text" @click="modifyAccount(row)">修改账号</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </el-scrollbar>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane name="permission" label="权限">
+                        <div class="content" style="height: calc(100vh - 150px)">
+                            <el-scrollbar class="tree-wrap">
+                                <el-tree :data="contentData.permission"
+                                         show-checkbox
+                                         @node-click="handleTreeNodeClick"></el-tree>
+                            </el-scrollbar>
+                        </div>
+                    </el-tab-pane>
                 </el-tabs>
-                <div class="content" v-if="curSelManage && curTabIdx==='people'">
-                    <div class="desc-wrap">
-                        {{contentData.name}}
-                        <span>{{contentData.desc}}</span>
-                    </div>
-                    <el-table :data="contentData.tableData" border>
-                        <el-table-column label="姓名" prop="name" align="center"></el-table-column>
-                        <el-table-column label="账号" prop="account" align="center"></el-table-column>
-                        <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                        <el-table-column label="开通日期" prop="start_date" align="center"></el-table-column>
-                        <el-table-column label="当前状态" prop="status" align="center" width="120">
-                            <template v-slot="{row}">
-                                <el-tag>{{statusMap[row.status]}}</el-tag>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="失效日期" prop="expire_date" align="center"></el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="curSelManage.isSupper? 250 : 150" align="center">
-                            <template v-slot="{row}">
-                                <template v-if="row.status !== 'expired'">
-                                    <template v-if="curSelManage.isSupper">
-                                    <el-button type="text" @click="lostEffect(row)">使失效</el-button>
-                                    <el-button type="text" @click="triggerStatus(row)">{{row.status === 'disabled' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="resetPwd(row)">重置密码</el-button>
-                                    </template>
-                                    <el-button type="text" @click="edit(row)">编辑</el-button>
-                                    <el-button type="text" v-if="!curSelManage.isSupper" @click="modifyPwd(row)">修改密码</el-button>
-                                </template>
-                                <template v-else>
-                                    <el-button type="text">-</el-button>
-                                </template>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </div>
-                <div class="content" v-else-if="curSelManage && curTabIdx==='permission'" style="height: calc(100vh - 150px)">
-                    <el-scrollbar class="tree-wrap">
-                        <el-tree :data="contentData.permission"
-                                 show-checkbox
-                                 @node-click="handleTreeNodeClick"></el-tree>
-                    </el-scrollbar>
-
-                </div>
-            </el-scrollbar>
+            </div>
         </div>
-        <!--编辑/编辑管理员-->
+        <!--修改账号-->
         <el-dialog :title="`${editFormModel.id != undefined ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
             <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
                 <el-form-item label="管理员姓名" prop="real_name">
@@ -76,23 +119,6 @@
                 <el-form-item label="工作邮箱" prop="email">
                     <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" v-if="editFormModel.id == undefined" prop="mobile">
-                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员账号" prop="account_name">
-                    <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.account_name"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员角色" prop="role_id">
-                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id"></el-select>
-                </el-form-item>
-                <template v-if="editFormModel.id == undefined">
-                    <el-form-item label="登录密码" prop="password">
-                        <el-input type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="再次输入密码" prop="confirm_password">
-                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
-                    </el-form-item>
-                </template>
             </el-form>
             <span slot="footer">
                     <el-button @click="editDialogVisible = false">取消</el-button>
@@ -115,11 +141,8 @@
             </span>
         </el-dialog>
         <!--修改密码-->
-        <el-dialog title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">
+        <el-dialog title="重置密码" :visible.sync="modPwdDialogVisible" width="480px">
             <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">
-                <el-form-item label="旧密码" prop="oldPassword">
-                    <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.oldPassword"></el-input>
-                </el-form-item>
                 <el-form-item label="新密码" prop="newPassword">
                     <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.newPassword"></el-input>
                 </el-form-item>
@@ -145,13 +168,22 @@
                 rightLoading: false,
                 submitLoading: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
+                componentData: [
+                    {
+                        name: '11',
+                        mobile: '',
+                        email: '',
+                        confirm_password: ''
+                    }
+                ],
                 peopleData: [
-                    {id: 0, name: 'admin', isSupper: false},
-                    {id: 1, name: 'superAdmin', isSupper: true}
+                    {id: 0, name: '销售', isSupper: false},
+                    {id: 1, name: '管理员', isSupper: true},
                 ],
                 contentData: {},
                 curSelManage: null,
-                curTabIdx: 'people',
+                curSelCompany: null,
+                curTabIdx: 'base',
                 editDialogVisible: false,
                 editFormModel: {
                     id:null,
@@ -205,6 +237,33 @@
         methods: {
             handleTreeNodeClick() {
 
+            },
+            // 解除入驻
+            removeSettled(){ // eslint-disable-line
+                const h = this.$createElement
+                this.$confirm(
+                    h('div', [
+                        h('i', {
+                            class: {
+                                iconfont: true,
+                                'iconzhong20_gantanhao': true
+                            },
+                            style: {
+                                color: '#FF4C4C',
+                                marginRight: '10px'
+                            }
+                        }),
+                        h('span', '是否确认解除入驻？解除入驻后不可恢复。')
+                    ]),
+                    '提示',
+                    {
+                        confirmButtonText: '解除',
+                        confirmButtonClass: 'disable-button',
+                        customClass: 'manager-msg-box'
+                    }
+                ).then(() => {
+
+                }).catch(() => {    })
             },
             // 使失效
             lostEffect() {
@@ -307,6 +366,7 @@
                     }
                 })
             },
+            modifyAccount() {},
             // 提交新增角色
             submitAddRole() {
                 this.$refs.addRoleForm.validate(flag => {
@@ -330,7 +390,7 @@
                 this.ajaxDetail(this.peopleData[0])
             },
             ajaxDetail(obj) {
-                this.curTabIdx = 'people'
+                // this.curTabIdx = 'base'
                 this.curSelManage = obj
                 this.contentData = {
                     name: obj.id ? '管理员' : '超级管理员',
@@ -468,23 +528,31 @@
             .left-scroll-wrap{
                 width: 240px;
                 height: 100%;
-                padding-bottom: 64px;
+                padding-top: 64px;
                 position: relative;
                 box-sizing: border-box;
                 border-right: 1px solid #e6e6e6;
-                &>.el-button{
+                &>.search-wrap{
                     position: absolute;
-                    bottom: 14px;
-                    left: 50%;
-                    transform: translateX(-50%);
+                    top: 0;
+                    width: 100%;
+                    left: 0;
+                    padding: 0 16px;
+                    height: 64px;
+                    line-height: 64px;
+                    box-sizing: border-box;
                 }
             }
             ::v-deep .el-scrollbar{
                 .el-scrollbar__wrap{
                     overflow-x: hidden;
                 }
+                .el-scrollbar__bar{
+                    z-index: 999;
+                }
             }
-            ::v-deep .left-scroll-bar{
+            // 左侧滚动列表 & 成员tab左侧滚动列表
+            ::v-deep .left-scroll-bar, ::v-deep .people-left-scroll{
                 width: 240px;
                 height: 100%;
                 .list-item{
@@ -512,10 +580,43 @@
             ::v-deep .right-scroll-bar{
                 flex: 1;
                 height: 100%;
+                position: relative;
+                .search-input{
+                    position: absolute;
+                    right: 16px;
+                    top: 16px;
+                    width: 240px;
+                }
                 .el-tabs{
                     padding: 16px 16px 0 16px;
+                    position: absolute;
+                    top: 0;
+                    left:0;
+                    right: 0;
+                    bottom: 0;
+                    box-sizing: border-box;
+                    .el-tab-pane{
+                        height: 100%;
+                    }
+                    .el-tabs__content{
+                        height: calc(100% - 46px);
+                        .tabpanel{
+                            height: 100%;
+                        }
+                        .el-tab-pane>.el-scrollbar{
+                            position:absolute;
+                            top: 0;
+                            left:0;
+                            right: 0;
+                            bottom: 0;
+                        }
+                    }
+                    .el-tabs__item{
+                        height: 32px;
+                        line-height: 32px;
+                    }
                     .el-tabs__header{
-                        margin: 0;
+                        margin-bottom: 16px;
                     }
                 }
                 .content{
@@ -544,18 +645,90 @@
                             white-space: nowrap;
                         }
                     }
+                    &.people-content{
+                        display: flex;
+                        padding-left: 0;
+                        height: 100%;
+                        padding-bottom: 0;
+                        padding-right: 0;
+                        .left-wrap{
+                            width: 240px;
+                            border: 1px solid #e6e6e6;
+                            border-bottom: none;
+                        }
+                        .right-wrap{
+                            flex: 1;
+                            overflow: hidden;
+                            padding-left:16px;
+                            .admin-filter-bar{
+                                height: 46px;
+                                display: flex;
+                                align-items: flex-start;
+                                justify-content: space-between;
+                            }
+                        }
+                    }
                 }
                 .tree-wrap{
                     width: 480px;
-                    height: calc(100% - 32px);
+                    height: calc(100% - 46px);
                     margin:16px auto;
                     border: 1px solid #e6e6e6;
                     border-radius: 4px;
-                    padding: 13px 6px;
+                    padding: 13px 0 13px 6px;
                 }
                 .el-table .el-button{
                     min-width: 0;
+                    height: 23px;
+                    line-height: 23px;
                     padding: 0;
+                }
+            }
+            // 基础资料tab pane
+            .base-info-pane {
+                text-align: center;
+                .card{
+                    width: 400px;
+                    overflow: hidden;
+                    border: 1px solid #e6e6e6;
+                    border-radius: 4px;
+                    margin: 16px auto 0 auto;
+                    .header{
+                        background-color: #f5f5f5;
+                        padding: 0 16px;
+                        height: 48px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid #e6e6e6;
+                    }
+                    .item{
+                        line-height: 20px;
+                        margin-bottom: 24px;
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 14px;
+                        color:#4d4d4d;
+                        padding: 0 16px;
+                        &>span{
+                            color:#1A1A1A;
+                            font-weight: bold;
+                            flex: 1;
+                            display: inline-block;
+                            text-align: right;
+                            padding-left: 16px;
+                        }
+                    }
+                }
+                .el-button--danger{
+                    margin: 16px 0 8px 0;
+                }
+                span.bottom-txt{
+                    color:#ccc;
+                    font-size: 14px;
+                    display: inline-block;
+                    padding-bottom: 72px;
                 }
             }
         }

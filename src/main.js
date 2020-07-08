@@ -7,6 +7,7 @@ import Element from 'element-ui';
 
 import './element-variables.scss';
 import './assets/scss/index.scss';
+import 'assets/scss/iconfont/iconfont.css'
 
 if (process.env.NODE_ENV === 'development') {
   Vue.config.productionTip = true;

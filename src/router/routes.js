@@ -70,6 +70,22 @@ export default [
     component: () => import('@/views/good-manage/rate')
   },
   {
+    path: '/company',
+    name: 'Company',
+    meta: {
+      title: 'B端公司'
+    },
+    component: () => import('views/user-manage/b-client-company')
+  },
+  {
+    path: '/company/edit',
+    name: 'Company-Edit',
+    meta: {
+      title: ''
+    },
+    component: () => import('views/user-manage/b-client-company/edit')
+  },
+  {
     path: '/manager',
     name: 'Manager',
     meta: {
