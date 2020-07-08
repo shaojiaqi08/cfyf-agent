@@ -10,7 +10,7 @@
             <div class="filter-bar">
                 <el-tag>占位置</el-tag>
             </div>
-            <div class="data-row" ref="dataRow">
+            <!-- <div class="data-row" ref="dataRow">
                 <el-button class="left" icon="el-icon-arrow-left" circle plain v-if="scrol2Lvisible"  @click="scrollTo(0)"></el-button>
                 <div class="scroll-wrap" :style="{transform: `translateX(${scrollTranslateX}px)`}">
                     <div class="block">
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <el-button class="right" icon="el-icon-arrow-right" circle plain v-if="scrol2Rvisible" @click="scrollTo(1)"></el-button>
-            </div>
+            </div> -->
             <el-table :data="tableData" max-height="768px" border :loading="tableLoading">
                 <el-table-column label="产品名称" prop=""></el-table-column>
                 <el-table-column label="保险公司" prop=""></el-table-column>

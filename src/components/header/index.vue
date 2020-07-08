@@ -1,13 +1,24 @@
 <template>
   <div class="header">
-    <div class="logo"></div>
+    <div class="logo normal-transition"></div>
     <el-popover
       placement="bottom"
-      title="标题"
-      width="200"
-      trigger="click"
-      content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-      <div class="user-info" slot="reference">
+      width="80"
+      v-model="isPopoverShow"
+      popper-class="popper-box"
+      trigger="click">
+      <div class="menu-list">
+        <div class="menu-list-item"
+             @click="jump2UserInfo">
+          <i class="mr4 iconfont iconxiao16_gerenxinxi"></i>
+          个人信息
+        </div>
+        <div class="menu-list-item">
+          <i class="mr4 iconfont iconxiao16_tuichudenglu"></i>
+          退出登录
+        </div>
+      </div>
+      <div class="user-info normal-transition" slot="reference">
         <div class="user">
           <div class="avatar"></div>
           <div class="name">颠三倒四的是</div>
@@ -24,13 +35,22 @@
 <script>
 export default {
   data() {
-    return {}
+    return {
+      isPopoverShow: false
+    }
+  },
+  methods: {
+    jump2UserInfo() {
+      this.$router.push({ path: '/user-info' })
+      this.isPopoverShow = false
+    }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .header {
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,16 +58,26 @@ export default {
   width: 100%;
   height: 40px;
   border-bottom: 1px solid #E6E6E6;
+  z-index: 2;
   .logo {
     width: 200px;
     height: 24px;
     background-color: #ccc;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
   }
   .user-info {
     display: flex;
     align-items: center;
     height: 24px;
+    opacity: 0.6;
     cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
     .user {
       display: flex;
       align-items: center;
@@ -67,8 +97,31 @@ export default {
       }
     }
     .permission {
-      display: inline-block;
-      color: #999999;
+      display: flex;
+      align-items: center;
+      color: #999;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.popper-box {
+  color: red;
+  .menu-list {
+    margin-top: 8px;
+    .menu-list-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 18px;
+      color: #4D4D4D;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        color: #FF9000;
+        background-color: rgba(255, 144, 0, 0.1);
+      }
     }
   }
 }

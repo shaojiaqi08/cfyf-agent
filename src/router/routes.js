@@ -14,9 +14,21 @@ export default [
     path: '/login',
     name: 'login',
     meta: {
-      title: '登录'
+      title: '登录',
+      header: false,
+      menu: false
     },
     component: getView('login')
+  },
+  {
+    path: '/user-info',
+    name: 'userInfo',
+    meta: {
+      title: '个人信息',
+      header: true,
+      menu: true
+    },
+    component: getView('user-info')
   },
   {
     path: "/about",
@@ -31,42 +43,52 @@ export default [
     path: '/order',
     name: 'Order',
     meta: {
-      title: '订单'
+      title: '订单',
+      header: true,
+      menu: true
     },
-    component: () => import('views/achievement/order')
+    component: () => import('@/views/achievement/order')
   },
   {
     path: '/order/detail/:id',
     name: 'Order-Detail',
     meta: {
-      title: '订单详情'
+      title: '订单详情',
+      header: true,
+      menu: true
     },
-    component: () => import('views/achievement/order/detail')
+    component: () => import('@/views/achievement/order/detail')
   },
   {
     path: '/rate',
     name: 'rate',
     meta: {
-      title: '费率管理'
+      title: '费率管理',
+      header: true,
+      menu: true
     },
-    component: () => import('views/good-manage/rate')
+    component: () => import('@/views/good-manage/rate')
   },
   {
     path: '/manager',
     name: 'Manager',
     meta: {
-      title: '内部管理员'
+      title: '内部管理员',
+      header: true,
+      menu: true
     },
-    component: () => import('views/user-manage/manager')
+    component: () => import('@/views/user-manage/manager')
   },
   {
     // 样式规范
     path: "/design",
     name: "design",
     meta: {
-      title: 'about'
+      title: 'about',
+      header: true,
+      menu: true
     },
     component: () =>
-        import(/* webpackChunkName: "about" */ "views/DesignSpec.vue")
+        import(/* webpackChunkName: "about" */ "@/views/DesignSpec.vue")
   }
 ]
