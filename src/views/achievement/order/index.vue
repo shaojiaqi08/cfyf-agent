@@ -238,22 +238,22 @@
 </script>
 <style lang="scss" scoped>
     .order-container {
-        padding: 20px 20px 0 20px;
-        .header {
-            font-size: 16px;
-            font-weight: bold;
-            padding: 0 16px;
-            height: 56px;
-            background: #F5F5F5;
-            border-radius: 4px 4px 0px 0px;
-            border: 1px solid #E6E6E6;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            .el-input {
-                width: 360px;
+            padding: 20px 20px 0 20px;
+            .header {
+                font-size: 16px;
+                font-weight: bold;
+                padding: 0 16px;
+                height: 56px;
+                background: #F5F5F5;
+                border-radius: 4px 4px 0px 0px;
+                border: 1px solid #E6E6E6;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .el-input {
+                    width: 360px;
+                }
             }
-        }
 
         & ::v-deep .el-scrollbar {
             height: calc(100vh - 78px);

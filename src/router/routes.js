@@ -25,7 +25,7 @@ export default [
     meta: {
       title: '订单'
     },
-    component: () => import('../views/achievement/order')
+    component: () => import('views/achievement/order')
   },
   {
     path: '/order/detail/:id',
@@ -33,7 +33,23 @@ export default [
     meta: {
       title: '订单详情'
     },
-    component: () => import('../views/achievement/order/detail')
+    component: () => import('views/achievement/order/detail')
+  },
+  {
+    path: '/rate',
+    name: 'rate',
+    meta: {
+      title: '费率管理'
+    },
+    component: () => import('views/good-manage/rate')
+  },
+  {
+    path: '/manager',
+    name: 'Manager',
+    meta: {
+      title: '内部管理员'
+    },
+    component: () => import('views/user-manage/manager')
   },
   {
     // 样式规范
@@ -43,6 +59,6 @@ export default [
       title: 'about'
     },
     component: () =>
-        import(/* webpackChunkName: "about" */ "../views/DesignSpec.vue")
+        import(/* webpackChunkName: "about" */ "views/DesignSpec.vue")
   }
 ]
