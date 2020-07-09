@@ -1,5 +1,5 @@
 @import "normalize";
-// @import "nprogress";
+@import "nprogress";
 // @import "custom";
 
 *,
@@ -668,4 +668,10 @@ img {
 
 .normal-transition {
   transition: all .5s ease;
+}
+
+.scrollbar {
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+  }
 }

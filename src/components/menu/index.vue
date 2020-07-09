@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <el-scrollbar class="menu-list">
+    <el-scrollbar class="menu-list scrollbar">
       <div class="menu-header">
         <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
         业绩
@@ -9,7 +9,7 @@
         订单
       </div>
       <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
+        <i class="mr8 iconfont iconcebiandaohang20_shangpin"></i>
         商品管理
       </div>
       <div class="normal-transition menu-item">
@@ -19,7 +19,7 @@
         商品上下架
       </div>
       <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
+        <i class="mr8 iconfont iconcebiandaohang20_yonghuguanli"></i>
         用户管理
       </div>
       <div class="normal-transition menu-item"
