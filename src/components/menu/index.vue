@@ -22,111 +22,15 @@
         <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
         用户管理
       </div>
-      <div class="normal-transition menu-item actived"
+      <div class="normal-transition menu-item"
            title="B端公司">
         B端公司
       </div>
-      <div class="normal-transition menu-item actived"
+      <div class="normal-transition menu-item"
            title="内部管理员">
         内部管理员
       </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="B端公司">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item actived"
-           title="内部管理员">
-        内部管理员
-      </div>
-      <div class="normal-transition menu-item actived"
+      <div class="normal-transition menu-item"
            title="内部管理员内部管理员内部管理员">
         内部管理员内部管理员内部管理员
       </div>
@@ -177,6 +81,9 @@ export default {
       cursor: pointer;
       &.actived {
         color: #FF9000;
+        &:hover {
+          background-color: #F0F0F0;
+        }
       }
       &:hover {
         background-color: #E6E6E6;
