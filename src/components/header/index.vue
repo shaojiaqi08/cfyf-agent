@@ -25,7 +25,7 @@
         </div>
         <div class="permission">
           管理员角色
-          <i class="iconfont iconxiao16_xiajiantou"></i>
+          <i class="iconfont iconxiao16_xiajiantou ml4"></i>
         </div>
       </div>
     </el-popover>
@@ -57,6 +57,7 @@ export default {
   padding: 0 20px;
   width: 100%;
   height: 40px;
+  background-color: #F0F0F0;
   border-bottom: 1px solid #E6E6E6;
   z-index: 2;
   .logo {
