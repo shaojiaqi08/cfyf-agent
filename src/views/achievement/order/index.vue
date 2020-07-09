@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="scrollbox">
-      <div class="filter-bar">
+      <!-- <div class="filter-bar">
         <el-popover
           placement="bottom"
           width="272"
@@ -31,13 +31,20 @@
           <div class="filter-item" :class="{ actived: filterValue }" slot="reference">
             全部保单状态
             <i class="iconfont iconxiao16_xiajiantou"></i>
+            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
           </div>
         </el-popover>
-        <!-- <div class="filter-item">
-            全部保单状态
-            <i class="iconfont iconxiao16_xiajiantou"></i>
-        </div>-->
-      </div>
+      </div> -->
+      <filter-shell label="全部保单状态" v-model="value">
+        <el-select class="block" v-model="value" placeholder="请选择">
+            <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            ></el-option>
+        </el-select>
+      </filter-shell>
       <div class="data-row" ref="dataRow">
         <el-button
           class="left"
@@ -148,15 +155,18 @@
 
 <script>
 import EditModal from "./modal/edit";
+import { getRegion } from '@/apis/modules/index'
+import FilterShell from './filter-shell'
 // 业绩-订单
 export default {
   name: "order",
   components: {
-    EditModal
+    EditModal,
+    FilterShell
   },
   data() {
     return {
-      filterValue: "",
+      filterValue: false,
       belongVisible: false,
       belongData: {},
       options: [
@@ -263,6 +273,9 @@ export default {
   },
   created() {
     this.ajaxData();
+    getRegion().then(res => {
+      console.log(res, '====')
+    })
   },
   mounted() {
     this.checkNeedScroll();
@@ -433,30 +446,6 @@ export default {
     .el-form-item .el-select {
       width: 100%;
     }
-  }
-}
-.filter-item {
-  display: inline-block;
-  margin-right: 16px;
-  padding: 4px 12px;
-  color: #1a1a1a;
-  font-size: 14px;
-  background-color: #f5f5f5;
-  border: 1px solid rgba(230, 230, 230, 1);
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-  &.actived {
-    color: #FF9000;
-    background-color: rgba(255, 144, 0, 0.1);
-    border-color: #FF9000;
-  }
-}
-.filter-popover {
-  .inner-box {
-    padding: 16px;
   }
 }
 </style>
