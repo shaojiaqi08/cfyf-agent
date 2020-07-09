@@ -8,7 +8,6 @@
                 <slot name="list" v-bind:row="item">{{item.name}}</slot>
             </div>
         </el-scrollbar>
-
     </div>
 </template>
 <script>

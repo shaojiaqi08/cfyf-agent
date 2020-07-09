@@ -21,7 +21,7 @@
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
                 <el-tabs v-model="curTabIdx" v-if="!contentData.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
-                    <el-tab-pane name="permission" label="权限"></el-tab-pane>
+<!--                    <el-tab-pane name="permission" label="权限"></el-tab-pane>-->
                 </el-tabs>
                 <div class="content" v-if="curSelManage && curTabIdx==='people'">
                     <div class="desc-wrap">
@@ -68,7 +68,7 @@
             </el-scrollbar>
         </div>
         <!--编辑/编辑管理员-->
-        <el-dialog :title="`${editFormModel.id != undefined ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" :title="`${editFormModel.id != undefined ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
             <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
                 <el-form-item label="管理员姓名" prop="real_name">
                     <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>
@@ -100,7 +100,7 @@
                 </span>
         </el-dialog>
         <!--新增角色-->
-        <el-dialog title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">
             <el-form ref="addRoleForm" :model="addRoleFormModel" :rules="addRoleRules" label-width="100px" label-position="left">
                 <el-form-item label="角色名称" prop="name">
                     <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>
@@ -115,7 +115,7 @@
             </span>
         </el-dialog>
         <!--修改密码-->
-        <el-dialog title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">
             <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">
                 <el-form-item label="旧密码" prop="oldPassword">
                     <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.oldPassword"></el-input>
@@ -136,6 +136,7 @@
 </template>
 
 <script>
+    import {createManager, editManager, getManagerList, removeEffect, updateStatus, resetPassword, updatePassword} from '@/apis/modules/user-manage' // eslint-disable-line
     export default {
         name: 'manager',
         data() {
@@ -226,7 +227,7 @@
                     '提示',
                     {
                         confirmButtonText: '失效',
-                        confirmButtonClass: 'disable-button',
+                        confirmButtonClass: 'el-button--danger',
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
@@ -237,7 +238,7 @@
                 const {id, status} = row
                 const isDisabled = status === 'enabled'
                 const confirmButtonText = isDisabled ? '禁用' : '启用'
-                const confirmButtonClass = isDisabled ? 'disable-button' : ''
+                const confirmButtonClass = isDisabled ? 'el-button--danger' : ''
                 const txt = isDisabled ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
                 const h = this.$createElement
                 this.$confirm(
@@ -460,7 +461,7 @@
         }
         & >.content{
             display: flex;
-            height: calc(100vh - 78px);
+            height: calc(100vh - 119px);
             background-color: #fff;
             box-sizing: border-box;
             border: 1px solid #e6e6e6;
@@ -562,10 +563,9 @@
     }
 </style>
 <style lang="scss">
-    .manager-msg-box{
-        .disable-button {
-            background-color: #FF4C4C;
-            border: none;
+    .manager-dialog{
+        .el-form-item__label::before{
+            display: none;
         }
     }
 </style>

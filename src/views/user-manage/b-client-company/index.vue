@@ -2,18 +2,18 @@
     <div class="manager-container">
         <div class="header">
             B端公司
-            <el-button type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
+            <el-button type="primary"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
         </div>
         <div class="content">
             <div class="left-scroll-wrap">
                 <div class="search-wrap">
-                    <el-input prefix-icon="el-icon-search" placeholder="搜索B端公司"></el-input>
+                    <el-input prefix-icon="el-icon-search" placeholder="搜索B端公司" v-model.trim="searchInput"></el-input>
                 </div>
                 <el-scrollbar class="left-scroll-bar" v-loading="leftLoading">
-                    <div v-for="(item, index) in componentData"
+                    <div v-for="(item, index) in filterCompanyData"
                          :key="index"
                          :class="{'list-item':true, active: curSelCompany && curSelCompany.id === item.id}"
-                         @click="ajaxDetail(item)">
+                         @click="ajaxPeopleList(item)">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                             <span>{{item.name}}</span>
                         </el-tooltip>
@@ -21,7 +21,12 @@
                 </el-scrollbar>
             </div>
             <div class="right-scroll-bar" v-loading="rightLoading">
-                <el-input class="search-input" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search"></el-input>
+                <el-input class="search-input"
+                          placeholder="搜索成员姓名或账号"
+                          prefix-icon="el-icon-search"
+                          v-model="peopleSearchModel.keyword"
+                          v-if="curTabIdx==='people'"
+                          @input="debounceAjaxPeopleList"></el-input>
                 <el-tabs v-model="curTabIdx">
                     <el-tab-pane name="base" label="基本资料" class="base-info-pane">
                         <el-scrollbar>
@@ -58,7 +63,7 @@
                         <div class="content people-content">
                             <div class="left-wrap">
                                <el-scrollbar class="people-left-scroll">
-                                   <div v-for="(item, index) in peopleData"
+                                   <div v-for="(item, index) in roleData"
                                         :key="index"
                                         :class="{'list-item':true, active: curSelManage && curSelManage.id === item.id}"
                                         @click="ajaxDetail(item)">
@@ -88,7 +93,7 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column label="关闭日期" prop="expire_date" align="center"></el-table-column>
-                                    <el-table-column label="操作" fixed="right" prop="operate" v-if="curSelManage.isSupper" :width="150" align="center">
+                                    <el-table-column label="操作" fixed="right" prop="operate" v-if="curSelManage && curSelManage.isSupper" :width="150" align="center">
                                         <template v-slot="{row}">
                                             <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
                                             <el-button type="text" @click="modifyAccount(row)">修改账号</el-button>
@@ -98,7 +103,8 @@
                             </el-scrollbar>
                         </div>
                     </el-tab-pane>
-                    <el-tab-pane name="permission" label="权限">
+                    <!--权限需求未明确,先隐藏-->
+                    <el-tab-pane name="permission" label="权限" v-if="false">
                         <div class="content" style="height: calc(100vh - 150px)">
                             <el-scrollbar class="tree-wrap">
                                 <el-tree :data="contentData.permission"
@@ -111,13 +117,13 @@
             </div>
         </div>
         <!--修改账号-->
-        <el-dialog :title="`${editFormModel.id != undefined ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
-            <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
-                <el-form-item label="管理员姓名" prop="real_name">
-                    <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>
+        <el-dialog custom-class="company-dialog" title="修改账号" :visible.sync="editAccountVisible" width="480px">
+            <el-form ref="editAccountForm" :model="editAccountFormModel" :rules="editAccountRules" label-width="100px" label-position="left">
+                <el-form-item label="原账号" prop="account_name">
+                    <span>{{editAccountFormModel.account_name}}</span>
                 </el-form-item>
-                <el-form-item label="工作邮箱" prop="email">
-                    <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>
+                <el-form-item label="新账号" prop="new_account_name">
+                    <el-input placeholder="请输入新账号" v-model="editAccountFormModel.new_account_name"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -125,23 +131,8 @@
                     <el-button type="primary" @click="submitEdit">确认</el-button>
                 </span>
         </el-dialog>
-        <!--新增角色-->
-        <el-dialog title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">
-            <el-form ref="addRoleForm" :model="addRoleFormModel" :rules="addRoleRules" label-width="100px" label-position="left">
-                <el-form-item label="角色名称" prop="name">
-                    <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>
-                </el-form-item>
-                <el-form-item label="角色描述" prop="desc">
-                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.desc"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="addRoleDialogVisible">取消</el-button>
-                <el-button type="primary" @click="submitAddRole">确认</el-button>
-            </span>
-        </el-dialog>
-        <!--修改密码-->
-        <el-dialog title="重置密码" :visible.sync="modPwdDialogVisible" width="480px">
+        <!--重置密码-->
+        <el-dialog custom-class="company-dialog" title="重置密码" :visible.sync="modPwdDialogVisible" width="480px">
             <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">
                 <el-form-item label="新密码" prop="newPassword">
                     <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.newPassword"></el-input>
@@ -151,23 +142,30 @@
                 </el-form-item>
             </el-form>
             <span slot="footer">
-                    <el-button @click="modPwdDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitModifyPwd">确认</el-button>
+                <el-button @click="modPwdDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitModifyPwd">确认</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
+    import {getCompanyDetail, getCompanyList, getPeopleList} from "../../../apis/modules/user-manage";
+    import {debounce} from '@/utils'
     export default {
         name: 'manager',
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
+            const roleData = [
+                {id: 1, name: '管理员', isSupper: true},
+                {id: 0, name: '销售', isSupper: false},
+            ]
             return {
                 leftLoading: false,
                 rightLoading: false,
                 submitLoading: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
+                searchInput: '',
                 componentData: [
                     {
                         name: '11',
@@ -176,42 +174,26 @@
                         confirm_password: ''
                     }
                 ],
-                peopleData: [
-                    {id: 0, name: '销售', isSupper: false},
-                    {id: 1, name: '管理员', isSupper: true},
-                ],
+                baseInfoData: null,
+                peopleData: [],
+                roleData,
+                peopleSearchModel: {
+                    team_id: '',
+                    position_id: '',
+                    account_status: '',
+                    keyword: ''
+                },
                 contentData: {},
-                curSelManage: null,
+                curSelManage: roleData[0],
                 curSelCompany: null,
                 curTabIdx: 'base',
-                editDialogVisible: false,
-                editFormModel: {
-                    id:null,
-                    real_name: '',
+                editAccountVisible: false,
+                editAccountFormModel: {
                     account_name: '',
-                    role_id: '',
-                    mobile: '',
-                    email: '',
-                    password: '',
-                    confirm_password: ''
+                    new_account_name: ''
                 },
-                editRules: {
-                    real_name: baseValiObj,
-                    account_name: baseValiObj,
-                    role_id: baseValiObj,
-                    mobile: [baseValiObj, {validator: this.moblieValidator}],
-                    email: [baseValiObj, {validator: this.emailValidator}],
-                    password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirm_password:[baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
-                },
-                addRoleDialogVisible: false,
-                addRoleFormModel: {
-                    name: '',
-                    desc: ''
-                },
-                addRoleRules: {
-                    name: baseValiObj,
-                    desc: baseValiObj
+                editAccountRules: {
+                    new_account_name: baseValiObj
                 },
                 modPwdDialogVisible: false,
                 modPwdFormModel: {
@@ -232,11 +214,16 @@
             }
         },
         created() {
-            this.ajaxPeopleList()
+            this.ajaxCompanyList()
+        },
+        computed: {
+            filterCompanyData() {
+                const {searchInput, companyData} = this
+                return companyData.filter(item => item.name.includes(searchInput))
+            }
         },
         methods: {
             handleTreeNodeClick() {
-
             },
             // 解除入驻
             removeSettled(){ // eslint-disable-line
@@ -265,68 +252,6 @@
 
                 }).catch(() => {    })
             },
-            // 使失效
-            lostEffect() {
-                const h = this.$createElement
-                this.$confirm(
-                    h('div', [
-                        h('i', {
-                            class: {
-                                iconfont: true,
-                                'iconzhong20_gantanhao': true
-                            },
-                            style: {
-                                color: '#FF4C4C',
-                                marginRight: '10px'
-                            }
-                        }),
-                        h('span', '账号失效后无法登录系统，且不可恢复，是否确认失效？')
-                    ]),
-                    '提示',
-                    {
-                        confirmButtonText: '失效',
-                        confirmButtonClass: 'disable-button',
-                        customClass: 'manager-msg-box'
-                    }
-                ).then(() => {
-
-                }).catch(() => {    })
-            },
-            triggerStatus(row) {
-                const {id, status} = row
-                const isDisabled = status === 'enabled'
-                const confirmButtonText = isDisabled ? '禁用' : '启用'
-                const confirmButtonClass = isDisabled ? 'disable-button' : ''
-                const txt = isDisabled ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
-                const h = this.$createElement
-                this.$confirm(
-                    h('div', [
-                        h('i', {
-                            class: {
-                                iconfont: true,
-                                'iconzhong20_gantanhao': true
-                            },
-                            style: {
-                                color: '#FF4C4C',
-                                marginRight: '10px'
-                            }
-                        }),
-                        h('span', txt)
-                    ]),
-                    '提示',
-                    {
-                        confirmButtonText,
-                        confirmButtonClass,
-                        customClass: 'manager-msg-box'
-                    }
-                ).then(() => {
-                    (isDisabled ? this.disabled : this.enabled)(id)
-                }).catch(() => {})
-            },
-            // 启用
-            enabled() {},
-            // 禁用
-            disabled() {},
             // 重置密码
             resetPwd() {
                 const h = this.$createElement
@@ -386,78 +311,124 @@
                     }
                 })
             },
-            ajaxPeopleList() {
-                this.ajaxDetail(this.peopleData[0])
+            ajaxCompanyList() {
+                const {searchInput: name, curTabIdx} = this
+                this.leftLoading = true
+                // 清空先关数据
+                this.componentData = []
+                this.peopleData = []
+                this.baseInfoData = null
+                getCompanyList({params: {name}}).then(res => {
+                    if (res.data.length > 0) {
+                        this.componentData = res.data
+                        this.curSelCompany = this.componentData[0]
+                        this[`${curTabIdx}TabHandle`]()
+                    }
+                }).finally(() => {
+                    this.leftLoading = false
+                })
             },
-            ajaxDetail(obj) {
-                // this.curTabIdx = 'base'
-                this.curSelManage = obj
-                this.contentData = {
-                    name: obj.id ? '管理员' : '超级管理员',
-                    desc: '角色描述，展示一行，超长的情况下就使用点点点',
-                    tableData: [
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'enabled',
-                            expire_date: '11'
-                        },
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'disabled',
-                            expire_date: '11'
-                        },
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'expired',
-                            expire_date: '11'
-                        }
-                    ],
-                    permission: [{
-                        label: '一级 1',
-                        children: [{
-                            label: '二级 1-1',
-                            children: [{
-                                label: '三级 1-1-1'
-                            }]
-                        }]
-                    }, {
-                        label: '一级 2',
-                        children: [{
-                            label: '二级 2-1',
-                            children: [{
-                                label: '三级 2-1-1'
-                            }]
-                        }, {
-                            label: '二级 2-2',
-                            children: [{
-                                label: '三级 2-2-1'
-                            }]
-                        }]
-                    }, {
-                        label: '一级 3',
-                        children: [{
-                            label: '二级 3-1',
-                            children: [{
-                                label: '三级 3-1-1'
-                            }]
-                        }, {
-                            label: '二级 3-2',
-                            children: [{
-                                label: '三级 3-2-1'
-                            }]
-                        }]
-                    }],
-                    isSupper: !!obj.id
+            ajaxPeopleList(obj) { // eslint-disable-line
+                const {peopleSearchModel, curSelCompany} = this
+                this.peopleData = []
+                this.rightLoading = true
+                const params = {...peopleSearchModel, company_id: curSelCompany.id}
+                getPeopleList({params}).then(res => {
+                    this.peopleData = res.data
+                }).finally(() => {
+                    this.rightLoading = false
+                })
+            },
+            ajaxBaseInfo() {
+                this.baseInfoData = null
+                getCompanyDetail({params: {id: this.curSelCompany.id}}).then(res => {
+                    this.baseInfoData = res
+                })
+                // this.contentData = {
+                //     name: obj.id ? '管理员' : '超级管理员',
+                //     desc: '角色描述，展示一行，超长的情况下就使用点点点',
+                //     tableData: [
+                //         {
+                //             name: '11',
+                //             account: '11',
+                //             mobile: '11',
+                //             start_date: '11',
+                //             status: 'enabled',
+                //             expire_date: '11'
+                //         },
+                //         {
+                //             name: '11',
+                //             account: '11',
+                //             mobile: '11',
+                //             start_date: '11',
+                //             status: 'disabled',
+                //             expire_date: '11'
+                //         },
+                //         {
+                //             name: '11',
+                //             account: '11',
+                //             mobile: '11',
+                //             start_date: '11',
+                //             status: 'expired',
+                //             expire_date: '11'
+                //         }
+                //     ],
+                //     permission: [{
+                //         label: '一级 1',
+                //         children: [{
+                //             label: '二级 1-1',
+                //             children: [{
+                //                 label: '三级 1-1-1'
+                //             }]
+                //         }]
+                //     }, {
+                //         label: '一级 2',
+                //         children: [{
+                //             label: '二级 2-1',
+                //             children: [{
+                //                 label: '三级 2-1-1'
+                //             }]
+                //         }, {
+                //             label: '二级 2-2',
+                //             children: [{
+                //                 label: '三级 2-2-1'
+                //             }]
+                //         }]
+                //     }, {
+                //         label: '一级 3',
+                //         children: [{
+                //             label: '二级 3-1',
+                //             children: [{
+                //                 label: '三级 3-1-1'
+                //             }]
+                //         }, {
+                //             label: '二级 3-2',
+                //             children: [{
+                //                 label: '三级 3-2-1'
+                //             }]
+                //         }]
+                //     }],
+                //     isSupper: !!obj.id
+                // }
+            },
+            // 处理基础资料tab
+            baseTabHandle() {
+                const {baseInfoData} = this
+                if (!baseInfoData) {
+                    this.ajaxBaseInfo()
                 }
+            },
+            // 处理成员tab
+            peopleTabHandle() {
+                const {peopleData, roleData} = this
+                if (!peopleData.length <= 0) {
+                    this.ajaxPeopleList(roleData[0])
+                }
+            },
+            debounceAjaxPeopleList() {
+                const func = debounce(this.ajaxPeopleList, 300)
+                func()
+                this.debounceAjaxPeopleList = func
             },
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
                 const {newPassword, confirmPassword} = this.modPwdFormModel
@@ -487,14 +458,14 @@
             }
         },
         watch: {
-            editDialogVisible(v) {
-                !v && this.$refs.editForm.resetFields()
-            },
-            addRoleDialogVisible(v) {
-                !v && this.$refs.addRoleForm.resetFields()
+            editAccountVisible(v) {
+                !v && this.$refs.editAccountForm.resetFields()
             },
             modPwdDialogVisible(v) {
                 !v && this.$refs.modPwdForm.resetFields()
+            },
+            curTabIdx(v) {
+                this[`${v}TabHandle`]()
             }
         }
     }
@@ -520,7 +491,7 @@
         }
         & >.content{
             display: flex;
-            height: calc(100vh - 78px);
+            height: calc(100vh - 119px);
             background-color: #fff;
             box-sizing: border-box;
             border: 1px solid #e6e6e6;
@@ -586,6 +557,7 @@
                     right: 16px;
                     top: 16px;
                     width: 240px;
+                    z-index: 999;
                 }
                 .el-tabs{
                     padding: 16px 16px 0 16px;
@@ -739,6 +711,11 @@
         .disable-button {
             background-color: #FF4C4C;
             border: none;
+        }
+    }
+    .company-dialog{
+        .el-form-item__label::before{
+            display: none;
         }
     }
 </style>

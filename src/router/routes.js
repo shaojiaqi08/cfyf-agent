@@ -73,15 +73,25 @@ export default [
     path: '/company',
     name: 'Company',
     meta: {
-      title: 'B端公司'
+      title: 'B端公司',
+      header: true,
+      menu: true
     },
     component: () => import('views/user-manage/b-client-company')
   },
   {
-    path: '/company/edit',
+    path: '/company/edit/:id',
     name: 'Company-Edit',
     meta: {
-      title: ''
+      title: '修改公司信息'
+    },
+    component: () => import('views/user-manage/b-client-company/edit')
+  },
+  {
+    path: '/company/add',
+    name: 'Company-Add',
+    meta: {
+      title: '新增B端公司'
     },
     component: () => import('views/user-manage/b-client-company/edit')
   },
