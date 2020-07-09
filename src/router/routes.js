@@ -55,7 +55,7 @@ export default [
     meta: {
       title: '订单详情',
       header: true,
-      menu: true
+      menu: false
     },
     component: () => import('@/views/achievement/order/detail')
   },

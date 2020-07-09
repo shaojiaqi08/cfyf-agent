@@ -73,6 +73,7 @@
         background-color: #fff;
         width: 1200px;
         margin: 20px auto;
+        border: 1px solid #E6E6E6;
         .header {
             font-size: 16px;
             font-weight: bold;
@@ -81,7 +82,7 @@
             line-height: 56px;
             background: #F5F5F5;
             border-radius: 4px 4px 0px 0px;
-            border: 1px solid #E6E6E6;
+            border-bottom: 1px solid #E6E6E6;
         }
         .content{
             padding: 16px;

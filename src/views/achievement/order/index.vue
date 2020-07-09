@@ -9,10 +9,34 @@
         </el-input>
       </div>
     </div>
-    <!-- <el-scrollbar style="background-color: #fff;border: 1px solid #E6E6E6;"> -->
     <div class="scrollbox">
       <div class="filter-bar">
-        <el-tag>占位置</el-tag>
+        <el-popover
+          placement="bottom"
+          width="272"
+          v-model="filterValue"
+          popper-class="filter-popover"
+          trigger="click"
+        >
+          <div class="inner-box">
+            <el-select class="block" v-model="value" placeholder="请选择">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="filter-item" :class="{ actived: filterValue }" slot="reference">
+            全部保单状态
+            <i class="iconfont iconxiao16_xiajiantou"></i>
+          </div>
+        </el-popover>
+        <!-- <div class="filter-item">
+            全部保单状态
+            <i class="iconfont iconxiao16_xiajiantou"></i>
+        </div>-->
       </div>
       <div class="data-row" ref="dataRow">
         <el-button
@@ -118,75 +142,46 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog
-      top="5vh"
-      custom-class="belong-dialog"
-      title="修改归属"
-      width="480px"
-      :close-on-click-modal="false"
-      :visible.sync="belongVisible"
-    >
-      <div class="card">
-        <el-row type="flex" justify="space-between">
-          <el-col :span="15">光大永明嘉多保重大疾病保险</el-col>
-          <el-col :span="9">
-            <el-tag type="minor">投保日期：2020-05-21</el-tag>
-          </el-col>
-        </el-row>
-        <el-row class="table">
-          <el-col :span="6">
-            投保人
-            <span>张三</span>
-          </el-col>
-          <el-col :span="6">
-            被保人
-            <span>张三</span>
-          </el-col>
-          <el-col :span="6">
-            保额
-            <span>张三</span>
-          </el-col>
-          <el-col :span="6">
-            保费
-            <span>34244.44元</span>
-          </el-col>
-        </el-row>
-        <el-divider></el-divider>
-        <el-row>
-          <el-col :span="12">
-            投保单号
-            <span>213412312313</span>
-          </el-col>
-          <el-col :span="12">
-            保单号
-            <span>23123412343452345</span>
-          </el-col>
-        </el-row>
-      </div>
-      <el-form label-width="100px">
-        <el-form-item label="归属B端公司">
-          <el-select placeholder="请选择此订单归属的B端公司"></el-select>
-        </el-form-item>
-        <el-form-item label="归属成员">
-          <el-select placeholder="请选择此订单归属的成员"></el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer">
-        <el-button @click="belongVisible = false">取消</el-button>
-        <el-button type="primary">确定</el-button>
-      </span>
-    </el-dialog>
+    <edit-modal :show.sync="belongVisible"></edit-modal>
   </div>
 </template>
 
 <script>
+import EditModal from "./modal/edit";
 // 业绩-订单
 export default {
   name: "order",
+  components: {
+    EditModal
+  },
   data() {
     return {
+      filterValue: "",
       belongVisible: false,
       belongData: {},
+      options: [
+        {
+          value: "选项1",
+          label: "黄金糕"
+        },
+        {
+          value: "选项2",
+          label: "双皮奶"
+        },
+        {
+          value: "选项3",
+          label: "蚵仔煎"
+        },
+        {
+          value: "选项4",
+          label: "龙须面"
+        },
+        {
+          value: "选项5",
+          label: "北京烤鸭"
+        }
+      ],
+      value: "",
       tableData: [
         { id: 0 },
         { id: 0 },
@@ -438,6 +433,30 @@ export default {
     .el-form-item .el-select {
       width: 100%;
     }
+  }
+}
+.filter-item {
+  display: inline-block;
+  margin-right: 16px;
+  padding: 4px 12px;
+  color: #1a1a1a;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border: 1px solid rgba(230, 230, 230, 1);
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  &.actived {
+    color: #FF9000;
+    background-color: rgba(255, 144, 0, 0.1);
+    border-color: #FF9000;
+  }
+}
+.filter-popover {
+  .inner-box {
+    padding: 16px;
   }
 }
 </style>
