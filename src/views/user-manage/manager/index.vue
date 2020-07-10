@@ -7,9 +7,9 @@
         <div class="content">
             <div class="left-scroll-wrap">
                 <el-scrollbar class="left-scroll-bar" v-loading="leftLoading">
-                    <div v-for="(item, index) in peopleData"
+                    <div v-for="(item, index) in roleData"
                          :key="index"
-                         :class="{'list-item':true, active: curSelManage && curSelManage.id === item.id}"
+                         :class="{'list-item':true, active: curSelRole && curSelRole.id === item.id}"
                          @click="ajaxDetail(item)">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                             <span>{{item.name}}</span>
@@ -19,36 +19,36 @@
                 <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </div>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-tabs v-model="curTabIdx" v-if="!contentData.isSupper">
+                <el-tabs v-model="curTabIdx" v-if="!curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
 <!--                    <el-tab-pane name="permission" label="权限"></el-tab-pane>-->
                 </el-tabs>
-                <div class="content" v-if="curSelManage && curTabIdx==='people'">
+                <div class="content" v-if="curSelRole && curTabIdx==='people'">
                     <div class="desc-wrap">
-                        {{contentData.name}}
-                        <span>{{contentData.desc}}</span>
+                        {{curSelRole.real_name}}
+                        <span>{{curSelRole.remark}}</span>
                     </div>
-                    <el-table :data="contentData.tableData" border>
-                        <el-table-column label="姓名" prop="name" align="center"></el-table-column>
-                        <el-table-column label="账号" prop="account" align="center"></el-table-column>
+                    <el-table :data="managerData" border>
+                        <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
+                        <el-table-column label="账号" prop="account_name" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                        <el-table-column label="开通日期" prop="start_date" align="center"></el-table-column>
+                        <el-table-column label="开通日期" prop="open_at" align="center"></el-table-column>
                         <el-table-column label="当前状态" prop="status" align="center" width="120">
                             <template v-slot="{row}">
                                 <el-tag>{{statusMap[row.status]}}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column label="失效日期" prop="expire_date" align="center"></el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="curSelManage.isSupper? 250 : 150" align="center">
+                        <el-table-column label="失效日期" prop="open_at" align="center"></el-table-column>
+                        <el-table-column label="操作" prop="operate" :width="curSelRole.isSupper? 250 : 150" align="center">
                             <template v-slot="{row}">
                                 <template v-if="row.status !== 'expired'">
-                                    <template v-if="curSelManage.isSupper">
-                                    <el-button type="text" @click="lostEffect(row)">使失效</el-button>
+                                    <template v-if="curSelRole.isSupper">
+                                    <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.status === 'disabled' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="resetPwd(row)">重置密码</el-button>
+                                    <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
                                     </template>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
-                                    <el-button type="text" v-if="!curSelManage.isSupper" @click="modifyPwd(row)">修改密码</el-button>
+                                    <el-button type="text" v-if="!curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
                                 </template>
                                 <template v-else>
                                     <el-button type="text">-</el-button>
@@ -57,13 +57,12 @@
                         </el-table-column>
                     </el-table>
                 </div>
-                <div class="content" v-else-if="curSelManage && curTabIdx==='permission'" style="height: calc(100vh - 150px)">
+                <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 150px)">
                     <el-scrollbar class="tree-wrap">
                         <el-tree :data="contentData.permission"
                                  show-checkbox
                                  @node-click="handleTreeNodeClick"></el-tree>
                     </el-scrollbar>
-
                 </div>
             </el-scrollbar>
         </div>
@@ -83,7 +82,9 @@
                     <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.account_name"></el-input>
                 </el-form-item>
                 <el-form-item label="管理员角色" prop="role_id">
-                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id"></el-select>
+                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id">
+                        <el-option v-for="(item, index) in roleData" :key="index" :value="item.id" :label="item.name"></el-option>
+                    </el-select>
                 </el-form-item>
                 <template v-if="editFormModel.id == undefined">
                     <el-form-item label="登录密码" prop="password">
@@ -95,9 +96,9 @@
                 </template>
             </el-form>
             <span slot="footer">
-                    <el-button @click="editDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitEdit">确认</el-button>
-                </span>
+                <el-button @click="editDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitEdit" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
         </el-dialog>
         <!--新增角色-->
         <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">
@@ -110,26 +111,26 @@
                 </el-form-item>
             </el-form>
             <span slot="footer">
-                <el-button @click="addRoleDialogVisible">取消</el-button>
-                <el-button type="primary" @click="submitAddRole">确认</el-button>
+                <el-button @click="addRoleDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitAddRole" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
         <!--修改密码-->
         <el-dialog custom-class="manager-dialog" title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">
             <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">
                 <el-form-item label="旧密码" prop="oldPassword">
-                    <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.oldPassword"></el-input>
+                    <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.password"></el-input>
                 </el-form-item>
                 <el-form-item label="新密码" prop="newPassword">
-                    <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.newPassword"></el-input>
+                    <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.new_password"></el-input>
                 </el-form-item>
                 <el-form-item label="确认新密码" prop="confirmPassword">
-                    <el-input type="password" placeholder="请再次输入新密码" v-model.trim="modPwdFormModel.confirmPassword"></el-input>
+                    <el-input type="password" placeholder="请再次输入新密码" v-model.trim="modPwdFormModel.confirm_new_password"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
                     <el-button @click="modPwdDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitModifyPwd">确认</el-button>
+                    <el-button type="primary" @click="submitModifyPwd" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
     </div>
@@ -137,6 +138,7 @@
 
 <script>
     import {createManager, editManager, getManagerList, removeEffect, updateStatus, resetPassword, updatePassword} from '@/apis/modules/user-manage' // eslint-disable-line
+    import {getRoleList, createRole} from '@/apis/modules/index'
     export default {
         name: 'manager',
         data() {
@@ -144,14 +146,12 @@
             return {
                 leftLoading: false,
                 rightLoading: false,
-                submitLoading: false, // dialog公用loading
+                submitting: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
-                peopleData: [
-                    {id: 0, name: 'admin', isSupper: false},
-                    {id: 1, name: 'superAdmin', isSupper: true}
-                ],
                 contentData: {},
-                curSelManage: null,
+                curSelRole: null,
+                roleData: [],
+                managerData: [],
                 curTabIdx: 'people',
                 editDialogVisible: false,
                 editFormModel: {
@@ -184,14 +184,14 @@
                 },
                 modPwdDialogVisible: false,
                 modPwdFormModel: {
-                    oldPassword: '',
-                    newPassword: '',
-                    confirmPassword: ''
+                    password: '',
+                    new_password: '',
+                    confirm_new_password: ''
                 },
                 modPwdRules: {
-                    oldPassword: [baseValiObj, {validator: this.pwdValidator}],
-                    newPassword: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirmPassword: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
+                    password: [baseValiObj, {validator: this.pwdValidator}],
+                    new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
+                    confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
                 statusMap: Object.freeze({
                     disabled: '禁用',
@@ -201,14 +201,14 @@
             }
         },
         created() {
-            this.ajaxPeopleList()
+            this.ajaxRoleList()
         },
         methods: {
             handleTreeNodeClick() {
 
             },
             // 使失效
-            lostEffect() {
+            lostEffect(id) {
                 const h = this.$createElement
                 this.$confirm(
                     h('div', [
@@ -231,9 +231,13 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-
-                }).catch(() => {    })
+                    removeEffect({data: {id}}).then(() => {
+                        this.$message.success('操作成功!')
+                        this.ajaxDetail(this.curSelRole)
+                    })
+                }).catch(() => {})
             },
+            // 更改状态
             triggerStatus(row) {
                 const {id, status} = row
                 const isDisabled = status === 'enabled'
@@ -262,15 +266,14 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-                    (isDisabled ? this.disabled : this.enabled)(id)
+                    updateStatus({data: {id, account_status: isDisabled ? 'disable' : 'enable'}}).then(() => {
+                        this.$message.success(`${isDisabled ? '禁用' : '启用'}成功!`)
+                        this.ajaxDetail(this.curSelRole)
+                    })
                 }).catch(() => {})
             },
-            // 启用
-            enabled() {},
-            // 禁用
-            disabled() {},
             // 重置密码
-            resetPwd() {
+            resetPwd(id) {
                 const h = this.$createElement
                 this.$confirm(
                     h('div', [
@@ -291,12 +294,19 @@
                         confirmButtonText: '重置'
                     }
                 ).then(() => {
-
-                }).catch(() => {    })
+                    resetPassword({data:{id}}).then(() => {
+                        this.$confirm('重置密码成功!', '提示')
+                    })
+                }).catch(() => {})
             },
             edit(row) {
                 if (row) {
-                    this.editFormModel.id = row.id
+                    const target = this.editFormModel
+                    target.id = row.id
+                    target.email = row.email
+                    target.real_name = row.real_name
+                    target.account_name = row.account_name
+                    target.role_id = this.curSelRole.id
                 }
                 this.editDialogVisible = true
             },
@@ -304,7 +314,21 @@
             submitEdit() {
                 this.$refs.editForm.validate(flag => {
                     if (flag) {
-                        console.log(123)
+                        this.submitting = true
+                        const {editFormModel, curSelRole} = this
+                        const data = {...editFormModel, role_id: curSelRole.id}
+                        let handle = createManager
+                        if (data.id !== null) { // 编辑移除多余参数
+                            delete data.password
+                            delete data.confirm_password
+                            handle = createManager
+                        }
+                        handle({data}).then(() => {
+                            this.$message.success('修改成功!')
+                            this.editDialogVisible = false
+                        }).finally(() => {
+                            this.submitting = false
+                        })
                     }
                 })
             },
@@ -312,7 +336,13 @@
             submitAddRole() {
                 this.$refs.addRoleForm.validate(flag => {
                     if (flag) {
-                        console.log(123)
+                        this.submitting = true
+                        createRole({data: this.addRoleFormModel}).then(() => {
+                            this.$message.success('新增角色成功!')
+                            this.addRoleDialogVisible = false
+                        }).finally(() => {
+                            this.submitting = false
+                        })
                     }
                 })
             },
@@ -323,82 +353,37 @@
             submitModifyPwd() {
                 this.$refs.modPwdForm.validate(flag => {
                     if (flag) {
-                        console.log(123)
+                        this.submitting = true
+                        const {targetRow, modPwdFormModel} = this
+                        updatePassword({data: {...modPwdFormModel, id: targetRow.id}}).then(() => {
+                            this.$message.success('修改密码成功!')
+                            this.modPwdDialogVisible = false
+                        }).finally(() => {
+                            this.submitting = false
+                        })
                     }
                 })
             },
-            ajaxPeopleList() {
-                this.ajaxDetail(this.peopleData[0])
+            ajaxRoleList() {
+                this.leftLoading = true
+                getRoleList().then(res => {
+                    this.roleData = res
+                    if (res.length > 0) {
+                        this.ajaxDetail(res[0])
+                    }
+
+                }).finally(() => {
+                    this.leftLoading = false
+                })
             },
             ajaxDetail(obj) {
-                this.curTabIdx = 'people'
-                this.curSelManage = obj
-                this.contentData = {
-                    name: obj.id ? '管理员' : '超级管理员',
-                    desc: '角色描述，展示一行，超长的情况下就使用点点点',
-                    tableData: [
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'enabled',
-                            expire_date: '11'
-                        },
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'disabled',
-                            expire_date: '11'
-                        },
-                        {
-                            name: '11',
-                            account: '11',
-                            mobile: '11',
-                            start_date: '11',
-                            status: 'expired',
-                            expire_date: '11'
-                        }
-                    ],
-                    permission: [{
-                        label: '一级 1',
-                        children: [{
-                            label: '二级 1-1',
-                            children: [{
-                                label: '三级 1-1-1'
-                            }]
-                        }]
-                    }, {
-                        label: '一级 2',
-                        children: [{
-                            label: '二级 2-1',
-                            children: [{
-                                label: '三级 2-1-1'
-                            }]
-                        }, {
-                            label: '二级 2-2',
-                            children: [{
-                                label: '三级 2-2-1'
-                            }]
-                        }]
-                    }, {
-                        label: '一级 3',
-                        children: [{
-                            label: '二级 3-1',
-                            children: [{
-                                label: '三级 3-1-1'
-                            }]
-                        }, {
-                            label: '二级 3-2',
-                            children: [{
-                                label: '三级 3-2-1'
-                            }]
-                        }]
-                    }],
-                    isSupper: !!obj.id
-                }
+                this.rightLoading = true
+                this.curSelRole = obj
+                getManagerList({params: {role_id: obj.id}}).then(res => {
+                    this.managerData = res
+                }).finally(() => {
+                    this.rightLoading = false
+                })
             },
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
                 const {newPassword, confirmPassword} = this.modPwdFormModel

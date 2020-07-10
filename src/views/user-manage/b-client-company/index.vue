@@ -2,7 +2,7 @@
     <div class="manager-container">
         <div class="header">
             B端公司
-            <el-button type="primary"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
+            <el-button type="primary" @click="createCompany"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
         </div>
         <div class="content">
             <div class="left-scroll-wrap">
@@ -20,7 +20,7 @@
                     </div>
                 </el-scrollbar>
             </div>
-            <div class="right-scroll-bar" v-loading="rightLoading">
+            <div class="right-scroll-bar" v-loading="rightLoading" v-if="curSelCompany">
                 <el-input class="search-input"
                           placeholder="搜索成员姓名或账号"
                           prefix-icon="el-icon-search"
@@ -33,7 +33,7 @@
                             <div class="card">
                                 <div class="header">
                                     企业信息
-                                    <el-button type="primary"><i class="iconfont iconxiao16_bianji"></i>修改信息</el-button>
+                                    <el-button type="primary" @click="editCompany"><i class="iconfont iconxiao16_bianji"></i>修改信息</el-button>
                                 </div>
                                 <div class="item">主体类型<span>公司</span></div>
                                 <div class="item">渠道<span>公司</span></div>
@@ -166,7 +166,7 @@
                 submitLoading: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
                 searchInput: '',
-                componentData: [
+                companyData: [
                     {
                         name: '11',
                         mobile: '',
@@ -223,6 +223,13 @@
             }
         },
         methods: {
+            createCompany() {
+                window.open(this.$route.fullPath)
+            },
+            editCompany() {
+                const {id} = this.curSelCompany
+                window.open(`${this.$route.fullPath}/${id}`)
+            },
             handleTreeNodeClick() {
             },
             // 解除入驻
@@ -315,13 +322,13 @@
                 const {searchInput: name, curTabIdx} = this
                 this.leftLoading = true
                 // 清空先关数据
-                this.componentData = []
+                this.companyData = []
                 this.peopleData = []
                 this.baseInfoData = null
                 getCompanyList({params: {name}}).then(res => {
                     if (res.data.length > 0) {
-                        this.componentData = res.data
-                        this.curSelCompany = this.componentData[0]
+                        this.companyData = res.data
+                        this.curSelCompany = this.companyData[0]
                         this[`${curTabIdx}TabHandle`]()
                     }
                 }).finally(() => {
@@ -336,6 +343,7 @@
                 getPeopleList({params}).then(res => {
                     this.peopleData = res.data
                 }).finally(() => {
+                    debugger
                     this.rightLoading = false
                 })
             },
