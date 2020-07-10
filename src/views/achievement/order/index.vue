@@ -35,8 +35,12 @@
           </div>
         </el-popover>
       </div> -->
-      <filter-shell label="全部保单状态" v-model="value">
-        <el-select class="block" v-model="value" placeholder="请选择">
+      <filter-shell v-model="value">
+        <el-select class="block"
+                   v-model="value"
+                   multiple
+                   clearable
+                   placeholder="请选择">
             <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -44,6 +48,40 @@
                 :value="item.value"
             ></el-option>
         </el-select>
+        <template v-slot:label>
+            <span>
+                {{ hasValue(value) ? value.map(i => options.find(y => y.value === i).label).join(',') : '全部保单状态' }}
+            </span>
+        </template>
+        <template v-slot:close>
+            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+               v-if="hasValue(value)"
+               @click="clearValue($event, 'value')"></i>
+        </template>
+      </filter-shell>
+      <filter-shell v-model="value1">
+        <el-select class="block"
+                   v-model="value1"
+                   clearable
+                   placeholder="请选择"
+                   @change="closePopover">
+            <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            ></el-option>
+        </el-select>
+        <template v-slot:label>
+            <span>
+                {{ hasValue(value1) ? options.find(i => i.value === value1).label : '全部保单状态' }}
+            </span>
+        </template>
+        <template v-slot:close>
+            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+               v-if="hasValue(value1)"
+               @click="clearValue($event, 'value1')"></i>
+        </template>
       </filter-shell>
       <div class="data-row" ref="dataRow">
         <el-button
@@ -156,7 +194,7 @@
 <script>
 import EditModal from "./modal/edit";
 import { getRegion } from '@/apis/modules/index'
-import FilterShell from './filter-shell'
+import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
 // 业绩-订单
 export default {
   name: "order",
@@ -191,7 +229,8 @@ export default {
           label: "北京烤鸭"
         }
       ],
-      value: "",
+      value: [],
+      value1: '',
       tableData: [
         { id: 0 },
         { id: 0 },
@@ -223,6 +262,9 @@ export default {
     };
   },
   methods: {
+      closePopover,
+      hasValue,
+      clearValue,
     // dir 0: 左 1: 右
     scrollTo(dir) {
       const { scrollTranslateX: oldTranX } = this;
