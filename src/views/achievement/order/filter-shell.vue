@@ -2,7 +2,7 @@
   <div class="filter-bar">
     <el-popover
       placement="bottom"
-      width="272"
+      :width="width"
       v-model="popoverShow"
       popper-class="filter-popover"
       trigger="click"
@@ -10,58 +10,88 @@
       <div class="inner-box">
         <slot></slot>
       </div>
-      <div class="filter-item" :class="{ actived: popoverShow }" slot="reference">
-        {{ label }}
+      <div class="filter-item" :class="{ actived: popoverShow || hasValue }" slot="reference">
+        <slot name="label"></slot>
         <i class="iconfont iconxiao16_xiajiantou"></i>
-        <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
+        <slot name="close"></slot>
       </div>
     </el-popover>
   </div>
 </template>
 
 <script>
+let self = null
+export function hasValue(value) {
+  if (Array.isArray(value)) {
+      if (value.length) {
+          return true
+      }
+      return false
+  }
+  if (value) {
+      return true
+  }
+  return false
+}
+
+export function emptyValue(value) {
+  if (Array.isArray(value)) {
+    return []
+  }
+  return ''
+}
+
+export function closePopover() {
+  self.popoverShow = false
+}
+
+export function clearValue(e, key) {
+  if (e.target.classList.contains('filter-clear')) {
+      e.preventDefault()
+      this[key] = emptyValue(this.key)
+  }
+}
+
 export default {
   props: {
-    label: {
-      type: String,
-      default: '-'
-    },
     value: {
       type: [Array, String, Object]
+    },
+    width: {
+      type: Number,
+      default: 272
     }
   },
   data() {
     return {
-      popoverShow: false,
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
-      // value: ""
+      popoverShow: false
     }
+  },
+  computed: {
+    // TODO
+    hasValue() {
+      if (Array.isArray(this.value)) {
+          if (this.value.length) {
+              return true
+          }
+          return false
+      }
+      if (this.value) {
+          return true
+      }
+      return false
+    }
+  },
+  mounted() {
+    self = this
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.filter-bar {
+  display: inline-block;
+}
 .filter-item {
   display: inline-block;
   position: relative;
@@ -92,6 +122,8 @@ export default {
     width: 16px;
     height: 16px;
     color: #FF5D5D;
+    background-color: #fff;
+    border-radius: 50%;
     cursor: pointer;
   }
 }
