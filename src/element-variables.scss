@@ -43,6 +43,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   min-width: 72px;
   padding: 0 12px;
   box-sizing: border-box;
+  white-space: nowrap;
+  &>span{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
   &>i[class*='el-icon'] {
     font-size: 16px;
     vertical-align: middle;
@@ -120,17 +126,20 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 /* 选项卡(tabs)*/
 .el-tabs{
+  .el-tabs__active-bar{
+    border-radius: 1px;
+  }
   .el-tabs__item{
-    height: 38px;
-    line-height: 38px;
+    height: 32px;
+    line-height: 24px;
     font-size: 16px;
   }
   .el-tabs__nav-wrap::after{
     display: none;
   }
   &[size='small'] .el-tabs__item{
-    height: 28px;
-    line-height: 28px;
+    height: 24px;
+    line-height: 20;
     font-size: 14px;
   }
 }

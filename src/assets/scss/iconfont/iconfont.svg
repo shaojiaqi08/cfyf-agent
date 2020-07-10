@@ -20,6 +20,18 @@ Created by iconfont
   />
     <missing-glyph />
     
+    <glyph glyph-name="xiao16_dachengtiaojian" unicode="&#58911;" d="M832 768a64 64 0 0 0 64-64v-640a64 64 0 0 0-64-64H192a64 64 0 0 0-64 64V704a64 64 0 0 0 64 64h640z m-64-128H256v-512h512V640z m-128-128v-256H384V512h256z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="xiao16_tianjiashijian" unicode="&#58912;" d="M512 832a448 448 0 1 0 0-896A448 448 0 0 0 512 832z m0-128a320 320 0 1 1 0-640A320 320 0 0 1 512 704z m64-64v-192h128v-128H448V640h128z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="xiao16_feishuaijisuanfangfa" unicode="&#58913;" d="M832 768a64 64 0 0 0 64-64v-640a64 64 0 0 0-64-64H192a64 64 0 0 0-64 64V704a64 64 0 0 0 64 64h640z m-64-128H256v-512h512V640zM448 320v-128H320V320h128z m256 0v-128H576V320h128zM448 576v-128H320V576h128z m256 0v-128H576V576h128z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="xiao16_shengxiaoriqi" unicode="&#58914;" d="M960 64a64 64 0 0 0-64-64H128a64 64 0 0 0-64 64V704a64 64 0 0 0 64 64h768a64 64 0 0 0 64-64v-640z m-128 384H192v-320h640V448zM384 384v-128H256V384h128z m192 0v-128H448V384h128z m192 0v-128h-128V384h128z m64 256H192v-64h640V640z"  horiz-adv-x="1024" />
+
+    
     <glyph glyph-name="xiao16_jianhao" unicode="&#58896;" d="M832 448v-128H192V448z"  horiz-adv-x="1024" />
 
     

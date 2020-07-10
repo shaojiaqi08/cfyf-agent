@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15834676",
+      "name": "小(16)_达成条件",
+      "font_class": "xiao16_dachengtiaojian",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "15834677",
+      "name": "小(16)_添加时间",
+      "font_class": "xiao16_tianjiashijian",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "15834678",
+      "name": "小(16)_费率计算方法",
+      "font_class": "xiao16_feishuaijisuanfangfa",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "15834679",
+      "name": "小(16)_生效日期",
+      "font_class": "xiao16_shengxiaoriqi",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
       "icon_id": "15768262",
       "name": "小(16)_减号",
       "font_class": "xiao16_jianhao",
