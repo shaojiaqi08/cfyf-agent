@@ -1,5 +1,6 @@
 <template>
     <el-dialog custom-class="rate-setting-dialog"
+               v-loading="loading"
                top="4vh"
                title="设置服务费率"
                :visible.sync="visible"
@@ -18,10 +19,8 @@
                     <el-radio :label="5">第3年</el-radio>
                 </el-radio-group>
             </el-form-item>
-            <el-form-item label="达成条件">
-                <div>
-                    续保率 ≥ <el-input-number placeholder="请输入数值" controls-position="right" class="mr4 ml4"></el-input-number> %
-                </div>
+            <el-form-item label="达成条件" class="input-number-wrap">
+                <div>续保率 ≥ <el-input-number placeholder="请输入数值" :controls="false" class="mr4 ml4"></el-input-number> %</div>
             </el-form-item>
             <el-form-item label="生效日期范围">
                 <el-date-picker type="daterange"
@@ -52,9 +51,9 @@
                     </el-radio>
                 </el-radio-group>
             </el-form-item>
-            <h3>服务费率</h3>
-            <div class="rate-wrap flex flex-wrap">
-                <div class="item">
+            <h3 style="margin-bottom: 0">服务费率</h3>
+            <el-form-item label-width="0px" class="rate-wrap flex flex-wrap">
+                <div class="item" v-for="(item, index) in formModel.rate" :key="index">
                     <div class="head flex-between pl16 pr16">
                         <span>
                             服务费率
@@ -63,35 +62,50 @@
                                 复制
                             </span>
                         </span>
-                        <i class="iconfont iconxiao16_yuanxingchahao"></i>
+                        <i class="iconfont iconxiao16_yuanxingchahao" @click="formModel.rate.splice(index, 1)"></i>
                     </div>
                     <div class="content flex-item pt20 pl16 pr16">
-                        <el-form-item label="保障期限">
-                            <el-select size="small" placeholder="请选择保障期限" value="aa"></el-select>
+                        <el-form-item label="保障期限"
+                                      :prop="'rate.'+ index + '.payment_period_value'"
+                                      :rules="baseValiObj">
+                            <el-select size="small" placeholder="请选择保障期限" v-model="item.payment_period_value"></el-select>
                         </el-form-item>
-                        <el-form-item label="是否含身故">
+                        <el-form-item label="是否含身故"
+                                      v-model="item.includeDie"
+                                      :prop="'rate.'+ index + '.includeDie'"
+                                      :rules="baseValiObj">
                             <el-radio size="small" label="1">是</el-radio>
                             <el-radio size="small" label="0">否</el-radio>
                         </el-form-item>
-                        <el-form-item label="缴费期限">
-                            <el-select size="small" placeholder="请选择缴费期限" value="aa"></el-select>
+                        <el-form-item label="缴费期限"
+                                      :prop="'rate.'+ index + '.guarantee_period_values'"
+                                      :rules="baseValiObj">
+                            <el-select size="small" v-model="item.guarantee_period_values" placeholder="请选择缴费期限" multiple></el-select>
                         </el-form-item>
-                        <el-form-item label="基础服务费率" class="input-number-item">
-                            <el-input-number size="small" placeholder="请输入数值" value="aa" controls-position="right"></el-input-number>%
+                        <el-form-item label="基础服务费率"
+                                      class="input-number-item"
+                                      :min="0"
+                                      :prop="'rate.'+ index + '.baseRate'"
+                                      :rules="baseValiObj">
+                            <el-input-number size="small" placeholder="请输入数值" v-model="item.baseRate" :controls="false"></el-input-number>%
                         </el-form-item>
-                        <el-form-item label="额外奖励" class="input-number-item">
-                            <el-input-number size="small" placeholder="请输入数值" value="aa" controls-position="right"></el-input-number>%
+                        <el-form-item label="额外奖励"
+                                      :min="0"
+                                      class="input-number-item"
+                                      :prop="'rate.'+ index + '.extraRate'"
+                                      :rules="baseValiObj">
+                            <el-input-number size="small" placeholder="请输入数值" v-model="item.extraRate" :controls="false"></el-input-number>%
                         </el-form-item>
                     </div>
                 </div>
                 <div class="item add-block">
-                    <el-button type="primary" plain><i class="iconfont iconxiao16_jiahao mr4"></i>添加费率</el-button>
+                    <el-button type="primary" plain @click="addRate"><i class="iconfont iconxiao16_jiahao mr4"></i>添加费率</el-button>
                 </div>
-            </div>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="footer">
             <el-button @click="$emit('update:visible', false)">取消</el-button>
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="submit">保存</el-button>
         </span>
     </el-dialog>
 </template>
@@ -104,15 +118,57 @@
                 default: false
             },
             loading: {
-
+                type: Boolean,
+                default: false
+            },
+            submitting: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
+            const baseValiObj = {required: true, message: '此项不可为空'}
             return {
+                baseValiObj,
                 formModel: {
-
+                    rate: [
+                        {
+                            payment_period_value: '',
+                            guarantee_period_values: [],
+                            includeDie: '',
+                            baseRate: undefined,
+                            extraRate: undefined
+                        },
+                        {
+                            payment_period_value: '',
+                            guarantee_period_values: [],
+                            inculudeDie: '',
+                            baseRate: undefined,
+                            extraRate: undefined
+                        }
+                    ]
                 },
                 rules: {}
+            }
+        },
+        methods: {
+            addRate(obj = {}) {
+                const target = this.formModel.rate
+                target.push({
+                    payment_period_value: '',
+                    guarantee_period_values: [],
+                    includeDie: '',
+                    baseRate: undefined,
+                    extraRate: undefined,
+                    ...obj
+                })
+            },
+            submit() {
+                this.$refs.form.validate(flag => {
+                    if (flag) {
+                        console.log(flag)
+                    }
+                })
             }
         }
     }
@@ -120,8 +176,16 @@
 
 <style scoped lang="scss">
     ::v-deep .rate-setting-dialog{
+        .input-number-wrap .el-input__inner{
+            text-align: left;
+        }
         .rate-wrap{
             align-items: flex-start;
+            &>.el-form-item__content{
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+            }
             .item {
                 display: flex;
                 flex-direction: column;
@@ -171,6 +235,9 @@
                     .el-input-number{
                         flex: 1;
                         margin-right: 4px;
+                        .el-input__inner{
+                            text-align: left;
+                        }
                     }
                 }
             }
