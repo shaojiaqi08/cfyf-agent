@@ -21,6 +21,9 @@
     </div>
 </template>
 <script>
+    /**
+     *  侧边列表筛选器
+     * */
     export default {
         name: 'side-filter-list',
         model: {

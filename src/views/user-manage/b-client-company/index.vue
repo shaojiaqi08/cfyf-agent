@@ -434,8 +434,7 @@
                 }
             },
             debounceAjaxPeopleList() {
-                const func = debounce(this.ajaxPeopleList, 300)
-                func()
+                const func = debounce(this.ajaxPeopleList, 300, true)
                 this.debounceAjaxPeopleList = func
             },
             comparePwdValitator(rule, value, callback) { // eslint-disable-line

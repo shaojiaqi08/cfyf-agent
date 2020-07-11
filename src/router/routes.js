@@ -70,6 +70,16 @@ export default [
     component: () => import('@/views/good-manage/rate')
   },
   {
+    path: '/shelves',
+    name: 'Shelves',
+    meta: {
+      title: '商品上下架',
+      header: true,
+      menu: true
+    },
+    component: () => import('@/views/good-manage/shelves')
+  },
+  {
     path: '/company',
     name: 'Company',
     meta: {

@@ -112,7 +112,7 @@
     </div>
 </template>
 <script>
-    import SideFilterList from '../component/side-filter-list'
+    import SideFilterList from '@/components/side-filter-list'
     export default {
         name: 'server-rate',
         components: {SideFilterList},
