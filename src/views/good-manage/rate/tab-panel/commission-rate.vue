@@ -9,15 +9,20 @@
             v-model="selVal"
             @change="handleSelCompany"
         ></side-filter-list>
-        <side-filter-list
-            v-loading="productLoading"
-            :list-data="positionList"
-            :showFilter="false"
-            label-key="label"
-            value-key="value"
-            v-model="selVal"
-            @change="handleSelCompany"
-        ></side-filter-list>
+        <el-scrollbar class="pos-filter-list">
+            <div v-for="(item, index) in positionList" :key="index">
+                <div class="group-item">
+                    <el-divider v-if="index !== 0"/>
+                    {{item.label}}
+                </div>
+                <div v-for="(item, index) in item.children"
+                     :key="index"
+                     @click="selPosVal=item.value"
+                     :class="{'list-item': true, active: selPosVal=== item.value}">
+                        {{item.label}}
+                </div>
+            </div>
+        </el-scrollbar>
         <side-filter-list
             v-loading="positionLoading"
             :list-data="productList"
@@ -134,7 +139,21 @@
                     {label: 'xxxx无限公司', value: 'bb'},
                     {label: 'xxxsx上市公司', value: 'cc'},
                 ],
-                positionList: [],
+                positionList: [
+                    {
+                        label: '一级职位',
+                        children: [
+                            {label: '公司老大', value: 'aa'},
+                            {label: '财务老大', value: 'bb'},
+                        ]
+                    }, {
+                        label: '二级职位',
+                        children: [
+                            {label: '程序员', value: 'cc'}
+                        ]
+                    }
+
+                ],
                 productList: [
                     {label: '产品111产品111产品111产品111产品111产品111', value: 'aa', color: '#339AFF', tip_text: '未设置'},
                     {label: '产品222', value: 'bb', color: '#40D659', tip_text: '未设置'},
@@ -180,6 +199,41 @@
         justify-content: stretch;
         .extra-filter-bar{
             padding-top: 16px;
+        }
+        .pos-filter-list{
+            width: 240px;
+            border-right: 1px solid #e6e6e6;
+            .group-item, .list-item{
+                height: 44px;
+                line-height: 44px;
+                background: #fff;
+                padding: 0 16px;
+                color:#999;
+                box-sizing: border-box;
+                font-size: 14px;
+            }
+            .group-item{
+               .el-divider{
+                   margin: 0;
+               }
+            }
+            .list-item {
+                color:#4d4d4d;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                &.active, &:hover{
+                    border-top: 1px solid #e6e6e6;
+                    border-bottom: 1px solid #e6e6e6;
+                }
+                &.active{
+                    background: #f5f5f5;
+                }
+                &:hover{
+                    background: #e6e6e6;
+                }
+            }
         }
         .product-list-item{
             width: 100%;
@@ -266,6 +320,18 @@
         }
         .side-filter-container{
             border-right: 1px solid #e6e6e6;
+            &.pos-side-filter-list .pos-group-block{
+                background: #fff;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 44px;
+                line-height: 44px;
+                text-indent: 16px;
+                color: #999;
+                border-top: 1px solid #e6e6e6;
+            }
         }
     }
 </style>

@@ -19,8 +19,43 @@
                 @change="handleSelProduct"
         >
             <template slot="extraFilter">
-                <div class="extra-filter-bar">
-                    <el-tag>占位置</el-tag>
+                <div class="extra-filter-bar flex flex-between">
+                    <filter-shell v-model="productFilter.status">
+                        <el-select v-model="productFilter.status"
+                                   clearable
+                                   placeholder="请选择"
+                                   @change="closePopover">
+                            <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                        <template v-slot:label>
+                            <span>
+                                {{ hasValue(productFilter.status) ? statusOptions.find(i => i.value === productFilter.status).label : '状态' }}
+                            </span>
+                        </template>
+                        <template v-slot:close>
+                            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                               v-if="hasValue(productFilter.status)"
+                               @click.stop="productFilter.status = ''"></i>
+                        </template>
+                    </filter-shell>
+                    <filter-shell v-model="productFilter.insType">
+                        <el-select v-model="productFilter.insType"
+                                   clearable
+                                   placeholder="请选择"
+                                   @change="closePopover">
+                            <el-option v-for="(item, index) in insTypeOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+                        </el-select>
+                        <template v-slot:label>
+                            <span>
+                                {{ hasValue(productFilter.insType) ? insTypeOptions.find(i => i.value === productFilter.insType).label : '险种' }}
+                            </span>
+                        </template>
+                        <template v-slot:close>
+                            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                               v-if="hasValue(productFilter.insType)"
+                               @click.stop="productFilter.insType = ''"></i>
+                        </template>
+                    </filter-shell>
                 </div>
             </template>
             <template v-slot:list="{row}">
@@ -113,9 +148,10 @@
 </template>
 <script>
     import SideFilterList from '@/components/side-filter-list'
+    import FilterShell, { clearValue, hasValue, closePopover } from '../component/filter-shell'
     export default {
         name: 'server-rate',
-        components: {SideFilterList},
+        components: {SideFilterList, FilterShell},
         data() {
            return {
                dialogVisible: false,
@@ -163,7 +199,18 @@
                selVal: 'aa', // 公司选中值
                selProductVal: 'aa', // 产品选中值
                extra: '',
-               productFilter: {},
+               productFilter: {
+                   status: '',
+                   insType: ''
+               },
+               statusOptions: [
+                   {label: '状态1', value: '0'},
+                   {label: '状态2', value: '1'}
+               ],
+               insTypeOptions: [
+                   {label: '险种1', value: '0'},
+                   {label: '险种2', value: '1'}
+               ],
                tabIdx: '1'
            }
         },
@@ -178,6 +225,9 @@
             }
         },
         methods: {
+            clearValue,
+            hasValue,
+            closePopover,
             handleSelCompany() {
             },
             handleSelProduct() {
@@ -198,6 +248,11 @@
         justify-content: stretch;
         .extra-filter-bar{
             padding-top: 16px;
+            ::v-deep .filter-bar .filter-item{
+                width: 96px;
+                text-align: center;
+                margin-right: 0;
+            }
         }
         .product-list-item{
             width: 100%;

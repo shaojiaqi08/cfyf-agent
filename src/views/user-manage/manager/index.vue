@@ -19,7 +19,7 @@
                 <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </div>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-tabs v-model="curTabIdx" v-if="!curSelRole.isSupper">
+                <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
 <!--                    <el-tab-pane name="permission" label="权限"></el-tab-pane>-->
                 </el-tabs>
@@ -39,16 +39,16 @@
                             </template>
                         </el-table-column>
                         <el-table-column label="失效日期" prop="open_at" align="center"></el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="curSelRole.isSupper? 250 : 150" align="center">
+                        <el-table-column label="操作" prop="operate" :width="(curSelRole && curSelRole.isSupper)? 250 : 150" align="center">
                             <template v-slot="{row}">
                                 <template v-if="row.status !== 'expired'">
-                                    <template v-if="curSelRole.isSupper">
+                                    <template v-if="curSelRole && curSelRole.isSupper">
                                     <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.status === 'disabled' ? '启用' : '禁用'}}</el-button>
                                     <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
                                     </template>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
-                                    <el-button type="text" v-if="!curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
+                                    <el-button type="text" v-if="curSelRole && !curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
                                 </template>
                                 <template v-else>
                                     <el-button type="text">-</el-button>
@@ -429,6 +429,8 @@
 <style scoped lang="scss">
     .manager-container {
         padding: 20px 20px 0 20px;
+        display: flex;
+        flex-direction: column;
         & >.header {
             font-size: 16px;
             font-weight: bold;
@@ -445,8 +447,8 @@
             }
         }
         & >.content{
+            flex: 1;
             display: flex;
-            height: calc(100vh - 119px);
             background-color: #fff;
             box-sizing: border-box;
             border: 1px solid #e6e6e6;

@@ -1,5 +1,5 @@
 <template>
-    <div class="manager-container">
+    <div class="company-container">
         <div class="header">
             B端公司
             <el-button type="primary" @click="createCompany"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
@@ -73,14 +73,73 @@
                                    </div>
                                </el-scrollbar>
                             </div>
-                            <el-scrollbar class="right-wrap">
+                            <div class="right-wrap">
                                 <div v-if="curSelManage && curSelManage.isSupper" class="admin-filter-bar">
                                     <div>
-                                        <el-tag>占位置</el-tag>
+                                        <filter-shell v-model="peopleSearchModel.position_id">
+                                            <el-select v-model="peopleSearchModel.position_id"
+                                                       clearable
+                                                       placeholder="请选择"
+                                                       @change="closePopover">
+                                                <el-option v-for="(item, index) in positionOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+                                            </el-select>
+                                            <template v-slot:label>
+                                                <span>
+                                                    {{ hasValue(peopleSearchModel.position_id) ?
+                                                        positionOptions.find(i => i.value === peopleSearchModel.position_id).label :
+                                                    '全部职位' }}
+                                                </span>
+                                            </template>
+                                            <template v-slot:close>
+                                                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                                                   v-if="hasValue(peopleSearchModel.position_id)"
+                                                   @click.stop="peopleSearchModel.position_id = ''"></i>
+                                            </template>
+                                        </filter-shell>
+                                        <filter-shell v-model="peopleSearchModel.team_id">
+                                            <el-select v-model="peopleSearchModel.team_id"
+                                                       clearable
+                                                       placeholder="请选择"
+                                                       @change="closePopover">
+                                                <el-option v-for="(item, index) in teamOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+                                            </el-select>
+                                            <template v-slot:label>
+                                                <span>
+                                                    {{ hasValue(peopleSearchModel.team_id) ?
+                                                        teamOptions.find(i => i.value === peopleSearchModel.team_id).label :
+                                                    '全部所属团队' }}
+                                                </span>
+                                            </template>
+                                            <template v-slot:close>
+                                                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                                                   v-if="hasValue(peopleSearchModel.team_id)"
+                                                   @click.stop="peopleSearchModel.team_id = ''"></i>
+                                            </template>
+                                        </filter-shell>
+                                        <filter-shell v-model="peopleSearchModel.account_status">
+                                            <el-select v-model="peopleSearchModel.account_status"
+                                                       clearable
+                                                       placeholder="请选择"
+                                                       @change="closePopover">
+                                                <el-option v-for="(item, index) in statusOptions" :key="index" :label="item.label" :value="item.value"></el-option>
+                                            </el-select>
+                                            <template v-slot:label>
+                                                <span>
+                                                    {{ hasValue(peopleSearchModel.account_status) ?
+                                                        statusOptions.find(i => i.value === peopleSearchModel.account_status).label :
+                                                    '全部状态' }}
+                                                </span>
+                                            </template>
+                                            <template v-slot:close>
+                                                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                                                   v-if="hasValue(peopleSearchModel.account_status)"
+                                                   @click.stop="peopleSearchModel.account_status = ''"></i>
+                                            </template>
+                                        </filter-shell>
                                     </div>
-                                    <el-button>导出数据</el-button>
+                                    <el-button type="primary">导出数据</el-button>
                                 </div>
-                                <el-table :data="contentData.tableData" border>
+                                <el-table :data="contentData.tableData" border max-height="calc(100vh - 240px)">
                                     <el-table-column label="姓名" prop="name" align="center"></el-table-column>
                                     <el-table-column label="账号" prop="account" align="center"></el-table-column>
                                     <el-table-column label="管理员角色" prop="account" align="center" v-if="curSelManage && curSelManage.isSupper"></el-table-column>
@@ -100,7 +159,7 @@
                                         </template>
                                     </el-table-column>
                                 </el-table>
-                            </el-scrollbar>
+                            </div>
                         </div>
                     </el-tab-pane>
                     <!--权限需求未明确,先隐藏-->
@@ -152,8 +211,13 @@
 <script>
     import {getCompanyDetail, getCompanyList, getPeopleList} from "../../../apis/modules/user-manage";
     import {debounce} from '@/utils'
+    import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
+
     export default {
         name: 'manager',
+        components: {
+            FilterShell
+        },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             const roleData = [
@@ -210,7 +274,21 @@
                     disabled: '禁用',
                     enabled: '有效',
                     expired: '失效'
-                })
+                }),
+                positionOptions: [
+                    {label: '职位1', value: '1'},
+                    {label: '职位2', value: '2'},
+                    {label: '职位3', value: '3'}
+                ],
+                teamOptions: [
+                    {label: '团队1', value: '1'},
+                    {label: '团队2', value: '2'},
+                    {label: '团队3', value: '3'},
+                ],
+                statusOptions: [
+                    {label: '在职', value: '1'},
+                    {label: '离职', value: '2'},
+                ]
             }
         },
         created() {
@@ -223,6 +301,9 @@
             }
         },
         methods: {
+            closePopover,
+            hasValue,
+            clearValue,
             createCompany() {
                 window.open(this.$route.fullPath)
             },
@@ -335,6 +416,11 @@
                     this.leftLoading = false
                 })
             },
+            // 延迟&&防抖加载数据
+            debounceAjaxTableData() {
+                const func = debounce.call(this, this.ajaxPeopleList(), 500, true)
+                this.debounceAjaxTableData = func
+            },
             ajaxPeopleList(obj) { // eslint-disable-line
                 const {peopleSearchModel, curSelCompany} = this
                 this.peopleData = []
@@ -352,72 +438,6 @@
                 getCompanyDetail({params: {id: this.curSelCompany.id}}).then(res => {
                     this.baseInfoData = res
                 })
-                // this.contentData = {
-                //     name: obj.id ? '管理员' : '超级管理员',
-                //     desc: '角色描述，展示一行，超长的情况下就使用点点点',
-                //     tableData: [
-                //         {
-                //             name: '11',
-                //             account: '11',
-                //             mobile: '11',
-                //             start_date: '11',
-                //             status: 'enabled',
-                //             expire_date: '11'
-                //         },
-                //         {
-                //             name: '11',
-                //             account: '11',
-                //             mobile: '11',
-                //             start_date: '11',
-                //             status: 'disabled',
-                //             expire_date: '11'
-                //         },
-                //         {
-                //             name: '11',
-                //             account: '11',
-                //             mobile: '11',
-                //             start_date: '11',
-                //             status: 'expired',
-                //             expire_date: '11'
-                //         }
-                //     ],
-                //     permission: [{
-                //         label: '一级 1',
-                //         children: [{
-                //             label: '二级 1-1',
-                //             children: [{
-                //                 label: '三级 1-1-1'
-                //             }]
-                //         }]
-                //     }, {
-                //         label: '一级 2',
-                //         children: [{
-                //             label: '二级 2-1',
-                //             children: [{
-                //                 label: '三级 2-1-1'
-                //             }]
-                //         }, {
-                //             label: '二级 2-2',
-                //             children: [{
-                //                 label: '三级 2-2-1'
-                //             }]
-                //         }]
-                //     }, {
-                //         label: '一级 3',
-                //         children: [{
-                //             label: '二级 3-1',
-                //             children: [{
-                //                 label: '三级 3-1-1'
-                //             }]
-                //         }, {
-                //             label: '二级 3-2',
-                //             children: [{
-                //                 label: '三级 3-2-1'
-                //             }]
-                //         }]
-                //     }],
-                //     isSupper: !!obj.id
-                // }
             },
             // 处理基础资料tab
             baseTabHandle() {
@@ -473,14 +493,19 @@
             },
             curTabIdx(v) {
                 this[`${v}TabHandle`]()
+            },
+            peopleSearchModel() {
+                this.debounceAjaxTableData()
             }
         }
     }
 </script>
 
 <style scoped lang="scss">
-    .manager-container {
+    .company-container {
         padding: 20px 20px 0 20px;
+        display: flex;
+        flex-direction: column;
         & >.header {
             font-size: 16px;
             font-weight: bold;
@@ -497,8 +522,8 @@
             }
         }
         & >.content{
+            flex: 1;
             display: flex;
-            height: calc(100vh - 119px);
             background-color: #fff;
             box-sizing: border-box;
             border: 1px solid #e6e6e6;
@@ -574,11 +599,13 @@
                     right: 0;
                     bottom: 0;
                     box-sizing: border-box;
+                    display: flex;
+                    flex-direction: column;
                     .el-tab-pane{
                         height: 100%;
                     }
                     .el-tabs__content{
-                        height: calc(100% - 46px);
+                        flex: 1;
                         .tabpanel{
                             height: 100%;
                         }

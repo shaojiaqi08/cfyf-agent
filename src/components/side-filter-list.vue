@@ -17,6 +17,7 @@
                     </el-tooltip>
                 </slot>
             </div>
+            <div v-if="filterList.length==0" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
         </el-scrollbar>
     </div>
 </template>
@@ -105,6 +106,7 @@
                 overflow-x: hidden;
             }
             .list-item{
+                position: relative;
                 min-height: 44px;
                 padding: 8px 16px;
                 overflow: hidden;
