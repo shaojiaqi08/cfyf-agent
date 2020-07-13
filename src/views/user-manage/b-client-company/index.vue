@@ -13,7 +13,7 @@
                     <div v-for="(item, index) in filterCompanyData"
                          :key="index"
                          :class="{'list-item':true, active: curSelCompany && curSelCompany.id === item.id}"
-                         @click="ajaxPeopleList(item)">
+                         @click="handleSelCompany(item)">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                             <span>{{item.name}}</span>
                         </el-tooltip>
@@ -29,31 +29,31 @@
                           @input="debounceAjaxPeopleList"></el-input>
                 <el-tabs v-model="curTabIdx">
                     <el-tab-pane name="base" label="基本资料" class="base-info-pane">
-                        <el-scrollbar>
+                        <el-scrollbar v-if="baseInfoData">
                             <div class="card">
                                 <div class="header">
                                     企业信息
                                     <el-button type="primary" @click="editCompany"><i class="iconfont iconxiao16_bianji"></i>修改信息</el-button>
                                 </div>
-                                <div class="item">主体类型<span>公司</span></div>
-                                <div class="item">渠道<span>公司</span></div>
-                                <div class="item">企业名称<span>公司</span></div>
-                                <div class="item">企业营业执照<span>公司</span></div>
-                                <div class="item">服务费发票类型<span>公司</span></div>
-                                <div class="item">发票税点<span>公司</span></div>
-                                <div class="item">所属城市<span>公司</span></div>
-                                <div class="item">详细地址<span>公司</span></div>
-                                <div class="item">固定电话<span>公司</span></div>
+                                <div class="item">主体类型<span>{{subjectMap[baseInfoData.subject].label}}</span></div>
+                                <div class="item">渠道<span>{{saleChannelMap[baseInfoData.sale_channel].label}}</span></div>
+                                <div class="item">企业名称<span>{{baseInfoData.sale_channel}}</span></div>
+                                <div class="item">企业营业执照<span>{{baseInfoData.business_license_file_id ? '已上传' : '未上传'}}</span></div>
+                                <div class="item">服务费发票类型<span>{{invoiceTypeMap[baseInfoData.invoice_type].label}}</span></div>
+                                <div class="item">发票税点<span>{{baseInfoData.invoice_tax_point}}</span></div>
+                                <div class="item">所属城市<span>{{`${baseInfoData.province_name}${baseInfoData.city_name}${baseInfoData.district_name}`}}</span></div>
+                                <div class="item">详细地址<span>{{baseInfoData.address}}</span></div>
+                                <div class="item">固定电话<span>{{`${baseInfoData.area_code}-${baseInfoData.telephone}`}}</span></div>
                             </div>
                             <div class="card">
                                 <div class="header">
                                     财务信息
                                 </div>
-                                <div class="item">账户类型<span>公司</span></div>
-                                <div class="item">户名<span>公司</span></div>
-                                <div class="item">开户地址<span>公司</span></div>
-                                <div class="item">开户银行<span>公司</span></div>
-                                <div class="item">银行卡号<span>公司</span></div>
+                                <div class="item">账户类型<span>{{accountTypeMap[baseInfoData.company_finance.account_type].label}}</span></div>
+                                <div class="item">户名<span>{{baseInfoData.company_finance.account_name}}</span></div>
+                                <div class="item">开户地址<span>{{baseInfoData.company_finance.account_addr}}</span></div>
+                                <div class="item">开户银行<span>{{baseInfoData.company_finance.account_bank}}</span></div>
+                                <div class="item">银行卡号<span>{{baseInfoData.company_finance.account_number}}</span></div>
                             </div>
                             <el-button type="danger" @click="removeSettled">解除入驻</el-button><br>
                             <span class="bottom-txt">解除入驻后，该公司所有账号将无法再登录，所有数据将归档封存，此操作不可恢复</span>
@@ -65,8 +65,8 @@
                                <el-scrollbar class="people-left-scroll">
                                    <div v-for="(item, index) in roleData"
                                         :key="index"
-                                        :class="{'list-item':true, active: curSelManage && curSelManage.id === item.id}"
-                                        @click="ajaxDetail(item)">
+                                        :class="{'list-item':true, active: curSelRole && curSelRole.key === item.key}"
+                                        @click="handleSelRole(item)">
                                        <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                                            <span>{{item.name}}</span>
                                        </el-tooltip>
@@ -74,7 +74,7 @@
                                </el-scrollbar>
                             </div>
                             <div class="right-wrap">
-                                <div v-if="curSelManage && curSelManage.isSupper" class="admin-filter-bar">
+                                <div v-if="curSelRole && curSelRole.isSupper" class="admin-filter-bar">
                                     <div>
                                         <filter-shell v-model="peopleSearchModel.position_id">
                                             <el-select v-model="peopleSearchModel.position_id"
@@ -142,8 +142,8 @@
                                 <el-table :data="contentData.tableData" border max-height="calc(100vh - 240px)">
                                     <el-table-column label="姓名" prop="name" align="center"></el-table-column>
                                     <el-table-column label="账号" prop="account" align="center"></el-table-column>
-                                    <el-table-column label="管理员角色" prop="account" align="center" v-if="curSelManage && curSelManage.isSupper"></el-table-column>
-                                    <el-table-column label="系统工号" prop="account" align="center" v-if="curSelManage && !curSelManage.isSupper"></el-table-column>
+                                    <el-table-column label="管理员角色" prop="account" align="center" v-if="curSelRole && curSelRole.isSupper"></el-table-column>
+                                    <el-table-column label="系统工号" prop="account" align="center" v-if="curSelRole && !curSelRole.isSupper"></el-table-column>
                                     <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                                     <el-table-column label="开通日期" prop="start_date" align="center"></el-table-column>
                                     <el-table-column label="当前状态" prop="status" align="center" width="120">
@@ -152,7 +152,7 @@
                                         </template>
                                     </el-table-column>
                                     <el-table-column label="关闭日期" prop="expire_date" align="center"></el-table-column>
-                                    <el-table-column label="操作" fixed="right" prop="operate" v-if="curSelManage && curSelManage.isSupper" :width="150" align="center">
+                                    <el-table-column label="操作" fixed="right" prop="operate" v-if="curSelRole && curSelRole.isSupper" :width="150" align="center">
                                         <template v-slot="{row}">
                                             <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
                                             <el-button type="text" @click="modifyAccount(row)">修改账号</el-button>
@@ -212,7 +212,7 @@
     import {getCompanyDetail, getCompanyList, getPeopleList} from "../../../apis/modules/user-manage";
     import {debounce} from '@/utils'
     import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
-
+    import {subjectMap, saleChannelMap, invoiceTypeMap, accountTypeMap} from '@/enums/user-manage'
     export default {
         name: 'manager',
         components: {
@@ -221,8 +221,8 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             const roleData = [
-                {id: 1, name: '管理员', isSupper: true},
-                {id: 0, name: '销售', isSupper: false},
+                {key: 'administrator', name: '管理员', isSupper: true},
+                {key: 'sales', name: '销售', isSupper: false},
             ]
             return {
                 leftLoading: false,
@@ -245,10 +245,11 @@
                     team_id: '',
                     position_id: '',
                     account_status: '',
-                    keyword: ''
+                    keyword: '',
+                    role: ''
                 },
                 contentData: {},
-                curSelManage: roleData[0],
+                curSelRole: null,
                 curSelCompany: null,
                 curTabIdx: 'base',
                 editAccountVisible: false,
@@ -270,6 +271,10 @@
                     newPassword: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
                     confirmPassword: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
+                subjectMap,
+                saleChannelMap,
+                invoiceTypeMap,
+                accountTypeMap,
                 statusMap: Object.freeze({
                     disabled: '禁用',
                     enabled: '有效',
@@ -293,6 +298,10 @@
         },
         created() {
             this.ajaxCompanyList()
+            window.addEventListener('storage', this.onStorage)
+        },
+        beforeDestroy() {
+            window.removeEventListener('storage', this.onStorage)
         },
         computed: {
             filterCompanyData() {
@@ -304,12 +313,22 @@
             closePopover,
             hasValue,
             clearValue,
+            handleSelRole(obj) {
+                this.curSelRole = obj
+                this.ajaxPeopleList()
+            },
+            onStorage(e) {
+                console.log(e)
+                e.key === 'refreshPage' && this.ajaxCompanyList(JSON.parse(e.newValue))
+            },
             createCompany() {
-                window.open(this.$route.fullPath)
+                let routeUrl = this.$router.resolve('/company/add')
+                window.open(routeUrl.href, '_blank')
             },
             editCompany() {
                 const {id} = this.curSelCompany
-                window.open(`${this.$route.fullPath}/${id}`)
+                let routeUrl = this.$router.resolve(`/company/edit/${id}`)
+                window.open(routeUrl.href, '_blank')
             },
             handleTreeNodeClick() {
             },
@@ -340,37 +359,6 @@
 
                 }).catch(() => {    })
             },
-            // 重置密码
-            resetPwd() {
-                const h = this.$createElement
-                this.$confirm(
-                    h('div', [
-                        h('i', {
-                            class: {
-                                iconfont: true,
-                                'iconzhong20_gantanhao': true
-                            },
-                            style: {
-                                color: '#FFBB33',
-                                marginRight: '10px'
-                            }
-                        }),
-                        h('span', '是否确认重置密码？')
-                    ]),
-                    '提示',
-                    {
-                        confirmButtonText: '重置'
-                    }
-                ).then(() => {
-
-                }).catch(() => {    })
-            },
-            edit(row) {
-                if (row) {
-                    this.editFormModel.id = row.id
-                }
-                this.editDialogVisible = true
-            },
             // 提交编辑
             submitEdit() {
                 this.$refs.editForm.validate(flag => {
@@ -399,18 +387,20 @@
                     }
                 })
             },
-            ajaxCompanyList() {
-                const {searchInput: name, curTabIdx} = this
+            ajaxCompanyList(obj) {
+                const {curTabIdx} = this
                 this.leftLoading = true
                 // 清空先关数据
                 this.companyData = []
                 this.peopleData = []
                 this.baseInfoData = null
-                getCompanyList({params: {name}}).then(res => {
+                getCompanyList().then(res => {
                     if (res.data.length > 0) {
                         this.companyData = res.data
-                        this.curSelCompany = this.companyData[0]
-                        this[`${curTabIdx}TabHandle`]()
+                        if (obj) {
+                            this.curSelCompany = obj
+                            this[`${curTabIdx}TabHandle`]()
+                        }
                     }
                 }).finally(() => {
                     this.leftLoading = false
@@ -421,22 +411,27 @@
                 const func = debounce.call(this, this.ajaxPeopleList(), 500, true)
                 this.debounceAjaxTableData = func
             },
-            ajaxPeopleList(obj) { // eslint-disable-line
-                const {peopleSearchModel, curSelCompany} = this
+            handleSelCompany(obj) {
+                this.curSelCompany = obj
+                this[`${this.curTabIdx}TabHandle`]()
+            },
+            ajaxPeopleList() { // eslint-disable-line
+                const {peopleSearchModel, curSelCompany, curSelRole} = this
                 this.peopleData = []
                 this.rightLoading = true
-                const params = {...peopleSearchModel, company_id: curSelCompany.id}
-                getPeopleList({params}).then(res => {
+                getPeopleList({...peopleSearchModel, company_id: curSelCompany.id, role: curSelRole.key}).then(res => {
                     this.peopleData = res.data
                 }).finally(() => {
-                    debugger
                     this.rightLoading = false
                 })
             },
             ajaxBaseInfo() {
                 this.baseInfoData = null
-                getCompanyDetail({params: {id: this.curSelCompany.id}}).then(res => {
+                this.rightLoading = true
+                getCompanyDetail({id: this.curSelCompany.id}).then(res => {
                     this.baseInfoData = res
+                }).catch(() => {}).finally(() => {
+                    this.rightLoading = false
                 })
             },
             // 处理基础资料tab
@@ -448,8 +443,8 @@
             },
             // 处理成员tab
             peopleTabHandle() {
-                const {peopleData, roleData} = this
-                if (!peopleData.length <= 0) {
+                const {peopleData, roleData, curSelRole} = this
+                if (curSelRole && peopleData.length <= 0) {
                     this.ajaxPeopleList(roleData[0])
                 }
             },

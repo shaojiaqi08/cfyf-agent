@@ -11,7 +11,7 @@
           <div class="label">账号</div>
           <div class="input">
             <el-input placeholder="请输入账号名"
-                      v-model="account"
+                      v-model="account_name"
                       clearable
                       @focus="inputFocus"
                       @blur="inputBlur"></el-input>
@@ -31,7 +31,8 @@
         </div>
         <el-button type="primary"
                    size="medium"
-                   class="block">登录</el-button>
+                   class="block"
+                    @click="login">登录</el-button>
       </div>
     </div>
     <div class="bottom-tips">
@@ -41,15 +42,25 @@
 </template>
 
 <script>
+import {login} from '@/apis/modules/index'
 export default {
   data() {
     return {
-      account: '',
-      password: '',
+      account_name: 'admin',
+      password: '123123',
       isPasswordShow: false
     }
   },
   methods: {
+    login() {
+      const {account_name, password} = this
+      login({
+        account_name, password
+      }).then(res => {
+        window.localStorage.setItem('Management-Authorization', res.token)
+        this.$router.replace('/')
+      })
+    },
     inputFocus(e) {
       e.target.parentElement.classList.add('focus')
     },

@@ -13,4 +13,10 @@ export const getRoleList = params => get('/management/sys_permission/sys_role/ge
 export const createRole = params => post('/management/sys_permission/sys_role/store', params)
 
 // 地区数据
-export const getRegion = params => get('/common/get_region_List', params)
+export const getRegion = params => get('/management/common/get_region_list', params)
+
+// 银行列表
+export const getBankList = params => get('/management/common/get_bank_list', params)
+
+// 登录
+export const login = params => post('/management/sys_permission/sys_user/login', params)

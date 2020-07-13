@@ -70,6 +70,16 @@
                                       :rules="baseValiObj">
                             <el-select size="small" placeholder="请选择保障期限" v-model="item.payment_period_value"></el-select>
                         </el-form-item>
+                        <el-form-item label="保障期限范围"
+                                      :prop="'rate.'+ index + '.payment_period_value'"
+                                      :rules="baseValiObj">
+                            <el-form-item label-width="0">
+                                <el-input-number></el-input-number>
+                            </el-form-item> -
+                            <el-form-item label-width="0">
+                                <el-input-number></el-input-number>
+                            </el-form-item>
+                        </el-form-item>
                         <el-form-item label="是否含身故"
                                       v-model="item.includeDie"
                                       :prop="'rate.'+ index + '.includeDie'"
@@ -137,14 +147,18 @@
                             guarantee_period_values: [],
                             includeDie: '',
                             baseRate: undefined,
-                            extraRate: undefined
+                            extraRate: undefined,
+                            payment_period_start: '',
+                            payment_period_end: ''
                         },
                         {
                             payment_period_value: '',
                             guarantee_period_values: [],
                             inculudeDie: '',
                             baseRate: undefined,
-                            extraRate: undefined
+                            extraRate: undefined,
+                            payment_period_start: '',
+                            payment_period_end: ''
                         }
                     ]
                 },

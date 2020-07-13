@@ -21,37 +21,47 @@
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
-<!--                    <el-tab-pane name="permission" label="权限"></el-tab-pane>-->
+                    <el-tab-pane name="permission" label="权限"></el-tab-pane>
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
                     <div class="desc-wrap">
-                        {{curSelRole.real_name}}
+                        {{curSelRole.name}}
                         <span>{{curSelRole.remark}}</span>
                     </div>
                     <el-table :data="managerData" border>
                         <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                         <el-table-column label="账号" prop="account_name" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                        <el-table-column label="开通日期" prop="open_at" align="center"></el-table-column>
-                        <el-table-column label="当前状态" prop="status" align="center" width="120">
+                        <el-table-column label="开通日期" prop="open_at" align="center">
                             <template v-slot="{row}">
-                                <el-tag>{{statusMap[row.status]}}</el-tag>
+                                <span v-if="!row.open_at">-</span>
+                                <sapn v-else>{{formatDate(new Date(row.open_at * 1000), 'yyyy-MM-dd')}}</sapn>
                             </template>
                         </el-table-column>
-                        <el-table-column label="失效日期" prop="open_at" align="center"></el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="(curSelRole && curSelRole.isSupper)? 250 : 150" align="center">
+                        <el-table-column label="当前状态" prop="account_status_str" align="center" width="120">
                             <template v-slot="{row}">
-                                <template v-if="row.status !== 'expired'">
-                                    <template v-if="curSelRole && curSelRole.isSupper">
+                                <el-tag :type="statusColorMap[row.account_status]">{{row.account_status_str}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="失效日期" prop="close_at" align="center">
+                            <template v-slot="{row}">
+                                <span v-if="!row.open_at">-</span>
+                                <sapn v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</sapn>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" prop="operate" :width="(curSelRole && !curSelRole.isSupper)? 250 : 150" align="center">
+                            <template v-slot="{row}">
+                                <template v-if="row.account_status !== accountStatusMap.invalidation.value">
+                                    <template v-if="curSelRole && !curSelRole.isSupper">
                                     <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
-                                    <el-button type="text" @click="triggerStatus(row)">{{row.status === 'disabled' ? '启用' : '禁用'}}</el-button>
+                                    <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
                                     <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
                                     </template>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
-                                    <el-button type="text" v-if="curSelRole && !curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
+                                    <el-button type="text" v-if="curSelRole && curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
                                 </template>
                                 <template v-else>
-                                    <el-button type="text">-</el-button>
+                                    <span>-</span>
                                 </template>
                             </template>
                         </el-table-column>
@@ -59,15 +69,13 @@
                 </div>
                 <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 150px)">
                     <el-scrollbar class="tree-wrap">
-                        <el-tree :data="contentData.permission"
-                                 show-checkbox
-                                 @node-click="handleTreeNodeClick"></el-tree>
+                        <permission-tree :data="treeData"></permission-tree>
                     </el-scrollbar>
                 </div>
             </el-scrollbar>
         </div>
         <!--编辑/编辑管理员-->
-        <el-dialog custom-class="manager-dialog" :title="`${editFormModel.id != undefined ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
             <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
                 <el-form-item label="管理员姓名" prop="real_name">
                     <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>
@@ -75,7 +83,7 @@
                 <el-form-item label="工作邮箱" prop="email">
                     <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" v-if="editFormModel.id == undefined" prop="mobile">
+                <el-form-item label="手机号" v-if="editFormModel.id === ''" prop="mobile">
                     <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="管理员账号" prop="account_name">
@@ -86,9 +94,9 @@
                         <el-option v-for="(item, index) in roleData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
-                <template v-if="editFormModel.id == undefined">
+                <template v-if="editFormModel.id === ''">
                     <el-form-item label="登录密码" prop="password">
-                        <el-input type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
+                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
                     </el-form-item>
                     <el-form-item label="再次输入密码" prop="confirm_password">
                         <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
@@ -107,7 +115,7 @@
                     <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>
                 </el-form-item>
                 <el-form-item label="角色描述" prop="desc">
-                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.desc"></el-input>
+                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.remark"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer">
@@ -137,10 +145,21 @@
 </template>
 
 <script>
-    import {createManager, editManager, getManagerList, removeEffect, updateStatus, resetPassword, updatePassword} from '@/apis/modules/user-manage' // eslint-disable-line
+    import {createManager,
+            editManager,
+            getManagerList,
+            removeEffect,
+            updateStatus,
+            resetPassword,
+            updatePassword,
+            getManageTree} from '@/apis/modules/user-manage' // eslint-disable-line
     import {getRoleList, createRole} from '@/apis/modules/index'
+    import {formatDate} from '@/utils/formatTime'
+    import {accountStatusMap} from '@/enums/user-manage'
+    import PermissionTree from '../../../components/permission-tree'
     export default {
         name: 'manager',
+        components: {PermissionTree},
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
@@ -148,14 +167,57 @@
                 rightLoading: false,
                 submitting: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
-                contentData: {},
+                treeData: [],
+                contentData: {
+                    permission:
+                        [{
+                            id: 1,
+                            label: '一级 1',
+                            children: [{
+                                id: 4,
+                                label: '二级 1-1',
+                                children: [{
+                                    id: 9,
+                                    label: '三级 1-1-1'
+                                }, {
+                                    id: 10,
+                                    label: '三级 1-1-2'
+                                }]
+                            }]
+                        }, {
+                            id: 2,
+                            label: '一级 2',
+                            children: [{
+                                id: 5,
+                                label: '二级 2-1'
+                            }, {
+                                id: 6,
+                                label: '二级 2-2'
+                            }]
+                        }, {
+                            id: 3,
+                            label: '一级 3',
+                            children: [{
+                                id: 7,
+                                label: '二级 3-1',
+                                children: [{
+                                    label: '三级 3-2',
+                                    id : 999,
+                                }]
+                            }, {
+                                id: 8,
+                                label: '二级 3-2'
+                            }]
+                        }]
+
+                },
                 curSelRole: null,
                 roleData: [],
                 managerData: [],
                 curTabIdx: 'people',
                 editDialogVisible: false,
                 editFormModel: {
-                    id:null,
+                    id: '',
                     real_name: '',
                     account_name: '',
                     role_id: '',
@@ -176,11 +238,11 @@
                 addRoleDialogVisible: false,
                 addRoleFormModel: {
                     name: '',
-                    desc: ''
+                    remark: ''
                 },
                 addRoleRules: {
                     name: baseValiObj,
-                    desc: baseValiObj
+                    remark: baseValiObj
                 },
                 modPwdDialogVisible: false,
                 modPwdFormModel: {
@@ -193,17 +255,22 @@
                     new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
                     confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
-                statusMap: Object.freeze({
-                    disabled: '禁用',
-                    enabled: '有效',
-                    expired: '失效'
+                accountStatusMap,
+                statusColorMap : Object.freeze({
+                    disabled: 'danger',
+                    enabled: 'success',
+                    invalidation: 'minor'
                 })
             }
         },
         created() {
             this.ajaxRoleList()
+            getManageTree().then(res => {
+                this.treeData = res
+            })
         },
         methods: {
+            formatDate,
             handleTreeNodeClick() {
 
             },
@@ -231,7 +298,7 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-                    removeEffect({data: {id}}).then(() => {
+                    removeEffect({id}).then(() => {
                         this.$message.success('操作成功!')
                         this.ajaxDetail(this.curSelRole)
                     })
@@ -239,8 +306,8 @@
             },
             // 更改状态
             triggerStatus(row) {
-                const {id, status} = row
-                const isDisabled = status === 'enabled'
+                const {id, account_status} = row
+                const isDisabled = account_status === 'enable'
                 const confirmButtonText = isDisabled ? '禁用' : '启用'
                 const confirmButtonClass = isDisabled ? 'el-button--danger' : ''
                 const txt = isDisabled ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
@@ -266,7 +333,7 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-                    updateStatus({data: {id, account_status: isDisabled ? 'disable' : 'enable'}}).then(() => {
+                    updateStatus({id, account_status: isDisabled ? 'disable' : 'enable'}).then(() => {
                         this.$message.success(`${isDisabled ? '禁用' : '启用'}成功!`)
                         this.ajaxDetail(this.curSelRole)
                     })
@@ -294,8 +361,8 @@
                         confirmButtonText: '重置'
                     }
                 ).then(() => {
-                    resetPassword({data:{id}}).then(() => {
-                        this.$confirm('重置密码成功!', '提示')
+                    resetPassword({id}).then((res) => {
+                        this.$confirm(`重置密码成功,新密码【${res.password}】`, '提示')
                     })
                 }).catch(() => {})
             },
@@ -316,17 +383,25 @@
                     if (flag) {
                         this.submitting = true
                         const {editFormModel, curSelRole} = this
-                        const data = {...editFormModel, role_id: curSelRole.id}
+                        const data = {...editFormModel}
                         let handle = createManager
-                        if (data.id !== null) { // 编辑移除多余参数
+                        if (data.id !== '') { // 编辑移除多余参数
+                            data.role_id = curSelRole.id
                             delete data.password
                             delete data.confirm_password
-                            handle = createManager
+                            delete data.mobile
+                            handle = editManager
                         }
-                        handle({data}).then(() => {
+                        handle({...data}).then(res => {
+                            console.log(res)
+                            if (data.id !== '') {
+                                this.ajaxDetail(curSelRole)
+                            } else {
+                                this.ajaxRoleList(+res.role_id)
+                            }
                             this.$message.success('修改成功!')
                             this.editDialogVisible = false
-                        }).finally(() => {
+                        }).catch(() => {}).finally(() => {
                             this.submitting = false
                         })
                     }
@@ -337,9 +412,10 @@
                 this.$refs.addRoleForm.validate(flag => {
                     if (flag) {
                         this.submitting = true
-                        createRole({data: this.addRoleFormModel}).then(() => {
+                        createRole(this.addRoleFormModel).then(() => {
                             this.$message.success('新增角色成功!')
                             this.addRoleDialogVisible = false
+                            this.ajaxRoleList()
                         }).finally(() => {
                             this.submitting = false
                         })
@@ -355,7 +431,7 @@
                     if (flag) {
                         this.submitting = true
                         const {targetRow, modPwdFormModel} = this
-                        updatePassword({data: {...modPwdFormModel, id: targetRow.id}}).then(() => {
+                        updatePassword({...modPwdFormModel, id: targetRow.id}).then(() => {
                             this.$message.success('修改密码成功!')
                             this.modPwdDialogVisible = false
                         }).finally(() => {
@@ -364,14 +440,18 @@
                     }
                 })
             },
-            ajaxRoleList() {
+            ajaxRoleList(roleId) {
                 this.leftLoading = true
                 getRoleList().then(res => {
-                    this.roleData = res
-                    if (res.length > 0) {
-                        this.ajaxDetail(res[0])
+                    this.roleData = res.data
+                    if (this.roleData.length > 0) {
+                        const role = roleId ? this.roleData.find(item => item.id === roleId) : this.roleData[0]
+                        this.ajaxDetail(role)
                     }
-
+                }).catch(() => {
+                    this.roleData = []
+                    this.managerData = []
+                    this.curSelRole = null
                 }).finally(() => {
                     this.leftLoading = false
                 })
@@ -379,8 +459,8 @@
             ajaxDetail(obj) {
                 this.rightLoading = true
                 this.curSelRole = obj
-                getManagerList({params: {role_id: obj.id}}).then(res => {
-                    this.managerData = res
+                getManagerList({role_id: obj.id}).then(res => {
+                    this.managerData = res.data
                 }).finally(() => {
                     this.rightLoading = false
                 })
@@ -414,7 +494,12 @@
         },
         watch: {
             editDialogVisible(v) {
-                !v && this.$refs.editForm.resetFields()
+                if (!v) {
+                    this.editFormModel = this.$options.data().editFormModel
+                    this.$nextTick(() => {
+                        this.$refs.editForm.clearValidate()
+                    })
+                }
             },
             addRoleDialogVisible(v) {
                 !v && this.$refs.addRoleForm.resetFields()
@@ -544,6 +629,54 @@
                 .el-table .el-button{
                     min-width: 0;
                     padding: 0;
+                }
+                .tree{
+                    .el-tree-node{
+                        position: relative;
+                        padding-left: 16px;
+                        &:last-child:before {
+                            height: 38px;
+                        }
+                    }
+                    .el-tree-node__children {
+                        padding-left: 16px;
+                    }
+                    .el-tree-node:before {
+                        content: "";
+                        left: -4px;
+                        position: absolute;
+                        right: auto;
+                        border-width: 1px;
+                    }
+
+                    .el-tree-node:after {
+                        content: "";
+                        left: -4px;
+                        position: absolute;
+                        right: auto;
+                        border-width: 1px;
+                    }
+
+                    .el-tree-node:before {
+                        border-left: 1px dashed #999;
+                        bottom: 0px;
+                        height: 100%;
+                        top: -26px;
+                        width: 1px;
+                    }
+
+                    .el-tree-node:after {
+                        border-top: 1px dashed #999;
+                        height: 20px;
+                        top: 12px;
+                        width: 24px;
+                    }
+                    & > .el-tree-node:before {
+                        border-left: none;
+                    }
+                    & > .el-tree-node:after {
+                        border-top: none;
+                    }
                 }
             }
         }

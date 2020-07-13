@@ -14,6 +14,8 @@ export const updateStatus = (params) => post('/management/sys_permission/sys_use
 export const resetPassword = (params) => post('/management/sys_permission/sys_user/reset_password', params)
 // 更新密码
 export const updatePassword = (params) => post('/management/sys_permission/sys_user/update_password', params)
+// 权限树
+export const getManageTree = (params) => get('/management/sys_permission/sys_permission_group/get_tree', params)
 
 // ----------------- B端公司接口 -----------------------
 // 新增公司

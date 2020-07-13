@@ -23,11 +23,14 @@
                         <el-form-item class="item" label="企业营业执照" prop="business_license_file_id">
                             <el-upload
                                     class="upload-demo"
-                                    action="https://jsonplaceholder.typicode.com/posts/"
+                                    :action="fileUrl"
                                     multiple
                                     :limit="1"
+                                    :on-exceed="handleExceed"
+                                    :on-success="uploadFileSuccess"
+                                    :on-remove="handleFileRemove"
                                     :file-list="fileList">
-                                <el-button type="primary"><i class="iconfont iconxiao16_shangchuan"></i> 上传</el-button>
+                                <el-button type="primary" v-on:[uploadEvent].stop="()=>{}" :class="{'disabled-upload': uploadEvent==='click'}"><i class="iconfont iconxiao16_shangchuan"></i> 上传</el-button>
                             </el-upload>
                         </el-form-item>
                         <el-form-item class="item" label="服务费发票类型" prop="invoice_type">
@@ -39,7 +42,7 @@
                             <el-input v-model="formModel.invoice_tax_point" placeholder="请输入发票税点"></el-input>
                         </el-form-item>
                         <el-form-item class="item" label="所属城市" prop="province_id">
-                            <el-cascader v-model="cascaderVal" placeholder="请选择省市区" :props="cascaderProps" @change="handleSelRegion"></el-cascader>
+                            <el-cascader v-if="true" v-model="cascaderVal" placeholder="请选择省市区" :props="cascaderProps" @change="handleSelRegion"></el-cascader>
                         </el-form-item>
                         <el-form-item class="item" label="详细地址" prop="address">
                             <el-input v-model="formModel.address" placeholder="请输入详细地址"></el-input>
@@ -47,31 +50,33 @@
                         <el-form-item class="item phone-form-item" label="固定电话" prop="telephone">
                             <el-input placeholder="区号" v-model="formModel.area_code"></el-input>
                             <span>-</span>
-                            <el-input placeholder="座机号" ></el-input>
+                            <el-input placeholder="座机号" v-model="formModel.telephone"></el-input>
                         </el-form-item>
                     </div>
                     <div class="card">
                         <div class="header">财务信息</div>
-                        <el-form-item class="item" label="账户类型" prop="account_type">
-                            <el-select v-model="formModel.account_type" placeholder="请选择账户类型">
+                        <el-form-item class="item" label="账户类型" :prop="'company_finance.account_type'">
+                            <el-select v-model="formModel.company_finance.account_type" placeholder="请选择账户类型">
                                 <el-option v-for="(label, key) in account_type" :key="key" :value="key" :label="label"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item class="item" label="户名" prop="account_name">
-                            <el-input v-model="formModel.account_name" placeholder="请输入账户名称"></el-input>
+                        <el-form-item class="item" label="户名" :prop="'company_finance.account_name'">
+                            <el-input v-model="formModel.company_finance.account_name" placeholder="请输入账户名称"></el-input>
                         </el-form-item>
-                        <el-form-item class="item" label="开户地址" prop="account_addr">
-                            <el-input v-model="formModel.account_addr"  placeholder="请输入开户地址"></el-input>
+                        <el-form-item class="item" label="开户地址" :prop="'company_finance.account_addr'">
+                            <el-input v-model="formModel.company_finance.account_addr"  placeholder="请输入开户地址"></el-input>
                         </el-form-item>
-                        <el-form-item class="item" label="开户银行" prop="account_bank">
-                            <el-input v-model="formModel.account_bank"  placeholder="请选择开户银行"></el-input>
+                        <el-form-item class="item" label="开户银行" :prop="'company_finance.account_bank'">
+                            <el-select v-model="formModel.company_finance.account_bank" placeholder="请选择开户银行">
+                                <el-option v-for="(item, index) in bankData" :key="index" :value="item.key" :label="item.value"></el-option>
+                            </el-select>
                         </el-form-item>
-                        <el-form-item class="item" label="银行卡号" prop="account_number">
-                            <el-input v-model="formModel.account_number" placeholder="请输入银行卡号"></el-input>
+                        <el-form-item class="item" label="银行卡号" :prop="'company_finance.account_number'">
+                            <el-input v-model="formModel.company_finance.account_number" placeholder="请输入银行卡号"></el-input>
                         </el-form-item>
                     </div>
                     <el-button v-if="isAdd" type="primary" style="width:100%;margin-top: 16px" @click="nextStep">下一步</el-button>
-                    <el-button v-else @click="submit" :loading="submitting">确认</el-button>=
+                    <el-button v-else @click="submit" type="primary" style="width:100%;margin-top: 16px" :loading="submitting">确认</el-button>
                 </template>
                 <template v-else>
                     <div class="title">新增B端公司
@@ -83,7 +88,7 @@
                     <div class="card">
                         <div class="header">超管账号设置</div>
                         <el-form-item class="item" label="账号" prop="username">
-                            <el-input v-model="formModel.username"  placeholder="请输入超管账号"></el-input>
+                            <el-input v-model="formModel.username" placeholder="请输入超管账号"></el-input>
                         </el-form-item>
                         <el-form-item class="item" label="密码" prop="password">
                             <el-input v-model="formModel.password" placeholder="请输入超管密码"></el-input>
@@ -105,7 +110,7 @@
     </el-scrollbar>
 </template>
 <script>
-    import {getRegion} from '@/apis/modules/index'
+    import {getRegion, getBankList} from '@/apis/modules/index'
     import {createCompany, editCompany, getCompanyDetail} from '@/apis/modules/user-manage'
     import {subject, sale_channel, invoice_type, account_type} from '@/enums/user-manage'
     export default {
@@ -116,6 +121,7 @@
                 submitting: false,
                 loading: false,
                 data: {},
+                uploadEvent: null,
                 formModel: {
                     subject: '',
                     sale_channel: '',
@@ -128,22 +134,25 @@
                     address: '',
                     area_code: '',
                     telephone: '',
-                    account_type: '',
-                    account_name: '',
-                    account_addr: '',
-                    account_bank: '',
-                    account_number: '',
                     username: '',
                     password: '',
                     confirm_password: '',
                     email: '',
                     mobile: '',
-                    name: ''
+                    name: '',
+                    company_finance: {
+                        account_addr: '',
+                        account_bank: '',
+                        account_name: '',
+                        account_number: '',
+                        account_type: ''
+                    }
                 },
                 rules: {
                     name: baseValiObj,
                     subject: baseValiObj,
                     business_license_file_id: baseValiObj,
+                    sale_channel: baseValiObj,
                     invoice_type: baseValiObj,
                     invoice_tax_point: baseValiObj,
                     province_id: baseValiObj,
@@ -154,6 +163,7 @@
                     account_bank: baseValiObj,
                     account_number: baseValiObj,
                     username: baseValiObj,
+                    telephone: {validator: this.telephoneValidator},
                     password: [baseValiObj, {validatetor: this.pwdValidator}, {validatetor: this.comparePwdValitator}],
                     confirm_password: [baseValiObj, {validatetor: this.pwdValidator}, {validatetor: this.comparePwdValitator}],
                     email: [baseValiObj, {validatetor: this.emailValidator}],
@@ -168,9 +178,7 @@
                     lazyLoad (node, resolve) {
                         const { level } = node;
                         const pid = level ? node.value : 1
-                        getRegion({
-                            params: {pid}
-                        }).then(res => {
+                        getRegion({pid}).then(res => {
                             const node = res.map(item => ({
                                 value: item.id,
                                 label: item.name,
@@ -182,6 +190,8 @@
                 },
                 provinceData: [],
                 bankData: [],
+                imageUrl: process.env.VUE_APP_IMG_URL + '/api/images/upload',
+                fileUrl: process.env.VUE_APP_FILE_URL + '/api/files/upload',
                 // 以下枚举对象
                 subject,
                 sale_channel,
@@ -190,15 +200,39 @@
             }
         },
         methods: {
+            uploadFileSuccess(res) {
+                // 上传失败,清空文件
+                const {formModel} = this
+                if (res.code !== 0) {
+                    this.$message.error(res.message)
+                    this.$refs.file_upload.clearFiles()
+                    formModel.business_license_file_id = null
+                    this.fileList = []
+                    this.uploadEvent = null
+                } else {
+                    formModel.business_license_file_id = res.data.file_id
+                    this.uploadEvent = 'click'
+                }
+            },
+            handleFileRemove() {
+                this.formModel.business_license_file_id = null
+                this.uploadEvent = null
+            },
             ajaxDetail(id) {
                 this.loading = true
-                getCompanyDetail({params: {id}}).then(res => {
+                getCompanyDetail({id}).then(res => {
+                    const {province_id, city_id, district_id} = res
+                    this.cascaderVal = [province_id, city_id, district_id]
                     this.formModel = res
                 }).finally(() => {
                     this.loading = false
                 })
             },
-            ajaxBankData() {},
+            ajaxBankData() {
+                getBankList().then(res => {
+                    this.bankData = res
+                }).catch(() => {})
+            },
             nextStep() {
                 this.$refs.companyForm.validate(flag => {
                     if (flag) {
@@ -213,9 +247,11 @@
                     if (flag) {
                         const {isAdd, formModel: data} = this
                         this.submitting = true
-                        ;(isAdd ? createCompany : editCompany)({data}).then(() => {
+                        ;(isAdd ? createCompany : editCompany)({...data}).then(res => {
                             this.$message.success(`${isAdd ? '新增' : '修改'}成功!`)
-                        }).finally(() => {
+                            window.localStorage.setItem('refreshPage', JSON.stringify(res))
+                            window.close()
+                        }).catch(() => {}).finally(() => {
                             this.submitting = false
                         })
                     }
@@ -236,6 +272,13 @@
                     callback(new Error('确认新密码必须跟新密码一致'))
                 }
             },
+            telephoneValidator(rule, value, callback) { // eslint-disable-line
+                const {area_code, telephone} = this.formModel
+                if (!area_code || !telephone) {
+                    callback(new Error('区号跟固话不能为空'))
+                }
+                callback()
+            },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {
                     return callback(new Error('密码至少是6位任意字符'))
@@ -253,6 +296,9 @@
                     return callback(new Error('请输入正确的手机格式'))
                 }
                 callback()
+            },
+            handleExceed() {
+                this.$message.error('附件只能上传一个,请删除了再上传')
             }
         },
         created() {
@@ -340,6 +386,9 @@
         .edit-form{
             .el-select, .el-cascader{
                 width: 100%;
+            }
+            .disabled-upload{
+                opacity: .5;
             }
         }
     }

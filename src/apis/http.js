@@ -13,6 +13,16 @@ const service = axios.create({
 service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
 service.interceptors.request.use(config => {
+  const token = window.localStorage.getItem('Management-Authorization')
+  if (token) {
+    config.headers['Management-Authorization'] = token
+  }
+  return config
+}, error => {
+  return Promise.reject(error)
+})
+
+service.interceptors.request.use(config => {
   // if (store.state.userInfo.token) {
   //   config.headers['token'] = store.state.userInfo.token
   //   // config.headers['Agent-Authorization'] = store.state.userInfo.agent_token
@@ -31,10 +41,10 @@ service.interceptors.response.use(response => {
     const code = response.data.code
     const data = response.data
     const message = response.data.message
-
     switch (code) {
-      case statusCode.PASS || statusCode.NOCONTENT:
-        return Promise.resolve(data)
+      case statusCode.PASS:
+      case statusCode.NOCONTENT:
+        return Promise.resolve(data.data)
       case statusCode.OVERDUE:
         if (!overdueFlag) {
           overdueFlag = true
@@ -45,14 +55,14 @@ service.interceptors.response.use(response => {
       case statusCode.CODE_ERROR:
         notification('ERROR', message)
         break
-      case statusCode.PROPOSAL_ERROR_1 || statusCode.PROPOSAL_ERROR_2:
+      case statusCode.PROPOSAL_ERROR_1:
+      case statusCode.PROPOSAL_ERROR_2:
         console.log('proposal error')
         break
       default:
         notification('ERROR', message)
-
-      return Promise.reject(response.data)
     }
+    return Promise.reject(response.data)
   }
 },
 error => {
