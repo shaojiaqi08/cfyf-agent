@@ -19,6 +19,7 @@
                 <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </div>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
+                <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="treeDialogVisible=true">编辑</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
@@ -67,7 +68,7 @@
                         </el-table-column>
                     </el-table>
                 </div>
-                <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 150px)">
+                <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 166px)">
                     <el-scrollbar class="tree-wrap">
                         <permission-tree :data="treeData"></permission-tree>
                     </el-scrollbar>
@@ -141,6 +142,16 @@
                     <el-button type="primary" @click="submitModifyPwd" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
+        <!--编辑权限-->
+        <el-dialog custom-class="permission-dialog" title="编辑全选" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
+                <permission-tree v-model="treeData" :editable="true"></permission-tree>
+            </el-scrollbar>
+            <span slot="footer">
+                    <el-button @click="treeDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -152,7 +163,8 @@
             updateStatus,
             resetPassword,
             updatePassword,
-            getManageTree} from '@/apis/modules/user-manage' // eslint-disable-line
+            getManageTree,
+            updateTree} from '@/apis/modules/user-manage' // eslint-disable-line
     import {getRoleList, createRole} from '@/apis/modules/index'
     import {formatDate} from '@/utils/formatTime'
     import {accountStatusMap} from '@/enums/user-manage'
@@ -168,53 +180,11 @@
                 submitting: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
                 treeData: [],
-                contentData: {
-                    permission:
-                        [{
-                            id: 1,
-                            label: '一级 1',
-                            children: [{
-                                id: 4,
-                                label: '二级 1-1',
-                                children: [{
-                                    id: 9,
-                                    label: '三级 1-1-1'
-                                }, {
-                                    id: 10,
-                                    label: '三级 1-1-2'
-                                }]
-                            }]
-                        }, {
-                            id: 2,
-                            label: '一级 2',
-                            children: [{
-                                id: 5,
-                                label: '二级 2-1'
-                            }, {
-                                id: 6,
-                                label: '二级 2-2'
-                            }]
-                        }, {
-                            id: 3,
-                            label: '一级 3',
-                            children: [{
-                                id: 7,
-                                label: '二级 3-1',
-                                children: [{
-                                    label: '三级 3-2',
-                                    id : 999,
-                                }]
-                            }, {
-                                id: 8,
-                                label: '二级 3-2'
-                            }]
-                        }]
-
-                },
                 curSelRole: null,
                 roleData: [],
                 managerData: [],
                 curTabIdx: 'people',
+                treeDialogVisible: false,
                 editDialogVisible: false,
                 editFormModel: {
                     id: '',
@@ -271,8 +241,27 @@
         },
         methods: {
             formatDate,
-            handleTreeNodeClick() {
-
+            submitModifyPermission() {
+                const permission_ids = []
+                this.loopTree(this.treeData, permission_ids)
+                this.submitting = true
+                updateTree({permission_ids, role_id: this.curSelRole.id}).then(() => {
+                    this.$message.success('编辑权限成功!')
+                    this.treeDialogVisible = false
+                }).catch(()=> {}).finally(() => {
+                    this.submitting = false
+                })
+            },
+            loopTree(dataArr, arr) {
+                dataArr.forEach(item => {
+                    console.log(item)
+                    if (item.permission_groups && item.permission_groups.length) {
+                        this.loopTree(item.permission_groups, arr)
+                    }
+                    if (item.permissions && item.permissions.length) {
+                        arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
+                    }
+                })
             },
             // 使失效
             lostEffect(id) {
@@ -444,8 +433,8 @@
                 this.leftLoading = true
                 getRoleList().then(res => {
                     this.roleData = res.data
-                    if (this.roleData.length > 0) {
-                        const role = roleId ? this.roleData.find(item => item.id === roleId) : this.roleData[0]
+                    if (this.roleData.length > 0 && roleId) {
+                        const role = this.roleData.find(item => item.id === roleId)
                         this.ajaxDetail(role)
                     }
                 }).catch(() => {
@@ -592,7 +581,7 @@
                     }
                 }
                 .content{
-                    padding: 0 16px 16px 16px;
+                    padding: 16px;
                     box-sizing: border-box;
                     .desc-wrap{
                         display: flex;
@@ -619,64 +608,12 @@
                     }
                 }
                 .tree-wrap{
-                    width: 480px;
-                    height: calc(100% - 32px);
-                    margin:16px auto;
-                    border: 1px solid #e6e6e6;
+                    height: 100%;
                     border-radius: 4px;
-                    padding: 13px 6px;
                 }
                 .el-table .el-button{
                     min-width: 0;
                     padding: 0;
-                }
-                .tree{
-                    .el-tree-node{
-                        position: relative;
-                        padding-left: 16px;
-                        &:last-child:before {
-                            height: 38px;
-                        }
-                    }
-                    .el-tree-node__children {
-                        padding-left: 16px;
-                    }
-                    .el-tree-node:before {
-                        content: "";
-                        left: -4px;
-                        position: absolute;
-                        right: auto;
-                        border-width: 1px;
-                    }
-
-                    .el-tree-node:after {
-                        content: "";
-                        left: -4px;
-                        position: absolute;
-                        right: auto;
-                        border-width: 1px;
-                    }
-
-                    .el-tree-node:before {
-                        border-left: 1px dashed #999;
-                        bottom: 0px;
-                        height: 100%;
-                        top: -26px;
-                        width: 1px;
-                    }
-
-                    .el-tree-node:after {
-                        border-top: 1px dashed #999;
-                        height: 20px;
-                        top: 12px;
-                        width: 24px;
-                    }
-                    & > .el-tree-node:before {
-                        border-left: none;
-                    }
-                    & > .el-tree-node:after {
-                        border-top: none;
-                    }
                 }
             }
         }
@@ -686,6 +623,11 @@
     .manager-dialog{
         .el-form-item__label::before{
             display: none;
+        }
+    }
+    .permission-dialog{
+        .el-scrollbar .el-scrollbar__wrap{
+            overflow-x: hidden;
         }
     }
 </style>
