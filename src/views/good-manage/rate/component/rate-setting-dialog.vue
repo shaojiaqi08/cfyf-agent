@@ -71,14 +71,15 @@
                             <el-select size="small" placeholder="请选择保障期限" v-model="item.payment_period_value"></el-select>
                         </el-form-item>
                         <el-form-item label="保障期限范围"
-                                      :prop="'rate.'+ index + '.payment_period_value'"
-                                      :rules="baseValiObj">
-                            <el-form-item label-width="0">
-                                <el-input-number></el-input-number>
-                            </el-form-item> -
-                            <el-form-item label-width="0">
-                                <el-input-number></el-input-number>
-                            </el-form-item>
+                                      class="payment-period-values-item">
+                            <el-form-item label-width="0" :prop="'rate.'+ index + '.payment_period_values'"
+                                          :rules="baseValiObj">
+                                <el-input-number :controls="false"></el-input-number>
+                            </el-form-item><span></span>
+                            <el-form-item label-width="0" :prop="'rate.'+ index + '.payment_period_values'"
+                                          :rules="baseValiObj">
+                                <el-input-number :controls="false"></el-input-number>
+                            </el-form-item>年
                         </el-form-item>
                         <el-form-item label="是否含身故"
                                       v-model="item.includeDie"
@@ -199,6 +200,25 @@
                 width: 100%;
                 display: flex;
                 flex-wrap: wrap;
+            }
+            .payment-period-values-item{
+                 margin-bottom: 0;
+                .el-form-item__content{
+                    display: flex;
+                    .el-input-number {
+                        width: 68px;
+                        margin-right:8px;
+                    }
+                    &>span{
+                        display: inline-block;
+                        width: 9px;
+                        height: 1px;
+                        background: #1A1A1A;
+                        margin-right:8px;
+                        line-height: 32px;
+                        transform: translateY(16px);
+                    }
+                }
             }
             .item {
                 display: flex;
