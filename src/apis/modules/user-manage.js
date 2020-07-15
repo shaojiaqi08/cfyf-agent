@@ -16,6 +16,8 @@ export const resetPassword = (params) => post('/management/sys_permission/sys_us
 export const updatePassword = (params) => post('/management/sys_permission/sys_user/update_password', params)
 // 权限树
 export const getManageTree = (params) => get('/management/sys_permission/sys_permission_group/get_tree', params)
+// 更新权限树
+export const updateTree = (params) => post('/management/sys_permission/sys_role_permission_relation/update', params)
 
 // ----------------- B端公司接口 -----------------------
 // 新增公司
@@ -28,3 +30,7 @@ export const getCompanyList = (params) => get('/management/company/get_page_list
 export const getCompanyDetail = (params) => get('/management/company/detail', params)
 // 成员列表
 export const getPeopleList = (params) => get('/management/sales/get_page_list', params)
+// 更新权限树
+export const updateCompanyTree = (params) => post('', params)
+// 权限树
+export const getCompanyTree = (params) => get('/agent/business_permission/business_permission_group/get_tree', params)

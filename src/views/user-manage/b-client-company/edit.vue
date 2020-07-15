@@ -42,7 +42,7 @@
                             <el-input v-model="formModel.invoice_tax_point" placeholder="请输入发票税点"></el-input>
                         </el-form-item>
                         <el-form-item class="item" label="所属城市" prop="province_id">
-                            <el-cascader v-if="true" v-model="cascaderVal" placeholder="请选择省市区" :props="cascaderProps" @change="handleSelRegion"></el-cascader>
+                            <el-cascader v-if="isAdd || formModel.province_id" v-model="cascaderVal" placeholder="请选择省市区" :props="cascaderProps" @change="handleSelRegion"></el-cascader>
                         </el-form-item>
                         <el-form-item class="item" label="详细地址" prop="address">
                             <el-input v-model="formModel.address" placeholder="请输入详细地址"></el-input>
@@ -76,7 +76,7 @@
                         </el-form-item>
                     </div>
                     <el-button v-if="isAdd" type="primary" style="width:100%;margin-top: 16px" @click="nextStep">下一步</el-button>
-                    <el-button v-else @click="submit" type="primary" style="width:100%;margin-top: 16px" :loading="submitting">确认</el-button>
+                    <el-button v-else @click="submit" type="primary" style="width:100%;margin-top: 16px" :loading="submitting" :disabled="submitting">确认</el-button>
                 </template>
                 <template v-else>
                     <div class="title">新增B端公司
@@ -103,7 +103,7 @@
                             <el-input v-model="formModel.mobile"  placeholder="请输入手机号"></el-input>
                         </el-form-item>
                     </div>
-                    <el-button type="primary" style="width:100%;margin-top: 16px" @click="submit" :loading="submitting">完成</el-button>
+                    <el-button type="primary" style="width:100%;margin-top: 16px" @click="submit" :loading="submitting" :disabled="submitting">完成</el-button>
                 </template>
             </el-form>
         </div>

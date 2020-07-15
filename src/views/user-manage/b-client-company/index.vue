@@ -5,11 +5,11 @@
             <el-button type="primary" @click="createCompany"><i class="iconfont iconxiao16_jiahao"></i> 新增B端公司</el-button>
         </div>
         <div class="content">
-            <div class="left-scroll-wrap">
+            <div class="left-scroll-wrap" v-loading="leftLoading">
                 <div class="search-wrap">
                     <el-input prefix-icon="el-icon-search" placeholder="搜索B端公司" v-model.trim="searchInput"></el-input>
                 </div>
-                <el-scrollbar class="left-scroll-bar" v-loading="leftLoading">
+                <el-scrollbar class="left-scroll-bar">
                     <div v-for="(item, index) in filterCompanyData"
                          :key="index"
                          :class="{'list-item':true, active: curSelCompany && curSelCompany.id === item.id}"
@@ -27,6 +27,7 @@
                           v-model="peopleSearchModel.keyword"
                           v-if="curTabIdx==='people'"
                           @input="debounceAjaxPeopleList"></el-input>
+                <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="treeDialogVisible=true">编辑</el-button>
                 <el-tabs v-model="curTabIdx">
                     <el-tab-pane name="base" label="基本资料" class="base-info-pane">
                         <el-scrollbar v-if="baseInfoData">
@@ -163,12 +164,10 @@
                         </div>
                     </el-tab-pane>
                     <!--权限需求未明确,先隐藏-->
-                    <el-tab-pane name="permission" label="权限" v-if="false">
-                        <div class="content" style="height: calc(100vh - 150px)">
+                    <el-tab-pane name="permission" label="权限">
+                        <div class="content" style="height: calc(100vh - 166px)">
                             <el-scrollbar class="tree-wrap">
-                                <el-tree :data="contentData.permission"
-                                         show-checkbox
-                                         @node-click="handleTreeNodeClick"></el-tree>
+                                <permission-tree :data="treeData"></permission-tree>
                             </el-scrollbar>
                         </div>
                     </el-tab-pane>
@@ -205,18 +204,30 @@
                 <el-button type="primary" @click="submitModifyPwd">确认</el-button>
             </span>
         </el-dialog>
+        <!--编辑权限-->
+        <el-dialog custom-class="permission-dialog" title="编辑全选" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
+                <permission-tree v-model="treeData" :editable="true"></permission-tree>
+            </el-scrollbar>
+            <span slot="footer">
+                    <el-button @click="treeDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import {getCompanyDetail, getCompanyList, getPeopleList} from "../../../apis/modules/user-manage";
+    import {getCompanyDetail, getCompanyList, getPeopleList, updateCompanyTree, getCompanyTree} from "../../../apis/modules/user-manage";
     import {debounce} from '@/utils'
     import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
     import {subjectMap, saleChannelMap, invoiceTypeMap, accountTypeMap} from '@/enums/user-manage'
+    import PermissionTree from '../../../components/permission-tree'
     export default {
         name: 'manager',
         components: {
-            FilterShell
+            FilterShell,
+            PermissionTree
         },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
@@ -229,7 +240,10 @@
                 rightLoading: false,
                 submitLoading: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
+                submitting: false,
+                treeDialogVisible: false,
                 searchInput: '',
+                treeData: [],
                 companyData: [
                     {
                         name: '11',
@@ -298,6 +312,9 @@
         },
         created() {
             this.ajaxCompanyList()
+            getCompanyTree().then(res => {
+                this.treeData = res
+            })
             window.addEventListener('storage', this.onStorage)
         },
         beforeDestroy() {
@@ -313,6 +330,27 @@
             closePopover,
             hasValue,
             clearValue,
+            submitModifyPermission() {
+                const permission_ids = []
+                this.loopTree(this.treeData, permission_ids)
+                this.submitting = true
+                updateCompanyTree({permission_ids, role_id: this.curSelCompany.id}).then(() => {
+                    this.$message.success('编辑权限成功!')
+                    this.treeDialogVisible = false
+                }).catch(()=> {}).finally(() => {
+                    this.submitting = false
+                })
+            },
+            loopTree(dataArr, arr) {
+                dataArr.forEach(item => {
+                    if (item.permission_groups) {
+                        this.loopTree(item.permission_groups, arr)
+                    }
+                    if (item.permissions) {
+                        arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
+                    }
+                })
+            },
             handleSelRole(obj) {
                 this.curSelRole = obj
                 this.ajaxPeopleList()
@@ -447,6 +485,9 @@
                 if (curSelRole && peopleData.length <= 0) {
                     this.ajaxPeopleList(roleData[0])
                 }
+            },
+            permissionTabHandle() {
+
             },
             debounceAjaxPeopleList() {
                 const func = debounce(this.ajaxPeopleList, 300, true)
@@ -671,12 +712,8 @@
                     }
                 }
                 .tree-wrap{
-                    width: 480px;
-                    height: calc(100% - 46px);
-                    margin:16px auto;
-                    border: 1px solid #e6e6e6;
-                    border-radius: 4px;
-                    padding: 13px 0 13px 6px;
+                    height: 100%;
+                    width: 100%;
                 }
                 .el-table .el-button{
                     min-width: 0;
@@ -745,6 +782,11 @@
     .company-dialog{
         .el-form-item__label::before{
             display: none;
+        }
+    }
+    .permission-dialog{
+        .el-scrollbar .el-scrollbar__wrap{
+            overflow-x: hidden;
         }
     }
 </style>

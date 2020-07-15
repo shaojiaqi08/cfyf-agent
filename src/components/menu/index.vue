@@ -5,17 +5,17 @@
         <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
         业绩
       </div>
-      <div class="normal-transition menu-item actived">
+      <div class="normal-transition menu-item actived" @click="$router.push('/order')">
         订单
       </div>
       <div class="menu-header">
         <i class="mr8 iconfont iconcebiandaohang20_shangpin"></i>
         商品管理
       </div>
-      <div class="normal-transition menu-item">
+      <div class="normal-transition menu-item" @click="$router.push('/rate')">
         费率管理
       </div>
-      <div class="normal-transition menu-item">
+      <div class="normal-transition menu-item" @click="$router.push('/shelves')">
         商品上下架
       </div>
       <div class="menu-header">
@@ -23,16 +23,12 @@
         用户管理
       </div>
       <div class="normal-transition menu-item"
-           title="B端公司">
+           title="B端公司" @click="$router.push('/company')">
         B端公司
       </div>
       <div class="normal-transition menu-item"
-           title="内部管理员">
+           title="内部管理员"  @click="$router.push('/manager')">
         内部管理员
-      </div>
-      <div class="normal-transition menu-item"
-           title="内部管理员内部管理员内部管理员">
-        内部管理员内部管理员内部管理员
       </div>
     </el-scrollbar>
   </div>
