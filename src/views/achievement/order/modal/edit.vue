@@ -134,7 +134,7 @@ export default {
     },
     getManagementCompanyList() {
       getManagementCompanyList().then(res => {
-        this.companyList = res.data
+        this.companyList = res
       })
     },
     close() {
