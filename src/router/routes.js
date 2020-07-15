@@ -13,7 +13,8 @@ export const routers = [
           title: '订单',
           header: true,
           menu: true,
-          show: true
+          show: true,
+          permission: 'a'
         },
         component: getView('achievement/order')
       },
@@ -24,7 +25,8 @@ export const routers = [
           title: '订单详情',
           header: true,
           menu: false,
-          show: false
+          show: false,
+          permission: 'a'
         },
         component: getView('achievement/order/detail')
       }
@@ -41,7 +43,8 @@ export const routers = [
           title: '费率管理',
           header: true,
           menu: true,
-          show: true
+          show: true,
+          permission: 'a'
         },
         component: getView('good-manage/rate')
       },
@@ -52,7 +55,8 @@ export const routers = [
           title: '商品上下架',
           header: true,
           menu: true,
-          show: true
+          show: true,
+          permission: 'a'
         },
         component: getView('good-manage/shelves')
       }
@@ -69,7 +73,8 @@ export const routers = [
           title: 'B端公司',
           header: true,
           menu: true,
-          show: true
+          show: true,
+          permission: 'a'
         },
         component: getView('user-manage/b-client-company')
       },
@@ -80,7 +85,8 @@ export const routers = [
           title: '内部管理员',
           header: true,
           menu: true,
-          show: true
+          show: true,
+          permission: 'a'
         },
         component: getView('user-manage/manager')
       }

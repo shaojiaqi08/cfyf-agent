@@ -9,7 +9,7 @@
         </div>
         <div class="normal-transition menu-item"
              :class="{ actived: $route.name === nav.name }"
-             v-for="nav in filterRoutes(item.children)"
+             v-for="nav in item.children"
              :key="nav.name"
              @click="jump(nav.name)">
           {{ nav.meta.title }}
@@ -24,7 +24,8 @@ import { routers } from '@/router/routes'
 export default {
   data() {
     return {
-      routers: []
+      routers: [],
+      permission: ['a']
     }
   },
   mounted() {
@@ -35,9 +36,20 @@ export default {
       return routes.filter(i => i.meta.show)
     },
     menuInit() {
-      this.routers = routers
+      this.routers = routers.reduce((prev, next) => {
+        const hasPermissionChildren = this.filterRoutes(next.children).filter(i => {
+          return this.permission.includes(i.meta.permission)
+        })
+        if (hasPermissionChildren.length) {
+          next.children = hasPermissionChildren
+          return prev.concat(next)
+        } else {
+          return prev
+        }
+      }, [])
     },
     jump(name) {
+      if (this.$route.name === name) return
       this.$router.push({ name })
     }
   }
