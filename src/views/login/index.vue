@@ -1,0 +1,165 @@
+<template>
+  <div>
+    <div class="login-logo">
+      <div class="logo"></div>
+      <div class="title">创富云服</div>
+    </div>
+    <div class="login-form">
+      <div class="title">欢迎登录创富云服</div>
+      <div class="form">
+        <div class="form-item">
+          <div class="label">账号</div>
+          <div class="input">
+            <el-input placeholder="请输入账号名"
+                      v-model="account_name"
+                      clearable
+                      @focus="inputFocus"
+                      @blur="inputBlur"></el-input>
+          </div>
+        </div>
+        <div class="form-item">
+          <div class="label">密码</div>
+          <div class="input">
+            <div class="click-block" @click="togglePasswordShow"></div>
+            <el-input placeholder="请输入密码"
+                      v-model="password"
+                      :type="`${isPasswordShow ? 'text' : 'password'}`"
+                      :suffix-icon="`iconfont fs14 ${isPasswordShow ? 'iconxiao16_dangqianchakan' : 'iconxiao16_dangqianyincang'}`"
+                      @focus="inputFocus"
+                      @blur="inputBlur"></el-input>
+          </div>
+        </div>
+        <el-button type="primary"
+                   size="medium"
+                   class="block"
+                    @click="login">登录</el-button>
+      </div>
+    </div>
+    <div class="bottom-tips">
+      创富云服 · 内部系统 
+    </div>
+  </div>
+</template>
+
+<script>
+import {login} from '@/apis/modules/index'
+export default {
+  data() {
+    return {
+      account_name: 'admin',
+      password: '123123',
+      isPasswordShow: false
+    }
+  },
+  methods: {
+    login() {
+      const {account_name, password} = this
+      login({
+        account_name, password
+      }).then(res => {
+        window.localStorage.setItem('Management-Authorization', res.token)
+        this.$router.replace('/')
+      })
+    },
+    inputFocus(e) {
+      e.target.parentElement.classList.add('focus')
+    },
+    inputBlur(e) {
+      e.target.parentElement.classList.remove('focus')
+    },
+    togglePasswordShow() {
+      this.isPasswordShow = !this.isPasswordShow
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.login-logo {
+  margin: 120px auto 0;
+  width: 120px;
+  height: 120px;
+  .logo {
+    margin: 0 auto;
+    width: 72px;
+    height: 72px;
+    background-color: #FF9000;
+    border-radius: 7px;
+  }
+  .title {
+    margin-top: 10px;
+    color: #1E1E1E;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+.login-form {
+  margin: 18px auto;
+  padding: 24px;
+  width: 288px;
+  height: 320px;
+  // text-align: center;
+  background-color: #fff;
+  border-radius: 4px;
+  .title {
+    color: #1A1A1A;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .form {
+    margin-top: 20px;
+    .form-item {
+      margin-bottom: 24px;
+      .label {
+        margin-bottom: 10px;
+        text-align: left;
+        color: #999;
+        font-size: 14px;
+      }
+      .input {
+        position: relative;
+        .click-block {
+          position: absolute;
+          width: 36px;
+          height: 36px;
+          right: 0;
+          top: 0;
+          cursor: pointer;
+          z-index: 1;
+        }
+        ::v-deep .el-input {
+
+          &:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #E6E6E6;
+          }
+          &.focus:after {
+            background-color: #FF9000;
+          }
+        }
+        ::v-deep .el-input__inner {
+          border: none !important;
+          padding-left: 0;
+          &:after {
+            content: 'dsds';
+            position: absolute;
+            bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+.bottom-tips {
+  margin-top: 20px;
+  color: #999999;
+  font-size: 14px;
+  text-align: center;
+}
+</style>
