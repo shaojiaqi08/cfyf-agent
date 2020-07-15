@@ -1,43 +1,45 @@
 <template>
   <div class="menu">
     <el-scrollbar class="menu-list scrollbar">
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yeji"></i>
-        业绩
-      </div>
-      <div class="normal-transition menu-item actived" @click="$router.push('/order')">
-        订单
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_shangpin"></i>
-        商品管理
-      </div>
-      <div class="normal-transition menu-item" @click="$router.push('/rate')">
-        费率管理
-      </div>
-      <div class="normal-transition menu-item" @click="$router.push('/shelves')">
-        商品上下架
-      </div>
-      <div class="menu-header">
-        <i class="mr8 iconfont iconcebiandaohang20_yonghuguanli"></i>
-        用户管理
-      </div>
-      <div class="normal-transition menu-item"
-           title="B端公司" @click="$router.push('/company')">
-        B端公司
-      </div>
-      <div class="normal-transition menu-item"
-           title="内部管理员"  @click="$router.push('/manager')">
-        内部管理员
+      <div v-for="item in routers"
+           :key="item.label">
+        <div class="menu-header">
+          <i class="mr8 iconfont" :class="[item.icon]"></i>
+          {{ item.label }}
+        </div>
+        <div class="normal-transition menu-item"
+             :class="{ actived: $route.name === nav.name }"
+             v-for="nav in filterRoutes(item.children)"
+             :key="nav.name"
+             @click="jump(nav.name)">
+          {{ nav.meta.title }}
+        </div>
       </div>
     </el-scrollbar>
   </div>
 </template>
 
 <script>
+import { routers } from '@/router/routes'
 export default {
   data() {
-    return {}
+    return {
+      routers: []
+    }
+  },
+  mounted() {
+    this.menuInit()
+  },
+  methods: {
+    filterRoutes(routes) {
+      return routes.filter(i => i.meta.show)
+    },
+    menuInit() {
+      this.routers = routers
+    },
+    jump(name) {
+      this.$router.push({ name })
+    }
   }
 }
 </script>
@@ -50,7 +52,7 @@ export default {
   width: 180px;
   height: 1000px;
   .menu-list {
-    padding: 20px 0 20px 20px;
+    padding: 14px 0 20px 20px;
     height: 96vh;
     .menu-header {
       margin-top: 24px;
@@ -60,7 +62,7 @@ export default {
       color: #4D4D4D;
       font-size: 16px;
       &:first-child {
-        margin-top: 0;
+        // margin-top: 0;
       }
     }
     .menu-item {
