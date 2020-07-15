@@ -10,12 +10,15 @@
       <div class="inner-box">
         <slot></slot>
       </div>
-      <div class="filter-item" :class="{ actived: popoverShow || isHasValue }" slot="reference">
+      <div class="filter-item" :class="{ actived: popoverShow || isHasValue || isHasCombineValue }" slot="reference">
         <slot name="label"></slot>
         <i class="iconfont iconxiao16_xiajiantou"></i>
         <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
             v-if="hasValue(value)"
             @click="clearValue($event, value)"></i>
+        <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+            v-if="hasCombineValue(combineModel)"
+            @click="clearValue($event, combineModel)"></i>
       </div>
     </el-popover>
   </div>
@@ -36,11 +39,25 @@ export function hasValue(value) {
   return false
 }
 
+export function hasCombineValue(obj) {
+  const keys = Object.keys(obj)
+  const arr = keys.filter(i => obj[i])
+  if (arr.length) return true
+  return false
+}
+
 export function emptyValue(value) {
   if (Array.isArray(value)) {
     return []
   }
   return ''
+}
+
+export function emptyCombineValue(value) {
+  const keys = Object.keys(value)
+  keys.map(i => {
+    value[i] = ''
+  })
 }
 
 export function closePopover() {
@@ -50,7 +67,14 @@ export function closePopover() {
 export function clearValue(e, value) {
   if (e.target.classList.contains('filter-clear')) {
     e.preventDefault()
-    return this.$emit('input', emptyValue(value))
+    // this[key] = emptyValue(this.key)
+    this.$emit('input', emptyValue(value))
+    // if (hasValue(value)) {
+    //   this.$emit('input', emptyValue(value))
+    // }
+    // if (hasCombineValue(value)) {
+    //   emptyCombineValue(value)
+    // }
   }
 }
 
@@ -63,6 +87,16 @@ export default {
     width: {
       type: Number,
       default: 272
+    },
+    combineModel: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    confirm: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -70,20 +104,12 @@ export default {
       popoverShow: false
     }
   },
-  watch: {
-    popoverShow(v) {
-      if (v) {
-        console.log(v, '@@@@')
-        this.$nextTick(() => {
-          console.log(this.$parent.$refs, '====')
-          this.$parent.$refs.focusRef.focus()
-        })
-      }
-    }
-  },
   computed: {
     isHasValue() {
       return hasValue(this.value)
+    },
+    isHasCombineValue() {
+      return hasCombineValue(this.combineModel)
     }
   },
   mounted() {
@@ -91,7 +117,8 @@ export default {
   },
   methods: {
     clearValue,
-    hasValue
+    hasValue,
+    hasCombineValue
   }
 }
 </script>

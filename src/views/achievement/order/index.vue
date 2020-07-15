@@ -10,37 +10,15 @@
       </div>
     </div>
     <div class="scrollbox">
-      <!-- <div class="filter-bar">
-        <el-popover
-          placement="bottom"
-          width="272"
-          v-model="filterValue"
-          popper-class="filter-popover"
-          trigger="click"
-        >
-          <div class="inner-box">
-            <el-select class="block" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </div>
-          <div class="filter-item" :class="{ actived: filterValue }" slot="reference">
-            全部保单状态
-            <i class="iconfont iconxiao16_xiajiantou"></i>
-            <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
-          </div>
-        </el-popover>
-      </div> -->
-      <filter-shell v-model="value">
+      <filter-shell v-model="value" @input="valueChange">
         <el-select class="block"
                    v-model="value"
                    multiple
+                   ref="focusRef"
                    clearable
-                   placeholder="请选择">
+                   filterable
+                   placeholder="请选择"
+                   @change="valueChange">
             <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -49,20 +27,22 @@
             ></el-option>
         </el-select>
         <template v-slot:label>
-            <span>
-                {{ hasValue(value) ? value.map(i => options.find(y => y.value === i).label).join(',') : '全部保单状态' }}
-            </span>
+          <span>
+              {{ hasValue(value) ? value.map(i => options.find(y => y.value === i).label).join(',') : '全部保单状态' }}
+          </span>
         </template>
-        <template v-slot:close>
+        <!-- <template v-slot:close>
             <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
                v-if="hasValue(value)"
                @click="clearValue($event, 'value')"></i>
-        </template>
+        </template> -->
       </filter-shell>
       <filter-shell v-model="value1">
         <el-select class="block"
                    v-model="value1"
                    clearable
+                   filterable
+                   ref="focusRef"
                    placeholder="请选择"
                    @change="closePopover">
             <el-option
@@ -83,6 +63,42 @@
                @click="clearValue($event, 'value1')"></i>
         </template>
       </filter-shell>
+      <!-- <filter-shell v-model="value1" :width="260">
+        <el-date-picker
+          v-model="value1"
+          type="date"
+          value-format="timestamp"
+          placeholder="选择日期"
+          @change="closePopover">
+        </el-date-picker>
+        <template v-slot:label>
+            <span>{{ value1 ? formatDate(value1, 'yyyyMMdd') : '请选择日期' }}</span>
+        </template>
+      </filter-shell> -->
+      <!-- <filter-shell v-model="value1" :width="400">
+        <el-date-picker v-model="value1"
+                        type="daterange"
+                        value-format="timestamp"
+                        placeholder="选择日期"
+                        @change="closePopover"></el-date-picker>
+        <template v-slot:label>
+            <span>
+              {{ hasValue(value1) ? `${formatDate(value1[0], 'yyyyMMdd')} ~ ${formatDate(value1[1], 'yyyyMMdd')}` : '请选择日期' }}
+            </span>
+        </template>
+      </filter-shell> -->
+      <!-- <filter-shell :combineModel.sync="formValue" confirm :width="400">
+        <el-input v-model="formValue.value2"></el-input>
+        <el-select v-model="formValue.value3">
+          <el-option value="1" label="dsd">dsd</el-option>
+        </el-select>
+        <el-button @click="closePopover">@</el-button>
+        <template v-slot:label>
+            <span>
+              {{ hasCombineValue(formValue) ? `${formValue.value2}(${formValue.value3})` : '请选择详细' }}
+            </span>
+        </template>
+      </filter-shell> -->
       <div class="data-row" ref="dataRow">
         <el-button
           class="left"
@@ -92,63 +108,91 @@
           v-if="scrol2Lvisible"
           @click="scrollTo(0)"
         ></el-button>
-        <div class="scroll-wrap" :style="{transform: `translateX(${scrollTranslateX}px)`}">
+        <div class="scroll-wrap"
+             :style="{transform: `translateX(${scrollTranslateX}px)`}"
+             v-loading="statisticLoading">
           <div class="item-block">
             <div>
               承保保费总计(元)
-              <span class="primary">123023320.00</span>
+              <span class="primary">
+                {{ statisticInfo.actual_underwrite_total_premium }}
+              </span>
             </div>
             <div>
               有效出单件数
-              <span>2</span>
+              <span>
+                {{ statisticInfo.total_premium }}
+              </span>
             </div>
             <div>
               保单件均数(元)
-              <span>11234.3</span>
+              <span>
+                {{ statisticInfo.actual_underwrite_average_premium }}
+              </span>
             </div>
           </div>
           <div class="item-block">
             <div>
               净收保费(元)
-              <span class="primary">123023320.00</span>
+              <span class="primary">
+                {{ statisticInfo.actual_premium }}
+              </span>
             </div>
             <div>
               投保保费总计(元)
-              <span class="primary">2</span>
+              <span class="primary">
+                {{ statisticInfo.total_premium }}
+              </span>
             </div>
             <div>
               未支付保费总计(元)
-              <span class="warning">11234.3</span>
+              <span class="warning">
+                {{ statisticInfo.unpaid_total_premium }}
+              </span>
             </div>
             <div>
               犹退保费总计(元)
-              <span class="danger">11234.3</span>
+              <span class="danger">
+                {{ statisticInfo.hesitation_surrender_premium }}
+              </span>
             </div>
             <div>
               退保保费总计(元)
-              <span class="danger">11234.3</span>
+              <span class="danger">
+                {{ statisticInfo.surrender_premium }}
+              </span>
             </div>
           </div>
           <div class="item-block">
             <div>
               犹退件数
-              <span>123023320.00</span>
+              <span>
+                {{ statisticInfo.hesitation_surrender_count }}
+              </span>
             </div>
             <div>
               犹退件均(元)
-              <span>2</span>
+              <span>
+                {{ statisticInfo.average_hesitation_surrender_premium }}
+              </span>
             </div>
             <div>
               非犹退保费(元)
-              <span>11234.3</span>
+              <span>
+                {{ statisticInfo.non_hesitation_surrender_premium }}
+              </span>
             </div>
             <div>
               非犹退件数
-              <span>11234.3</span>
+              <span>
+                {{ statisticInfo.non_hesitation_surrender_count }}
+              </span>
             </div>
             <div>
               非犹退件均(元)
-              <span>1466</span>
+              <span>
+                {{ statisticInfo.average_non_hesitation_surrender_premium }}
+              </span>
             </div>
           </div>
         </div>
@@ -161,39 +205,58 @@
           @click="scrollTo(1)"
         ></el-button>
       </div>
-      <el-table :data="tableData" max-height="626px" border stripe :loading="tableLoading">
-        <el-table-column label="产品名称" prop></el-table-column>
-        <el-table-column label="保险公司" prop></el-table-column>
-        <el-table-column label="所属销售" prop></el-table-column>
-        <el-table-column label="保单状态" prop></el-table-column>
-        <el-table-column label="保费" prop></el-table-column>
-        <el-table-column label="投保时间" prop></el-table-column>
-        <el-table-column label="承保时间" prop></el-table-column>
-        <el-table-column label="回访成功日期" prop width="150"></el-table-column>
-        <el-table-column label="过犹日期" prop></el-table-column>
-        <el-table-column label="是否犹退" prop></el-table-column>
-        <el-table-column label="投保人" prop></el-table-column>
-        <el-table-column label="被保人" prop></el-table-column>
-        <el-table-column label="保额" prop></el-table-column>
-        <el-table-column label="缴费期限" prop></el-table-column>
-        <el-table-column label="保障日期" prop></el-table-column>
-        <el-table-column label="保单号" prop></el-table-column>
-        <el-table-column label="投保单号" prop></el-table-column>
+      <el-table :data="list" max-height="626px" border stripe v-loading="tableLoading">
+        <el-table-column label="产品名称" prop="product_name"></el-table-column>
+        <el-table-column label="保险公司" prop="supplier_name"></el-table-column>
+        <el-table-column label="所属销售" prop="sales_real_name"></el-table-column>
+        <el-table-column label="保单状态" prop="policy_status_str"></el-table-column>
+        <el-table-column label="保费" prop="premium"></el-table-column>
+        <el-table-column label="投保时间" prop="proposal_at">
+          <template slot-scope="{row}">
+            {{ formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="承保时间" prop="policy_at">
+          <template slot-scope="{row}">
+            {{ formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="回访成功日期" prop="" width="150"></el-table-column> -->
+        <el-table-column label="过犹日期" prop="over_hesitation_at">
+          <template slot-scope="{row}">
+            {{ formatDate(row.over_hesitation_at * 1000, 'yyyy-MM-dd') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="是否犹退" prop="is_hesitate_surrender_str"></el-table-column>
+        <el-table-column label="投保人" prop="policy_holder_name"></el-table-column>
+        <el-table-column label="被保人" prop="policy_recognizee_name"></el-table-column>
+        <el-table-column label="保额" prop="guarantee_quota_str"></el-table-column>
+        <el-table-column label="缴费期限" prop="payment_period_desc"></el-table-column>
+        <el-table-column label="保障日期" prop="guarantee_period_desc">
+          <template slot-scope="{row}">
+            {{ formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="保单号" prop="policy_sn"></el-table-column>
+        <el-table-column label="投保单号" prop="proposal_sn"></el-table-column>
         <el-table-column label="操作" prop fixed="right" width="200">
           <template slot-scope="{row}">
-            <el-button type="text" size="mini">订单详情</el-button>
+            <el-button type="text" size="mini" @click="showInfoDialog(row)">订单详情</el-button>
             <el-button type="text" size="mini" @click="showBelongDialog(row)">修改归属</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <edit-modal :show.sync="belongVisible"></edit-modal>
+    <edit-modal :show.sync="belongVisible"
+                :belongData="belongData"
+                @update="getManagementPolicyList"></edit-modal>
   </div>
 </template>
 
 <script>
 import EditModal from "./modal/edit";
-import { getRegion } from '@/apis/modules/index'
+import { getManagementPolicyList, getManagementPolicyStatistics } from '@/apis/modules/achievement'
+import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
 // 业绩-订单
 export default {
@@ -204,9 +267,12 @@ export default {
   },
   data() {
     return {
+      formatDate,
       filterValue: false,
       belongVisible: false,
       belongData: {},
+      list: [],
+      statisticInfo: {},
       options: [
         {
           value: "选项1",
@@ -231,6 +297,12 @@ export default {
       ],
       value: [],
       value1: '',
+      formValue: {
+        value2: '',
+        value3: ''
+      },
+      value2: '',
+      value3: '',
       tableData: [
         { id: 0 },
         { id: 0 },
@@ -254,7 +326,8 @@ export default {
         { id: 0 },
         { id: 0 }
       ],
-      tableLoading: false,
+      tableLoading: true,
+      statisticLoading: true,
       scrol2Lvisible: false,
       scrol2Rvisible: false,
       scrollTranslateX: 0,
@@ -262,9 +335,12 @@ export default {
     };
   },
   methods: {
-      closePopover,
-      hasValue,
-      clearValue,
+    valueChange(v) {
+      console.log(v, '++++')
+    },
+    closePopover,
+    hasValue,
+    clearValue,
     // dir 0: 左 1: 右
     scrollTo(dir) {
       const { scrollTranslateX: oldTranX } = this;
@@ -300,10 +376,32 @@ export default {
         this.scrollTranslateX = 0;
       }
     },
-    ajaxData() {},
+    showInfoDialog(row) {
+      this.$router.push({ path: `/order/detail/${row.id}` })
+    },
     showBelongDialog(row) {
       this.belongData = row;
       this.belongVisible = true;
+    },
+    getManagementPolicyList() {
+      getManagementPolicyList().then(res => {
+        this.tableLoading = false
+        this.list = res.data
+      })
+      .catch(err => {
+        console.log(err)
+        this.tableLoading = false
+      })
+    },
+    getManagementPolicyStatistics() {
+      getManagementPolicyStatistics().then(res => {
+        this.statisticInfo = res
+        this.statisticLoading = false
+      })
+      .catch(err => {
+        console.log(err)
+        this.statisticLoading = false
+      })
     }
   },
   watch: {
@@ -314,10 +412,8 @@ export default {
     }
   },
   created() {
-    this.ajaxData();
-    getRegion().then(res => {
-      console.log(res, '====')
-    })
+    this.getManagementPolicyList()
+    this.getManagementPolicyStatistics()
   },
   mounted() {
     this.checkNeedScroll();

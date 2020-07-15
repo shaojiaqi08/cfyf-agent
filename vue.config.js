@@ -13,7 +13,8 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://proxy.tc.2239.com/web/v1',   //代理接口
-        target: 'http://b_service.test:8000',   //代理接口
+        // target: 'http://b_service.test:8000',   //代理接口
+        target: 'http://cfyf.service.test/web/v1',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''    //代理的路径
