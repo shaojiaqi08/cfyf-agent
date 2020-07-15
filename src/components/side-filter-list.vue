@@ -12,7 +12,7 @@
                  :class="{active: item[valueKey] === activeValue}"
                  @click="handleSelected(item)">
                 <slot name="list" v-bind:row="item">
-                    <el-tooltip placement="top" :content="item[labelKey]">
+                    <el-tooltip placement="top" :content="item[labelKey]" :enterable="false">
                         <span>{{item[labelKey]}}</span>
                     </el-tooltip>
                 </slot>

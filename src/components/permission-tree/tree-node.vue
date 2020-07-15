@@ -2,7 +2,9 @@
     <div class="tree-node-container">
         <div class="chkbox-wrap">
             <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
-               v-if="(data.permission_groups && data.permission_groups.length > 0)||(data.permissions && data.permissions.length > 0)"
+               v-if="editable ?
+                    (data.permission_groups && data.permission_groups.length > 0)||(data.permissions && data.permissions.length > 0) :
+                    (data.permission_groups && data.permission_groups.some(item => item.is_checked) > 0) || (data.permissions && data.permissions.some(item => item.is_checked) > 0)"
                @click="triggerExpanded"></i>
             <el-checkbox v-if="editable" :indeterminate= "indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
             <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
@@ -15,7 +17,10 @@
         <div class="tree-permission-container"
              v-show="expanded"
              v-if="data.permissions && data.permissions.length > 0">
-            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="false" :key="index" v-for="(item, index) in data.permissions" v-model="data.permissions[index]"></tree-node>
+            <tree-node @checked="handleSubChecked"
+                       :parent="data"
+                       :isGroup="false" :key="index"
+                       v-for="(item, index) in (editable ? data.permissions : (data.permissions || []).filter(item => item.is_checked))" v-model="data.permissions[index]"></tree-node>
         </div>
     </div>
 </template>
@@ -52,37 +57,25 @@
                 this.$top.updateTree()
             },
             updateChildren(obj, value) {
-                if (obj.permission_groups) {
-                    obj.permission_groups.forEach(item => {
-                        item.is_checked = value
-                        this.updateChildren(item, value)
-                    })
-                }
-                if (obj.permissions){
-                    obj.permissions.forEach(item => {
-                        item.is_checked = value
-                        this.updateChildren(item, value)
-                    })
-                }
+                obj.permission_groups && obj.permission_groups.forEach(item => {
+                    item.is_checked = value
+                    this.updateChildren(item, value)
+                })
+                obj.permissions && obj.permissions.forEach(item => {
+                    item.is_checked = value
+                    this.updateChildren(item, value)
+                })
             },
             // 子checkbox更新父checkbox
             handleSubChecked(obj, isGroup) {
                 const {data} = this
                 const target = data[isGroup ? 'permission_groups' : 'permissions']
-                if (!data.is_checked) {
-                    data.is_checked = target.every(item => item.is_checked)
-                } else {
-                    data.is_checked = false
-                }
+                data.is_checked = target.every(item => item.is_checked)
                 // 更新父节点
                 let parent = this.parent
                 while (parent) {
                     const target = parent[this.isGroup ? 'permission_groups' : 'permissions']
-                    if (!parent.is_checked) {
-                        parent.is_checked = target.every(item => item.is_checked)
-                    } else {
-                        parent.is_checked = false
-                    }
+                    parent.is_checked = target.every(item => item.is_checked)
                     parent = parent.parent
                 }
             }

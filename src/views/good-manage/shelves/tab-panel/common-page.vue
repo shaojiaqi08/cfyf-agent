@@ -16,7 +16,7 @@
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                 </el-input>
             </div>
-            <el-table ref="table" :data="data" border height="calc(100vh - 193px)" v-loading="tableLoading">
+            <el-table ref="table" :data="data" border height="calc(100vh - 193px)" v-loading="tableLoading" v-table-infinite-scroll="scroll2Bottom">
                 <el-table-column label="产品名称" align="center" prop="name"></el-table-column>
                 <el-table-column label="产品ID" align="center" prop="id"></el-table-column>
                 <el-table-column label="上下架状态" align="center">
@@ -45,6 +45,20 @@
             }
         },
         components: {SideFilterList},
+        directives: {
+            'table-infinite-scroll' : {
+                inserted(el, binding) {
+                    const scrollWrap = el.querySelector('.el-table__body-wrapper')
+                    const scrollHandle = debounce(() => {
+                        const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
+                        if (offsetHeight + scrollTop >= scrollHeight) { // 到底
+                            binding.value()
+                        }
+                    }, 300)
+                    scrollWrap.addEventListener('scroll', scrollHandle)
+                }
+            }
+        },
         data() {
             return {
                 data: [
@@ -137,30 +151,19 @@
             },
             handleSelCompany() {
             },
-            // 延迟&&防抖加载数据
+            scroll2Bottom() {
+                this.ajaxTableData()
+            },
             debounceAjaxTableData() {
                 const func = debounce.call(this, this.ajaxTableData(), 300, true)
                 this.debounceAjaxTableData = func
             },
             ajaxTableData() {
-            },
-            initTableScrollEvent() {
-                const scrollWrap = this.$refs.table.$el.querySelector('.el-table__body-wrapper')
-                const scrollHandle = debounce(() => {
-                    const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                    if (offsetHeight + scrollTop >= scrollHeight) { // 到底
-                        this.searchModel.page += 1
-                        this.ajaxTableData()
-                    }
-                }, 300)
-                scrollWrap.addEventListener('scroll', scrollHandle)
-            },
-        },
-        mounted() {
-            this.initTableScrollEvent()
-            this.debounceAjaxTableData = () => {
-                debounce(this.ajaxTableData(), 300)
+                console.log('ajax data')
             }
+        },
+        created() {
+            this.ajaxTableData()
         }
     }
 </script>

@@ -18,6 +18,8 @@ export const updatePassword = (params) => post('/management/sys_permission/sys_u
 export const getManageTree = (params) => get('/management/sys_permission/sys_permission_group/get_tree', params)
 // 更新权限树
 export const updateTree = (params) => post('/management/sys_permission/sys_role_permission_relation/update', params)
+// 编辑权限树详情
+export const getManageTreeDetail = (params) => get('/management/sys_permission/sys_permission_group/detail?role_id=1', params)
 
 // ----------------- B端公司接口 -----------------------
 // 新增公司

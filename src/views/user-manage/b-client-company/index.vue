@@ -140,7 +140,7 @@
                                     </div>
                                     <el-button type="primary">导出数据</el-button>
                                 </div>
-                                <el-table :data="contentData.tableData" border max-height="calc(100vh - 240px)">
+                                <el-table :data="contentData.tableData" border max-height="calc(100vh - 240px)" v-table-infinite-scroll="scroll2Bottom">
                                     <el-table-column label="姓名" prop="name" align="center"></el-table-column>
                                     <el-table-column label="账号" prop="account" align="center"></el-table-column>
                                     <el-table-column label="管理员角色" prop="account" align="center" v-if="curSelRole && curSelRole.isSupper"></el-table-column>
@@ -229,6 +229,20 @@
             FilterShell,
             PermissionTree
         },
+        directives: {
+            'table-infinite-scroll' : {
+                inserted(el, binding) {
+                    const scrollWrap = el.querySelector('.el-table__body-wrapper')
+                    const scrollHandle = debounce(() => {
+                        const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
+                        if (offsetHeight + scrollTop >= scrollHeight) { // 到底
+                            binding.value()
+                        }
+                    }, 300)
+                    scrollWrap.addEventListener('scroll', scrollHandle)
+                }
+            }
+        },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             const roleData = [
@@ -260,7 +274,8 @@
                     position_id: '',
                     account_status: '',
                     keyword: '',
-                    role: ''
+                    role: '',
+                    page: 1
                 },
                 contentData: {},
                 curSelRole: null,
@@ -330,6 +345,10 @@
             closePopover,
             hasValue,
             clearValue,
+            scroll2Bottom() {
+                this.peopleSearchModel.page += 1
+                this.ajaxPeopleList()
+            },
             submitModifyPermission() {
                 const permission_ids = []
                 this.loopTree(this.treeData, permission_ids)
@@ -458,7 +477,13 @@
                 this.peopleData = []
                 this.rightLoading = true
                 getPeopleList({...peopleSearchModel, company_id: curSelCompany.id, role: curSelRole.key}).then(res => {
-                    this.peopleData = res.data
+                    if (peopleSearchModel.page === 1) {
+                        this.peopleData = res.data
+                    } else if (res.data.length > 0) {
+                        this.peopleData = [...this.peopleData, ...res.data]
+                    } else {
+                        peopleSearchModel.page -= 1
+                    }
                 }).finally(() => {
                     this.rightLoading = false
                 })

@@ -10,7 +10,7 @@
                     <div v-for="(item, index) in roleData"
                          :key="index"
                          :class="{'list-item':true, active: curSelRole && curSelRole.id === item.id}"
-                         @click="ajaxDetail(item)">
+                         @click="handleSelRole(item)">
                         <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
                             <span>{{item.name}}</span>
                         </el-tooltip>
@@ -19,7 +19,7 @@
                 <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </div>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="treeDialogVisible=true">编辑</el-button>
+                <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 166px)">
                     <el-scrollbar class="tree-wrap">
-                        <permission-tree :data="treeData"></permission-tree>
+                        <permission-tree :data="treeDetail"></permission-tree>
                     </el-scrollbar>
                 </div>
             </el-scrollbar>
@@ -143,9 +143,9 @@
             </span>
         </el-dialog>
         <!--编辑权限-->
-        <el-dialog custom-class="permission-dialog" title="编辑全选" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
-            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
-                <permission-tree v-model="treeData" :editable="true"></permission-tree>
+        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
+                <permission-tree v-model="treeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
                     <el-button @click="treeDialogVisible = false">取消</el-button>
@@ -163,8 +163,8 @@
             updateStatus,
             resetPassword,
             updatePassword,
-            getManageTree,
-            updateTree} from '@/apis/modules/user-manage' // eslint-disable-line
+            updateTree,
+            getManageTreeDetail} from '@/apis/modules/user-manage' // eslint-disable-line
     import {getRoleList, createRole} from '@/apis/modules/index'
     import {formatDate} from '@/utils/formatTime'
     import {accountStatusMap} from '@/enums/user-manage'
@@ -177,9 +177,11 @@
             return {
                 leftLoading: false,
                 rightLoading: false,
+                treeLoading: false,
                 submitting: false, // dialog公用loading
                 targetRow: null, // 修改密码目标对象
                 treeData: [],
+                treeDetail: [],
                 curSelRole: null,
                 roleData: [],
                 managerData: [],
@@ -235,15 +237,16 @@
         },
         created() {
             this.ajaxRoleList()
-            getManageTree().then(res => {
-                this.treeData = res
-            })
         },
         methods: {
             formatDate,
+            handleSelRole(obj) {
+                this.ajaxDetail(obj)
+                this.ajaxTreeDetail()
+            },
             submitModifyPermission() {
                 const permission_ids = []
-                this.loopTree(this.treeData, permission_ids)
+                this.loopTree(this.treeDetail, permission_ids)
                 this.submitting = true
                 updateTree({permission_ids, role_id: this.curSelRole.id}).then(() => {
                     this.$message.success('编辑权限成功!')
@@ -254,11 +257,11 @@
             },
             loopTree(dataArr, arr) {
                 dataArr.forEach(item => {
-                    console.log(item)
                     if (item.permission_groups && item.permission_groups.length) {
                         this.loopTree(item.permission_groups, arr)
                     }
                     if (item.permissions && item.permissions.length) {
+                        console.log(item)
                         arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
                     }
                 })
@@ -443,6 +446,18 @@
                     this.curSelRole = null
                 }).finally(() => {
                     this.leftLoading = false
+                })
+            },
+            editTree() {
+                this.ajaxTreeDetail()
+                this.treeDialogVisible = true
+            },
+            ajaxTreeDetail() {
+                this.treeLoading = true
+                getManageTreeDetail({role_id: this.curSelRole.id}).then(res => {
+                    this.treeDetail = res
+                }).catch(() => {}).finally(() => {
+                    this.treeLoading = false
                 })
             },
             ajaxDetail(obj) {
