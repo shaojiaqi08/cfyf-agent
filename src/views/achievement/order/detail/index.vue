@@ -149,7 +149,6 @@ export default {
       getManagementPolicyDetail({ id })
       .then(res => {
           this.policyInfo = res
-          console.log(this.policyInfo, '+++')
       })
     }
   }

@@ -64,7 +64,7 @@ export const routers = [
   },
   {
     label: '用户管理',
-    icon: 'iconcebiandaohang20_shangpin',
+    icon: 'iconcebiandaohang20_yonghuguanli',
     children: [
       {
         path: '/company',
@@ -105,6 +105,16 @@ const necessaryRoutes = [
     component: getView('home')
   },
   {
+    path: '/user-info',
+    name: 'userInfo',
+    meta: {
+      title: '用户设置',
+      header: true,
+      menu: true
+    },
+    component: getView('user-info')
+  },
+  {
     path: '/login',
     name: 'login',
     meta: {
@@ -120,8 +130,8 @@ const necessaryRoutes = [
     name: "design",
     meta: {
       title: 'about',
-      header: true,
-      menu: true
+      header: false,
+      menu: false
     },
     component: () =>
         import("@/views/DesignSpec.vue")
