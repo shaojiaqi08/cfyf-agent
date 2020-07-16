@@ -272,7 +272,9 @@ export default {
       belongVisible: false,
       belongData: {},
       list: [],
-      statisticInfo: {},
+      statisticInfo: {
+        actual_underwrite_total_premium: 0
+      },
       options: [
         {
           value: "选项1",
