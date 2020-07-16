@@ -106,6 +106,54 @@ export default [
     component: () => import('views/user-manage/b-client-company/edit')
   },
   {
+    path: '/proposal',
+    name: 'Proposal',
+    meta: {
+      title: '计划书',
+      header: true,
+      menu: true
+    },
+    component: () => import('views/merchandising/proposal')
+  },
+  {
+    path: '/proposal/proposal-operate',
+    name: 'Proposal-operate',
+    meta: {
+      title: '计划书编辑',
+    },
+    component: () => import('views/merchandising/proposal/proposal-operate')
+  },
+  {
+    path: '/underwrite-health-notice',
+    name: 'Underwrite-health-notice',
+    meta: {
+      title: '核保健告',
+      header: true,
+      menu: true
+    },
+    component: () => import('views/merchandising/underwrite-health-notice')
+  },
+  {
+    path: '/product-compare',
+    name: 'Product-compare',
+    meta: {
+      title: '产品对比',
+      header: true,
+      menu: true
+    },
+    component: () => import('views/merchandising/product-compare')
+  },
+  {
+    path: '/product-compare-lab',
+    name: 'Product-compare-lab',
+    meta: {
+      title: '产品对比',
+      header: true,
+      menu: true
+    },
+    component: () => import('views/merchandising/product-compare/product-compare-lab')
+  },
+  {
     path: '/manager',
     name: 'Manager',
     meta: {

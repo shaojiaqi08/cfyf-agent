@@ -2,9 +2,9 @@
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
             <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword"></el-input>
-            <!-- 自定义搜索条件 -->
-            <slot name="extraFilter"></slot>
         </div>
+        <!-- 自定义搜索条件 -->
+        <slot name="extraFilter"></slot>
         <el-scrollbar>
             <div class="list-item"
                  v-for="(item, index) in filterList"
@@ -65,6 +65,9 @@
         computed: {
             filterList() {
                 const {keyword, listData, labelKey} = this
+                if (!this.showFilter) {
+                    return listData
+                }
                 return listData.filter(item => item[labelKey].includes(keyword))
             }
         },

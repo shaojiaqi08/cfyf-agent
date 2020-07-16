@@ -19,4 +19,4 @@ export const getRegion = params => get('/common/get_region_list', params)
 export const getBankList = params => get('/common/get_bank_list', params)
 
 // 登录
-export const login = params => post('/management/sys_permission/sys_user/login', params)
+export const login = params => post('/agent/sales/login', params)

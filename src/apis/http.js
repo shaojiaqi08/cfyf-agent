@@ -13,9 +13,9 @@ const service = axios.create({
 service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 
 service.interceptors.request.use(config => {
-  const token = window.localStorage.getItem('Management-Authorization')
+  const token = window.localStorage.getItem('Agent-Authorization')
   if (token) {
-    config.headers['Management-Authorization'] = token
+    config.headers['Agent-Authorization'] = token
   }
   return config
 }, error => {

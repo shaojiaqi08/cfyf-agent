@@ -11,7 +11,7 @@
           <div class="label">账号</div>
           <div class="input">
             <el-input placeholder="请输入账号名"
-                      v-model="account_name"
+                      v-model="username"
                       clearable
                       @focus="inputFocus"
                       @blur="inputBlur"></el-input>
@@ -35,9 +35,6 @@
                     @click="login">登录</el-button>
       </div>
     </div>
-    <div class="bottom-tips">
-      创富云服 · 内部系统 
-    </div>
   </div>
 </template>
 
@@ -46,18 +43,18 @@ import {login} from '@/apis/modules/index'
 export default {
   data() {
     return {
-      account_name: 'admin',
+      username: 'sales',
       password: '123123',
       isPasswordShow: false
     }
   },
   methods: {
     login() {
-      const {account_name, password} = this
+      const {username, password} = this
       login({
-        account_name, password
+        username, password
       }).then(res => {
-        window.localStorage.setItem('Management-Authorization', res.token)
+        window.localStorage.setItem('Agent-Authorization', res.token)
         this.$router.replace('/')
       })
     },

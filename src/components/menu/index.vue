@@ -20,6 +20,22 @@
       </div>
       <div class="menu-header">
         <i class="mr8 iconfont iconcebiandaohang20_yonghuguanli"></i>
+        助销工具
+      </div>
+      <div class="normal-transition menu-item"
+           title="计划书" @click="$router.push('/proposal')">
+        计划书
+      </div>
+      <div class="normal-transition menu-item"
+           title="核保健告" @click="$router.push('/underwrite-health-notice')">
+        核保健告
+      </div>
+      <div class="normal-transition menu-item"
+           title="互动记录" @click="$router.push('/')">
+        互动记录
+      </div>
+      <div class="menu-header">
+        <i class="mr8 iconfont iconcebiandaohang20_yonghuguanli"></i>
         用户管理
       </div>
       <div class="normal-transition menu-item"
