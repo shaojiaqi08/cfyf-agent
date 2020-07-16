@@ -44,6 +44,7 @@ export default {
   position: absolute;
   top: 40px;
   left: 180px;
+  min-width: 1300px;
   right: 0;
   bottom: 0;
   background-color: #F0F0F0;
