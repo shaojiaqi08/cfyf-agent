@@ -19,18 +19,30 @@ export const getManageTree = (params) => get('/management/sys_permission/sys_per
 // 更新权限树
 export const updateTree = (params) => post('/management/sys_permission/sys_role_permission_relation/update', params)
 
-// ----------------- B端公司接口 -----------------------
-// 新增公司
-export const createCompany = (params) => post('/management/company/store', params)
-// 编辑公司
-export const editCompany = (params) => post('/management/company/update', params)
-// 公司列表
-export const getCompanyList = (params) => get('/management/company/get_page_list', params)
-// 公司详情
-export const getCompanyDetail = (params) => get('/management/company/detail', params)
-// 成员列表
-export const getPeopleList = (params) => get('/management/sales/get_page_list', params)
-// 更新权限树
-export const updateCompanyTree = (params) => post('', params)
-// 权限树
-export const getCompanyTree = (params) => get('/agent/business_permission/business_permission_group/get_tree', params)
+// ----------------- 销售 -----------------------
+// 团队列表
+export const getTeamList = (params) => get('/agent/sales/get_all_teams_list', params)
+// 销售人员列表
+export const getSalesList = (params) => get('/agent/sales/get_page_list', params)
+// 新增销售
+export const createSales = (params) => post('/agent/sales/store', params)
+// 编辑销售
+export const modifySales = (params) => post('/agent/sales/update', params)
+// 离职
+export const dimission = (params) => post('/agent/sales/dimission', params)
+// 重置密码
+export const resetSalesPassword = (params) => post('/agent/sales/reset_password', params)
+// 销售详情
+export const getSalesDetail = (params) => get('/agent/sales/detail', params)
+// 职位列表
+export const getSalesPositionList = (params) => get('/agent/sales/get_position_list', params)
+
+// --------------------  职位 ------------------------------
+// 职位列表
+export const getPositionList = (params) => get('/agent/sales_position/get_list', params)
+// 等级列表
+export const getPosLvList = (params) => get('/agent/sales_position/get_level_list', params)
+// 职位详情列表
+export const getPosDetail = (params) => get('/agent/sales_position/get_list', params)
+// 新增职位
+export const createPosLv = (params) => post('/agent/sales_position/store', params)

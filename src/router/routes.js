@@ -6,7 +6,9 @@ export default [
     path: "/",
     name: "Home",
     meta: {
-      title: 'home'
+      title: 'home',
+      header: true,
+      menu: true
     },
     component: getView('home')
   },
@@ -80,30 +82,14 @@ export default [
     component: () => import('@/views/good-manage/shelves')
   },
   {
-    path: '/company',
-    name: 'Company',
+    path: '/sale',
+    name: 'Sale',
     meta: {
-      title: 'B端公司',
+      title: '用户管理-销售',
       header: true,
       menu: true
     },
-    component: () => import('views/user-manage/b-client-company')
-  },
-  {
-    path: '/company/edit/:id',
-    name: 'Company-Edit',
-    meta: {
-      title: '修改公司信息'
-    },
-    component: () => import('views/user-manage/b-client-company/edit')
-  },
-  {
-    path: '/company/add',
-    name: 'Company-Add',
-    meta: {
-      title: '新增B端公司'
-    },
-    component: () => import('views/user-manage/b-client-company/edit')
+    component: () => import('views/user-manage/saler')
   },
   {
     path: '/proposal',

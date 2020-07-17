@@ -9,7 +9,7 @@
             <div class="list-item"
                  v-for="(item, index) in filterList"
                  :key="index"
-                 :class="{active: item[valueKey] === activeValue}"
+                 :class="{active: item[valueKey] === value}"
                  @click="handleSelected(item)">
                 <slot name="list" v-bind:row="item">
                     <el-tooltip placement="top" :content="item[labelKey]">
@@ -28,12 +28,11 @@
     export default {
         name: 'side-filter-list',
         model: {
-            prop: 'activeValue',
             event: 'update:activeValue'
         },
         props: {
             customClass: String,
-            activeValue: null,
+            value: [String, Number],
             showFilter: {
                 type: Boolean,
                 default: true
@@ -76,20 +75,6 @@
                 this.$emit('update:activeValue', obj[this.valueKey])
                 this.$emit('change', obj)
             }
-        },
-        render(h) {
-            const filterBar = this.showFilter ? h('div', {'class': {'search-bar': true}}, [this.$slots.filterbar]) : null
-            const list = h('el-scroll', [h('ul', [
-                this.data.map(item => this.listItemRender ? this.listItemRender() : h('li', item[this.filedKey]))
-            ])])
-            return h('div', {
-                'class': {
-                    'side-filter-container': true
-                }
-            },[
-                filterBar,
-                list
-            ])
         }
     }
 </script>

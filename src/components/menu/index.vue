@@ -39,12 +39,12 @@
         用户管理
       </div>
       <div class="normal-transition menu-item"
-           title="B端公司" @click="$router.push('/company')">
-        B端公司
+           title="销售" @click="$router.push('/sale')">
+        销售
       </div>
       <div class="normal-transition menu-item"
            title="内部管理员"  @click="$router.push('/manager')">
-        内部管理员
+        管理员
       </div>
     </el-scrollbar>
   </div>

@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15984871",
+      "name": "小(16)_下指向箭头",
+      "font_class": "xiao16_xiazhixiangjiantou",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "15984872",
+      "name": "小(16)_上指向箭头",
+      "font_class": "xiao16_shangzhixiangjiantou",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
       "icon_id": "15834676",
       "name": "小(16)_达成条件",
       "font_class": "xiao16_dachengtiaojian",

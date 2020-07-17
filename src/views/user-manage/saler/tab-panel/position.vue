@@ -1,0 +1,325 @@
+<template>
+    <div class="position-pane-container">
+        <el-button class="add-button" type="primary" @click="posDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
+        <side-filter-list
+                custom-class="pos-side-filter"
+                v-loading="lvLoading"
+                label-key="level_str"
+                value-key="level"
+                :showFilter="false"
+                v-model="selLv"
+                @change="handleSelLv"
+                style="width: 240px"
+                :listData="lvData"
+        >
+            <template v-slot:list="{row}">
+                <div class="pos-list-item flex flex-between">
+                    <span>{{row.level_str}}</span>
+                    <span>共 {{row.count}} 个职位</span>
+                </div>
+            </template>
+        </side-filter-list>
+        <side-filter-list
+                v-loading="positionLoading"
+                label-key="name"
+                value-key="id"
+                :showFilter="false"
+                v-model="selPos"
+                @change="handleSelPos"
+                style="width: 240px"
+                :listData="positionData"
+        >
+        </side-filter-list>
+        <div class="right" v-loading="detailLoading">
+        </div>
+        <!--编辑/新增销售-->
+<!--        <el-dialog custom-class="manager-dialog"-->
+<!--                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}信息`"-->
+<!--                   :visible.sync="editDialogVisible"-->
+<!--                   width="480px"-->
+<!--                   v-loading="dialogLoading">-->
+<!--            <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">-->
+<!--                <el-form-item label="姓名" prop="real_name">-->
+<!--                    <el-input placeholder="请输入姓名" v-model="editFormModel.real_name"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="登录账号" prop="username">-->
+<!--                    <el-input placeholder="请输入登录账号" v-model="editFormModel.username"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="身份证号" prop="email">-->
+<!--                    <el-input placeholder="请输入身份证号" v-model="editFormModel.email"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="入职日期" prop="resignation_at">-->
+<!--                    <el-date-picker style="width: 100%" type="date" v-model="editFormModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="手机号" prop="mobile">-->
+<!--                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="职位" prop="position_id">-->
+<!--                    <el-select filterable style="width: 100%" placeholder="请选择职位" v-model="editFormModel.position_id">-->
+<!--                        <el-option v-for="(item, index) in positionData" :key="index" :value="item.id" :label="item.name"></el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="团队" prop="team_id">-->
+<!--                    <el-select filterable style="width: 100%" placeholder="团队" v-model="editFormModel.team_id">-->
+<!--                        <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+<!--                <template v-if="editFormModel.id === ''">-->
+<!--                    <el-form-item label="登录密码" prop="password">-->
+<!--                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>-->
+<!--                    </el-form-item>-->
+<!--                    <el-form-item label="再次输入密码" prop="confirm_password">-->
+<!--                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>-->
+<!--                    </el-form-item>-->
+<!--                </template>-->
+<!--            </el-form>-->
+<!--            <span slot="footer">-->
+<!--                <el-button @click="editDialogVisible = false">取消</el-button>-->
+<!--                <el-button type="primary" :loading="submitting" :disabled="submitting">确认</el-button>-->
+<!--            </span>-->
+<!--        </el-dialog>-->
+        <el-dialog title="新增职位" :visible.sync="posDialogVisible" width="480px">
+            <el-form ref="posForm" label-width="100px" :model="posFormModel" :rules="posRules">
+                <el-form-item label="职位等级" prop="level">
+                    <el-select v-model="posFormModel.level" placeholder="请选择职位等级">
+                        <el-option v-for="item in lvMap" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="职位名称" prop="name">
+                    <el-input v-model="posFormModel.name" placeholder="请输入职位名称"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button @click="posDialogVisible = false">取消</el-button>
+                <el-button @click="submitCreatePos" type="primary" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+<script>
+    import {getPositionList, getPosLvList, getPosDetail, createPosLv} from '@/apis/modules/user-manage' // eslint-disable-line
+    import SideFilterList from '@/components/side-filter-list'
+    import {accountStatusMap} from '@/enums/user-manage'
+    export default {
+        name: 'positon',
+        components: {
+            SideFilterList
+        },
+        data() {
+            const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
+            return {
+                accountStatusMap,
+                submitting: false,
+                positionLoading: false,
+                lvLoading: false,
+                dialogLoading: false,
+                detailLoading: false,
+                posDialogVisible: false,
+                name: '',
+                searchModel: {
+                    account_status: '',
+                    company_id: '',
+                    position_id: '',
+                    team_id: '',
+                    resignation_start_date: '',
+                    resignation_end_date: '',
+                    close_start_date: '',
+                    close_end_date: '',
+                    keyword: ''
+                    // page: 1
+                },
+                selLv: '',
+                selPos: '',
+                selSales: '',
+                detailData: [],
+                editFormModel: {
+                    id: '',
+                    real_name: '',
+                    username: '',
+                    identity_card: '',
+                    resignation_at: '',
+                    mobile: '',
+                    position_id: '',
+                    team_id: '',
+                    password: '',
+                    confirm_password: '',
+                    role: 'sales'
+                },
+                editRules: {
+                    real_name: baseValiObj,
+                    username: baseValiObj,
+                    identity_card: baseValiObj,
+                    resignation_at: baseValiObj,
+                    mobile: baseValiObj,
+                    position_id: baseValiObj,
+                    team_id: baseValiObj,
+                    role: baseValiObj,
+                    password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
+                    confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
+                },
+                editDialogVisible: false,
+                positionData: [],
+                lvData: [],
+                lvMap: [
+                    {label: '第一级', value: 1},
+                    {label: '第二级', value: 2},
+                    {label: '第三级', value: 3},
+                    {label: '第四级', value: 4},
+                    {label: '第五级', value: 5},
+                    {label: '第六级', value: 6},
+                    {label: '第七级', value: 7},
+                    {label: '第八级', value: 8},
+                    {label: '第九级', value: 9},
+                    {label: '第十级', value: 10}
+                ],
+                posRules: {
+                    level: baseValiObj,
+                    name: baseValiObj
+                },
+                posFormModel: {
+                    level: '',
+                    name: ''
+                }
+            }
+        },
+        computed: {
+            filterTableData() {
+                const {name} = this
+                return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
+            }
+        },
+        methods: {
+            create() {},
+            handleSelLv(obj) {
+                this.selLv = obj.level
+                this.ajaxPositionData(obj.level)
+            },
+            handleSelPos(obj) {
+                this.selPos = obj.id
+                this.ajaxDetail(obj.id)
+            },
+            submitCreatePos() {
+                this.$refs.posForm.validate(flag => {
+                    if (flag) {
+                        this.submitting = true
+                        createPosLv(this.posFormModel).then(() => {
+                            this.ajaxLvData()
+                            this.$message.success('职位添加成功!')
+                            this.posDialogVisible = false
+                        }).catch(() => {}).finally(() => {
+                            this.submitting = false
+                        })
+                    }
+                })
+            },
+            ajaxDetail(position_id) {
+                this.detailLoading = true
+                getPosDetail({position_id}).then(res => {
+                    this.detailData = res
+                }).catch(() => {}).finally(() => {
+                    this.detailLoading = false
+                })
+            },
+            ajaxPositionData(level) {
+                this.positionLoading = true
+                getPositionList({level}).then(res => {
+                    this.positionData = res
+                }).catch(() => {}).finally(() => {
+                    this.positionLoading = false
+                })
+            },
+            ajaxLvData() {
+                this.lvLoading = true
+                getPosLvList().then(res => {
+                    this.lvData = res
+                }).catch(() => {}).finally(() => {
+                    this.lvLoading = false
+                })
+            },
+            confirm(content, btnTxt, btnColor='#FF4C4C') {
+                const h = this.$createElement
+                return this.$confirm(
+                    h('div', [
+                        h('i', {
+                            class: {
+                                iconfont: true,
+                                'iconzhong20_gantanhao': true
+                            },
+                            style: {
+                                color: btnColor,
+                                marginRight: '10px'
+                            }
+                        }),
+                        h('span', content)
+                    ]),
+                    '提示',
+                    {
+                        confirmButtonText: btnTxt,
+                        confirmButtonClass: 'disable-button',
+                        customClass: 'manager-msg-box'
+                    }
+                )
+            }
+        },
+        watch: {
+            posDialogVisible(v) {
+                !v && this.$refs.posForm.resetFields()
+            }
+        },
+        created() {
+            this.ajaxLvData()
+        }
+    }
+</script>
+
+<style scoped lang="scss">
+    .position-pane-container{
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex-direction: row;
+        align-items: stretch;
+        ::v-deep .pos-side-filter {
+
+            .pos-list-item{
+                width: 100%;
+                height: 100%;
+                &>span{
+                    font-size: 14px;
+                }
+                &>span:nth-of-type(1){
+                    color: #4d4d4d;
+                }
+                &>span:nth-of-type(2){
+                    font-size: 14px;
+                    color: #999999;
+                }
+            }
+            .list-item.active .pos-list-item>span:nth-of-type(1){
+                font-weight: bold;
+                color:#1a1a1a;
+            }
+        }
+        .add-button{
+            position: fixed;
+            z-index: 3;
+            top: 72.5px;
+            right: 32px;
+        }
+        .right {
+            flex: 1;
+            overflow: hidden;
+            border: 1px solid #f5f5f5;
+            padding: 0 16px;
+            .sale-filter-bar{
+                display: flex;
+                justify-content: space-between;
+                height: 64px;
+                align-items: center;
+                &>.el-input{
+                    width: 240px;
+                }
+            }
+        }
+    }
+</style>

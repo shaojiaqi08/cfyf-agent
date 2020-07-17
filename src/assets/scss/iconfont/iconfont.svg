@@ -20,6 +20,12 @@ Created by iconfont
   />
     <missing-glyph />
     
+    <glyph glyph-name="xiao16_xiazhixiangjiantou" unicode="&#58915;" d="M512 0L210.752 301.248l90.496 90.496L448 245.12V768h128v-522.944l146.752 146.688 90.496-90.496L512 0z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="xiao16_shangzhixiangjiantou" unicode="&#58916;" d="M512 768l301.248-301.248-90.496-90.496L576 522.88V0H448V522.944L301.248 376.256 210.752 466.752 512 768z"  horiz-adv-x="1024" />
+
+    
     <glyph glyph-name="xiao16_dachengtiaojian" unicode="&#58911;" d="M832 768a64 64 0 0 0 64-64v-640a64 64 0 0 0-64-64H192a64 64 0 0 0-64 64V704a64 64 0 0 0 64 64h640z m-64-128H256v-512h512V640z m-128-128v-256H384V512h256z"  horiz-adv-x="1024" />
 
     

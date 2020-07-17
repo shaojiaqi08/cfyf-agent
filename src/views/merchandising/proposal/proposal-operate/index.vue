@@ -486,12 +486,12 @@
                               <div class="button-group">
                                 <div class="move-button">
                                   <i
-                                    class="button iconfont iconxiao16_shangjiantou mr8"
+                                    class="button iconfont iconxiao16_shangzhixiangjiantou mr8"
                                     :class="{ disabled: !idx }"
                                     @click="changeSelectedPosition(index, idx, 'up', !idx)"
                                   ></i>
                                   <i
-                                    class="button iconfont iconxiao16_xiajiantou"
+                                    class="button iconfont iconxiao16_xiazhixiangjiantou"
                                     :class="{ disabled: idx === productsSelected[index].length - 1 }"
                                     @click="changeSelectedPosition(index, idx, 'down', idx === productsSelected[index].length - 1)"
                                   ></i>

@@ -1,6 +1,6 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input placeholder="搜索产品名称" class="search-input" v-model="productName" prefix-icon="el-icon-search"></el-input>
+        <el-input clearable placeholder="搜索产品名称" class="search-input" v-model="searchModel.product_name" prefix-icon="el-icon-search"></el-input>
         <side-filter-list
             v-loading="loading"
             label-key="product_name"
@@ -16,9 +16,7 @@
                     <filter-shell v-model="searchModel.illness">
                         <el-input v-model="searchModel.illness" clearable></el-input>
                         <template v-slot:label>
-                            <span>
-                                {{ hasValue(searchModel.illness) ? searchModel.illness : '病种' }}
-                            </span>
+                            <span>病种</span>
                         </template>
                         <template v-slot:close>
                             <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -58,29 +56,32 @@
         </side-filter-list>
         <div class="detail-wrap"
              v-loading="detailLoading"
-             v-if="tableData.length > 0">
-            <div class="head flex-between">
-                <p>{{selName}}</p>
-                <div>
-                    调整字号
-                    <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
+             ref="detailWrap">
+            <template  v-if="tableData.length > 0">
+                <div class="head flex-between">
+                    <p>{{selVal}}</p>
+                    <div>
+                        调整字号
+                        <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
+                    </div>
                 </div>
-            </div>
-            <el-table :data="tableData" border max-height="calc(100% - 48px)" :style="{fontSize: fontSize + 'px'}">
-                <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
-                <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
-                <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
-                <el-table-column label="病种分类" prop="illness_category" width="250px" align="center"></el-table-column>
-                <template v-for="(item,index) in maxConditionLength">
-                    <el-table-column
-                            width="250px"
-                            :prop="`conditions[${index}]`"
-                            :label="`条件${index+1}`"
-                            align="center"
-                            :key="index"
-                    ></el-table-column>
-                </template>
-            </el-table>
+                <el-table :data="tableData" border :max-height="tableMaxHeight" :style="{fontSize: fontSize + 'px'}">
+                    <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
+                    <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
+                    <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
+                    <el-table-column label="病种分类" prop="illness_category" width="250px" align="center"></el-table-column>
+                    <template v-for="(item,index) in maxConditionLength">
+                        <el-table-column
+                                width="250px"
+                                :prop="`conditions[${index}]`"
+                                :label="`条件${index+1}`"
+                                align="center"
+                                :key="index"
+                        ></el-table-column>
+                    </template>
+                </el-table>
+            </template>
+
         </div>
     </div>
 </template>
@@ -89,6 +90,7 @@
     import SideFilterList from '@/components/side-filter-list'
     import {getUnderwritingProductList, getUnderwritingDetail} from '@/apis/modules/underwriting'
     import FilterShell, {clearValue, hasValue, closePopover} from '../../components/filter-shell'
+    import {debounce} from '@/utils'
     export default {
         name: 'underwrite-search',
         components: {
@@ -99,12 +101,12 @@
             return {
                 loading: false,
                 detailLoading: false,
-                selVal: null,
-                selName: '',
-                productName: '',
+                selVal: '', // 选中的产品
+                tableMaxHeight: 0,
                 tableData: [],
                 productData: [],
                 searchModel: {
+                    product_name: '',
                     illness: '',
                     condition_search: '',
                     is_reverse: '0',
@@ -122,14 +124,15 @@
             hasValue,
             closePopover,
             handleSelProduct(obj) {
-                this.selName = obj.product_name
-                this.ajaxDetail(obj.product_name)
+                const {product_name} = obj
+                this.selVal = product_name
+                this.ajaxDetail(product_name)
             },
             ajaxDetail(product_name) {
                 this.detailLoading = true
                 getUnderwritingDetail({
+                    ...this.searchModel,
                     product_name,
-                    ...this.searchModel
                 }).then(res => {
                     this.tableData = res
                 }).finally(() => {
@@ -138,23 +141,42 @@
             },
             ajaxProductData() {
                 this.loading = true
+                this.selVal = ''
+                this.tableData = []
                 getUnderwritingProductList({...this.searchModel}).then(res => {
                     this.productData = res
                 }).catch(() => {}).finally(() => {
                     this.loading = false
                 })
+            },
+            debounceAjaxProductData() {
+                const func = debounce(() => {
+                    this.ajaxProductData()
+                }, 300)
+                func()
+                this.debounceAjaxProductData = func
+            },
+            calcTableMaxHeight() {
+                this.tableMaxHeight = this.$refs.detailWrap.offsetHeight - 80
             }
         },
         watch: {
             searchModel: {
                 handler() {
-                    this.ajaxProductData()
+                    this.debounceAjaxProductData()
                 },
                 deep: true
             }
         },
         created() {
             this.ajaxProductData()
+        },
+        mounted() {
+            this.calcTableMaxHeight()
+            window.addEventListener('resize', this.calcTableMaxHeight)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.this.calcTableMaxHeight)
         }
     }
 </script>
