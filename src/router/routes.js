@@ -125,6 +125,14 @@ const necessaryRoutes = [
     component: getView('login')
   },
   {
+    path: "/404",
+    name: "404",
+    meta: {
+      title: '404'
+    },
+    component: getView('404')
+  },
+  {
     // 样式规范
     path: "/design",
     name: "design",
