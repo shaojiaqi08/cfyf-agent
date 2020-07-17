@@ -3,8 +3,8 @@
         <side-filter-list
                 v-loading="companyLoading"
                 :list-data="companyList"
-                label-key="label"
-                value-key="value"
+                label-key="name"
+                value-key="id"
                 placeholder="搜索B端公司"
                 v-model="selVal"
                 @change="handleSelCompany"
@@ -21,7 +21,7 @@
                 <el-table-column label="产品ID" align="center" prop="id"></el-table-column>
                 <el-table-column label="上下架状态" align="center">
                     <template v-slot="{row}">
-                        <span :style="{color: row.status ? '#40d659' : '#ff4c4c'}">{{row.statusStr}}</span>
+                        <span :style="{color: row.status ? '#40d659' : '#ff4c4c'}">{{row.status_str}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" align="center">
@@ -35,6 +35,7 @@
 </template>
 <script>
     import SideFilterList from '@/components/side-filter-list'
+    import { getCompanyList, getCompanyProductList, setStatus } from '@/apis/modules/good-manage'
     import {debounce} from '@/utils'
     export default {
         name: 'common-pate',
@@ -61,44 +62,10 @@
         },
         data() {
             return {
-                data: [
-                    {id: 0, status: 0, statusStr: '下架中', name: 'aaa产品'},
-                    {id: 0, status: 1, statusStr: '上架中',  name: 'bbb产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                    {id: 0, status: 0, statusStr: '下架中', name: 'xxx产品'},
-                ],
+                data: [],
                 tableLoading: false,
                 companyLoading: false,
-                companyList: [
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'}
-                ],
+                companyList: [],
                 companyKeyword: '',
                 positionList: [],
                 selVal: 'aa', // 公司选中值,
@@ -146,10 +113,30 @@
                         confirmButtonClass: btnCls
                     }
                 ).then(() => {
+                    const target = this.data[status]
+                    const data = {
+                        product_id: target.id,
+                        product_type: target.product_type,
+                        company_id: target.supplier_id,
+                        sale_status: target.status ? 0 : 1
+                    }
+                    setStatus(data).then(() => {
+                        this.$message.success('状态更改成功')
+                        this.handleSelCompany({ id: target.id, type: target.product_type })
+                    })
                 }).catch(() => {})
 
             },
-            handleSelCompany() {
+            handleSelCompany(v) {
+                const data = {
+                    company_id: v.id,
+                    product_type: this.type
+                }
+                this.tableLoading = true
+                getCompanyProductList(data).then(res => {
+                    this.data = res
+                    this.tableLoading = false
+                })
             },
             scroll2Bottom() {
                 this.ajaxTableData()
@@ -159,7 +146,11 @@
                 this.debounceAjaxTableData = func
             },
             ajaxTableData() {
-                console.log('ajax data')
+                getCompanyList().then(res => {
+                    this.companyList = res
+                }).catch(err => {
+                    console.log(err)
+                })
             }
         },
         created() {
