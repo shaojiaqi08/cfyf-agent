@@ -8,6 +8,7 @@
       placeholder="搜索B端公司"
       v-model="selVal"
       @change="handleSelCompany"
+      @updateFilter="updateFilter"
     ></side-filter-list>
     <div class="detail-wrap">
       <div class="head">
@@ -80,7 +81,7 @@ export default {
       companyList: [],
       companyKeyword: "",
       positionList: [],
-      selVal: "aa", // 公司选中值,
+      selVal: "", // 公司选中值,
       companyId: null,
       searchProduct: '',
       searchModel: {
@@ -104,6 +105,11 @@ export default {
     }
   },
   methods: {
+    updateFilter() {
+      this.selVal = ''
+      this.$store.dispatch('goodManage/updateProductId', null)
+      this.data = []
+    },
     triggerShelves(row) {
       const h = this.$createElement;
       const { status } = row
@@ -141,18 +147,20 @@ export default {
           };
           setStatus(data).then(() => {
             this.$message.success("状态更改成功");
-            this.handleSelCompany({ id: this.companyId, type: target.product_type });
+            this.handleSelCompany({ id: this.companyId });
           });
         })
         .catch(() => {});
     },
     handleSelCompany(v) {
+      const { id } = v
       const data = {
-        company_id: v.id,
+        company_id: id,
         product_type: this.type
       };
       this.companyId = v.id
       this.tableLoading = true;
+      this.$store.dispatch('goodManage/updateProductId', v.id)
       getCompanyProductList(data).then(res => {
         this.data = res;
         this.tableLoading = false;
@@ -175,10 +183,18 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    init() {
+      const selectedProductId = this.$store.state.goodManage.productId
+      if (selectedProductId) {
+        this.selVal = selectedProductId
+        this.handleSelCompany({ id: selectedProductId })
+      }
     }
   },
   created() {
     this.ajaxTableData();
+    this.init()
   }
 };
 </script>

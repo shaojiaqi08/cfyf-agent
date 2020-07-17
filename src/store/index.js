@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import users from './modules/users'
+import goodManage from './modules/goodManage'
 import createPersistedState  from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -18,6 +19,7 @@ export default new Vuex.Store({
   actions: {},
   plugins: [persistedState],
   modules: {
-    users
+    users,
+    goodManage
   }
 });

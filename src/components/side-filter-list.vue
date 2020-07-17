@@ -1,7 +1,7 @@
 <template>
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
-            <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword"></el-input>
+            <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword" @input="updateFilter"></el-input>
             <!-- 自定义搜索条件 -->
             <slot name="extraFilter"></slot>
         </div>
@@ -72,7 +72,10 @@
             handleSelected(obj) {
                 this.$emit('update:activeValue', obj[this.valueKey])
                 this.$emit('change', obj)
-            }
+            },
+            updateFilter(v) {
+                this.$emit('updateFilter', v)
+            },
         },
         render(h) {
             const filterBar = this.showFilter ? h('div', {'class': {'search-bar': true}}, [this.$slots.filterbar]) : null
