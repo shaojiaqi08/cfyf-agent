@@ -43,6 +43,7 @@
 
 <script>
 import {login} from '@/apis/modules/index'
+// import { updateUserInfo } from '@/store/modules/users'
 export default {
   data() {
     return {
@@ -51,14 +52,17 @@ export default {
       isPasswordShow: false
     }
   },
+  mounted() {
+  },
   methods: {
     login() {
       const {account_name, password} = this
       login({
         account_name, password
       }).then(res => {
-        window.localStorage.setItem('Management-Authorization', res.token)
-        this.$router.replace('/')
+        this.$store.dispatch('users/updateUserInfo', { token: res.token })
+        // window.localStorage.setItem('Management-Authorization', res.token)
+        this.$router.replace('/user-info')
       })
     },
     inputFocus(e) {
