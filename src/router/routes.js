@@ -120,6 +120,16 @@ export default [
     component: () => import('views/merchandising/underwrite-health-notice')
   },
   {
+    path: '/interactive-logs',
+    name: 'Interactive-logs',
+    meta: {
+      title: '互动记录',
+      header: true,
+      menu: true
+    },
+    component: () => import('views/merchandising/interactive-logs')
+  },
+  {
     path: '/product-compare',
     name: 'Product-compare',
     meta: {

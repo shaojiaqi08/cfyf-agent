@@ -1,17 +1,20 @@
 <template>
     <div class="sale-people-container">
         <el-button class="add-button" type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
-        <side-filter-list
-                v-loading="teamLoading"
-                label-key="name"
-                value-key="id"
-                :showFilter="false"
-                v-model="selTeam"
-                @change="handleSelTeam"
-                style="width: 240px"
-                :listData="teamData"
-        >
-        </side-filter-list>
+        <div class="side-filter-wrap flex-column">
+            <side-filter-list
+                    v-loading="teamLoading"
+                    label-key="name"
+                    value-key="id"
+                    :showFilter="false"
+                    v-model="selTeam"
+                    @change="handleSelTeam"
+                    style="width: 240px"
+                    :listData="teamData"
+            ></side-filter-list>
+            <el-button type="primary" class="mt16 mb16 ml16 mr16 flex-center"><i class="iconfont iconxiao16_jiahao mr4"></i>增加团队</el-button>
+        </div>
+
         <div class="right" v-loading="detailLoading">
             <template v-if="tableData.length">
                 <div class="sale-filter-bar">
@@ -93,35 +96,91 @@
                     </div>
                     <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword"></el-input>
                 </div>
-                <el-table :data="filterTableData" border width="100%">
-                    <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
-                    <el-table-column label="账号" prop="username" align="center"></el-table-column>
-                    <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                    <el-table-column label="职位" prop="position" align="center"></el-table-column>
-                    <el-table-column label="所属团队" prop="team" align="center"></el-table-column>
-                    <el-table-column label="入职时间" prop="join_date" align="center">
-                        <template v-slot="{row}">
-                            <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="状态" prop="join_date" align="center">
-                        <template v-slot="{row}">
-                            <el-tag >{{row.account_status}}</el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
-                        <template v-slot="{row}">
-                            <template v-if="row.account_status!==accountStatusMap.dimission.value">
-                                <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                <el-link type="primary" class="mr8">模拟登陆</el-link>
-                                <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disabled.value ? '启用' : '禁用'}}</el-link>
-                                <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
-                            </template>
-                            <span v-else>-</span>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                <el-scrollbar style="height: calc(100% - 64px)">
+                    <div class="team-info">
+                        <div class="flex-column">
+                            <div class="name-wrap">
+                                团队名称
+                                <el-link :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
+                            </div>
+                            <span>当前团队挂靠：xxx团队</span>
+                        </div>
+                        <div class="flex-center">
+                            <el-link :underline="false" type="minor" class="flex-center mr30"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
+                            <el-button type="primary"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <div class="flex-between table-header">
+                            <span>当前团队主管人数：xx 人</span>
+                            <el-button type="primary"><i class="iconfont iconxiao16_tihuan mr4"></i>更换主管团队</el-button>
+                        </div>
+                        <el-table :data="filterTableData" border width="100%" class="mb16" max-height="768px">
+                            <el-table-column label="姓名" prop="real_name" align="center" width="124px"></el-table-column>
+                            <el-table-column label="账号" prop="username" align="center" width="124px"></el-table-column>
+                            <el-table-column label="手机号" prop="mobile" align="center"  width="124px"></el-table-column>
+                            <el-table-column label="职位" prop="position" align="center" width="124px"></el-table-column>
+                            <el-table-column label="所属团队" prop="team" align="center" width="124px"></el-table-column>
+                            <el-table-column label="入职时间" prop="join_date" align="center" width="152px">
+                                <template v-slot="{row}">
+                                    <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="状态" prop="join_date" align="center">
+                                <template v-slot="{row}">
+                                    <el-tag >{{row.account_status}}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
+                                <template v-slot="{row}">
+                                    <template v-if="row.account_status!==accountStatusMap.dimission.value">
+                                        <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
+                                        <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
+                                        <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disabled.value ? '启用' : '禁用'}}</el-link>
+                                        <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
+                                    </template>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                    <div class="table-wrap">
+                        <div class="flex-between table-header">
+                            <span>当前团队成员人数：xx 人</span>
+                            <el-button type="primary"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
+                        </div>
+                        <el-table :data="filterTableData" border width="100%">
+                            <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
+                            <el-table-column label="账号" prop="username" align="center"></el-table-column>
+                            <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                            <el-table-column label="职位" prop="position" align="center"></el-table-column>
+                            <el-table-column label="所属团队" prop="team" align="center"></el-table-column>
+                            <el-table-column label="入职时间" prop="join_date" align="center">
+                                <template v-slot="{row}">
+                                    <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="状态" prop="join_date" align="center">
+                                <template v-slot="{row}">
+                                    <el-tag >{{row.account_status}}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
+                                <template v-slot="{row}">
+                                    <template v-if="row.account_status!==accountStatusMap.dimission.value">
+                                        <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
+                                        <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
+                                        <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disabled.value ? '启用' : '禁用'}}</el-link>
+                                        <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
+                                    </template>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-scrollbar>
             </template>
         </div>
         <!--编辑/新增销售-->
@@ -170,11 +229,69 @@
                 <el-button type="primary" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
+        <!--新增团队-->
+        <el-dialog
+                   title="新增团队"
+                   :visible.sync="addTeamDialogVisible"
+                   width="480px">
+            <el-form ref="addTeamForm" :model="addTeamFormModel" :rules="addTearRules" label-width="100px" label-position="left">
+                <el-form-item label="挂靠团队" prop="parent_id">
+                    <el-input placeholder="请选择挂靠团队" v-model="addTeamDialogVisible.parent_id"></el-input>
+                </el-form-item>
+                <el-form-item label="团队主管" prop="leader_ids">
+                    <el-input placeholder="请选择团队主管" v-model="addTeamDialogVisible.leader_ids"></el-input>
+                </el-form-item>
+                <el-form-item label="团队名称" prop="name">
+                    <el-input placeholder="请输入团队名称" v-model="addTeamDialogVisible.name"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button @click="editDialogVisible = false">取消</el-button>
+                <el-button type="primary" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
+        <!--更换团队主管-->
+        <el-dialog
+                title="更换团队主管"
+                :visible.sync="setLeaderDialogVisible"
+                custom-class="set-leader-dialog"
+                width="480px">
+            <el-form ref="addTeamForm" :model="setLeaderFormModel" :rules="setLeaderRules" label-width="100px" label-position="left">
+                <div class="info-block mb20">
+                    <div class="flex-between mb16">
+                        团队名称
+                        <span>某团队</span>
+                    </div>
+                    <div class="flex-between">
+                        当前团队主管
+                        <span>xxx</span>
+                    </div>
+                </div>
+                <el-form-item label="新团队主管" prop="name">
+                    <el-input placeholder="请选择团队主管" v-model="setLeaderFormModel.leader_ids"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button @click="setLeaderDialogVisible = false">取消</el-button>
+                <el-button type="primary" :loading="submitting" :disabled="submitting">更换</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
     import FilterShell, { clearValue, hasValue, closePopover } from '../component/filter-shell'
-    import {getTeamList, getSalesList, createSales, modifySales, dimission, resetSalesPassword, getSalesDetail, getSalesPositionList} from '@/apis/modules/user-manage' // eslint-disable-line
+    import {getTeamList,
+            getSalesList,
+            createSales,
+            modifySales,
+            dimission,
+            resetSalesPassword,
+            getSalesDetail,
+            getSalesPositionList,
+            createTeam,// eslint-disable-line
+            setLeader,// eslint-disable-line
+            setMember,// eslint-disable-line
+            transferTeam} from '@/apis/modules/user-manage' // eslint-disable-line
     import SideFilterList from '@/components/side-filter-list'
     import {debounce} from '@/utils'
     import {accountStatusMap} from '@/enums/user-manage'
@@ -204,7 +321,6 @@
                     close_start_date: '',
                     close_end_date: '',
                     keyword: ''
-                    // page: 1
                 },
                 selTeam: '',
                 selSales: '',
@@ -236,6 +352,24 @@
                     confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
                 editDialogVisible: false,
+                addTeamDialogVisible: false,
+                addTeamFormModel: {
+                    parent_id: '',
+                    leader_ids: [],
+                    name: ''
+                },
+                addTearRules: {
+                    parent_id: baseValiObj,
+                    leader_ids: baseValiObj,
+                    name: baseValiObj,
+                },
+                setLeaderDialogVisible: false,
+                setLeaderFormModel: {
+                    leader_ids: []
+                },
+                setLeaderRules: {
+                    leader_ids: baseValiObj
+                },
                 positionData: [],
                 resignationDateRange: [],
                 closeDateRange: []
@@ -309,11 +443,7 @@
                 this.detailLoading = true
                 const {searchModel} = this
                 getSalesList({...searchModel, team_id}).then(res => {
-                    if (searchModel.page === 1) {
-                        this.tableData = res.data
-                    } else {
-                        this.tableData = [...this.tableData, ...res.data]
-                    }
+                    this.tableData = res.data
                 }).catch(() => {}).finally(() => {
                     this.detailLoading = false
                 })
@@ -341,8 +471,9 @@
             },
             debounceAjaxDetail() {
                 const func = debounce(() => {
-                    this.ajaxDetail()
+                    this.ajaxDetail(this.selTeam)
                 }, 400)
+                func()
                 this.debounceAjaxDetail = func
             },
             confirm(content, btnTxt, btnColor='#FF4C4C') {
@@ -406,6 +537,9 @@
             editDialogVisible(v) {
                 !v && this.$refs.editForm.resetFields()
             },
+            addTeamDialogVisible(v) {
+                !v && this.$refs.addTeamForm.resetFields()
+            },
             resignationDateRange(v) {
                 const [start = '', end = ''] = v
                 this.searchModel.resignation_start_date = start
@@ -431,6 +565,9 @@
         width: 100%;
         flex-direction: row;
         align-items: stretch;
+        ::v-deep .side-filter-container .list-item:first-of-type{
+            border-top: transparent;
+        }
         .add-button{
             position: fixed;
             z-index: 3;
@@ -441,6 +578,7 @@
             flex: 1;
             overflow: hidden;
             border: 1px solid #f5f5f5;
+            border-top: transparent;
             padding: 0 16px;
             .sale-filter-bar{
                 display: flex;
@@ -451,6 +589,67 @@
                     width: 240px;
                 }
             }
+
+            .team-info{
+                height: 84px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 16px;
+                background: #f5f5f5;
+                border: 1px solid #e6e6e6;
+                border-radius: 4px;
+                margin-bottom: 16px;
+                .name-wrap{
+                    font-size: 18px;
+                    color:#1a1a1a;
+                    font-weight: bold;
+                    line-height: 28px;
+                    line-height: 28px;
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 4px;
+                    .el-link{
+                        font-weight: normal;
+                        font-size: 24px;
+                        margin-left: 4px;
+                    }
+                    &+span{
+                        color: #999;
+                        line-height: 20px;
+                    }
+                }
+
+            }
+            .table-wrap .table-header{
+                height: 64px;
+                padding: 0 16px 0 20px;
+                background: #f5f5f5;
+                color: #1a1a1a;
+                font-weight: bold;
+                border: 1px solid #e6e6e6;
+                border-bottom: transparent;
+            }
         }
+    }
+    ::v-deep .set-leader-dialog .info-block{
+        height:96px;
+        background:rgba(245,245,245,1);
+        border-radius:4px;
+        border:1px solid rgba(230,230,230,1);
+        padding: 20px;
+        &>div{
+            line-height: 20px;
+            color:#4d4d4d;
+            font-size: 14px;
+            &>span{
+                color: #1a1a1a;
+                font-weight: bold;
+            }
+        }
+    }
+
+    ::v-deep .side-filter-container .list-item:first-of-type {
+        border-top: transparent;
     }
 </style>

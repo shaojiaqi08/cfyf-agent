@@ -3,7 +3,6 @@
         <div class="header">
             <el-tabs v-model="curTabIdx">
                 <el-tab-pane name="sale-pane" label="销售人员"></el-tab-pane>
-                <el-tab-pane name="team-pane" label="团队管理"></el-tab-pane>
                 <el-tab-pane name="position-pane" label="职位及权限"></el-tab-pane>
             </el-tabs>
         </div>
@@ -12,83 +11,6 @@
                 <Component :is="curTabIdx"></Component>
             </keep-alive>
         </div>
-<!--        &lt;!&ndash;编辑/编辑管理员&ndash;&gt;-->
-<!--        <el-dialog custom-class="manager-dialog" :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">-->
-<!--            <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">-->
-<!--                <el-form-item label="管理员姓名" prop="real_name">-->
-<!--                    <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="工作邮箱" prop="email">-->
-<!--                    <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="手机号" v-if="editFormModel.id === ''" prop="mobile">-->
-<!--                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="管理员账号" prop="account_name">-->
-<!--                    <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.account_name"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="管理员角色" prop="role_id">-->
-<!--                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id">-->
-<!--                        <el-option v-for="(item, index) in roleData" :key="index" :value="item.id" :label="item.name"></el-option>-->
-<!--                    </el-select>-->
-<!--                </el-form-item>-->
-<!--                <template v-if="editFormModel.id === ''">-->
-<!--                    <el-form-item label="登录密码" prop="password">-->
-<!--                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>-->
-<!--                    </el-form-item>-->
-<!--                    <el-form-item label="再次输入密码" prop="confirm_password">-->
-<!--                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>-->
-<!--                    </el-form-item>-->
-<!--                </template>-->
-<!--            </el-form>-->
-<!--            <span slot="footer">-->
-<!--                <el-button @click="editDialogVisible = false">取消</el-button>-->
-<!--                <el-button type="primary" :loading="submitting" :disabled="submitting">确认</el-button>-->
-<!--            </span>-->
-<!--        </el-dialog>-->
-<!--        &lt;!&ndash;新增角色&ndash;&gt;-->
-<!--        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">-->
-<!--            <el-form ref="addRoleForm" :model="addRoleFormModel" :rules="addRoleRules" label-width="100px" label-position="left">-->
-<!--                <el-form-item label="角色名称" prop="name">-->
-<!--                    <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="角色描述" prop="desc">-->
-<!--                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.remark"></el-input>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <span slot="footer">-->
-<!--                <el-button @click="addRoleDialogVisible = false">取消</el-button>-->
-<!--                <el-button type="primary" @click="submitAddRole" :loading="submitting" :disabled="submitting">确认</el-button>-->
-<!--            </span>-->
-<!--        </el-dialog>-->
-<!--        &lt;!&ndash;修改密码&ndash;&gt;-->
-<!--        <el-dialog custom-class="manager-dialog" title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">-->
-<!--            <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">-->
-<!--                <el-form-item label="旧密码" prop="oldPassword">-->
-<!--                    <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.password"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="新密码" prop="newPassword">-->
-<!--                    <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.new_password"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="确认新密码" prop="confirmPassword">-->
-<!--                    <el-input type="password" placeholder="请再次输入新密码" v-model.trim="modPwdFormModel.confirm_new_password"></el-input>-->
-<!--                </el-form-item>-->
-<!--            </el-form>-->
-<!--            <span slot="footer">-->
-<!--                    <el-button @click="modPwdDialogVisible = false">取消</el-button>-->
-<!--                    <el-button type="primary" @click="submitModifyPwd" :loading="submitting" :disabled="submitting">确认</el-button>-->
-<!--            </span>-->
-<!--        </el-dialog>-->
-<!--        &lt;!&ndash;编辑权限&ndash;&gt;-->
-<!--        <el-dialog custom-class="permission-dialog" title="编辑全选" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">-->
-<!--            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">-->
-<!--                <permission-tree v-model="treeData" :editable="true"></permission-tree>-->
-<!--            </el-scrollbar>-->
-<!--            <span slot="footer">-->
-<!--                    <el-button @click="treeDialogVisible = false">取消</el-button>-->
-<!--                    <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>-->
-<!--            </span>-->
-<!--        </el-dialog>-->
     </div>
 </template>
 
@@ -96,11 +18,10 @@
     import {formatDate} from '@/utils/formatTime'
     import {accountStatusMap} from '@/enums/user-manage'
     import SalePane from './tab-panel/sale'
-    import TeamPane from './tab-panel/team'
     import PositionPane from './tab-panel/position'
     export default {
         name: 'sale',
-        components: {SalePane, TeamPane, PositionPane},
+        components: {SalePane, PositionPane},
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
@@ -227,7 +148,6 @@
             border: 1px solid #E6E6E6;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             .el-input {
                 width: 360px;
             }

@@ -9,7 +9,7 @@
                 :showFilter="false"
                 v-model="selLv"
                 @change="handleSelLv"
-                style="width: 240px"
+                style="width: 240px; border-right: 1px solid #e6e6e6"
                 :listData="lvData"
         >
             <template v-slot:list="{row}">
@@ -31,57 +31,14 @@
         >
         </side-filter-list>
         <div class="right" v-loading="detailLoading">
+            <el-scrollbar>
+                <permission-tree v-model="detailData"></permission-tree>
+            </el-scrollbar>
         </div>
-        <!--编辑/新增销售-->
-<!--        <el-dialog custom-class="manager-dialog"-->
-<!--                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}信息`"-->
-<!--                   :visible.sync="editDialogVisible"-->
-<!--                   width="480px"-->
-<!--                   v-loading="dialogLoading">-->
-<!--            <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">-->
-<!--                <el-form-item label="姓名" prop="real_name">-->
-<!--                    <el-input placeholder="请输入姓名" v-model="editFormModel.real_name"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="登录账号" prop="username">-->
-<!--                    <el-input placeholder="请输入登录账号" v-model="editFormModel.username"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="身份证号" prop="email">-->
-<!--                    <el-input placeholder="请输入身份证号" v-model="editFormModel.email"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="入职日期" prop="resignation_at">-->
-<!--                    <el-date-picker style="width: 100%" type="date" v-model="editFormModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="手机号" prop="mobile">-->
-<!--                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="职位" prop="position_id">-->
-<!--                    <el-select filterable style="width: 100%" placeholder="请选择职位" v-model="editFormModel.position_id">-->
-<!--                        <el-option v-for="(item, index) in positionData" :key="index" :value="item.id" :label="item.name"></el-option>-->
-<!--                    </el-select>-->
-<!--                </el-form-item>-->
-<!--                <el-form-item label="团队" prop="team_id">-->
-<!--                    <el-select filterable style="width: 100%" placeholder="团队" v-model="editFormModel.team_id">-->
-<!--                        <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>-->
-<!--                    </el-select>-->
-<!--                </el-form-item>-->
-<!--                <template v-if="editFormModel.id === ''">-->
-<!--                    <el-form-item label="登录密码" prop="password">-->
-<!--                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>-->
-<!--                    </el-form-item>-->
-<!--                    <el-form-item label="再次输入密码" prop="confirm_password">-->
-<!--                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>-->
-<!--                    </el-form-item>-->
-<!--                </template>-->
-<!--            </el-form>-->
-<!--            <span slot="footer">-->
-<!--                <el-button @click="editDialogVisible = false">取消</el-button>-->
-<!--                <el-button type="primary" :loading="submitting" :disabled="submitting">确认</el-button>-->
-<!--            </span>-->
-<!--        </el-dialog>-->
         <el-dialog title="新增职位" :visible.sync="posDialogVisible" width="480px">
             <el-form ref="posForm" label-width="100px" :model="posFormModel" :rules="posRules">
                 <el-form-item label="职位等级" prop="level">
-                    <el-select v-model="posFormModel.level" placeholder="请选择职位等级">
+                    <el-select v-model="posFormModel.level" placeholder="请选择职位等级" style="width: 100%">
                         <el-option v-for="item in lvMap" :key="item.value" :label="item.label" :value="item.value"></el-option>
                     </el-select>
                 </el-form-item>
@@ -100,10 +57,12 @@
     import {getPositionList, getPosLvList, getPosDetail, createPosLv} from '@/apis/modules/user-manage' // eslint-disable-line
     import SideFilterList from '@/components/side-filter-list'
     import {accountStatusMap} from '@/enums/user-manage'
+    import PermissionTree from '@/components/permission-tree'
     export default {
         name: 'positon',
         components: {
-            SideFilterList
+            SideFilterList,
+            PermissionTree
         },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
@@ -280,7 +239,6 @@
         flex-direction: row;
         align-items: stretch;
         ::v-deep .pos-side-filter {
-
             .pos-list-item{
                 width: 100%;
                 height: 100%;
@@ -309,8 +267,10 @@
         .right {
             flex: 1;
             overflow: hidden;
-            border: 1px solid #f5f5f5;
+            border: 1px solid #e6e6e6;
+            border-top: transparent;
             padding: 0 16px;
+            padding: 20px 16px;
             .sale-filter-bar{
                 display: flex;
                 justify-content: space-between;
@@ -320,6 +280,12 @@
                     width: 240px;
                 }
             }
+            ::v-deep .el-scrollbar{
+                height: 100%;
+            }
+        }
+        ::v-deep .side-filter-container .list-item:first-of-type {
+            border-top: transparent;
         }
     }
 </style>

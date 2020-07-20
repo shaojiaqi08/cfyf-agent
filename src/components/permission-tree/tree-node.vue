@@ -1,11 +1,13 @@
 <template>
-    <div class="tree-node-container">
+    <div :class="`tree-node-container ${expanded ? '' : 'no-expanded'}`">
         <div class="chkbox-wrap">
-            <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
-               v-if="(data.permission_groups && data.permission_groups.length > 0)||(data.permissions && data.permissions.length > 0)"
-               @click="triggerExpanded"></i>
-            <el-checkbox v-if="editable" :indeterminate= "indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
-            <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
+            <div @click="triggerExpanded">
+                <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
+                   v-if="(data.permission_groups && data.permission_groups.length > 0)||(data.permissions && data.permissions.length > 0)"></i>
+                <el-checkbox v-if="editable" :indeterminate= "indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
+                <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
+            </div>
+
         </div>
         <div v-show="expanded"
              v-if="data.permission_groups && data.permission_groups.length > 0"
@@ -121,6 +123,9 @@
             border-radius: 4px;
             padding: 0 8px;
             overflow: hidden;
+            &>div{
+                cursor: pointer;
+            }
             &::after{
                 content: '';
                 display: inline-block;
@@ -192,6 +197,9 @@
                 left: 16px;
                 border-top: 1px dashed #ccc;
             }
+        }
+        &.no-expanded::before{
+            display: none !important;
         }
     }
 </style>

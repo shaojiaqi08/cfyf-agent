@@ -36,6 +36,14 @@ export const resetSalesPassword = (params) => post('/agent/sales/reset_password'
 export const getSalesDetail = (params) => get('/agent/sales/detail', params)
 // 职位列表
 export const getSalesPositionList = (params) => get('/agent/sales/get_position_list', params)
+// 创建团队
+export const createTeam = (params) => post('/agent/sales/team/create', params)
+// 更换主管
+export const setLeader = (params) => post('/agent/sales/team/set-leader', params)
+// 设置团队成员
+export const setMember = (params) => post('/agent/sales/team/set-member', params)
+// 转移团队
+export const transferTeam = (params) => post('/agent/sales/team/change-team-parent', params)
 
 // --------------------  职位 ------------------------------
 // 职位列表
@@ -43,6 +51,6 @@ export const getPositionList = (params) => get('/agent/sales_position/get_list',
 // 等级列表
 export const getPosLvList = (params) => get('/agent/sales_position/get_level_list', params)
 // 职位详情列表
-export const getPosDetail = (params) => get('/agent/sales_position/get_list', params)
+export const getPosDetail = (params) => get('/agent/business_permission/business_permission_group/detail', params)
 // 新增职位
 export const createPosLv = (params) => post('/agent/sales_position/store', params)

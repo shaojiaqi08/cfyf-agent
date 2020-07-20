@@ -31,7 +31,7 @@
         核保健告
       </div>
       <div class="normal-transition menu-item"
-           title="互动记录" @click="$router.push('/')">
+           title="互动记录" @click="$router.push('/interactive-logs')">
         互动记录
       </div>
       <div class="menu-header">
