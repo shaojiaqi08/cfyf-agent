@@ -57,11 +57,11 @@
                 {{ hasValue(value1) ? options.find(i => i.value === value1).label : '全部保单状态' }}
             </span>
         </template>
-        <template v-slot:close>
+        <!-- <template v-slot:close>
             <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
                v-if="hasValue(value1)"
                @click="clearValue($event, 'value1')"></i>
-        </template>
+        </template> -->
       </filter-shell>
       <!-- <filter-shell v-model="value1" :width="260">
         <el-date-picker
