@@ -75,7 +75,7 @@ export const accountTypeMap = {
 // 账号状态
 export const account_status = {
     incumbency: '在职',
-    disabled: '禁用',
+    disable: '禁用',
     dimission: '离职'
 }
 
@@ -84,9 +84,9 @@ export const accountStatusMap = {
         label: '在职',
         value: 'incumbency'
     },
-    disabled: {
+    disable: {
         label: '禁用',
-        value: 'disabled'
+        value: 'disable'
     },
     dimission: {
         label: '离职',

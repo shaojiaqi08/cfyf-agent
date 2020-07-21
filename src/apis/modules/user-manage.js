@@ -23,7 +23,15 @@ export const updateTree = (params) => post('/management/sys_permission/sys_role_
 // 团队列表
 export const getTeamList = (params) => get('/agent/sales/get_all_teams_list', params)
 // 销售人员列表
-export const getSalesList = (params) => get('/agent/sales/get_page_list', params)
+export const getSalesList = (params) => get('/agent/sales/get_list_group_team_role', params)
+// 没有加入团队的销售列表
+export const getSalesListNoTeam = (params) => get('/agent/sales/get_leader_candidate', params)
+// 成员分组数据
+export const getGroupSalesList = (params) => get('/agent/sales/get_sales_list_group_position', params)
+// 解散团队
+export const dismissTeam = (params) => post('/agent/sales/team/disband_team', params)
+// 修改团队名
+export const modifyTeamName = (params) => post('/agent/sales/team/modify_name', params)
 // 新增销售
 export const createSales = (params) => post('/agent/sales/store', params)
 // 编辑销售
@@ -44,6 +52,8 @@ export const setLeader = (params) => post('/agent/sales/team/set-leader', params
 export const setMember = (params) => post('/agent/sales/team/set-member', params)
 // 转移团队
 export const transferTeam = (params) => post('/agent/sales/team/change-team-parent', params)
+// 更新状态
+export const updateSalesStatus = (params) => post('/agent/sales/update_account_status', params)
 
 // --------------------  职位 ------------------------------
 // 职位列表
