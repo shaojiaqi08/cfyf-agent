@@ -10,10 +10,12 @@
       <div class="inner-box">
         <slot></slot>
       </div>
-      <div class="filter-item" :class="{ actived: popoverShow || hasValue }" slot="reference">
+      <div class="filter-item" :class="{ actived: popoverShow || isHasValue }" slot="reference">
         <slot name="label"></slot>
         <i class="iconfont iconxiao16_xiajiantou"></i>
-        <slot name="close"></slot>
+        <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+            v-if="hasValue(value)"
+            @click="clearValue($event, value)"></i>
       </div>
     </el-popover>
   </div>
@@ -45,17 +47,18 @@ export function closePopover() {
   self.popoverShow = false
 }
 
-export function clearValue(e, key) {
+export function clearValue(e, value) {
   if (e.target.classList.contains('filter-clear')) {
-      e.preventDefault()
-      this[key] = emptyValue(this.key)
+    e.preventDefault()
+    return this.$emit('input', emptyValue(value))
   }
 }
 
 export default {
   props: {
     value: {
-      type: [Array, String, Object]
+      type: [Array, String, Object, Number],
+      default: ''
     },
     width: {
       type: Number,
@@ -67,23 +70,28 @@ export default {
       popoverShow: false
     }
   },
+  watch: {
+    popoverShow(v) {
+      if (v) {
+        console.log(v, '@@@@')
+        this.$nextTick(() => {
+          console.log(this.$parent.$refs, '====')
+          this.$parent.$refs.focusRef.focus()
+        })
+      }
+    }
+  },
   computed: {
-    // TODO
-    hasValue() {
-      if (Array.isArray(this.value)) {
-          if (this.value.length) {
-              return true
-          }
-          return false
-      }
-      if (this.value) {
-          return true
-      }
-      return false
+    isHasValue() {
+      return hasValue(this.value)
     }
   },
   mounted() {
     self = this
+  },
+  methods: {
+    clearValue,
+    hasValue
   }
 }
 </script>

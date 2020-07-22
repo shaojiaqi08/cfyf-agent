@@ -181,7 +181,7 @@
             },
             ajaxPositionData(level) {
                 this.positionLoading = true
-                getPositionList({level}).then(res => {
+                getPositionList({level, role: 'sales'}).then(res => {
                     this.positionData = res
                 }).catch(() => {}).finally(() => {
                     this.positionLoading = false

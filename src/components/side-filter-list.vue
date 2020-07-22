@@ -1,18 +1,18 @@
 <template>
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
-            <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword"></el-input>
+            <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword" @input="updateFilter"></el-input>
+            <!-- 自定义搜索条件 -->
+            <slot name="extraFilter"></slot>
         </div>
-        <!-- 自定义搜索条件 -->
-        <slot name="extraFilter"></slot>
         <el-scrollbar>
             <div class="list-item"
                  v-for="(item, index) in filterList"
                  :key="index"
-                 :class="{active: item[valueKey] === value}"
+                 :class="{active: item[valueKey] === activeValue}"
                  @click="handleSelected(item)">
                 <slot name="list" v-bind:row="item">
-                    <el-tooltip placement="top" :content="item[labelKey]">
+                    <el-tooltip placement="top" :content="item[labelKey]" :enterable="false">
                         <span>{{item[labelKey]}}</span>
                     </el-tooltip>
                 </slot>
@@ -28,11 +28,12 @@
     export default {
         name: 'side-filter-list',
         model: {
+            prop: 'activeValue',
             event: 'update:activeValue'
         },
         props: {
             customClass: String,
-            value: [String, Number],
+            activeValue: null,
             showFilter: {
                 type: Boolean,
                 default: true
@@ -64,9 +65,6 @@
         computed: {
             filterList() {
                 const {keyword, listData, labelKey} = this
-                if (!this.showFilter) {
-                    return listData
-                }
                 return listData.filter(item => item[labelKey].includes(keyword))
             }
         },
@@ -74,7 +72,24 @@
             handleSelected(obj) {
                 this.$emit('update:activeValue', obj[this.valueKey])
                 this.$emit('change', obj)
-            }
+            },
+            updateFilter(v) {
+                this.$emit('updateFilter', v)
+            },
+        },
+        render(h) {
+            const filterBar = this.showFilter ? h('div', {'class': {'search-bar': true}}, [this.$slots.filterbar]) : null
+            const list = h('el-scroll', [h('ul', [
+                this.data.map(item => this.listItemRender ? this.listItemRender() : h('li', item[this.filedKey]))
+            ])])
+            return h('div', {
+                'class': {
+                    'side-filter-container': true
+                }
+            },[
+                filterBar,
+                list
+            ])
         }
     }
 </script>

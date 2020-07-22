@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <hello-world msg="Welcome to Your Vue.js App" />
     <div id="container" style="width: 600px;height: 300px;"></div>
   </div>
 </template>
@@ -9,13 +8,9 @@
 <script>
 // @ is an alias to /src
 import G6 from '@antv/g6';
-import HelloWorld from "@/components/HelloWorld.vue";
 
 export default {
-  name: "Home",
-  components: {
-    HelloWorld
-  },
+  name: 'Home',
   mounted() {
     this.init()
   },

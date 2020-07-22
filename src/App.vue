@@ -2,8 +2,10 @@
   <div id="app">
     <Header v-if="$route.meta.header"></Header>
     <Menu v-if="$route.meta.menu"></Menu>
-    <router-view class="cover"
-                 :style="coverStyle" />
+    <transition name="page-fade" mode="out-in">
+      <router-view class="cover"
+                   :style="coverStyle" />
+    </transition>
   </div>
 </template>
 
@@ -42,8 +44,16 @@ export default {
   position: absolute;
   top: 40px;
   left: 180px;
+  min-width: 1300px;
   right: 0;
   bottom: 0;
   background-color: #F0F0F0;
+}
+.page-fade-enter-active, .page-fade-leave-active {
+  transition: opacity .3s ease;
+}
+.page-fade-enter, .page-fade-leave-to {
+  transition: opacity .3s ease;
+  opacity: 0;
 }
 </style>

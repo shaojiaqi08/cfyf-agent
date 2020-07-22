@@ -1,16 +1,172 @@
 // const getComponent = (name) => () => import(`@/components/${name}/index.vue`)
 const getView = (name) => () => import(`@/views/${name}/index.vue`)
 
-export default [
+export const routers = [
+  {
+    label: '业绩',
+    icon: 'iconcebiandaohang20_yeji',
+    children: [
+      {
+        path: '/order',
+        name: 'order',
+        meta: {
+          title: '订单',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('achievement/order')
+      },
+      {
+        path: '/order/detail/:id',
+        name: 'order-detail',
+        meta: {
+          title: '订单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: 'a'
+        },
+        component: getView('achievement/order/detail')
+      }
+    ]
+  },
+  {
+    label: '商品管理',
+    icon: 'iconcebiandaohang20_shangpin',
+    children: [
+      {
+        path: '/rate',
+        name: 'rate',
+        meta: {
+          title: '费率管理',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('good-manage/rate')
+      },
+      {
+        path: '/shelves',
+        name: 'shelves',
+        meta: {
+          title: '商品上下架',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('good-manage/shelves')
+      }
+    ]
+  },
+  {
+    label: '助销工具',
+    icon: 'iconcebiandaohang20_shangpin',
+    children: [
+      {
+        path: '/proposal',
+        name: 'Proposal',
+        meta: {
+          title: '计划书',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: () => import('views/merchandising/proposal')
+      },
+      {
+        path: '/proposal/proposal-operate',
+        name: 'Proposal-operate',
+        meta: {
+          title: '计划书编辑',
+          show: false,
+          permission: 'a'
+        },
+        component: () => import('views/merchandising/proposal/proposal-operate')
+      },
+      {
+        path: '/underwrite-health-notice',
+        name: 'Underwrite-health-notice',
+        meta: {
+          title: '核保健告',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: () => import('views/merchandising/underwrite-health-notice')
+      },
+      {
+        path: '/interactive-logs',
+        name: 'Interactive-logs',
+        meta: {
+          title: '互动记录',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: () => import('views/merchandising/interactive-logs')
+      }
+    ]
+  },
+  {
+    label: '用户管理',
+    icon: 'iconcebiandaohang20_yonghuguanli',
+    children: [
+      {
+        path: '/sale',
+        name: 'Sale',
+        meta: {
+          title: '用户管理-销售',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: () => import('views/user-manage/saler')
+      },
+      {
+        path: '/manager',
+        name: 'manager',
+        meta: {
+          title: '内部管理员',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('user-manage/manager')
+      }
+    ]
+  }
+]
+
+const necessaryRoutes = [
+  // TODO 404 403 ...
   {
     path: "/",
     name: "Home",
     meta: {
       title: 'home',
+      menu: true,
+      header: true
+    },
+    component: getView('home')
+  },
+  {
+    path: '/user-info',
+    name: 'userInfo',
+    meta: {
+      title: '用户设置',
       header: true,
       menu: true
     },
-    component: getView('home')
+    component: getView('user-info')
   },
   {
     path: '/login',
@@ -23,141 +179,12 @@ export default [
     component: getView('login')
   },
   {
-    path: '/user-info',
-    name: 'userInfo',
+    path: "/404",
+    name: "404",
     meta: {
-      title: '个人信息',
-      header: true,
-      menu: true
+      title: '404'
     },
-    component: getView('user-info')
-  },
-  {
-    path: "/about",
-    name: "About",
-    meta: {
-      title: 'about'
-    },
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  },
-  {
-    path: '/order',
-    name: 'Order',
-    meta: {
-      title: '订单',
-      header: true,
-      menu: true
-    },
-    component: () => import('@/views/achievement/order')
-  },
-  {
-    path: '/order/detail/:id',
-    name: 'Order-Detail',
-    meta: {
-      title: '订单详情',
-      header: true,
-      menu: false
-    },
-    component: () => import('@/views/achievement/order/detail')
-  },
-  {
-    path: '/rate',
-    name: 'rate',
-    meta: {
-      title: '费率管理',
-      header: true,
-      menu: true
-    },
-    component: () => import('@/views/good-manage/rate')
-  },
-  {
-    path: '/shelves',
-    name: 'Shelves',
-    meta: {
-      title: '商品上下架',
-      header: true,
-      menu: true
-    },
-    component: () => import('@/views/good-manage/shelves')
-  },
-  {
-    path: '/sale',
-    name: 'Sale',
-    meta: {
-      title: '用户管理-销售',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/user-manage/saler')
-  },
-  {
-    path: '/proposal',
-    name: 'Proposal',
-    meta: {
-      title: '计划书',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/merchandising/proposal')
-  },
-  {
-    path: '/proposal/proposal-operate',
-    name: 'Proposal-operate',
-    meta: {
-      title: '计划书编辑',
-    },
-    component: () => import('views/merchandising/proposal/proposal-operate')
-  },
-  {
-    path: '/underwrite-health-notice',
-    name: 'Underwrite-health-notice',
-    meta: {
-      title: '核保健告',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/merchandising/underwrite-health-notice')
-  },
-  {
-    path: '/interactive-logs',
-    name: 'Interactive-logs',
-    meta: {
-      title: '互动记录',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/merchandising/interactive-logs')
-  },
-  {
-    path: '/product-compare',
-    name: 'Product-compare',
-    meta: {
-      title: '产品对比',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/merchandising/product-compare')
-  },
-  {
-    path: '/product-compare-lab',
-    name: 'Product-compare-lab',
-    meta: {
-      title: '产品对比',
-      header: true,
-      menu: true
-    },
-    component: () => import('views/merchandising/product-compare/product-compare-lab')
-  },
-  {
-    path: '/manager',
-    name: 'Manager',
-    meta: {
-      title: '内部管理员',
-      header: true,
-      menu: true
-    },
-    component: () => import('@/views/user-manage/manager')
+    component: getView('404')
   },
   {
     // 样式规范
@@ -165,10 +192,15 @@ export default [
     name: "design",
     meta: {
       title: 'about',
-      header: true,
-      menu: true
+      header: false,
+      menu: false
     },
     component: () =>
-        import(/* webpackChunkName: "about" */ "@/views/DesignSpec.vue")
+        import("@/views/DesignSpec.vue")
   }
 ]
+
+
+export default routers.reduce((prev, curr) => {
+  return prev.concat(curr.children)
+}, []).concat(necessaryRoutes)
