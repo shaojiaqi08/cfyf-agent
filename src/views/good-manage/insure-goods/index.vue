@@ -142,14 +142,14 @@
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
         <el-button type="primary"
-                   @click="download"><i class="iconfont iconxiao16_fuzhi mr4"></i>下载保存责任保险图片</el-button>
+             @click="download"><i class="iconfont iconxiao16_fuzhi mr4"></i>下载保存责任保险图片</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getInsureApiList, getInsureCpsList, getInsureDetail} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules' // eslint-disable-line
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'

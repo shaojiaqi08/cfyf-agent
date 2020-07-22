@@ -54,8 +54,7 @@ export default {
       login({
         username, password
       }).then(res => {
-        this.$router.replace('/')
-        this.$store.dispatch('users/updateUserInfo', { token: res.token })
+        this.$store.dispatch('users/updateUserInfo', res)
         const path = this.$route.query.redirect || '/user-info'
         this.$router.replace(path)
       })

@@ -64,7 +64,7 @@ export const routers = [
   },
   {
     label: '助销工具',
-    icon: 'iconcebiandaohang20_shangpin',
+    icon: 'iconcebiandaohang20_zhuxiaogongju',
     children: [
       {
         path: '/proposal',

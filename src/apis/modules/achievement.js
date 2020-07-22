@@ -1,13 +1,19 @@
 import { get, post } from '../helper'
-// 保单分页列表
-export const getManagementPolicyList = (params) => get('/management/policy/list', params)
-// 保单统计
-export const getManagementPolicyStatistics = (params) => get('/management/policy/statistics', params)
+
+// 修改归属
+export const policyTransfer = params => post('/policy/transfer', params)
+
+// 个人业绩
+export const getSelfPolicyList = params => get('/agent/policy/self_policy_list', params)
+export const getSelfPolicyStatistics = params => get('/agent/policy/self_statistics', params)
+
+// 团队业绩
+export const getTeamPolicyList = params => get('/agent/policy/sales_team_policy_list', params)
+export const getTeamfPolicyStatistics = params => get('/agent/policy/sales_team_statistics', params)
+
+// 公司业绩
+export const getCompanyPolicyList = params => get('/agent/policy/company_policy_list', params)
+export const getCompanyPolicyStatistics = params => get('/agent/policy/company_statistics', params)
+
 // 保单详情
-export const getManagementPolicyDetail = (params) => get('/management/policy/detail', params)
-// b端公司
-export const getManagementCompanyList = (params) => get('/management/company/list', params)
-// 销售人员列表
-export const getManagementSalesList = (params) => get('/management/sales/list', params)
-// 保单修改归属
-export const setPolicyTransfer = (data) => post('/management/policy/transfer', data)
+export const getPolicyDetail = params => get('/agent/policy/detail?id=1', params)

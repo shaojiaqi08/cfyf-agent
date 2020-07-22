@@ -25,18 +25,32 @@
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
-                    <div class="desc-wrap">
-                        {{curSelRole.name}}
-                        <span>{{curSelRole.remark}}</span>
+                    <div class="desc-wrap flex-between">
+                        <div>
+                            {{curSelRole.name}}
+                            <span>{{curSelRole.remark}}</span>
+                        </div>
+
+                        <div class="flex-center">
+                            <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
+                                <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"
+                                         :disabled="managerData.length > 0"
+                                         :underline="false"
+                                         type="minor"
+                                         class="mr30 del-link"
+                                         @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
+                            </el-tooltip>
+                            <el-button type="primary" @click="handleSetPos"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
+                        </div>
                     </div>
                     <el-table :data="managerData" border>
                         <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
-                        <el-table-column label="账号" prop="account_name" align="center"></el-table-column>
+                        <el-table-column label="账号" prop="username" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                         <el-table-column label="开通日期" prop="open_at" align="center">
                             <template v-slot="{row}">
                                 <span v-if="!row.open_at">-</span>
-                                <sapn v-else>{{formatDate(new Date(row.open_at * 1000), 'yyyy-MM-dd')}}</sapn>
+                                <span v-else>{{formatDate(new Date(row.open_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="当前状态" prop="account_status_str" align="center" width="120">
@@ -47,19 +61,16 @@
                         <el-table-column label="失效日期" prop="close_at" align="center">
                             <template v-slot="{row}">
                                 <span v-if="!row.open_at">-</span>
-                                <sapn v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</sapn>
+                                <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" prop="operate" :width="(curSelRole && !curSelRole.isSupper)? 250 : 150" align="center">
                             <template v-slot="{row}">
-                                <template v-if="row.account_status !== accountStatusMap.invalidation.value">
-                                    <template v-if="curSelRole && !curSelRole.isSupper">
+                                <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value">
                                     <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
                                     <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
-                                    </template>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
-                                    <el-button type="text" v-if="curSelRole && curSelRole.isSupper" @click="modifyPwd(row)">修改密码</el-button>
                                 </template>
                                 <template v-else>
                                     <span>-</span>
@@ -87,11 +98,11 @@
                 <el-form-item label="手机号" v-if="editFormModel.id === ''" prop="mobile">
                     <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
                 </el-form-item>
-                <el-form-item label="管理员账号" prop="account_name">
-                    <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.account_name"></el-input>
+                <el-form-item label="管理员账号" prop="username">
+                    <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.username"></el-input>
                 </el-form-item>
-                <el-form-item label="管理员角色" prop="role_id">
-                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id">
+                <el-form-item label="管理员角色" prop="position_id">
+                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.position_id">
                         <el-option v-for="(item, index) in editRoleData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -124,32 +135,26 @@
                 <el-button type="primary" @click="submitAddRole" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
-        <!--修改密码-->
-        <el-dialog custom-class="manager-dialog" title="修改密码" :visible.sync="modPwdDialogVisible" width="480px">
-            <el-form ref="modPwdForm" :model="modPwdFormModel" :rules="modPwdRules" label-width="100px" label-position="left">
-                <el-form-item label="旧密码" prop="oldPassword">
-                    <el-input type="password" placeholder="请输入旧密码" v-model.trim="modPwdFormModel.password"></el-input>
-                </el-form-item>
-                <el-form-item label="新密码" prop="newPassword">
-                    <el-input type="password" placeholder="请输入密码" v-model.trim="modPwdFormModel.new_password"></el-input>
-                </el-form-item>
-                <el-form-item label="确认新密码" prop="confirmPassword">
-                    <el-input type="password" placeholder="请再次输入新密码" v-model.trim="modPwdFormModel.confirm_new_password"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                    <el-button @click="modPwdDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitModifyPwd" :loading="submitting" :disabled="submitting">确认</el-button>
-            </span>
-        </el-dialog>
         <!--编辑权限-->
         <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
             <el-scrollbar style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
-                <permission-tree v-model="treeDetail" :editable="true"></permission-tree>
+                <permission-tree v-model="editTreeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
                     <el-button @click="treeDialogVisible = false">取消</el-button>
                     <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
+        <!--编辑职位-->
+        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="editPosDialogVisible" width="480px">
+            <el-form ref="editPosForm" :model="editPosFormModel" :rules="editPosRules" label-width="100px" label-position="left">
+                <el-form-item label="职位名称" prop="name">
+                    <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer">
+                <el-button @click="editPosDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitEditPos" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
     </div>
@@ -162,11 +167,10 @@
             removeEffect,
             updateStatus,
             resetPassword,
-            updatePassword,
-            updateTree,
-            getManageTreeDetail, getRoleList, getEditRoleList, createRole} from '@/apis/modules/user-manage' // eslint-disable-line
+            updateManageTree,
+            getManageTreeDetail, getRoleList, getEditRoleList, createRole, delMangePos, updateMangePos} from '@/apis/modules/user-manage' // eslint-disable-line
     import {formatDate} from '@/utils/formatTime'
-    import {accountStatusMap} from '@/enums/user-manage'
+    import {manageAccountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
     export default {
         name: 'manager',
@@ -181,6 +185,7 @@
                 targetRow: null, // 修改密码目标对象
                 treeData: [],
                 treeDetail: [],
+                editTreeDetail: [],
                 curSelRole: null,
                 roleData: [],
                 managerData: [],
@@ -190,8 +195,8 @@
                 editFormModel: {
                     id: '',
                     real_name: '',
-                    account_name: '',
-                    role_id: '',
+                    username: '',
+                    position_id: '',
                     mobile: '',
                     email: '',
                     password: '',
@@ -199,8 +204,8 @@
                 },
                 editRules: {
                     real_name: baseValiObj,
-                    account_name: baseValiObj,
-                    role_id: baseValiObj,
+                    username: baseValiObj,
+                    position_id: baseValiObj,
                     mobile: [baseValiObj, {validator: this.moblieValidator}],
                     email: [baseValiObj, {validator: this.emailValidator}],
                     password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
@@ -226,14 +231,21 @@
                     new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
                     confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
-                accountStatusMap,
+                manageAccountStatusMap,
                 statusColorMap : Object.freeze({
                     disabled: 'danger',
                     enabled: 'success',
                     invalidation: 'minor'
                 }),
                 // 新增编辑用角色数据
-                editRoleData: []
+                editRoleData: [],
+                editPosDialogVisible: false,
+                editPosFormModel: {
+                    name: ''
+                },
+                editPosRules: {
+                    name: baseValiObj
+                }
             }
         },
         created() {
@@ -242,16 +254,67 @@
         },
         methods: {
             formatDate,
+            submitEditPos() {
+                this.$refs.editPosForm.validate(flag => {
+                    if (flag) {
+                        const id = this.curSelRole.id
+                        this.submitting = true
+                        updateMangePos({...this.editPosFormModel, id}).then(() => {
+                            this.ajaxRoleList(id)
+                            this.$message.success('修改成功!')
+                            this.editPosDialogVisible = false
+                        }).finally(() => {
+                            this.submitting = false
+                        })
+                    }
+                })
+            },
+            delPosition() {
+                this.confirm('删除后，数据无法恢复，请确认', '删除').then(() => {
+                    delMangePos({id: this.curSelRole.id}).then(() => {
+                        this.$message.success('操作成功!')
+                        this.ajaxRoleList()
+                    })
+                })
+            },
+            confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
+                const h = this.$createElement
+                return this.$confirm(
+                    h('div', [
+                        h('i', {
+                            class: {
+                                iconfont: true,
+                                'iconzhong20_gantanhao': true
+                            },
+                            style: {
+                                color: btnColor,
+                                marginRight: '10px'
+                            }
+                        }),
+                        h('span', content)
+                    ]),
+                    '提示',
+                    {
+                        confirmButtonText: btnTxt,
+                        confirmButtonClass: btnClass,
+                        customClass: 'manager-msg-box'
+                    }
+                )
+            },
+            handleSetPos() {
+                this.editPosDialogVisible = true
+            },
             handleSelRole(obj) {
                 this.ajaxDetail(obj)
-                // this.ajaxTreeDetail()
+                this.ajaxTreeDetail()
             },
             submitModifyPermission() {
                 const permission_ids = []
-                this.loopTree(this.treeDetail, permission_ids)
+                this.loopTree(this.editTreeDetail, permission_ids)
                 this.submitting = true
-                updateTree({permission_ids, role_id: this.curSelRole.id}).then(() => {
+                updateManageTree({permission_ids, position_id: this.curSelRole.id}).then(() => {
                     this.$message.success('编辑权限成功!')
+                    this.ajaxTreeDetail()
                     this.treeDialogVisible = false
                 }).catch(()=> {}).finally(() => {
                     this.submitting = false
@@ -406,10 +469,10 @@
                 this.$refs.addRoleForm.validate(flag => {
                     if (flag) {
                         this.submitting = true
-                        createRole(this.addRoleFormModel).then(() => {
+                        createRole(this.addRoleFormModel).then(res => {
                             this.$message.success('新增角色成功!')
                             this.addRoleDialogVisible = false
-                            this.ajaxRoleList()
+                            this.ajaxRoleList(res.id)
                         }).finally(() => {
                             this.submitting = false
                         })
@@ -420,20 +483,6 @@
                 this.targetRow = row
                 this.modPwdDialogVisible = true
             },
-            submitModifyPwd() {
-                this.$refs.modPwdForm.validate(flag => {
-                    if (flag) {
-                        this.submitting = true
-                        const {targetRow, modPwdFormModel} = this
-                        updatePassword({...modPwdFormModel, id: targetRow.id}).then(() => {
-                            this.$message.success('修改密码成功!')
-                            this.modPwdDialogVisible = false
-                        }).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
             ajaxEditRoleList() {
                 getEditRoleList().then(res => {
                     this.editRoleData = res
@@ -441,6 +490,10 @@
             },
             ajaxRoleList(roleId) {
                 this.leftLoading = true
+                this.managerData = []
+                this.curSelRole = null
+                this.treeDetail = []
+                this.editTreeDetail = []
                 getRoleList().then(res => {
                     this.roleData = res
                     if (this.roleData.length > 0 && roleId) {
@@ -461,8 +514,9 @@
             },
             ajaxTreeDetail() {
                 this.treeLoading = true
-                getManageTreeDetail({role_id: this.curSelRole.id}).then(res => {
+                getManageTreeDetail({position_id: this.curSelRole.id}).then(res => {
                     this.treeDetail = res
+                    this.editTreeDetail = JSON.parse(JSON.stringify(res))
                 }).catch(() => {}).finally(() => {
                     this.treeLoading = false
                 })
@@ -470,7 +524,7 @@
             ajaxDetail(obj) {
                 this.rightLoading = true
                 this.curSelRole = obj
-                getManagerList({role_id: obj.id}).then(res => {
+                getManagerList({position_id: obj.id}).then(res => {
                     this.managerData = res.data
                 }).finally(() => {
                     this.rightLoading = false
@@ -517,6 +571,9 @@
             },
             modPwdDialogVisible(v) {
                 !v && this.$refs.modPwdForm.resetFields()
+            },
+            editPosDialogVisible(v) {
+                !v && this.$refs.editPosForm.resetFields()
             }
         }
     }
@@ -616,7 +673,11 @@
                         border:1px solid rgba(230,230,230,1);
                         color: #1A1A1A;
                         font-weight: bold;
-                        &>span{
+                        ::v-deep .del-link .el-link--inner{
+                            display: flex;
+                            align-items: center;
+                        }
+                        &>div:first-of-type>span{
                             font-weight: normal;
                             font-size: 14px;
                             color:#999;

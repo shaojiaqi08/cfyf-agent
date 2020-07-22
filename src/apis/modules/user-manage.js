@@ -1,9 +1,9 @@
 import { get, post } from '../helper'
 // ----------------- 管理员 ------------------------
 // 添加管理员
-export const createManager = (params) => post('/management/sys_permission/sys_user/store', params)
+export const createManager = (params) => post('/agent/admin/store', params)
 // 编辑管理员
-export const editManager = (params) => post('/management/sys_permission/sys_user/update', params)
+export const editManager = (params) => post('/agent/admin/update', params)
 // 角色列表
 export const getRoleList = params => get('/agent/admin_position/get_list', params)
 // 新增用角色列表
@@ -11,21 +11,25 @@ export const getEditRoleList = params => get('/agent/admin/get_position_list', p
 // 添加角色
 export const createRole = params => post('/agent/admin_position/store', params)
 // 管理员列表
-export const getManagerList = (params) => get('/agent/admin/get_position_list', params)
+export const getManagerList = (params) => get('/agent/admin/get_page_list', params)
 // 使失效
-export const removeEffect = (params) => post('/management/sys_permission/sys_user/close', params)
+export const removeEffect = (params) => post('/agent/admin/close', params)
 // 更新账户状态
-export const updateStatus = (params) => post('/management/sys_permission/sys_user/update_account_status', params)
+export const updateStatus = (params) => post('/agent/admin/update_account_status', params)
 // 重置密码
-export const resetPassword = (params) => post('/management/sys_permission/sys_user/reset_password', params)
+export const resetPassword = (params) => post('/agent/admin/reset_password', params)
 // 更新密码
 export const updatePassword = (params) => post('/management/sys_permission/sys_user/update_password', params)
 // 权限树
 export const getManageTree = (params) => get('/management/sys_permission/sys_permission_group/get_tree', params)
-// 更新权限树
-export const updateTree = (params) => post('/management/sys_permission/sys_role_permission_relation/update', params)
 // 编辑权限树详情
-export const getManageTreeDetail = (params) => get('/management/sys_permission/sys_permission_group/detail?role_id=1', params)
+export const getManageTreeDetail = (params) => get('/agent/business_permission/business_permission_group/admin/detail', params)
+// 更新权限树
+export const updateManageTree = params => post('/agent/business_permission/business_role_permission_relation/admin/update', params)
+// 编辑职位
+export const updateMangePos = params => post('/agent/admin_position/update', params)
+// 删除职位
+export const delMangePos = params => get('/agent/admin_position/delete', params)
 
 // ----------------- 销售 -----------------------
 // 团队列表

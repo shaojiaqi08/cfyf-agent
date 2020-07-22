@@ -85,6 +85,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
 }
 
+/* 链接按钮(el-link) */
+.el-link {
+  .el-link--inner{
+    display: flex;
+    align-items: center;
+  }
+}
+
 /* 标签(tag)*/
 .el-tag{
   height: 24px;

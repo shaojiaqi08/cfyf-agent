@@ -163,7 +163,6 @@
         methods: {
             submit() {
                 this.$emit('submit', this.curData)
-                this.close()
             },
             close() {
                 this.$emit('update:visible', false)

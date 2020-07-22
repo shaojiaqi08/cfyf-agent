@@ -94,3 +94,25 @@ export const accountStatusMap = {
     }
 }
 
+// 账号状态
+export const manage_account_status = {
+    disable: '禁用',
+    enable: '有效',
+    invalidation: '失效'
+}
+
+export const manageAccountStatusMap = {
+    disable: {
+        label: '禁用',
+        value: 'disabled'
+    },
+    enable: {
+        label: '有效',
+        value: 'disable'
+    },
+    invalidation: {
+        label: '失效',
+        value: 'invalidation'
+    }
+}
+
