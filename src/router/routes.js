@@ -37,6 +37,18 @@ export const routers = [
     icon: 'iconcebiandaohang20_shangpin',
     children: [
       {
+        path: '/insure-goods',
+        name: 'insure-goods',
+        meta: {
+          title: '保险商品',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('good-manage/insure-goods')
+      },
+      {
         path: '/rate',
         name: 'rate',
         meta: {
@@ -47,18 +59,6 @@ export const routers = [
           permission: 'a'
         },
         component: getView('good-manage/rate')
-      },
-      {
-        path: '/shelves',
-        name: 'shelves',
-        meta: {
-          title: '商品上下架',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'a'
-        },
-        component: getView('good-manage/shelves')
       }
     ]
   },
@@ -122,7 +122,7 @@ export const routers = [
         path: '/sale',
         name: 'Sale',
         meta: {
-          title: '用户管理-销售',
+          title: '销售',
           header: true,
           menu: true,
           show: true,
@@ -134,7 +134,7 @@ export const routers = [
         path: '/manager',
         name: 'manager',
         meta: {
-          title: '内部管理员',
+          title: '管理员',
           header: true,
           menu: true,
           show: true,

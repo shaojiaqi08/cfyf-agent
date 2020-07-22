@@ -31,10 +31,16 @@
         >
         </side-filter-list>
         <div class="right" v-loading="detailLoading">
-            <el-scrollbar>
-                <permission-tree v-model="detailData"></permission-tree>
-            </el-scrollbar>
+            <template v-if="positionData.length">
+                <el-scrollbar>
+                    <permission-tree v-model="detailData"></permission-tree>
+                </el-scrollbar>
+                <div class="flex-center">
+                    <el-button type="primary" @click="editTree">编辑</el-button>
+                </div>
+            </template>
         </div>
+        <!--新增职位-->
         <el-dialog title="新增职位" :visible.sync="posDialogVisible" width="480px">
             <el-form ref="posForm" label-width="100px" :model="posFormModel" :rules="posRules">
                 <el-form-item label="职位等级" prop="level">
@@ -51,10 +57,20 @@
                 <el-button @click="submitCreatePos" type="primary" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
+        <!--编辑权限-->
+        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
+                <permission-tree v-model="treeDetail" :editable="true"></permission-tree>
+            </el-scrollbar>
+            <span slot="footer">
+                    <el-button @click="treeDialogVisible = false">取消</el-button>
+                    <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
-    import {getPositionList, getPosLvList, getPosDetail, createPosLv} from '@/apis/modules/user-manage' // eslint-disable-line
+    import {getPositionList, getPosLvList, getPosDetail, createPosLv, updatePosTree} from '@/apis/modules/user-manage'
     import SideFilterList from '@/components/side-filter-list'
     import {accountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
@@ -68,6 +84,8 @@
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
                 accountStatusMap,
+                treeLoading: false,
+                treeDialogVisible: false,
                 submitting: false,
                 positionLoading: false,
                 lvLoading: false,
@@ -89,8 +107,8 @@
                 },
                 selLv: '',
                 selPos: '',
-                selSales: '',
                 detailData: [],
+                treeDetail: [],
                 editFormModel: {
                     id: '',
                     real_name: '',
@@ -148,7 +166,34 @@
             }
         },
         methods: {
-            create() {},
+            editTree() {
+                this.treeDetail = JSON.parse(JSON.stringify(this.detailData))
+                this.treeDialogVisible = true
+            },
+            submitModifyPermission() {
+                this.submitting = true
+                const position_id = this.selPos
+                const permission_ids = []
+                this.loopTree(this.treeDetail, permission_ids)
+                updatePosTree({permission_ids, position_id}).then(() => {
+                    this.$message.success('编辑权限成功!')
+                    this.ajaxDetail(position_id)
+                    this.treeDialogVisible = false
+                }).catch(() => {}).finally(() => {
+                    this.submitting = false
+                })
+            },
+            loopTree(dataArr, arr) {
+                dataArr.forEach(item => {
+                    if (item.permission_groups && item.permission_groups.length) {
+                        this.loopTree(item.permission_groups, arr)
+                    }
+                    if (item.permissions && item.permissions.length) {
+                        console.log(item)
+                        arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
+                    }
+                })
+            },
             handleSelLv(obj) {
                 this.selLv = obj.level
                 this.ajaxPositionData(obj.level)
@@ -173,6 +218,7 @@
             },
             ajaxDetail(position_id) {
                 this.detailLoading = true
+                this.detailData = []
                 getPosDetail({position_id}).then(res => {
                     this.detailData = res
                 }).catch(() => {}).finally(() => {
@@ -181,6 +227,9 @@
             },
             ajaxPositionData(level) {
                 this.positionLoading = true
+                this.detailData = []
+                this.positionData = []
+                this.selPos = ''
                 getPositionList({level, role: 'sales'}).then(res => {
                     this.positionData = res
                 }).catch(() => {}).finally(() => {
@@ -281,7 +330,7 @@
                 }
             }
             ::v-deep .el-scrollbar{
-                height: 100%;
+                height: calc(100% - 32px);
             }
         }
         ::v-deep .side-filter-container .list-item:first-of-type {

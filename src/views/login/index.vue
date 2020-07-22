@@ -54,8 +54,10 @@ export default {
       login({
         username, password
       }).then(res => {
-        window.localStorage.setItem('Agent-Authorization', res.token)
         this.$router.replace('/')
+        this.$store.dispatch('users/updateUserInfo', { token: res.token })
+        const path = this.$route.query.redirect || '/user-info'
+        this.$router.replace(path)
       })
     },
     inputFocus(e) {

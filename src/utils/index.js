@@ -1,3 +1,5 @@
+import store from "@/store";
+
 export const a = { a: "ddd" };
 
 /**
@@ -18,4 +20,38 @@ export const debounce = (event, time, flag) => {
             event.apply(this, args)
         }, time)
     }
+}
+
+export function createObjectURL(object) {
+    return (window.URL) ? window.URL.createObjectURL(object) : window.webkitURL.createObjectURL(object)
+}
+
+export const downloadFrameA = (url, filename, method = 'get', authorizationField = 'Agent-Authorization') => {
+    return new Promise((resolve, reject) => {
+        let xhr = new XMLHttpRequest()
+        xhr.open(method, url)
+        authorizationField && xhr.setRequestHeader(authorizationField, store.state.users.userInfo.token)
+        xhr.responseType = 'blob'
+        xhr.onload = function (e) {
+            if (this.status === 200) {
+                let blob = this.response
+                if (window.navigator.msSaveOrOpenBlob) {
+                    navigator.msSaveBlob(blob, filename)
+                } else {
+                    let a = document.createElement('a')
+                    let url = createObjectURL(blob)
+                    a.href = url
+                    a.download = filename
+                    document.body.appendChild(a)
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                    document.body.removeChild(a)
+                }
+                resolve(this.response)
+            } else {
+                reject(e)
+            }
+        }
+        xhr.send()
+    })
 }

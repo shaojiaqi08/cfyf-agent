@@ -92,7 +92,7 @@
                 </el-form-item>
                 <el-form-item label="管理员角色" prop="role_id">
                     <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.role_id">
-                        <el-option v-for="(item, index) in roleData" :key="index" :value="item.id" :label="item.name"></el-option>
+                        <el-option v-for="(item, index) in editRoleData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
                 <template v-if="editFormModel.id === ''">
@@ -164,11 +164,10 @@
             resetPassword,
             updatePassword,
             updateTree,
-            getManageTreeDetail} from '@/apis/modules/user-manage' // eslint-disable-line
-    import {getRoleList, createRole} from '@/apis/modules/index'
+            getManageTreeDetail, getRoleList, getEditRoleList, createRole} from '@/apis/modules/user-manage' // eslint-disable-line
     import {formatDate} from '@/utils/formatTime'
     import {accountStatusMap} from '@/enums/user-manage'
-    import PermissionTree from '../../../components/permission-tree'
+    import PermissionTree from '@/components/permission-tree'
     export default {
         name: 'manager',
         components: {PermissionTree},
@@ -232,17 +231,20 @@
                     disabled: 'danger',
                     enabled: 'success',
                     invalidation: 'minor'
-                })
+                }),
+                // 新增编辑用角色数据
+                editRoleData: []
             }
         },
         created() {
             this.ajaxRoleList()
+            this.ajaxEditRoleList()
         },
         methods: {
             formatDate,
             handleSelRole(obj) {
                 this.ajaxDetail(obj)
-                this.ajaxTreeDetail()
+                // this.ajaxTreeDetail()
             },
             submitModifyPermission() {
                 const permission_ids = []
@@ -432,10 +434,15 @@
                     }
                 })
             },
+            ajaxEditRoleList() {
+                getEditRoleList().then(res => {
+                    this.editRoleData = res
+                })
+            },
             ajaxRoleList(roleId) {
                 this.leftLoading = true
                 getRoleList().then(res => {
-                    this.roleData = res.data
+                    this.roleData = res
                     if (this.roleData.length > 0 && roleId) {
                         const role = this.roleData.find(item => item.id === roleId)
                         this.ajaxDetail(role)

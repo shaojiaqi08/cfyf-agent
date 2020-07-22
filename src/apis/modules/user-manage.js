@@ -1,11 +1,17 @@
 import { get, post } from '../helper'
-// ----------------- 内部管理员 ------------------------
+// ----------------- 管理员 ------------------------
 // 添加管理员
 export const createManager = (params) => post('/management/sys_permission/sys_user/store', params)
 // 编辑管理员
 export const editManager = (params) => post('/management/sys_permission/sys_user/update', params)
+// 角色列表
+export const getRoleList = params => get('/agent/admin_position/get_list', params)
+// 新增用角色列表
+export const getEditRoleList = params => get('/agent/admin/get_position_list', params)
+// 添加角色
+export const createRole = params => post('/agent/admin_position/store', params)
 // 管理员列表
-export const getManagerList = (params) => get('/management/sys_permission/sys_user/get_page_list', params)
+export const getManagerList = (params) => get('/agent/admin/get_position_list', params)
 // 使失效
 export const removeEffect = (params) => post('/management/sys_permission/sys_user/close', params)
 // 更新账户状态
@@ -66,3 +72,5 @@ export const getPosLvList = (params) => get('/agent/sales_position/get_level_lis
 export const getPosDetail = (params) => get('/agent/business_permission/business_permission_group/detail', params)
 // 新增职位
 export const createPosLv = (params) => post('/agent/sales_position/store', params)
+// 跟新权限树
+export const updatePosTree = (params) => post('/agent/business_permission/business_role_permission_relation/update', params)

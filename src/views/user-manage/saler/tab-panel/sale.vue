@@ -123,19 +123,17 @@
                             <el-button type="primary" @click="handleSetLeader"><i class="iconfont iconxiao16_tihuan mr4"></i>更换主管团队</el-button>
                         </div>
                         <el-table :data="detailData.leader" border width="100%" class="mb16" max-height="768px">
-                            <el-table-column label="姓名" prop="real_name" align="center" width="124px"></el-table-column>
-                            <el-table-column label="账号" prop="username" align="center" width="124px"></el-table-column>
-                            <el-table-column label="手机号" prop="mobile" align="center"  width="124px"></el-table-column>
-                            <el-table-column label="职位" prop="sales_position.name" align="center" width="124px">
-
-                            </el-table-column>
-                            <el-table-column label="所属团队" prop="team" align="center" width="124px"></el-table-column>
-                            <el-table-column label="入职时间" prop="join_date" align="center" width="152px">
+                            <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
+                            <el-table-column label="账号" prop="username" align="center"></el-table-column>
+                            <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                            <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
+                            <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
+                            <el-table-column label="入职时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态" prop="join_date" align="center">
+                            <el-table-column label="状态" prop="join_date" align="center" width="100px">
                                 <template v-slot="{row}">
                                     <el-tag >{{row.account_status_str}}</el-tag>
                                 </template>
@@ -163,14 +161,14 @@
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                            <el-table-column label="职位" prop="position" align="center"></el-table-column>
-                            <el-table-column label="所属团队" prop="team" align="center"></el-table-column>
+                            <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
+                            <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
                             <el-table-column label="入职时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态" prop="join_date" align="center">
+                            <el-table-column label="状态" prop="join_date" align="center"  width="100px">
                                 <template v-slot="{row}">
                                     <el-tag >{{row.account_status_str}}</el-tag>
                                 </template>

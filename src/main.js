@@ -4,6 +4,7 @@ import router from "./router";
 import store from "./store";
 import './utils/directives';
 import Element from 'element-ui';
+import VueClipboard from 'vue-clipboard2'
 
 import './element-variables.scss';
 import './assets/scss/index.scss';
@@ -14,6 +15,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 Vue.use(Element, {size: 'medium', zIndex: 3000});
+Vue.use(VueClipboard)
 
 new Vue({
   router,

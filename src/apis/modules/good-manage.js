@@ -9,3 +9,11 @@ export const setStatus = (data) => post('/management/product-manage/set-status',
 export const setBatchStatus = (data) => post('/management/product-manage/batch-set-status', data)
 // api cps产品列表
 export const getAllProduct = (data) => get('/common/product/all-products', data)
+
+// ----------------保险商品-----------------
+// api list
+export const getInsureApiList = (data) => get('/agent/product/distribution/list', data)
+// cps list
+export const getInsureCpsList = (data) => get('/agent/product/distribution/list', data)
+// 详情
+export const getInsureDetail = data => get('/agent/policy/detail', data)

@@ -2,9 +2,9 @@
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
             <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword" @input="updateFilter"></el-input>
-            <!-- 自定义搜索条件 -->
-            <slot name="extraFilter"></slot>
         </div>
+        <!-- 自定义搜索条件 -->
+        <slot name="extraFilter"></slot>
         <el-scrollbar>
             <div class="list-item"
                  v-for="(item, index) in filterList"

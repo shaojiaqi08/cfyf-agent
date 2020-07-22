@@ -13,7 +13,7 @@
           <i class="mr4 iconfont iconxiao16_gerenxinxi"></i>
           个人信息
         </div>
-        <div class="menu-list-item">
+        <div class="menu-list-item" @click="loginOut">
           <i class="mr4 iconfont iconxiao16_tuichudenglu"></i>
           退出登录
         </div>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+  import {loginOut} from '@/apis/modules'
 export default {
   data() {
     return {
@@ -43,6 +44,11 @@ export default {
     jump2UserInfo() {
       this.$router.push({ path: '/user-info' })
       this.isPopoverShow = false
+    },
+    loginOut() {
+      loginOut().then(() => {
+        this.$router.replace({ path: '/login' })
+      })
     }
   }
 }
