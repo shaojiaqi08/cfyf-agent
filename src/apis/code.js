@@ -66,9 +66,9 @@ export const notions = {
   }
 }
 
-export const notification = (type, message = '') => {
+export const notification = (type, message = '', options) => {
   if (message) {
-    const config = Object.assign({}, notions.ERROR, { message })
+    const config = Object.assign({}, notions.ERROR, { message, ...options })
     return Notification(config)
   }
   return Notification(notions[type])

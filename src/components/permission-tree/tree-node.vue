@@ -124,16 +124,30 @@
         }
         .tree-group-container{
             white-space: nowrap;
+            position: relative;
             &:hover{
                 background: #f5f5f5;
+                opacity: .8;
                 border-radius: 4px;
             }
-
+            &::before{
+                content: '';
+                display: inline-block;
+                width: 0;
+                position: absolute;
+                top: 0px;
+                bottom: 16px;
+                left: 14px;
+                border-right: 1px dashed #ccc;
+            }
             &>.tree-node-container:first-of-type{
                 padding-left: 48px;
                 &::after{
                     left: 14px !important;
                 }
+            }
+            &>.tree-node-container:last-of-type > .chkbox-wrap::after{
+                display: none;
             }
         }
         &::after{
@@ -171,7 +185,7 @@
                 display: inline-block;
                 width: 0;
                 position: absolute;
-                top: 0px;
+                top: -11px;
                 bottom: 14px;
                 left: 14px;
                 border-right: 1px dashed #ccc;

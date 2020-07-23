@@ -43,8 +43,8 @@ import {login} from '@/apis/modules/index'
 export default {
   data() {
     return {
-      username: 'sales',
-      password: '123123',
+      username: '',
+      password: '',
       isPasswordShow: false
     }
   },

@@ -1,6 +1,6 @@
 <template>
     <div class="sale-people-container">
-        <el-button class="add-button" type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
+        <el-button class="add-button" type="primary" @click="handleAddSales"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
         <div class="side-filter-wrap flex-column flex-center">
             <side-filter-list
                     v-loading="teamLoading"
@@ -9,13 +9,13 @@
                     :showFilter="false"
                     v-model="selTeam"
                     @change="handleSelTeam"
-                    style="width: 240px;height: calc(100% - 64px)"
+                    style="width: 240px"
                     :listData="teamData"
-            ></side-filter-list>
-            <el-button type="primary" class="mt16 mb16 ml16 mr16 flex-center" @click="addTeamDialogVisible = true"><i class="iconfont iconxiao16_jiahao mr4"></i>增加团队</el-button>
+            >
+                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="addTeamDialogVisible = true"><i class="iconfont iconxiao16_jiahao mr4"></i>增加团队</el-button>
+            </side-filter-list>
         </div>
-
-                <div class="right" v-loading="detailLoading">
+            <div class="right" v-loading="detailLoading">
             <template v-if="detailData">
                 <div class="sale-filter-bar">
                     <div>
@@ -106,7 +106,7 @@
                                 </template>
                                 <div v-else class="flex">
                                     <el-input size="small" v-model.trim="editName" class="mr8"></el-input>
-                                    <el-button type="primary" @click="submitTeamName">确定</el-button>
+                                    <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
 
                             </div>
@@ -133,9 +133,15 @@
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态" prop="join_date" align="center" width="100px">
+                            <el-table-column label="离职时间" prop="close_at" align="center">
                                 <template v-slot="{row}">
-                                    <el-tag >{{row.account_status_str}}</el-tag>
+                                    <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="状态" prop="join_date" align="center" width="100px">
+                                <template  v-slot="{row}">
+                                    <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
@@ -168,9 +174,15 @@
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
+                            <el-table-column label="离职时间" prop="close_at" align="center">
+                                <template v-slot="{row}">
+                                    <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="状态" prop="join_date" align="center"  width="100px">
                                 <template v-slot="{row}">
-                                    <el-tag >{{row.account_status_str}}</el-tag>
+                                    <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
@@ -218,7 +230,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="团队" prop="team_id">
-                    <el-select style="width: 100%" placeholder="团队" v-model="editFormModel.team_id">
+                    <el-select style="width: 100%" placeholder="团队" v-model="editFormModel.team_id" :loading="teamSelLoading">
                         <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -354,9 +366,17 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                statusTagType: {
+                    'disable': 'danger',
+                    'enable': 'success',
+                    'incumbency': 'primary',
+                    'dimission': 'minor'
+                },
                 accountStatusMap,
                 submitting: false,
+                submittingEditName: false,
                 teamLoading: false,
+                teamSelLoading: false,
                 dialogLoading: false,
                 detailLoading: false,
                 name: '',
@@ -449,9 +469,15 @@
             closePopover,
             formatDate,
             create() {},
+            // 编辑销售
             edit(id) {
                 this.ajaxSalesDetail(id)
                 this.editDialogVisible = true
+            },
+            handleAddSales() {
+                this.ajaxPositionData()
+                this.editDialogVisible = true
+
             },
             // 新增/编辑销售
             submitSalesEdit() {
@@ -530,12 +556,19 @@
             },
             submitTeamName() {
                 const {selTeam: id, editName: name} = this
-                modifyTeamName({id, name}).then(() => {
-                    this.$message.success('修改团队名成功!')
-                    this.ajaxDetail(id)
+                if (name === this.detailData.name) {
                     this.editting = false
-                    this.editName = ''
-                })
+                } else {
+                    this.submittingEditName = true
+                    modifyTeamName({id, name}).then(() => {
+                        this.$message.success('修改团队名成功!')
+                        this.ajaxDetail(id)
+                        this.editting = false
+                    }).finally(() => {
+                        this.submittingEditName = false
+                    })
+                }
+
             },
             // 提交更换领导
             submitSetLeader() {
@@ -626,8 +659,11 @@
                 })
             },
             ajaxPositionData() {
-                getSalesPositionList({role: 'sales'}).then(res => {
+                this.teamSelLoading = true
+                getSalesPositionList({role: 'sales', level: 1}).then(res => {
                     this.positionData = res
+                }).finally(() => {
+                    this.teamSelLoading = false
                 })
             },
             ajaxGroupSaleList() {
@@ -741,8 +777,6 @@
         },
         created() {
             this.ajaxTeamData()
-            // 职位筛选
-            this.ajaxPositionData()
             // 没加入团队的销售
             this.ajaxNoTeamSalesData()
         }

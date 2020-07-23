@@ -2,7 +2,7 @@
     <div class="prospectus-container">
         <div class="header">
             内部管理员
-            <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" @change="searchForm[type]=$event">
+            <el-input type="primary" v-model="searchForm.keyword" placeholder="搜索计划书名称">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter">
                     <el-select v-model="type" clearable style="width: 100%" @change="handleSelType">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
@@ -15,8 +15,8 @@
         </div>
         <div class="content">
             <div class="filter-bar flex-between flex">
-                <filter-shell v-model="type" :width="385" class="date-range-filter">
-                    <el-date-picker type="daterange" v-model="dateRange" clearable value-format="yyyy-MM-dd">
+                <filter-shell v-model="dateRange" :width="385" class="date-range-filter">
+                    <el-date-picker type="daterange" v-model="dateRange" @change="handleDateChange" clearable value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                     <template v-slot:label>
                         <span>{{hasValue(dateRange) ? `${dateRange[0]} 至 ${dateRange[1]}` : '全部时间范围'}}</span>
@@ -24,13 +24,13 @@
                     <template v-slot:close>
                         <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
                            v-if="hasValue(dateRange)"
-                           @click.stop="dateRange=[]"></i>
+                           @click="dateRange=null"></i>
                     </template>
                 </filter-shell>
                 <div class="flex">
                     <el-tooltip placement="bottom" content="计划书个人展示">
-                        <div @click="editUserInfo">
-                            <el-avatar :size="32" class="mr16"></el-avatar>
+                        <div @click="editUserInfo" class="avatar mr16">
+                            <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
                     <el-button type="primary" @click="addProposal">新建计划书</el-button>
@@ -89,7 +89,7 @@
     import AddMemberStruct from './modal/add-member-struct'
     import {debounce} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'
-    import {getProposalList} from '@/apis/modules/proposal'
+    import {getProposalList, getProposalMasterInfo} from '@/apis/modules/proposal'
     export default {
         name: 'prospectus',
         components: {
@@ -123,8 +123,8 @@
                 loading: false,
                 previewUrl: '',
                 userInfo: {},
+                userHeadImg: '',
                 proposalInfo: {},
-                keyword: '',
                 keywordType: [
                     {value: 'name', label: '计划书名称'},
                     {value: 'proposal_product_name', label: '产品名称'}
@@ -132,7 +132,7 @@
                 data: [
                 ],
                 type: 'name',
-                dateRange: [],
+                dateRange: null,
                 searchForm: {
                     page: 1,
                     limit: 10,
@@ -140,7 +140,8 @@
                     customer_name: '',
                     proposal_product_name: '',
                     start_created_at: '',
-                    end_created_at: ''
+                    end_created_at: '',
+                    keyword: ''
                 }
             }
         },
@@ -148,6 +149,12 @@
             clearValue,
             hasValue,
             closePopover,
+            // 筛选日期change
+            handleDateChange(v) {
+                const [start = '', end = ''] = v || []
+                this.searchForm.start_created_at = start
+                this.searchForm.end_created_at = end
+            },
             editUserInfo() {
                 this.isUserInfoModalShow = true
             },
@@ -178,7 +185,12 @@
             previewHandleClose() {
                 this.previewVisible = false
             },
-            ajaxUserInfo() {},
+            ajaxUserInfo() {
+                getProposalMasterInfo().then(res => {
+                    this.userInfo = res
+                    this.userHeadImg = res.avatar_url
+                })
+            },
             ajaxData() {
                 const {searchForm} = this
                 this.loading = true
@@ -193,6 +205,14 @@
                 }).catch(()=> {}).finally(() => {
                     this.loading = false
                 })
+                this.ajaxUserInfo()
+            },
+            debounceAjaxData() {
+                const func = debounce(() => {
+                    this.ajaxData()
+                }, 300)
+                func()
+                this.debounceAjaxData = func
             },
             handleSelType(val) {
                const target = this.searchForm
@@ -211,7 +231,7 @@
         watch: {
             searchForm: {
                 handler() {
-                    this.ajaxData()
+                    this.debounceAjaxData()
                 },
                 deep: true
             },
@@ -266,8 +286,8 @@
                     justify-content: center;
                 }
             }
-        }
 
+        }
         & > .content{
             background: #FFFFFF;
             padding: 0 16px;
@@ -280,6 +300,19 @@
             }
             ::v-deep .date-range-filter .filter-popover{
                 width: 385px
+            }
+            .avatar {
+                width: 32px;
+                height: 32px;
+                background-color: #f5f5f5;
+                border: 1px solid #e6e6e6;
+                border-radius: 50%;
+                overflow: hidden;
+                .avatar-image {
+                    width: 33px;
+                    height: 33px;
+                    transform: translate(-1px, -1px);
+                }
             }
         }
         .new-preview-wrapper {

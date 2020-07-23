@@ -3,9 +3,9 @@ import {get, post} from '../helper'
 // 计划书分页列表
 export const getProposalList = (data) => get('/agent/proposal/list-with-page', data)
 // 计划书个人展示详情
-export const getProposalMasterInfo = (data) => get('/agent/proposal/detail', data)
+export const getProposalMasterInfo = (data) => get('/agent/proposal/sales-info/detail', data)
 // 保存计划书个人展示详情
-export const updateProposalMasterInfo = (data) => post('', data)
+export const updateProposalMasterInfo = (data) => post('/agent/proposal/sales-info/save', data)
 // 有效家庭成员列表
 export const getRelations = (data) => get('', data)
 // 有效家庭成员列表V2

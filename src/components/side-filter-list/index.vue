@@ -5,34 +5,56 @@
         </div>
         <!-- 自定义搜索条件 -->
         <slot name="extraFilter"></slot>
-        <el-scrollbar>
+        <el-scrollbar v-list-infinite-scroll="scroll2Bottom">
             <div class="list-item"
                  v-for="(item, index) in filterList"
                  :key="index"
                  :class="{active: item[valueKey] === activeValue}"
                  @click="handleSelected(item)">
                 <slot name="list" v-bind:row="item">
-                    <el-tooltip placement="top" :content="item[labelKey]" :enterable="false">
-                        <span>{{item[labelKey]}}</span>
-                    </el-tooltip>
+                    <list-item :tips-content="item[labelKey]">
+                        <template>{{item[labelKey]}}</template>
+                    </list-item>
                 </slot>
             </div>
-            <div v-if="filterList.length==0" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
+            <div v-if="!filterList.length" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
         </el-scrollbar>
+        <slot name="footer"></slot>
     </div>
 </template>
 <script>
     /**
      *  侧边列表筛选器
      * */
+    import ListItem from './side-filter-list-item'
+    import {debounce} from '@/utils'
     export default {
         name: 'side-filter-list',
+        components: { ListItem },
+        directives: {
+            'list-infinite-scroll': {
+                inserted(el, binding) {
+                    const wrapper = el.querySelector('.el-scrollbar__wrap')
+                    const scrollHandle = debounce(() => {
+                        const { scrollHeight, scrollTop, offsetHeight } = wrapper;
+                        if (offsetHeight + scrollTop >= scrollHeight) {
+                            // 到底
+                            binding.value();
+                        }
+                    }, 300)
+                    wrapper.addEventListener('scroll', scrollHandle)
+                }
+            }
+        },
         model: {
             prop: 'activeValue',
             event: 'update:activeValue'
         },
         props: {
-            customClass: String,
+            customClass: {
+                type: String,
+                default: ''
+            },
             activeValue: null,
             showFilter: {
                 type: Boolean,
@@ -53,8 +75,7 @@
             listData: {
                 type: Array,
                 default: () => []
-            },
-            listItemRender: Function
+            }
         },
         data() {
             return {
@@ -76,20 +97,10 @@
             updateFilter(v) {
                 this.$emit('updateFilter', v)
             },
-        },
-        render(h) {
-            const filterBar = this.showFilter ? h('div', {'class': {'search-bar': true}}, [this.$slots.filterbar]) : null
-            const list = h('el-scroll', [h('ul', [
-                this.data.map(item => this.listItemRender ? this.listItemRender() : h('li', item[this.filedKey]))
-            ])])
-            return h('div', {
-                'class': {
-                    'side-filter-container': true
-                }
-            },[
-                filterBar,
-                list
-            ])
+            scroll2Bottom () {
+                // 混动条到底
+                this.$emit('scrollToBottom')
+            }
         }
     }
 </script>
@@ -104,7 +115,7 @@
             padding: 16px;
         }
         ::v-deep .el-scrollbar{
-            flex: auto;
+            flex: 1;
             .el-scrollbar__wrap{
                 overflow-x: hidden;
             }
@@ -113,7 +124,6 @@
                 min-height: 44px;
                 padding: 8px 16px;
                 overflow: hidden;
-                text-overflow: ellipsis;
                 cursor: pointer;
                 background: #fff;
                 display: flex;
@@ -121,6 +131,7 @@
                 box-sizing: border-box;
                 border-top: 1px solid #fff;
                 border-bottom: 1px solid #fff;
+                transition: all .2s ease-in;
                 &.active, &:hover{
                     border-top: 1px solid #e6e6e6;
                     border-bottom: 1px solid #e6e6e6;

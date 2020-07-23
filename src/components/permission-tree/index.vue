@@ -63,6 +63,9 @@
             &::after{
                 display: none;
             }
+            &>::v-deep .tree-group-container::before{
+                display: none;
+            }
             & > ::v-deep .chkbox-wrap::after{
                 display: none;
             }
@@ -84,7 +87,7 @@
             }
         }
         &>.tree-node-container:last-child::before{
-            bottom: 16px;
+            height: 14px;
         }
     }
 </style>

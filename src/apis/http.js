@@ -30,7 +30,7 @@ service.interceptors.response.use(response => {
   if (resCode === responseCode.SUCCESS) {
     const code = response.data.code
     const data = response.data
-    const message = response.data.message
+    let message = response.data.message
     switch (code) {
       case statusCode.PASS:
       case statusCode.NOCONTENT:
@@ -51,7 +51,16 @@ service.interceptors.response.use(response => {
         }
         break
       case statusCode.CODE_ERROR:
-        notification('ERROR', message)
+        if (data.data) {
+          let msg =  ''
+          Object.keys(data.data).forEach(key => {
+            data.data[key].forEach(txt => {
+              msg += `<p>${txt}</p>`
+            })
+          })
+          message += `<div>${msg}</div>`
+        }
+        notification('ERROR', message, {dangerouslyUseHTMLString: true})
         break
       case statusCode.PROPOSAL_ERROR_1:
       case statusCode.PROPOSAL_ERROR_2:

@@ -1,6 +1,8 @@
 <template>
   <div class="header">
-    <div class="logo normal-transition"></div>
+    <div class="logo normal-transition">
+
+    </div>
     <el-popover
       placement="bottom"
       width="80"
@@ -21,7 +23,7 @@
       <div class="user-info normal-transition" slot="reference">
         <div class="user">
           <div class="avatar"></div>
-          <div class="name">颠三倒四的是</div>
+          <div class="name">{{userInfo.token}}</div>
         </div>
         <div class="permission">
           管理员角色
@@ -33,12 +35,16 @@
 </template>
 
 <script>
-  import {loginOut} from '@/apis/modules'
+import {loginOut} from '@/apis/modules'
+import {mapState} from 'vuex'
 export default {
   data() {
     return {
       isPopoverShow: false
     }
+  },
+  computed: {
+    ...mapState('users', ['userInfo'])
   },
   methods: {
     jump2UserInfo() {

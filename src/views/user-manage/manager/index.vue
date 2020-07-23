@@ -5,19 +5,18 @@
             <el-button type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content">
-            <div class="left-scroll-wrap">
-                <el-scrollbar class="left-scroll-bar" v-loading="leftLoading">
-                    <div v-for="(item, index) in roleData"
-                         :key="index"
-                         :class="{'list-item':true, active: curSelRole && curSelRole.id === item.id}"
-                         @click="handleSelRole(item)">
-                        <el-tooltip class="item" effect="dark" :content="item.name" placement="top">
-                            <span>{{item.name}}</span>
-                        </el-tooltip>
-                    </div>
-                </el-scrollbar>
-                <el-button type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
-            </div>
+            <side-filter-list
+                    v-loading="leftLoading"
+                    label-key="name"
+                    value-key="id"
+                    :showFilter="false"
+                    v-model="selRole"
+                    @change="handleSelRole"
+                    style="width: 240px;border-right: 1px solid #e6e6e6;"
+                    :listData="roleData"
+            >
+                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
+            </side-filter-list>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
                 <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
@@ -60,7 +59,7 @@
                         </el-table-column>
                         <el-table-column label="失效日期" prop="close_at" align="center">
                             <template v-slot="{row}">
-                                <span v-if="!row.open_at">-</span>
+                                <span v-if="!row.close_at">-</span>
                                 <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
@@ -172,9 +171,11 @@
     import {formatDate} from '@/utils/formatTime'
     import {manageAccountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
+    import SideFilterList from '@/components/side-filter-list'
+
     export default {
         name: 'manager',
-        components: {PermissionTree},
+        components: {PermissionTree, SideFilterList},
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
@@ -187,6 +188,7 @@
                 treeDetail: [],
                 editTreeDetail: [],
                 curSelRole: null,
+                selRole: '',
                 roleData: [],
                 managerData: [],
                 curTabIdx: 'people',
