@@ -148,7 +148,7 @@
 </template>
 <script>
     import SideFilterList from '@/components/side-filter-list'
-    import FilterShell, { clearValue, hasValue, closePopover } from '../component/filter-shell'
+    import FilterShell, { clearValue, hasValue, closePopover } from '@/components/filter-shell'
     export default {
         name: 'server-rate',
         components: {SideFilterList, FilterShell},

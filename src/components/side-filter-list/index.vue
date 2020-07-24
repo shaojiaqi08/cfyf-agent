@@ -1,23 +1,30 @@
 <template>
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
-            <el-input size="small" prefix-icon="el-icon-search" :placeholder="placeholder" v-model.trim="keyword" @input="updateFilter"></el-input>
+            <el-input size="small"
+                      prefix-icon="el-icon-search"
+                      :placeholder="placeholder"
+                      v-model.trim="keyword"
+                      @input="updateFilter"
+                      clearable></el-input>
         </div>
         <!-- 自定义搜索条件 -->
         <slot name="extraFilter"></slot>
-        <el-scrollbar v-list-infinite-scroll="scroll2Bottom">
-            <div class="list-item"
-                 v-for="(item, index) in filterList"
-                 :key="index"
-                 :class="{active: item[valueKey] === activeValue}"
-                 @click="handleSelected(item)">
-                <slot name="list" v-bind:row="item">
-                    <list-item :tips-content="item[labelKey]">
-                        <template>{{item[labelKey]}}</template>
-                    </list-item>
-                </slot>
+        <el-scrollbar>
+            <div v-infinite-scroll="scroll2Bottom">
+                <div class="list-item"
+                     v-for="(item, index) in filterList"
+                     :key="index"
+                     :class="{active: item[valueKey] === activeValue}"
+                     @click="handleSelected(item)">
+                    <slot name="list" v-bind:row="item">
+                        <list-item :tips-content="item[labelKey]">
+                            <template>{{item[labelKey]}}</template>
+                        </list-item>
+                    </slot>
+                </div>
+                <div v-if="!filterList.length" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
             </div>
-            <div v-if="!filterList.length" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
         </el-scrollbar>
         <slot name="footer"></slot>
     </div>
@@ -27,25 +34,9 @@
      *  侧边列表筛选器
      * */
     import ListItem from './side-filter-list-item'
-    import {debounce} from '@/utils'
     export default {
         name: 'side-filter-list',
         components: { ListItem },
-        directives: {
-            'list-infinite-scroll': {
-                inserted(el, binding) {
-                    const wrapper = el.querySelector('.el-scrollbar__wrap')
-                    const scrollHandle = debounce(() => {
-                        const { scrollHeight, scrollTop, offsetHeight } = wrapper;
-                        if (offsetHeight + scrollTop >= scrollHeight) {
-                            // 到底
-                            binding.value();
-                        }
-                    }, 300)
-                    wrapper.addEventListener('scroll', scrollHandle)
-                }
-            }
-        },
         model: {
             prop: 'activeValue',
             event: 'update:activeValue'
@@ -98,7 +89,6 @@
                 this.$emit('updateFilter', v)
             },
             scroll2Bottom () {
-                // 混动条到底
                 this.$emit('scrollToBottom')
             }
         }
@@ -138,6 +128,7 @@
                 }
                 &.active{
                     background: #f5f5f5;
+                    font-weight: bold;
                 }
                 &:hover{
                     background: #e6e6e6;

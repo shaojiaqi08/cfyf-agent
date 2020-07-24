@@ -24,8 +24,7 @@
         },
         data() {
             return {
-                // tabIndex: 'proposal',
-                tabIndex: 'share',
+                tabIndex: 'proposal',
                 productName: ''
             }
         }

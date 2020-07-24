@@ -2,7 +2,7 @@
     <div class="prospectus-container">
         <div class="header">
             内部管理员
-            <el-input type="primary" v-model="searchForm.keyword" placeholder="搜索计划书名称">
+            <el-input type="primary" v-model="searchForm.keyword" placeholder="搜索计划书名称" clearable>
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter">
                     <el-select v-model="type" clearable style="width: 100%" @change="handleSelType">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-    import FilterShell, {clearValue, hasValue, closePopover} from '../components/filter-shell'
+    import FilterShell, {clearValue, hasValue, closePopover} from '@/components/filter-shell'
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './proposal-operate/modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'

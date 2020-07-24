@@ -2,25 +2,25 @@
     <div :class="`tree-node-container ${expanded ? '' : 'no-expanded'}`">
         <div class="chkbox-wrap">
             <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
-               v-if="editable ?
-                    (data.permission_groups && data.permission_groups.length > 0)||(data.permissions && data.permissions.length > 0) :
-                    (data.permission_groups && data.permission_groups.some(item => item.is_checked) > 0) || (data.permissions && data.permissions.some(item => item.is_checked) > 0)"
+               v-if="showExpandedbtn"
                @click="triggerExpanded"></i>
-            <el-checkbox v-if="editable" :indeterminate= "indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
+            <el-checkbox v-if="editable" :indeterminate="indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
             <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
         </div>
         <div v-show="expanded"
-             v-if="data.permission_groups && data.permission_groups.length > 0"
+             v-if="showPermissionGroup"
              class="tree-group-container">
             <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true"  :key="index" v-for="(item, index) in data.permission_groups" v-model="data.permission_groups[index]"></tree-node>
         </div>
         <div class="tree-permission-container"
              v-show="expanded"
-             v-if="data.permissions && data.permissions.length > 0">
+             v-if="showPermission">
             <tree-node @checked="handleSubChecked"
                        :parent="data"
-                       :isGroup="false" :key="index"
-                       v-for="(item, index) in (editable ? data.permissions : (data.permissions || []).filter(item => item.is_checked))" v-model="data.permissions[index]"></tree-node>
+                       :isGroup="false"
+                       :key="index"
+                       v-for="(item, index) in filterPermissionData"
+                       v-model="data.permissions[index]"></tree-node>
         </div>
     </div>
 </template>
@@ -32,7 +32,7 @@
             prop: 'data',
             event: 'update'
         },
-        inject: ['editable', 'treeData', '$top'],
+        inject: ['editable', '$top'],
         props: {
             data: {
                 type: Object,
@@ -47,15 +47,44 @@
                 expanded: true
             }
         },
+        computed: {
+            showExpandedbtn() {
+                const {editable, data} = this
+                const {permission_groups: groups, permissions} = data
+                return editable ?
+                    (groups && groups.length) || (permissions && permissions.length > 0) :
+                    (groups && groups.length) || (permissions && permissions.some(item => item.is_checked))
+            },
+            showPermissionGroup() {
+                const {data} = this
+                return data.permission_groups && data.permission_groups.length
+            },
+            showPermission() {
+                const {data, editable} = this
+                const {permissions} = data
+                return editable ? permissions && permissions.length : permissions && permissions.some(item => item.is_checked)
+            },
+            filterPermissionData() {
+                const {editable, data} = this
+                // 修改状态返回所有, 否则返回is_checked=true的数据
+                return editable ? data.permissions : (data.permissions || []).filter(item => item.is_checked)
+            }
+        },
         methods: {
+            // 折叠
             triggerExpanded() {
                 this.expanded = !this.expanded
             },
+            // checkbox点击事件
             handleChecked(obj) {
+                // 更新子节点
                 this.updateChildren(obj, obj.is_checked)
+                // 更新父节点
                 this.$emit('checked', obj, this.isGroup)
+                // 从顶层父节点处渲染整棵树
                 this.$top.updateTree()
             },
+            // 递归更新子节点
             updateChildren(obj, value) {
                 obj.permission_groups && obj.permission_groups.forEach(item => {
                     item.is_checked = value
@@ -67,15 +96,13 @@
                 })
             },
             // 子checkbox更新父checkbox
-            handleSubChecked(obj, isGroup) {
+            handleSubChecked() {
                 const {data} = this
-                const target = data[isGroup ? 'permission_groups' : 'permissions']
-                data.is_checked = target.every(item => item.is_checked)
+                data.is_checked = [...(data['permission_groups'] || []), ...(data['permissions'] || [])].every(item => item.is_checked)
                 // 更新父节点
                 let parent = this.parent
                 while (parent) {
-                    const target = parent[this.isGroup ? 'permission_groups' : 'permissions']
-                    parent.is_checked = target.every(item => item.is_checked)
+                    parent.is_checked = [...(parent['permission_groups'] || []), ...(parent['permissions'] || [])].every(item => item.is_checked)
                     parent = parent.parent
                 }
             }
@@ -99,6 +126,11 @@
         position: relative;
         display: inline-block;
         vertical-align: top;
+        & > div:last-of-type{
+            &::before{
+                height: 13px;
+            }
+        }
         .expanded-enter-active, .expanded-leave-active{
             transition: transform .2s ease-in-out;
             transform: scaleY(0);
@@ -125,9 +157,9 @@
         .tree-group-container{
             white-space: nowrap;
             position: relative;
+            transition: background-color .3s ease-in-out;
             &:hover{
-                background: #f5f5f5;
-                opacity: .8;
+                background: rgba(245, 245, 245, .5);
                 border-radius: 4px;
             }
             &::before{
@@ -135,8 +167,8 @@
                 display: inline-block;
                 width: 0;
                 position: absolute;
-                top: 0px;
-                bottom: 16px;
+                top: 0;
+                bottom: 0;
                 left: 14px;
                 border-right: 1px dashed #ccc;
             }
@@ -164,11 +196,12 @@
         }
         .tree-permission-container {
             position: relative;
+            display: inline-block;
             &::after{
                 display: none;
             }
             &>.tree-node-container{
-                padding-left: 45px;
+                padding-left: 48px;
                 &> ::v-deep .chkbox-wrap::after{
                     display: none;
                 }
@@ -185,9 +218,10 @@
                 display: inline-block;
                 width: 0;
                 position: absolute;
-                top: -11px;
-                bottom: 14px;
+                top: 0;
+                bottom: 0;
                 left: 14px;
+                height: calc(100% - 14px) !important;
                 border-right: 1px dashed #ccc;
             }
             &>.tree-node-container::after{

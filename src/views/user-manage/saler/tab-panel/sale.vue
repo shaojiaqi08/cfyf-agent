@@ -94,7 +94,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable></el-input>
                 </div>
                 <el-scrollbar style="height: calc(100% - 64px)">
                     <div class="team-info" v-if="detailData.parent">
@@ -333,7 +333,7 @@
     </div>
 </template>
 <script>
-    import FilterShell, { clearValue, hasValue, closePopover } from '../component/filter-shell'
+    import FilterShell, { clearValue, hasValue, closePopover } from '@/components/filter-shell'
     import {getTeamList,
             getSalesList,
             createSales,

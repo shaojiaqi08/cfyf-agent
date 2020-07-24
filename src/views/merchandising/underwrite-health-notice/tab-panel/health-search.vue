@@ -71,7 +71,7 @@
 
 <script>
     import SideFilterList from '@/components/side-filter-list'
-    import FilterShell, {hasValue, closePopover} from '../../components/filter-shell'
+    import FilterShell, {hasValue, closePopover} from '@/components/filter-shell'
     import {getHealthNoticeProductList, getHealthNoticeDetail} from '@/apis/modules/underwriting'
     import {debounce} from '@/utils'
     import html2canvas from 'html2canvas'

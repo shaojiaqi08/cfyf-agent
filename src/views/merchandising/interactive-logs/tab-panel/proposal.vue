@@ -1,6 +1,6 @@
 <template>
     <div class="proposal-container">
-        <el-input v-model="searchModel.keyword" prefix-icon="el-icon-search" class="search-input" placeholder="搜索产品名称"></el-input>
+        <el-input v-model="searchModel.keyword" prefix-icon="el-icon-search" class="search-input" placeholder="搜索产品名称" clearable></el-input>
         <div class="list" v-loading="loading">
             <template v-if="proposalDateArr.length > 0">
                 <div class="list-content">
@@ -283,6 +283,7 @@
                 height: 100%;
             }
             .item{
+                transition: all .2s ease-out;
                 padding: 16px;
                 &.active{
                     background: #f5f5f5;

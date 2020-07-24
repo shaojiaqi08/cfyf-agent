@@ -15,7 +15,6 @@
         },
         provide() {
             return {
-                treeData: this.data,
                 editable: this.editable,
                 $top: this
             }

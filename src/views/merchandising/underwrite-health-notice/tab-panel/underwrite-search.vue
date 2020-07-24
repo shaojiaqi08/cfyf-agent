@@ -89,7 +89,7 @@
 <script>
     import SideFilterList from '@/components/side-filter-list'
     import {getUnderwritingProductList, getUnderwritingDetail} from '@/apis/modules/underwriting'
-    import FilterShell, {clearValue, hasValue, closePopover} from '../../components/filter-shell'
+    import FilterShell, {clearValue, hasValue, closePopover} from '@/components/filter-shell'
     import {debounce} from '@/utils'
     export default {
         name: 'underwrite-search',

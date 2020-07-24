@@ -152,7 +152,7 @@
 import { getInsureApiList, getInsureCpsList} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules' // eslint-disable-line
 import { formatDate } from '@/utils/formatTime'
-import FilterShell, { clearValue, hasValue, closePopover } from './filter-shell'
+import FilterShell, { clearValue, hasValue, closePopover } from '@/components/filter-shell'
 import SideFilterList from '@/components/side-filter-list'
 import TextHiddenEllipsis from '@/components/text-hidden-ellipsis' // eslint-disable-line
 import { debounce, downloadFrameA} from "@/utils";
