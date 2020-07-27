@@ -1,6 +1,6 @@
 <template>
     <div :class="`permission-tree-container ${data.length === 1 ? 'only-one-data' : ''}`" ref="container" v-loading="loading">
-        <tree-node :editable="editable" :key="index" v-for="(item, index) in data" v-model="data[index]"></tree-node>
+        <tree-node :editable="editable" :key="index" v-for="(item, index) in filterData" v-model="filterData[index]"></tree-node>
     </div>
 </template>
 
@@ -17,6 +17,12 @@
             return {
                 editable: this.editable,
                 $top: this
+            }
+        },
+        computed: {
+            filterData() {
+                const {editable, data} = this
+                return editable ? data : data.filter(item => item.is_checked)
             }
         },
         props: {
@@ -50,14 +56,7 @@
         &>.tree-node-container{
             padding-left: 0;
             &::before{
-                content: '';
-                display: inline-block;
-                width: 0;
-                position: absolute;
-                top: 26px;
-                bottom: 0px;
-                left: 14px;
-                border-right: 1px dashed #ccc;
+                display: none;
             }
             &::after{
                 display: none;
@@ -71,22 +70,12 @@
             & > ::v-deep .chkbox-wrap:hover{
                 background: #f5f5f5;
             }
-        }
-        &.only-one-data>.tree-node-container{
-            &::before{
-                content: '';
-                display: inline-block;
-                width: 0;
-                position: absolute;
-                top: 26px;
-                bottom: 50px;
-                height: 17px;
-                left: 14px;
-                border-right: 1px dashed #ccc;
+            & > ::v-deep .tree-group-container>.tree-node-container:last-of-type::before{
+                height: 100%;
             }
-        }
-        &>.tree-node-container:last-child::before{
-            height: 14px;
+            &:last-of-type > ::v-deep .tree-group-container>.tree-node-container:last-of-type::before{
+                height: 13px;
+            }
         }
     }
 </style>

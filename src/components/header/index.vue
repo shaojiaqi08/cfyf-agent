@@ -24,7 +24,7 @@
           <div class="name">{{userInfo.account_name}}</div>
         </div>
         <div class="permission">
-          {{userInfo.sys_role.name}}
+          {{userInfo.sys_role && userInfo.sys_role.name}}
           <i class="iconfont iconxiao16_xiajiantou ml4"></i>
         </div>
       </div>

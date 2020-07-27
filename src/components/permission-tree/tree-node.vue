@@ -10,7 +10,7 @@
         <div v-show="expanded"
              v-if="showPermissionGroup"
              class="tree-group-container">
-            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true"  :key="index" v-for="(item, index) in data.permission_groups" v-model="data.permission_groups[index]"></tree-node>
+            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true"  :key="index" v-for="(item, index) in filterPermissionGroup" v-model="data.permission_groups[index]"></tree-node>
         </div>
         <div class="tree-permission-container"
              v-show="expanded"
@@ -53,7 +53,7 @@
                 const {permission_groups: groups, permissions} = data
                 return editable ?
                     (groups && groups.length) || (permissions && permissions.length > 0) :
-                    (groups && groups.length) || (permissions && permissions.some(item => item.is_checked))
+                    (groups && groups.some(item => item.is_checked)) || (permissions && permissions.some(item => item.is_checked))
             },
             showPermissionGroup() {
                 const {data} = this
@@ -63,6 +63,11 @@
                 const {data, editable} = this
                 const {permissions} = data
                 return editable ? permissions && permissions.length : permissions && permissions.some(item => item.is_checked)
+            },
+            filterPermissionGroup() {
+                const {editable, data} = this
+                // 修改状态返回所有, 否则返回is_checked=true的数据
+                return editable ? data.permission_groups : (data.permission_groups || []).filter(item => item.is_checked)
             },
             filterPermissionData() {
                 const {editable, data} = this
@@ -122,15 +127,9 @@
         }
     }
     .tree-node-container{
-        padding-left: 84px;
+        padding-left: 48px;
         position: relative;
-        display: inline-block;
         vertical-align: top;
-        & > div:last-of-type{
-            &::before{
-                height: 13px;
-            }
-        }
         .expanded-enter-active, .expanded-leave-active{
             transition: transform .2s ease-in-out;
             transform: scaleY(0);
@@ -146,61 +145,49 @@
             border-radius: 4px;
             padding: 0 8px;
             overflow: hidden;
-            &::after{
-                content: '';
-                display: inline-block;
-                width: 100%;
-                transform: translateX(8px);
-                border-top: 1px dashed #ccc;
+            &:hover{
+                background: #f5f5f5;
+                border: 4px;
             }
         }
         .tree-group-container{
             white-space: nowrap;
             position: relative;
             transition: background-color .3s ease-in-out;
-            &:hover{
-                background: rgba(245, 245, 245, .5);
-                border-radius: 4px;
-            }
-            &::before{
-                content: '';
-                display: inline-block;
-                width: 0;
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 14px;
-                border-right: 1px dashed #ccc;
-            }
-            &>.tree-node-container:first-of-type{
-                padding-left: 48px;
-                &::after{
-                    left: 14px !important;
-                }
-            }
-            &>.tree-node-container:last-of-type > .chkbox-wrap::after{
-                display: none;
+            &>.tree-node-container:last-of-type::before{
+                height: 13px;
             }
         }
         &::after{
             content: '';
             display: inline-block;
-            width: 84px;
+            width: 32px;
             position: absolute;
             top: 13.5px;
-            left: 2px;
+            left: 14px;
             border-top: 1px dashed #ccc;
         }
         &:nth-of-type(1)::after{
             width: 32px;
         }
+        &::before{
+            content: '';
+            display: inline-block;
+            width: 0;
+            position: absolute;
+            bottom: 0px;
+            top: 0;
+            left: 14px;
+            border-right: 1px dashed #ccc;
+        }
         .tree-permission-container {
             position: relative;
-            display: inline-block;
+            white-space: nowrap;
             &::after{
                 display: none;
             }
             &>.tree-node-container{
+                display: inline-block !important;
                 padding-left: 48px;
                 &> ::v-deep .chkbox-wrap::after{
                     display: none;
@@ -227,15 +214,24 @@
             &>.tree-node-container::after{
                 content: '';
                 display: inline-block;
-                width: 30px;
+                width: 48px;
                 position: absolute;
                 top: 14px;
-                left: 16px;
+                left: 0;
                 border-top: 1px dashed #ccc;
             }
-        }
-        &.no-expanded::before{
-            display: none !important;
+            &>.tree-node-container:first-of-type::after{
+                left: 14px;
+                width: 32px;
+            }
+            &:hover{
+                background: #f5f5f5;
+                border: 4px;
+            }
+            .chkbox-wrap:hover{
+                background: transparent;
+                border: 0px;
+            }
         }
     }
 </style>

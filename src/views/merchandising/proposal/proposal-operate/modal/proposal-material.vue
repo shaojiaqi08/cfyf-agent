@@ -55,7 +55,7 @@ export default {
       this.$emit('update:show', false)
       this.$emit('fresh')
       if (this.from === 'proposalOperate') {
-        this.$router.push('/proposal/proposal-list')
+        this.$router.push('/proposal')
       }
     }
   }
