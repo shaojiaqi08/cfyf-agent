@@ -176,7 +176,7 @@
             window.addEventListener('resize', this.calcTableMaxHeight)
         },
         beforeDestroy() {
-            window.removeEventListener('resize', this.this.calcTableMaxHeight)
+            window.removeEventListener('resize', this.calcTableMaxHeight)
         }
     }
 </script>

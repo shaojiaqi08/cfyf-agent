@@ -1,14 +1,12 @@
 <template>
   <div class="header">
-    <div class="logo normal-transition">
-
-    </div>
+    <div class="logo normal-transition"></div>
     <el-popover
-      placement="bottom"
-      width="80"
-      v-model="isPopoverShow"
-      popper-class="popper-box"
-      trigger="click">
+            placement="bottom"
+            width="80"
+            v-model="isPopoverShow"
+            popper-class="popper-box"
+            trigger="click">
       <div class="menu-list">
         <div class="menu-list-item"
              @click="jump2UserInfo">
@@ -23,10 +21,10 @@
       <div class="user-info normal-transition" slot="reference">
         <div class="user">
           <div class="avatar"></div>
-          <div class="name">{{userInfo.token}}</div>
+          <div class="name">{{userInfo.account_name}}</div>
         </div>
         <div class="permission">
-          管理员角色
+          {{userInfo.sys_role.name}}
           <i class="iconfont iconxiao16_xiajiantou ml4"></i>
         </div>
       </div>
@@ -35,106 +33,107 @@
 </template>
 
 <script>
-import {loginOut} from '@/apis/modules'
-import {mapState} from 'vuex'
-export default {
-  data() {
-    return {
-      isPopoverShow: false
-    }
-  },
-  computed: {
-    ...mapState('users', ['userInfo'])
-  },
-  methods: {
-    jump2UserInfo() {
-      this.$router.push({ path: '/user-info' })
-      this.isPopoverShow = false
+  import {loginOut} from '@/apis/modules'
+  import {mapState} from 'vuex'
+  export default {
+    data() {
+      return {
+        isPopoverShow: false
+      }
     },
-    loginOut() {
-      loginOut().then(() => {
-        this.$router.replace({ path: '/login' })
-      })
+    computed: {
+      ...mapState('users', ['userInfo'])
+    },
+    methods: {
+      jump2UserInfo() {
+        this.$router.push({ path: '/user-info' })
+        this.isPopoverShow = false
+      },
+      loginOut() {
+        loginOut().then(() => {
+          this.$router.replace({ path: '/login' })
+        })
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-.header {
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  width: 100%;
-  height: 40px;
-  border-bottom: 1px solid #E6E6E6;
-  z-index: 2;
-  .logo {
-    width: 200px;
-    height: 24px;
-    background-color: #ccc;
-    opacity: 0.6;
-    cursor: pointer;
-    &:hover {
-      opacity: 1;
-    }
-  }
-  .user-info {
+  .header {
+    position: fixed;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    height: 24px;
-    opacity: 0.6;
-    cursor: pointer;
-    &:hover {
-      opacity: 1;
+    padding: 0 20px;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #E6E6E6;
+    z-index: 2;
+    .logo {
+      width: 200px;
+      height: 24px;
+      background-color: #ccc;
+      opacity: 0.6;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
     }
-    .user {
+    .user-info {
       display: flex;
       align-items: center;
-      margin-right: 8px;
-      .avatar {
-        display: inline-block;
+      height: 24px;
+      opacity: 0.6;
+      cursor: pointer;
+      &:hover {
+        opacity: 1;
+      }
+      .user {
+        display: flex;
+        align-items: center;
         margin-right: 8px;
-        width: 24px;
-        height: 24px;
-        border-radius: 12px;
-        overflow: hidden;
-        background: url(../../assets/images/avatar.png) no-repeat;
-        background-size: cover;
+        .avatar {
+          display: inline-block;
+          margin-right: 8px;
+          width: 24px;
+          height: 24px;
+          border-radius: 12px;
+          overflow: hidden;
+          background: url(../../assets/images/avatar.png) no-repeat;
+          background-size: cover;
+        }
+        .name {
+          display: inline-block;
+          font-weight: bold;
+        }
       }
-      .name {
-        display: inline-block;
+      .permission {
+        display: flex;
+        align-items: center;
+        color: #999;
       }
-    }
-    .permission {
-      display: flex;
-      align-items: center;
-      color: #999;
     }
   }
-}
 </style>
 
 <style lang="scss">
-.popper-box {
-  color: red;
-  .menu-list {
-    margin-top: 8px;
-    .menu-list-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 18px;
-      color: #4D4D4D;
-      text-align: center;
-      cursor: pointer;
-      &:hover {
-        color: #FF9000;
-        background-color: rgba(255, 144, 0, 0.1);
+  .popper-box {
+    color: red;
+    .menu-list {
+      margin-top: 8px;
+      .menu-list-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 18px;
+        color: #4D4D4D;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+          color: #FF9000;
+          background-color: rgba(255, 144, 0, 0.1);
+        }
       }
     }
   }
-}
 </style>

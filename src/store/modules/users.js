@@ -1,4 +1,4 @@
-import { UPDATE_USER_INFO } from '../mutation-types'
+import { UPDATE_USER_INFO, LOGIN_OUT } from '../mutation-types'
 
 export default {
   namespaced: true,
@@ -8,11 +8,17 @@ export default {
   mutations: {
     [UPDATE_USER_INFO](state, userInfo) {
       state.userInfo = userInfo
+    },
+    [LOGIN_OUT](state) {
+      state.userInfo = {}
     }
   },
   actions: {
     updateUserInfo({ commit }, userInfo) {
       commit(UPDATE_USER_INFO, userInfo)
+    },
+    loginOut({ commit }) {
+      commit(LOGIN_OUT)
     }
   }
 }

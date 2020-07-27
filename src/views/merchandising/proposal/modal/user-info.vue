@@ -58,7 +58,7 @@ export default {
   data() {
     return {
       isButtonLoading: false,
-      imageUrl: process.env.IMG_URL + '/api/images/upload'
+      imageUrl: process.env.VUE_APP_IMG_URL + '/api/images/upload'
     }
   },
   methods: {
