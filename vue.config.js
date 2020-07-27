@@ -12,8 +12,7 @@ module.exports = {
     disableHostCheck: true,
     proxy: {
       '/api': {
-        // target: 'http://proxy.tc.2239.com/web/v1',   //代理接口
-        target: process.env.VUE_APP_BASE_URL,//代理接口
+        target: 'http://proxy.tc.2239.com/web/v1',   //代理接口
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''    //代理的路径
