@@ -4,7 +4,7 @@ const getView = (name) => () => import(`@/views/${name}/index.vue`)
 export const routers = [
   {
     label: '业绩',
-    icon: 'iconcebiandaohang20_yeji',
+    icon: 'iconcebiandaohang20_yeji1',
     children: [
       {
         path: '/order',

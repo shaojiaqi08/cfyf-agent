@@ -3,7 +3,7 @@
     <div class="header">
       保险商品
       <div class="flex-between">
-        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword">
+        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable>
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -49,8 +49,7 @@
                        clearable
                        filterable
                        ref="focusRef"
-                       placeholder="请选择"
-                       @change="handleProductAgeChange">
+                       placeholder="请选择">
               <el-option
                       v-for="item in productAgeData"
                       :key="item.id"
@@ -66,7 +65,7 @@
             <template v-slot:close>
                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
                    v-if="hasValue(productAge)"
-                   @click="clearValue($event, 'productAge')"></i>
+                   @click="productAge = ''"></i>
             </template>
           </filter-shell>
           <filter-shell v-model="searchModel.supplier_id">
@@ -244,12 +243,6 @@ export default {
     copy() {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
-    handleProductAgeChange(v) {
-      const obj = this.productAgeData.find(item => item.id === v)
-      this.searchModel.min_age = obj.min_age
-      this.searchModel.max_age = obj.max_age
-      this.closePopover()
-    },
     handleSelProduct(obj) {
       this.productUrl = obj.web_url
     },
@@ -304,10 +297,15 @@ export default {
         this.debounceAjaxListData()
       },
       deep: true
+    },
+    productAge(v) {
+      const obj = this.productAgeData.find(item => item.id === v) || {}
+      this.searchModel.min_age = obj.min_age
+      this.searchModel.max_age = obj.max_age
+      this.closePopover()
     }
   },
   created() {
-    console.log(process.env)
     this.ajaxListData()
     this.ajaxBaseData()
   }

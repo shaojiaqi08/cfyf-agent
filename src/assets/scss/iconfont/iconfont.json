@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "16161461",
+      "name": "侧边导航(20)_业绩",
+      "font_class": "cebiandaohang20_yeji1",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "16067761",
+      "name": "小(16)_列",
+      "font_class": "xiao16_lie",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "16067762",
+      "name": "小(16)_行",
+      "font_class": "xiao16_hang",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
       "icon_id": "15984871",
       "name": "小(16)_下指向箭头",
       "font_class": "xiao16_xiazhixiangjiantou",

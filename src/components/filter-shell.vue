@@ -55,7 +55,7 @@ export function clearValue(e, key) {
 export default {
   props: {
       value: {
-      type: [Array, String, Object]
+      type: [Array, String, Object, Number]
     },
     width: {
       type: Number,

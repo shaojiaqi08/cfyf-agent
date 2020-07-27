@@ -69,7 +69,6 @@ export default {
   padding: 0 20px;
   width: 100%;
   height: 40px;
-  background-color: #F0F0F0;
   border-bottom: 1px solid #E6E6E6;
   z-index: 2;
   .logo {

@@ -28,7 +28,7 @@ export default {
       const hasHeader = this.$route.meta.header
       return {
         top: hasHeader ? `40px` : `0`,
-        left: hasMenu ? `180px` : `0`
+        left: hasMenu ? `160px` : `0`
       }
     }
   },
@@ -47,7 +47,7 @@ export default {
   min-width: 1300px;
   right: 0;
   bottom: 0;
-  background-color: #F0F0F0;
+  background-color: #e6e4e1;
 }
 .page-fade-enter-active, .page-fade-leave-active {
   transition: opacity .3s ease;

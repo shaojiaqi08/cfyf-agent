@@ -542,7 +542,7 @@
             },
             // 解散团队
             dismissTeam() {
-                this.confirm('解散团队后，过往业绩将进行归档，且无法恢', '解散').then(() => {
+                this.confirm('解散团队后，过往业绩将进行归档，且无法恢复原团队，需重新建。是否确认解散？', '解散').then(() => {
                     dismissTeam({id: this.selTeam}).then(() => {
                         this.$message.success('操作成功!')
                         this.ajaxTeamData()

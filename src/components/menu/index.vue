@@ -61,7 +61,7 @@
     position: fixed;
     top: 40px;
     left: 0;
-    width: 180px;
+    width: 160px;
     height: 1000px;
     .menu-list {
       padding: 14px 0 20px 20px;
@@ -73,15 +73,21 @@
         width: 140px;
         color: #4D4D4D;
         font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
         &:first-child {
           // margin-top: 0;
+        }
+        .iconfont{
+          font-size: 20px;
         }
       }
       .menu-item {
         padding: 10px 0 10px 36px;
         width: 140px;
         height: 40px;
-        color: #999999;
+        color: #4d4d4d;
         font-size: 14px;
         line-height: 22px;
         border-radius: 4px;
@@ -91,12 +97,13 @@
         cursor: pointer;
         &.actived {
           color: #FF9000;
+          font-weight: bold;
           &:hover {
-            background-color: #F0F0F0;
+            background-color: rgba(0, 0, 0, .1);
           }
         }
-        &:hover {
-          background-color: #E6E6E6;
+        &:hover{
+          background-color: rgba(0, 0, 0, .1);
         }
       }
     }
