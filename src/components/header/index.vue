@@ -125,6 +125,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        white-space: nowrap;
         padding: 18px;
         color: #4D4D4D;
         text-align: center;
