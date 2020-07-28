@@ -32,6 +32,8 @@
         <el-button type="primary"
                    size="medium"
                    class="block"
+                   :loading="submitting"
+                   :disabled="submitting"
                     @click="login">登录</el-button>
       </div>
     </div>
@@ -45,18 +47,22 @@ export default {
     return {
       username: '',
       password: '',
-      isPasswordShow: false
+      isPasswordShow: false,
+      submitting: false
     }
   },
   methods: {
     login() {
       const {username, password} = this
+      this.submitting = true
       login({
         username, password
       }).then(res => {
         this.$store.dispatch('users/updateUserInfo', res)
         const path = this.$route.query.redirect || '/user-info'
         this.$router.replace(path)
+      }).finally(() => {
+        this.submitting = false
       })
     },
     inputFocus(e) {
@@ -67,7 +73,18 @@ export default {
     },
     togglePasswordShow() {
       this.isPasswordShow = !this.isPasswordShow
+    },
+    handleEnter(e) {
+      if (e.keyCode === 13) {
+        this.login()
+      }
     }
+  },
+  created() {
+    document.addEventListener('keyup', this.handleEnter)
+  },
+  beforeDestroy() {
+    document.removeEventListener('keyup', this.handleEnter)
   }
 }
 </script>

@@ -4,7 +4,7 @@
             <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
                v-if="showExpandedbtn"
                @click="triggerExpanded"></i>
-            <el-checkbox v-if="editable" :indeterminate="indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
+            <el-checkbox v-if="editable" :indeterminate="data.indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
             <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
         </div>
         <div v-show="expanded"
@@ -43,7 +43,6 @@
         },
         data() {
             return {
-                indeterminate: false,
                 expanded: true
             }
         },
@@ -82,10 +81,11 @@
             },
             // checkbox点击事件
             handleChecked(obj) {
+                obj.indeterminate = false
                 // 更新子节点
                 this.updateChildren(obj, obj.is_checked)
                 // 更新父节点
-                this.$emit('checked', obj, this.isGroup)
+                this.$emit('checked')
                 // 从顶层父节点处渲染整棵树
                 this.$top.updateTree()
             },
@@ -102,13 +102,17 @@
             },
             // 子checkbox更新父checkbox
             handleSubChecked() {
-                const {data} = this
-                data.is_checked = [...(data['permission_groups'] || []), ...(data['permissions'] || [])].every(item => item.is_checked)
-                // 更新父节点
-                let parent = this.parent
-                while (parent) {
-                    parent.is_checked = [...(parent['permission_groups'] || []), ...(parent['permissions'] || [])].every(item => item.is_checked)
-                    parent = parent.parent
+                let parent = this
+                while (parent && parent !== this.$top) {
+                    const d = parent.data
+                    const allChild = [...(d['permission_groups'] || []), ...(d['permissions'] || [])]
+                    const checkedCount = allChild.reduce((prev, next) => {
+                        return prev += next.is_checked ? 1 : 0
+                    }, 0)
+                    parent.data.is_checked = allChild.length === checkedCount
+                    // 半选
+                    parent.data.indeterminate = d['permission_groups'].some(item => item.indeterminate) || (checkedCount && checkedCount < allChild.length)
+                    parent = parent.$parent
                 }
             }
         }
@@ -154,9 +158,9 @@
             white-space: nowrap;
             position: relative;
             transition: background-color .3s ease-in-out;
-            &>.tree-node-container:last-of-type::before{
-                height: 13px;
-            }
+        }
+        &>div:last-of-type>.tree-node-container:last-of-type::before{
+            height: 13px;
         }
         &::after{
             content: '';

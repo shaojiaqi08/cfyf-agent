@@ -73,7 +73,7 @@
             & > ::v-deep .tree-group-container>.tree-node-container:last-of-type::before{
                 height: 100%;
             }
-            &:last-of-type > ::v-deep .tree-group-container>.tree-node-container:last-of-type::before{
+            &:last-of-type > ::v-deep .tree-group-container>div:last-of-type::before{
                 height: 13px;
             }
         }

@@ -63,10 +63,12 @@
                                 <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="(curSelRole && !curSelRole.isSupper)? 250 : 150" align="center">
+                        <el-table-column label="操作" prop="operate" :width="250" align="center">
                             <template v-slot="{row}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value">
-                                    <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
+                                    <template v-if="row.is_super_user === '1'">
+                                        <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
+                                    </template>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
                                     <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>

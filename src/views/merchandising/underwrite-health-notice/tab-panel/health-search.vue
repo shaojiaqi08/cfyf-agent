@@ -13,7 +13,7 @@
         >
             <div slot="extraFilter">
                 <div class="flex-between pt16 pb16 pl16">
-                    <filter-shell v-model="searchModel.notice">
+                    <filter-shell v-model="searchModel.notice" autoFocus>
                         <el-input v-model="searchModel.notice" clearable @change="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>健康告知</span>
@@ -24,10 +24,10 @@
                                @click.stop="searchModel.notice = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.is_reverse">
+                    <filter-shell v-model="searchModel.is_reverse" autoFocus autoClose>
                         <el-select v-model="searchModel.is_reverse"
-                                   placeholder="请选择"
-                                   @change="closePopover">
+                                   filterable
+                                   placeholder="请选择">
                             <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
                         </el-select>
                         <template v-slot:label>
@@ -71,7 +71,7 @@
 
 <script>
     import SideFilterList from '@/components/side-filter-list'
-    import FilterShell, {hasValue, closePopover} from '@/components/filter-shell'
+    import FilterShell, {hasValue} from '@/components/filters/filter-shell'
     import {getHealthNoticeProductList, getHealthNoticeDetail} from '@/apis/modules/underwriting'
     import {debounce} from '@/utils'
     import html2canvas from 'html2canvas'
@@ -103,7 +103,6 @@
         },
         methods: {
             hasValue,
-            closePopover,
             handleSelProduct(obj) {
                 const {product_name} = obj
                 this.selVal = product_name

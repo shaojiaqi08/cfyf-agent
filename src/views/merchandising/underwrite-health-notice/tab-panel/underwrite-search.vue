@@ -13,7 +13,7 @@
         >
             <div slot="extraFilter">
                 <div class="flex-between pt16 pl16 pr16">
-                    <filter-shell v-model="searchModel.illness">
+                    <filter-shell v-model="searchModel.illness" autoFocus>
                         <el-input v-model="searchModel.illness" clearable></el-input>
                         <template v-slot:label>
                             <span>病种</span>
@@ -24,7 +24,7 @@
                                @click.stop="searchModel.illness = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.condition_search">
+                    <filter-shell v-model="searchModel.condition_search" autoFocus>
                         <el-input v-model="searchModel.condition_search" clearable></el-input>
                         <template v-slot:label>
                             <span>条件</span>
@@ -37,12 +37,12 @@
                     </filter-shell>
                 </div>
                 <div class="flex-center pt16 pb16">
-                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter">
+                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter" autoFocus autoClose>
                         <el-select v-model="searchModel.is_reverse"
                                    style="width: 100%"
                                    clearable
-                                   placeholder="请选择"
-                                   @change="closePopover">
+                                   filterable
+                                   placeholder="请选择">
                             <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
                         </el-select>
                         <template v-slot:label>
@@ -89,7 +89,7 @@
 <script>
     import SideFilterList from '@/components/side-filter-list'
     import {getUnderwritingProductList, getUnderwritingDetail} from '@/apis/modules/underwriting'
-    import FilterShell, {clearValue, hasValue, closePopover} from '@/components/filter-shell'
+    import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
     import {debounce} from '@/utils'
     export default {
         name: 'underwrite-search',
@@ -122,7 +122,6 @@
         methods: {
             clearValue,
             hasValue,
-            closePopover,
             handleSelProduct(obj) {
                 const {product_name} = obj
                 this.selVal = product_name

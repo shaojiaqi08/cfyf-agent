@@ -18,10 +18,9 @@
                         @change="handleSelProduct"
                         style="width: 884px">
         <div slot="extraFilter" class="filter-wrap">
-          <filter-shell v-model="searchModel.first_product_category_id">
+          <filter-shell v-model="searchModel.first_product_category_id" autoFocus autoClose>
             <el-select class="block"
                        v-model="searchModel.first_product_category_id"
-                       ref="focusRef"
                        clearable
                        filterable
                        placeholder="请选择">
@@ -43,7 +42,7 @@
                    @click="searchModel.first_product_category_id = ''"></i>
             </template>
           </filter-shell>
-          <filter-shell v-model="productAge">
+          <filter-shell v-model="productAge" autoFocus autoClose>
             <el-select class="block"
                        v-model="productAge"
                        clearable
@@ -68,14 +67,13 @@
                    @click="productAge = ''"></i>
             </template>
           </filter-shell>
-          <filter-shell v-model="searchModel.supplier_id">
+          <filter-shell v-model="searchModel.supplier_id" autoFocus autoClose>
             <el-select class="block"
                        v-model="searchModel.supplier_id"
                        clearable
                        filterable
                        ref="focusRef"
-                       placeholder="请选择"
-                       @change="closePopover">
+                       placeholder="请选择">
               <el-option
                       v-for="item in supplierData"
                       :key="item.id"
@@ -151,7 +149,7 @@
 import { getInsureApiList, getInsureCpsList} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules' // eslint-disable-line
 import { formatDate } from '@/utils/formatTime'
-import FilterShell, { clearValue, hasValue, closePopover } from '@/components/filter-shell'
+import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
 import SideFilterList from '@/components/side-filter-list'
 import TextHiddenEllipsis from '@/components/text-hidden-ellipsis' // eslint-disable-line
 import { debounce, downloadFrameA} from "@/utils";
@@ -275,7 +273,6 @@ export default {
       func()
       this.debounceAjaxListData = func;
     },
-    closePopover,
     hasValue,
     clearValue,
     showInfoDialog(row) {
@@ -302,7 +299,6 @@ export default {
       const obj = this.productAgeData.find(item => item.id === v) || {}
       this.searchModel.min_age = obj.min_age
       this.searchModel.max_age = obj.max_age
-      this.closePopover()
     }
   },
   created() {
