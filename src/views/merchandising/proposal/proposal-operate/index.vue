@@ -1377,10 +1377,8 @@ export default {
               message: '计划书暂存成功',
               type: 'success'
             })
-
-            setTimeout(() => {
-              this.$router.push('/proposal/proposal-list')
-            }, 1000)
+            window.localStorage.setItem('updatePage', new Date().getTime())
+            window.close()
           }
         })
         .catch(() => {

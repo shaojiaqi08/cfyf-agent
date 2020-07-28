@@ -36,34 +36,38 @@
                     <el-button type="primary" @click="addProposal">新建计划书</el-button>
                 </div>
             </div>
-            <el-table  v-loading="loading"
-                       border
-                      :data="data"
-                      max-height="calc(100% - 84px)"
-                      v-table-infinite-scroll="scroll2Bottom">
-                <el-table-column label="计划书名称" prop="name" align="center"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template v-slot="{row}">
-                        <el-tag :type="row.status === proposalStatusMap.done.value ? 'minor' : 'danger'">{{proposal_status[row.status]}}</el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
-                <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
-                <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
-                <el-table-column label="备注" prop="备注" align="center"></el-table-column>
-                <el-table-column label="操作" width="240px" align="center">
-                    <template v-slot="{row, index}">
-                        <template v-if="row.status === proposalStatusMap.done.value">
-                            <el-link type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
-                            <el-link type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
-                            <el-link type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
+            <el-scrollbar>
+                <el-table  v-loading="loading"
+                           border
+                           :data="data"
+                           height="300"
+                           max-height="768px"
+                           v-table-infinite-scroll="scroll2Bottom">
+                    <el-table-column label="计划书名称" prop="name" align="center"></el-table-column>
+                    <el-table-column label="状态" align="center">
+                        <template v-slot="{row}">
+                            <el-tag :type="row.status === proposalStatusMap.done.value ? 'minor' : 'danger'">{{proposal_status[row.status]}}</el-tag>
                         </template>
-                        <template v-else>
-                            <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>
+                    </el-table-column>
+                    <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
+                    <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
+                    <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
+                    <el-table-column label="备注" prop="备注" align="center"></el-table-column>
+                    <el-table-column label="操作" width="240px" align="center">
+                        <template v-slot="{row, index}">
+                            <template v-if="row.status === proposalStatusMap.done.value">
+                                <el-link type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
+                                <el-link type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
+                                <el-link type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
+                            </template>
+                            <template v-else>
+                                <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>
+                            </template>
                         </template>
-                    </template>
-                </el-table-column>
-            </el-table>
+                    </el-table-column>
+                </el-table>
+            </el-scrollbar>
+
         </div>
         <div class="new-preview-wrapper" v-if="previewVisible" @click="previewHandleClose">
             <div class="new-preview-dialog">
@@ -104,7 +108,7 @@
                     const scrollWrap = el.querySelector('.el-table__body-wrapper')
                     const scrollHandle = debounce(() => {
                         const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                        if (offsetHeight + scrollTop >= scrollHeight) { // 到底
+                        if (scrollHeight > 768 && offsetHeight + scrollTop >= scrollHeight) { // 到底
                             binding.value()
                         }
                     }, 300)
@@ -223,10 +227,20 @@
                        target[val] =  this.keyword
                    }
                })
+            },
+            onStorage(e) {
+                if (e.key === 'updatePage') {
+                    this.searchForm.page = 1
+                    this.ajaxData()
+                }
             }
         },
         created() {
             this.ajaxData()
+            window.addEventListener('storage', this.onStorage)
+        },
+        beforeDestroy() {
+            window.removeEventListener('storage', this.onStorage)
         },
         watch: {
             searchForm: {
@@ -236,6 +250,7 @@
                 deep: true
             },
             dateRange(v) {
+                v = v || ['', '']
                 this.searchForm.start_created_at = v[0]
                 this.searchForm.end_created_at = v[1]
             },
@@ -279,9 +294,10 @@
                 .filter-item{
                     margin: 0;
                     height: 24px;
+                    line-height: 21px;
                     width: 106px;
                     font-weight: normal;
-                    display: flex;
+                    display: flex !important;
                     align-items: center;
                     justify-content: center;
                 }
@@ -292,14 +308,32 @@
             background: #FFFFFF;
             padding: 0 16px;
             flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             .filter-bar{
                 display: flex;
                 justify-content: space-between;
                 height: 64px;
                 align-items: center;
             }
-            ::v-deep .date-range-filter .filter-popover{
-                width: 385px
+            ::v-deep .el-scrollbar{
+                flex: 1;
+                .el-scrollbar__wrap{
+                    overflow-x: hidden;
+                }
+            }
+            ::v-deep .date-range-filter {
+                .filter-popover {
+                    width: 385px;
+                }
+                .filter-item {
+                    margin: 0;
+                    font-weight: normal;
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                }
             }
             .avatar {
                 width: 32px;

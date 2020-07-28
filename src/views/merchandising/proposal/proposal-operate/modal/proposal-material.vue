@@ -54,9 +54,8 @@ export default {
     modalClose() {
       this.$emit('update:show', false)
       this.$emit('fresh')
-      if (this.from === 'proposalOperate') {
-        this.$router.push('/proposal')
-      }
+      window.localStorage.setItem('updatePage', new Date().getTime())
+      window.close()
     }
   }
 }

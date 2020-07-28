@@ -32,3 +32,6 @@ export const login = params => post('/agent/sales/login', params)
 
 // 登出
 export const loginOut = (params) => get('/agent/sales/logout', params)
+
+// 修改用户密码
+export const updatePassword = params => post('', params)
