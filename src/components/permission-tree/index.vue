@@ -22,7 +22,7 @@
         computed: {
             filterData() {
                 const {editable, data} = this
-                return editable ? data : data.filter(item => item.is_checked)
+                return editable ? data : data.filter(item => (item.is_checked || item.indeterminate))
             }
         },
         props: {
@@ -40,7 +40,7 @@
             }
         },
         methods: {
-            // 更新整棵树
+            // 强制刷新
             updateTree() {
                 this.$emit('update', JSON.parse(JSON.stringify(this.data)))
             }

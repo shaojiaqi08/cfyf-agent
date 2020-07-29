@@ -258,6 +258,18 @@
         },
         methods: {
             formatDate,
+            // 初始化tree节点选中和半选状态
+            dealTreeData(arr) {
+                arr.forEach(item => {
+                    const {permission_groups = [], permissions = []} = item
+                    // 递归处理权限组
+                    permission_groups.length && this.dealTreeData(permission_groups)
+                    const allChild = [...permission_groups, ...permissions]
+                    const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
+                    item.is_checked = !!(checkedCount && allChild.length === checkedCount)
+                    item.indeterminate = permission_groups.some(item => item.indeterminate) || !!(checkedCount && checkedCount < allChild.length)
+                })
+            },
             submitEditPos() {
                 this.$refs.editPosForm.validate(flag => {
                     if (flag) {
@@ -454,7 +466,6 @@
                             handle = editManager
                         }
                         handle({...data}).then(res => {
-                            console.log(res)
                             if (data.id !== '') {
                                 this.ajaxDetail(curSelRole)
                             } else {
@@ -502,6 +513,8 @@
                     this.roleData = res
                     if (this.roleData.length > 0 && roleId) {
                         const role = this.roleData.find(item => item.id === roleId)
+                        this.curSelRole = role
+                        this.selRole = roleId
                         this.ajaxDetail(role)
                     }
                 }).catch(() => {
@@ -518,11 +531,14 @@
             },
             ajaxTreeDetail() {
                 this.treeLoading = true
+                this.rightLoading = true
                 getManageTreeDetail({position_id: this.curSelRole.id}).then(res => {
+                    this.dealTreeData(res)
                     this.treeDetail = res
                     this.editTreeDetail = JSON.parse(JSON.stringify(res))
                 }).catch(() => {}).finally(() => {
                     this.treeLoading = false
+                    this.rightLoading = false
                 })
             },
             ajaxDetail(obj) {
@@ -537,10 +553,11 @@
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
                 const {newPassword, confirmPassword} = this.modPwdFormModel
                 if (!newPassword || !confirmPassword) {
-                    callback()
+                    return callback()
                 } else if(newPassword !== confirmPassword) {
-                    callback(new Error('确认新密码必须跟新密码一致'))
+                    return callback(new Error('确认新密码必须跟新密码一致'))
                 }
+                return callback()
             },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {

@@ -197,6 +197,10 @@ const necessaryRoutes = [
     },
     component: () =>
         import("@/views/DesignSpec.vue")
+  },
+  {
+    path: '*',
+    redirect: '/404'
   }
 ]
 

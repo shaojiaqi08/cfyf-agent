@@ -20,11 +20,11 @@
       </div>
       <div class="user-info normal-transition" slot="reference">
         <div class="user">
-          <div class="avatar"></div>
-          <div class="name">{{userInfo.account_name}}</div>
+          <div class="avatar" :style="{backgroundImage: `url('${userInfo.avatar_url || require('../../assets/images/avatar.png')}')`}"></div>
+          <div class="name">{{userInfo.username}}</div>
         </div>
         <div class="permission">
-          {{userInfo.sys_role && userInfo.sys_role.name}}
+          {{userInfo.sales_position && userInfo.sales_position.name}}
           <i class="iconfont iconxiao16_xiajiantou ml4"></i>
         </div>
       </div>
@@ -51,6 +51,7 @@
       },
       loginOut() {
         loginOut().then(() => {
+          this.$store.dispatch('users/loginOut')
           this.$router.replace({ path: '/login' })
         })
       }
@@ -99,7 +100,6 @@
           height: 24px;
           border-radius: 12px;
           overflow: hidden;
-          background: url(../../assets/images/avatar.png) no-repeat;
           background-size: cover;
         }
         .name {

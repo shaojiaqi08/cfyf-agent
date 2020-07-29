@@ -1266,13 +1266,13 @@ export default {
       this.submit(type, res => {
         const id = res.id
         window.open(
-          `${process.env.API_URL}/proposal/pdf/view?proposal_id=${id}`
+          `${process.env.VUE_APP_API_URL}/proposal/pdf/view?proposal_id=${id}`
         )
       })
     },
     checkPdf(type) {
       window.open(
-        `${process.env.API_URL}/proposal/pdf/${type}?proposal_id=${this.proposal.id}`
+        `${process.env.VUE_APP_API_URL}/proposal/pdf/${type}?proposal_id=${this.proposal.id}`
       )
     },
     submit(type, cb) {

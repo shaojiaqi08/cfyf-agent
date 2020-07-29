@@ -2,9 +2,9 @@
     <div class="prospectus-container">
         <div class="header">
             内部管理员
-            <el-input type="primary" v-model="searchForm.keyword" placeholder="搜索计划书名称" clearable>
-                <filter-shell v-model="type" slot="prepend" class="keyword-type-filter">
-                    <el-select v-model="type" clearable style="width: 100%" @change="handleSelType">
+            <el-input type="primary" v-model="searchForm.name" placeholder="搜索计划书名称" clearable>
+                <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
+                    <el-select v-model="type" filterable style="width: 100%" @change="handleSelType">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
                     </el-select>
                     <template v-slot:label>
@@ -21,11 +21,6 @@
                     <template v-slot:label>
                         <span>{{hasValue(dateRange) ? `${dateRange[0]} 至 ${dateRange[1]}` : '全部时间范围'}}</span>
                     </template>
-                    <template v-slot:close>
-                        <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                           v-if="hasValue(dateRange)"
-                           @click="dateRange=null"></i>
-                    </template>
                 </filter-shell>
                 <div class="flex">
                     <el-tooltip placement="bottom" content="计划书个人展示">
@@ -40,7 +35,6 @@
                 <el-table  v-loading="loading"
                            border
                            :data="data"
-                           height="300"
                            max-height="768px"
                            v-table-infinite-scroll="scroll2Bottom">
                     <el-table-column label="计划书名称" prop="name" align="center"></el-table-column>
@@ -71,7 +65,6 @@
         </div>
         <div class="new-preview-wrapper" v-if="previewVisible" @click="previewHandleClose">
             <div class="new-preview-dialog">
-                <!-- <div class="new-preview-dialog-close" @click="previewHandleClose"></div> -->
                 <iframe class="new-preview-iframe"
                         :src="previewUrl" frameborder="0"></iframe>
             </div>
@@ -87,7 +80,7 @@
 </template>
 
 <script>
-    import FilterShell, {clearValue, hasValue, closePopover} from '@/components/filter-shell'
+    import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './proposal-operate/modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
@@ -144,15 +137,13 @@
                     customer_name: '',
                     proposal_product_name: '',
                     start_created_at: '',
-                    end_created_at: '',
-                    keyword: ''
+                    end_created_at: ''
                 }
             }
         },
         methods: {
             clearValue,
             hasValue,
-            closePopover,
             // 筛选日期change
             handleDateChange(v) {
                 const [start = '', end = ''] = v || []
@@ -224,7 +215,7 @@
                    if (item.value !== val) {
                        target[item.value] = ''
                    } else {
-                       target[val] =  this.keyword
+                       target[val] =  this.name
                    }
                })
             },

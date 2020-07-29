@@ -166,6 +166,18 @@
             }
         },
         methods: {
+            // 初始化tree节点选中和半选状态
+            dealTreeData(arr) {
+                arr.forEach(item => {
+                    const {permission_groups = [], permissions = []} = item
+                    // 递归处理权限组
+                    permission_groups.length && this.dealTreeData(permission_groups)
+                    const allChild = [...permission_groups, ...permissions]
+                    const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
+                    item.is_checked = !!(checkedCount && allChild.length === checkedCount)
+                    item.indeterminate = permission_groups.some(item => item.indeterminate) || !!(checkedCount && checkedCount < allChild.length)
+                })
+            },
             editTree() {
                 this.treeDetail = JSON.parse(JSON.stringify(this.detailData))
                 this.treeDialogVisible = true
@@ -220,6 +232,7 @@
                 this.detailLoading = true
                 this.detailData = []
                 getPosDetail({position_id}).then(res => {
+                    this.dealTreeData(res)
                     this.detailData = res
                 }).catch(() => {}).finally(() => {
                     this.detailLoading = false
@@ -267,7 +280,16 @@
                         customClass: 'manager-msg-box'
                     }
                 )
-            }
+            },
+            comparePwdValitator(rule, value, callback) { // eslint-disable-line
+                const {password, confirmPassword} = this.editFormModel
+                if (!password || !confirmPassword) {
+                    return callback()
+                } else if(password !== confirmPassword) {
+                    return callback(new Error('确认新密码必须跟新密码一致'))
+                }
+                return callback()
+            },
         },
         watch: {
             posDialogVisible(v) {

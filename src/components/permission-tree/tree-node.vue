@@ -10,7 +10,7 @@
         <div v-show="expanded"
              v-if="showPermissionGroup"
              class="tree-group-container">
-            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true"  :key="index" v-for="(item, index) in filterPermissionGroup" v-model="data.permission_groups[index]"></tree-node>
+            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true" :key="index" v-for="(item, index) in filterPermissionGroup" v-model="filterPermissionGroup[index]"></tree-node>
         </div>
         <div class="tree-permission-container"
              v-show="expanded"
@@ -20,7 +20,7 @@
                        :isGroup="false"
                        :key="index"
                        v-for="(item, index) in filterPermissionData"
-                       v-model="data.permissions[index]"></tree-node>
+                       v-model="filterPermissionData[index]"></tree-node>
         </div>
     </div>
 </template>
@@ -52,7 +52,7 @@
                 const {permission_groups: groups, permissions} = data
                 return editable ?
                     (groups && groups.length) || (permissions && permissions.length > 0) :
-                    (groups && groups.some(item => item.is_checked)) || (permissions && permissions.some(item => item.is_checked))
+                    (groups && groups.some(item => item.is_checked || item.indeterminate)) || (permissions && permissions.some(item => item.is_checked))
             },
             showPermissionGroup() {
                 const {data} = this
@@ -66,12 +66,12 @@
             filterPermissionGroup() {
                 const {editable, data} = this
                 // 修改状态返回所有, 否则返回is_checked=true的数据
-                return editable ? data.permission_groups : (data.permission_groups || []).filter(item => item.is_checked)
+                return editable ? data.permission_groups : (data.permission_groups || []).filter(item => item.is_checked || item.indeterminate)
             },
             filterPermissionData() {
                 const {editable, data} = this
                 // 修改状态返回所有, 否则返回is_checked=true的数据
-                return editable ? data.permissions : (data.permissions || []).filter(item => item.is_checked)
+                return editable ? data.permissions : data.permissions.filter(item => item.is_checked)
             }
         },
         methods: {
@@ -93,6 +93,7 @@
             updateChildren(obj, value) {
                 obj.permission_groups && obj.permission_groups.forEach(item => {
                     item.is_checked = value
+                    item.indeterminate = false
                     this.updateChildren(item, value)
                 })
                 obj.permissions && obj.permissions.forEach(item => {

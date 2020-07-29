@@ -41,7 +41,8 @@
 </template>
 
 <script>
-import {login} from '@/apis/modules/index'
+import {login, getUserDetail} from '@/apis/modules/index'
+import {mapActions} from 'vuex'
 export default {
   data() {
     return {
@@ -52,15 +53,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions('users', ['updateUserInfo']),
     login() {
       const {username, password} = this
       this.submitting = true
       login({
         username, password
       }).then(res => {
-        this.$store.dispatch('users/updateUserInfo', res)
-        const path = this.$route.query.redirect || '/user-info'
-        this.$router.replace(path)
+        // 更新token
+        this.updateUserInfo(res)
+        getUserDetail().then(ud => {
+          this.updateUserInfo({...res, ...ud})
+          const path = this.$route.query.redirect || '/user-info'
+          this.$router.replace(path)
+        }).finally(() => {
+          this.submitting = false
+        })
       }).finally(() => {
         this.submitting = false
       })

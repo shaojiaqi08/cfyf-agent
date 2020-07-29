@@ -90,10 +90,11 @@
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
                 const {newPassword, confirmPassword} = this.modPwdFormModel
                 if (!newPassword || !confirmPassword) {
-                    callback()
+                    return callback()
                 } else if(newPassword !== confirmPassword) {
-                    callback(new Error('确认新密码必须跟新密码一致'))
+                    return callback(new Error('确认新密码必须跟新密码一致'))
                 }
+                return callback()
             },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {

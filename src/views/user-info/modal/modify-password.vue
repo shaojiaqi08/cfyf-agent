@@ -3,6 +3,7 @@
           title="修改密码"
           :visible="show"
           width="480px"
+          :close-on-click-modal="false"
           :before-close="handleClose">
     <el-form class="form"
              label-width="100px"
@@ -10,14 +11,14 @@
              ref="form"
              :model="formModel"
              :rules="rules">
-      <el-form-item label="旧密码" prop="old_password">
-        <el-input auto-complete="off" type="password" v-model="formModel.old_password"></el-input>
-      </el-form-item>
-      <el-form-item label="新密码" prop="password">
+      <el-form-item label="旧密码" prop="password">
         <el-input auto-complete="off" type="password" v-model="formModel.password"></el-input>
       </el-form-item>
-      <el-form-item label="确认新密码" prop="confirm_password">
-        <el-input auto-complete="off" type="password" v-model="formModel.confirm_password"></el-input>
+      <el-form-item label="新密码" prop="new_password">
+        <el-input auto-complete="off" type="password" v-model="formModel.new_password"></el-input>
+      </el-form-item>
+      <el-form-item label="确认新密码" prop="confirm_new_password">
+        <el-input auto-complete="off" type="password" v-model="formModel.confirm_new_password"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -28,7 +29,7 @@
 </template>
 
 <script>
-  import {updatePassword} from '@/apis/modules/index'
+  import {updatePassword} from '@/apis/modules'
   export default {
     props: {
       show: {
@@ -42,25 +43,27 @@
         dialogVisible: false,
         submitting: false,
         formModel: {
-          old_password: '',
           password: '',
-          confirm_password: ''
+          new_password: '',
+          confirm_new_password: ''
         },
         rules: {
-          old_password: [baseValiObj, {validator: this.pwdValidator}],
-          password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-          confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
+          password: [baseValiObj, {validator: this.pwdValidator}],
+          new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
+          confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
         }
       }
     },
     methods: {
       submit() {
-        this.$refs.form.validate(flag => {
+        const form = this.$refs.form
+        form.validate(flag => {
           if (flag) {
             this.submitting = true
-            updatePassword.then(() => {
+            updatePassword(this.formModel).then(() => {
               this.$message.success('密码修改成功!')
-              this.handleClose()
+              this.$store.dispatch('users/loginOut')
+              this.$router.replace('/login')
             }).finally(() => {
               this.submitting = false
             })
@@ -79,10 +82,11 @@
       comparePwdValitator(rule, value, callback) { // eslint-disable-line
         const {password, confirm_password} = this.formModel
         if (!password || !confirm_password) {
-          callback()
+          return callback()
         } else if(password !== confirm_password) {
-          callback(new Error('确认新密码必须跟新密码一致'))
+          return callback(new Error('确认新密码必须跟新密码一致'))
         }
+        return callback()
       }
     }
   }

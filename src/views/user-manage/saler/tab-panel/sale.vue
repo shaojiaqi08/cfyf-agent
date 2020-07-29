@@ -252,6 +252,7 @@
         <el-dialog
                    title="新增团队"
                    :visible.sync="addTeamDialogVisible"
+                   :close-on-click-modal="false"
                    width="480px">
             <el-form ref="addTeamForm" :model="addTeamFormModel" :rules="addTeamRules" label-width="100px" label-position="left">
                 <el-form-item label="挂靠团队" prop="parent_id">
@@ -278,6 +279,7 @@
                 title="更换团队主管"
                 :visible.sync="setLeaderDialogVisible"
                 custom-class="set-leader-dialog"
+                :close-on-click-modal="false"
                 width="480px">
             <el-form v-if="detailData && detailData.leader" ref="setLeaderForm" :model="setLeaderFormModel" :rules="setLeaderRules" label-width="100px" label-position="left">
                 <div class="info-block mb20">
@@ -290,8 +292,8 @@
                         <span>{{detailData.leader.map(item => item.real_name).join(',')}}</span>
                     </div>
                 </div>
-                <el-form-item label="新团队主管" prop="name">
-                    <el-select multiple v-model="setLeaderFormModel.leader_ids">
+                <el-form-item label="新团队主管" prop="leader_ids" style="width: 100%">
+                    <el-select multiple v-model="setLeaderFormModel.leader_ids" >
                         <el-option v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -306,6 +308,7 @@
                 title="转移团队"
                 :visible.sync="transferTeamDialogVisible"
                 custom-class="set-leader-dialog"
+                :close-on-click-modal="false"
                 width="480px">
             <el-form v-if="detailData" ref="setTeamForm" :model="transferTeamFormModel" :rules="transferTeamRules" label-width="100px" label-position="left">
                 <div class="info-block mb20" style="height: 60px">
@@ -736,10 +739,11 @@
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
                 const {password, confirmPassword} = this.editFormModel
                 if (!password || !confirmPassword) {
-                    callback()
+                    return callback()
                 } else if(password !== confirmPassword) {
-                    callback(new Error('确认新密码必须跟新密码一致'))
+                    return callback(new Error('确认新密码必须跟新密码一致'))
                 }
+                return callback()
             },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {

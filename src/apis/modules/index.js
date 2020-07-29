@@ -28,10 +28,16 @@ export const getProductAgeList = params => get('/common/product/age/list', param
 export const getProductCategory = params => get('/common/product/category/list-with-children', params)
 
 // 登录
-export const login = params => post('/agent/sales/login', params)
+export const login = params => post('/agent/proxy/sales/login', params)
 
 // 登出
-export const loginOut = (params) => get('/agent/sales/logout', params)
+export const loginOut = (params) => get('/agent/proxy/sales/logout', params)
+
+// 用户信息
+export const getUserDetail = params => get('/agent/proxy/sales/personal_information', params)
 
 // 修改用户密码
-export const updatePassword = params => post('', params)
+export const updatePassword = params => post('/agent/proxy/sales/change_personal_password', params)
+
+// 更新头像
+export const uploadHeadImg = params => post('/agent/proxy/sales/change_personal_avatar', params)

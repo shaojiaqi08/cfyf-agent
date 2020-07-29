@@ -12,8 +12,8 @@ export const getAllProduct = (data) => get('/common/product/all-products', data)
 
 // ----------------保险商品-----------------
 // api list
-export const getInsureApiList = (data) => get('/agent/product/distribution/list', data)
+export const getInsureApiList = (data) => get('/agent/proxy/product/distribution/list', data)
 // cps list
-export const getInsureCpsList = (data) => get('/agent/product/distribution/list', data)
+export const getInsureCpsList = (data) => get('/agent/proxy/product/distribution/list', data)
 // 详情
-export const getInsureDetail = data => get('/agent/policy/detail', data)
+export const getInsureDetail = data => get('/agent/proxy/policy/detail', data)

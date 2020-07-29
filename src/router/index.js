@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import routes from './routes'
 import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
+import store from '../store'
 
 Vue.use(VueRouter);
 
@@ -12,6 +13,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title + '-' + 'xxx系统' || 'xxx系统'
+  const userInfo = store.state.users.userInfo
+  if (!userInfo.token && to.name !== 'login' ) {
+    return next('/login')
+  }
   Nprogress.start()
   setTimeout(next, 300)
   // next()
