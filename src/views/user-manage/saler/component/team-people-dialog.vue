@@ -113,14 +113,7 @@
                 curData: {},
                 curSelected: [],
                 curKeyword: '',
-                allData: {
-                    // '第一级' :  {
-                    //     sales: [
-                    //         {id: 0, name: '测试1', remark: 'aab'},
-                    //         {id: 1, name: '测试2', remark: 'aabb'}
-                    //     ]
-                    // }
-                },
+                allData: {},
                 allSelected: [],
                 allKeyword: ''
             }

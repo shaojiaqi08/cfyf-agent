@@ -207,6 +207,7 @@
                    :title="`${editFormModel.id !== '' ? '编辑' : '新增'}信息`"
                    :visible.sync="editDialogVisible"
                    :close-on-click-modal="false"
+                   @close="$refs.editForm.resetFields()"
                    width="480px">
             <el-form v-loading="dialogLoading" ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
                 <el-form-item label="姓名" prop="real_name">
@@ -253,6 +254,7 @@
                    title="新增团队"
                    :visible.sync="addTeamDialogVisible"
                    :close-on-click-modal="false"
+                   @close="$refs.addTeamForm.resetFields()"
                    width="480px">
             <el-form ref="addTeamForm" :model="addTeamFormModel" :rules="addTeamRules" label-width="100px" label-position="left">
                 <el-form-item label="挂靠团队" prop="parent_id">
@@ -371,13 +373,6 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
-                statusTagType: {
-                    'disable': 'danger',
-                    'enable': 'success',
-                    'incumbency': 'primary',
-                    'dimission': 'minor'
-                },
-                accountStatusMap,
                 submitting: false,
                 submittingEditName: false,
                 teamLoading: false,
@@ -466,7 +461,14 @@
             filterTableData() {
                 const {name} = this
                 return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
-            }
+            },
+            accountStatusMap: () => accountStatusMap,
+            statusTagType: () => ({
+                disable: 'danger',
+                enable: 'success',
+                incumbency: 'primary',
+                dimission: 'minor'
+            })
         },
         methods: {
             clearValue,
@@ -770,12 +772,6 @@
                     this.debounceAjaxDetail()
                 },
                 deep: true
-            },
-            editDialogVisible(v) {
-                !v && this.$refs.editForm.resetFields()
-            },
-            addTeamDialogVisible(v) {
-                !v && this.$refs.addTeamForm.resetFields()
             },
             resignationDateRange(v) {
                 const [start = '', end = ''] = v

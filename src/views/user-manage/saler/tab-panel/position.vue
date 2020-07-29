@@ -41,7 +41,7 @@
             </template>
         </div>
         <!--新增职位-->
-        <el-dialog title="新增职位" :visible.sync="posDialogVisible" width="480px">
+        <el-dialog title="新增职位" :visible.sync="posDialogVisible" width="480px" @close="$refs.posForm.resetFields()">
             <el-form ref="posForm" label-width="100px" :model="posFormModel" :rules="posRules">
                 <el-form-item label="职位等级" prop="level">
                     <el-select v-model="posFormModel.level" placeholder="请选择职位等级" style="width: 100%">
@@ -290,11 +290,6 @@
                 }
                 return callback()
             },
-        },
-        watch: {
-            posDialogVisible(v) {
-                !v && this.$refs.posForm.resetFields()
-            }
         },
         created() {
             this.ajaxLvData()

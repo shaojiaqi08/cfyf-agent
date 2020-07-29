@@ -1,7 +1,5 @@
 import store from "@/store";
 
-export const a = { a: "ddd" };
-
 /**
  * 防抖函数 flag为true 立即执行
  * @param event
@@ -21,7 +19,28 @@ export const debounce = (event, time, flag) => {
         }, time)
     }
 }
-
+/**
+ * 节流函数
+ * @param event
+ * @param time
+ * @returns {Function}
+ */
+export const throttle = (event, time) => {
+    let pre = 0
+    let timer = null
+    return function (...args) {
+        if (Date.now() - pre > time) {
+            clearTimeout(timer)
+            timer = null
+            pre = Date.now()
+            event.apply(this, args)
+        } else if (!timer) {
+            timer = setTimeout(() => {
+                event.apply(this, args)
+            }, time)
+        }
+    }
+}
 export function createObjectURL(object) {
     return (window.URL) ? window.URL.createObjectURL(object) : window.webkitURL.createObjectURL(object)
 }

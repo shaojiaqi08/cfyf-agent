@@ -88,7 +88,11 @@
             </el-scrollbar>
         </div>
         <!--编辑/编辑管理员-->
-        <el-dialog custom-class="manager-dialog" :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员信息`" :visible.sync="editDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog"
+                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员信息`"
+                   :visible.sync="editDialogVisible"
+                   @close="resetEditForm"
+                   width="480px">
             <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
                 <el-form-item label="管理员姓名" prop="real_name">
                     <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>
@@ -96,7 +100,7 @@
                 <el-form-item label="工作邮箱" prop="email">
                     <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>
                 </el-form-item>
-                <el-form-item label="手机号" v-if="editFormModel.id === ''" prop="mobile">
+                <el-form-item label="手机号" prop="mobile">
                     <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="管理员账号" prop="username">
@@ -109,10 +113,10 @@
                 </el-form-item>
                 <template v-if="editFormModel.id === ''">
                     <el-form-item label="登录密码" prop="password">
-                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
+                        <el-input auto-complete="new-password" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
                     </el-form-item>
                     <el-form-item label="再次输入密码" prop="confirm_password">
-                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
+                        <el-input auto-complete="new-password" type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
                     </el-form-item>
                 </template>
             </el-form>
@@ -122,12 +126,12 @@
             </span>
         </el-dialog>
         <!--新增角色-->
-        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px" @close="$refs.addRoleForm.resetFields()">
             <el-form ref="addRoleForm" :model="addRoleFormModel" :rules="addRoleRules" label-width="100px" label-position="left">
                 <el-form-item label="角色名称" prop="name">
                     <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>
                 </el-form-item>
-                <el-form-item label="角色描述" prop="desc">
+                <el-form-item label="角色描述" prop="remark">
                     <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.remark"></el-input>
                 </el-form-item>
             </el-form>
@@ -147,7 +151,7 @@
             </span>
         </el-dialog>
         <!--编辑职位-->
-        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="editPosDialogVisible" width="480px">
+        <el-dialog custom-class="manager-dialog" title="编辑职位" :visible.sync="editPosDialogVisible" width="480px" @close="$refs.editPosForm.resetFields()">
             <el-form ref="editPosForm" :model="editPosFormModel" :rules="editPosRules" label-width="100px" label-position="left">
                 <el-form-item label="职位名称" prop="name">
                     <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
@@ -224,7 +228,6 @@
                     name: baseValiObj,
                     remark: baseValiObj
                 },
-                modPwdDialogVisible: false,
                 modPwdFormModel: {
                     password: '',
                     new_password: '',
@@ -235,12 +238,6 @@
                     new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
                     confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
                 },
-                manageAccountStatusMap,
-                statusColorMap : Object.freeze({
-                    disabled: 'danger',
-                    enabled: 'success',
-                    invalidation: 'minor'
-                }),
                 // 新增编辑用角色数据
                 editRoleData: [],
                 editPosDialogVisible: false,
@@ -251,6 +248,14 @@
                     name: baseValiObj
                 }
             }
+        },
+        computed: {
+            manageAccountStatusMap: () => manageAccountStatusMap,
+            statusColorMap: () => ({
+                disabled: 'danger',
+                enabled: 'success',
+                invalidation: 'minor'
+            })
         },
         created() {
             this.ajaxRoleList()
@@ -441,12 +446,7 @@
             },
             edit(row) {
                 if (row) {
-                    const target = this.editFormModel
-                    target.id = row.id
-                    target.email = row.email
-                    target.real_name = row.real_name
-                    target.account_name = row.account_name
-                    target.role_id = this.curSelRole.id
+                    this.editFormModel = {...row, role_id: this.curSelRole.id}
                 }
                 this.editDialogVisible = true
             },
@@ -462,7 +462,6 @@
                             data.role_id = curSelRole.id
                             delete data.password
                             delete data.confirm_password
-                            delete data.mobile
                             handle = editManager
                         }
                         handle({...data}).then(res => {
@@ -493,10 +492,6 @@
                         })
                     }
                 })
-            },
-            modifyPwd(row) {
-                this.targetRow = row
-                this.modPwdDialogVisible = true
             },
             ajaxEditRoleList() {
                 getEditRoleList().then(res => {
@@ -576,25 +571,12 @@
                     return callback(new Error('请输入正确的手机格式'))
                 }
                 callback()
-            }
-        },
-        watch: {
-            editDialogVisible(v) {
-                if (!v) {
-                    this.editFormModel = this.$options.data().editFormModel
-                    this.$nextTick(() => {
-                        this.$refs.editForm.clearValidate()
-                    })
-                }
             },
-            addRoleDialogVisible(v) {
-                !v && this.$refs.addRoleForm.resetFields()
-            },
-            modPwdDialogVisible(v) {
-                !v && this.$refs.modPwdForm.resetFields()
-            },
-            editPosDialogVisible(v) {
-                !v && this.$refs.editPosForm.resetFields()
+            resetEditForm() {
+                this.editFormModel = this.$options.data().editFormModel
+                this.$nextTick(() => {
+                    this.$refs.editForm.clearValidate()
+                })
             }
         }
     }
