@@ -195,7 +195,7 @@ export default {
   },
   methods: {
     download() {
-      const url = `${process.env.VUE_APP_BASE_URL}/common/get_file_stream?file_url=${this.picUrl}`
+      const url = `${process.env.VUE_APP_API_URL}/common/get_file_stream?file_url=${this.picUrl}`
       downloadFrameA(url, '责任图片.jpg')
     },
     handleViewPic(url) {

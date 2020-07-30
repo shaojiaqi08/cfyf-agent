@@ -69,7 +69,7 @@ export default {
         }).finally(() => {
           this.submitting = false
         })
-      }).finally(() => {
+      }).catch(() => {
         this.submitting = false
       })
     },
