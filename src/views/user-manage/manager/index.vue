@@ -66,7 +66,7 @@
                         <el-table-column label="操作" prop="operate" :width="250" align="center">
                             <template v-slot="{row}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value">
-                                    <template v-if="row.is_super_user === '1'">
+                                    <template v-if="row.is_super_user === '0'">
                                         <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     </template>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
@@ -210,52 +210,50 @@
                     password: '',
                     confirm_password: ''
                 },
-                editRules: {
+                editRules: Object.freeze({
                     real_name: baseValiObj,
                     username: baseValiObj,
                     position_id: baseValiObj,
                     mobile: [baseValiObj, {validator: this.moblieValidator}],
                     email: [baseValiObj, {validator: this.emailValidator}],
-                    password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirm_password:[baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
-                },
+                    password: [baseValiObj, {validator: this.pwdValidator}],
+                    confirm_password:[baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValidator}]
+                }),
                 addRoleDialogVisible: false,
                 addRoleFormModel: {
                     name: '',
                     remark: ''
                 },
-                addRoleRules: {
+                addRoleRules: Object.freeze({
                     name: baseValiObj,
                     remark: baseValiObj
-                },
+                }),
                 modPwdFormModel: {
                     password: '',
                     new_password: '',
                     confirm_new_password: ''
                 },
-                modPwdRules: {
+                modPwdRules: Object.freeze({
                     password: [baseValiObj, {validator: this.pwdValidator}],
-                    new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
-                },
+                    new_password: [baseValiObj, {validator: this.pwdValidator}],
+                    confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.compareModPwdValitator}]
+                }),
                 // 新增编辑用角色数据
                 editRoleData: [],
                 editPosDialogVisible: false,
                 editPosFormModel: {
                     name: ''
                 },
-                editPosRules: {
+                editPosRules: Object.freeze({
                     name: baseValiObj
-                }
+                }),
+                manageAccountStatusMap: Object.freeze(manageAccountStatusMap),
+                statusColorMap: Object.freeze({
+                    disabled: 'danger',
+                    enabled: 'success',
+                    invalidation: 'minor'
+                })
             }
-        },
-        computed: {
-            manageAccountStatusMap: () => manageAccountStatusMap,
-            statusColorMap: () => ({
-                disabled: 'danger',
-                enabled: 'success',
-                invalidation: 'minor'
-            })
         },
         created() {
             this.ajaxRoleList()
@@ -271,8 +269,8 @@
                     permission_groups.length && this.dealTreeData(permission_groups)
                     const allChild = [...permission_groups, ...permissions]
                     const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
-                    item.is_checked = !!(checkedCount && allChild.length === checkedCount)
-                    item.indeterminate = permission_groups.some(item => item.indeterminate) || !!(checkedCount && checkedCount < allChild.length)
+                    item.is_checked = checkedCount > 0 && allChild.length === checkedCount
+                    item.indeterminate = permission_groups.some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
                 })
             },
             submitEditPos() {
@@ -545,11 +543,20 @@
                     this.rightLoading = false
                 })
             },
-            comparePwdValitator(rule, value, callback) { // eslint-disable-line
-                const {newPassword, confirmPassword} = this.modPwdFormModel
-                if (!newPassword || !confirmPassword) {
+            comparePwdValidator(rule, value, callback) { // eslint-disable-line
+                const {password, confirm_password} = this.editFormModel
+                if (!password || !confirm_password) {
                     return callback()
-                } else if(newPassword !== confirmPassword) {
+                } else if(password !== confirm_password) {
+                    return callback(new Error('确认密码必须跟密码一致'))
+                }
+                return callback()
+            },
+            compareModPwdValitator(rule, value, callback) { // eslint-disable-line
+                const {new_password, confirm_new_password} = this.modPwdFormModel
+                if (!new_password || !confirm_new_password) {
+                    return callback()
+                } else if(new_password !== confirm_new_password) {
                     return callback(new Error('确认新密码必须跟新密码一致'))
                 }
                 return callback()

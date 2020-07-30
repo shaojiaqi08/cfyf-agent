@@ -19,19 +19,20 @@
             <template v-if="detailData">
                 <div class="sale-filter-bar">
                     <div>
-                        <filter-shell v-model="searchModel.account_status" :width="250">
+                        <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose>
                             <el-select v-model="searchModel.account_status"
                                        clearable
-                                       placeholder="请选择"
-                                       @change="closePopover">
+                                       filterable
+                                       style="width: 100%"
+                                       placeholder="请选择">
                                 <el-option v-for="(item, key) in accountStatusMap" :key="key" :label="item.label" :value="item.value"></el-option>
                             </el-select>
                             <template v-slot:label>
-                                                <span>
-                                                    {{ hasValue(searchModel.account_status) ?
-                                                        accountStatusMap[searchModel.account_status].label :
-                                                    '全部状态' }}
-                                                </span>
+                                <span>
+                                    {{hasValue(searchModel.account_status) ?
+                                        accountStatusMap[searchModel.account_status].label :
+                                    '全部状态' }}
+                                </span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -39,19 +40,20 @@
                                    @click.stop="searchModel.account_status = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="searchModel.position_id" :width="250">
+                        <filter-shell v-model="searchModel.position_id" :width="250" autoFocus autoClose>
                             <el-select v-model="searchModel.position_id"
                                        clearable
-                                       placeholder="请选择"
-                                       @change="closePopover">
+                                       filterable
+                                       style="width: 100%"
+                                       placeholder="请选择">
                                 <el-option v-for="(item, index) in positionData" :key="index" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                             <template v-slot:label>
-                                                <span>
-                                                    {{ hasValue(searchModel.position_id) ?
-                                                        positionData.find(i => i.id === searchModel.position_id).name :
-                                                    '全部职位' }}
-                                                </span>
+                                <span>
+                                    {{ hasValue(searchModel.position_id) ?
+                                        positionData.find(i => i.id === searchModel.position_id).name :
+                                    '全部职位' }}
+                                </span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -59,7 +61,7 @@
                                    @click.stop="searchModel.position_id = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter">
+                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose>
                             <el-date-picker type="daterange"
                                             v-model="resignationDateRange"
                                             clearable
@@ -76,7 +78,7 @@
                                    @click.stop="resignationDateRange=[]"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter">
+                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose>
                             <el-date-picker type="daterange"
                                             v-model="closeDateRange"
                                             clearable
@@ -237,10 +239,10 @@
                 </el-form-item>
                 <template v-if="editFormModel.id === ''">
                     <el-form-item label="登录密码" prop="password">
-                        <el-input auto-complete="off" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
+                        <el-input auto-complete="new_password" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
                     </el-form-item>
                     <el-form-item label="再次输入密码" prop="confirm_password">
-                        <el-input type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
+                        <el-input auto-complete="new_password" type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
                     </el-form-item>
                 </template>
             </el-form>
@@ -340,7 +342,7 @@
     </div>
 </template>
 <script>
-    import FilterShell, { clearValue, hasValue, closePopover } from '@/components/filter-shell'
+    import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
     import {getTeamList,
             getSalesList,
             createSales,
@@ -351,13 +353,13 @@
             getSalesPositionList,
             getSalesListNoTeam,
             updateSalesStatus,
-            createTeam,// eslint-disable-line
-            setLeader,// eslint-disable-line
-            setMember,// eslint-disable-line
+            createTeam,
+            setLeader,
+            setMember,
             dismissTeam,
             modifyTeamName,
             getGroupSalesList,
-            transferTeam} from '@/apis/modules/user-manage' // eslint-disable-line
+            transferTeam} from '@/apis/modules/user-manage'
     import SideFilterList from '@/components/side-filter-list'
     import {debounce} from '@/utils'
     import {accountStatusMap} from '@/enums/user-manage'
@@ -410,7 +412,7 @@
                     confirm_password: '',
                     role: 'sales'
                 },
-                editRules: {
+                editRules: Object.freeze({
                     real_name: baseValiObj,
                     username: baseValiObj,
                     identity_card: baseValiObj,
@@ -418,9 +420,9 @@
                     mobile: [baseValiObj, {validator: this.moblieValidator}],
                     position_id: baseValiObj,
                     role: baseValiObj,
-                    password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
-                },
+                    password: [baseValiObj, {validator: this.pwdValidator}],
+                    confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValidator}]
+                }),
                 editDialogVisible: false,
                 addTeamDialogVisible: false,
                 addTeamFormModel: {
@@ -428,24 +430,24 @@
                     leader_ids: [],
                     name: ''
                 },
-                addTeamRules: {
+                addTeamRules: Object.freeze({
                     leader_ids: baseValiObj,
                     name: baseValiObj,
-                },
+                }),
                 setLeaderDialogVisible: false,
                 setLeaderFormModel: {
                     leader_ids: []
                 },
-                setLeaderRules: {
+                setLeaderRules: Object.freeze({
                     leader_ids: baseValiObj
-                },
+                }),
                 transferTeamDialogVisible: false,
                 transferTeamFormModel: {
                     parent_id: ''
                 },
-                transferTeamRules: {
+                transferTeamRules: Object.freeze({
                     parent_id: baseValiObj
-                },
+                }),
                 positionData: [],
                 resignationDateRange: [],
                 closeDateRange: [],
@@ -454,26 +456,25 @@
                 groupSalesLoading: false,
                 teamPeopleVisible: false, // 调整团队成员
                 editting: false,
-                editName: ''
+                editName: '',
+                accountStatusMap: Object.freeze(accountStatusMap),
+                statusTagType: Object.freeze({
+                    disable: 'danger',
+                    enable: 'success',
+                    incumbency: 'primary',
+                    dimission: 'minor'
+                })
             }
         },
         computed: {
             filterTableData() {
                 const {name} = this
                 return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
-            },
-            accountStatusMap: () => accountStatusMap,
-            statusTagType: () => ({
-                disable: 'danger',
-                enable: 'success',
-                incumbency: 'primary',
-                dimission: 'minor'
-            })
+            }
         },
         methods: {
             clearValue,
             hasValue,
-            closePopover,
             formatDate,
             create() {},
             // 编辑销售
@@ -528,8 +529,7 @@
                     resetSalesPassword({id}).then((res) => {
                         this.$confirm(`重置密码成功,新密码【${res.password}】, 请妥善保管`, '提示')
                     })
-                }).catch(() => {
-                })
+                }).catch(() => {})
             },
             // 离职
             dimission(id) {
@@ -738,12 +738,12 @@
                     }
                 )
             },
-            comparePwdValitator(rule, value, callback) { // eslint-disable-line
-                const {password, confirmPassword} = this.editFormModel
-                if (!password || !confirmPassword) {
+            comparePwdValidator(rule, value, callback) { // eslint-disable-line
+                const {password, confirm_password} = this.editFormModel
+                if (!password || !confirm_password) {
                     return callback()
-                } else if(password !== confirmPassword) {
-                    return callback(new Error('确认新密码必须跟新密码一致'))
+                } else if(password !== confirm_password) {
+                    return callback(new Error('确次输入密码必须跟登录密码一致'))
                 }
                 return callback()
             },

@@ -174,9 +174,6 @@ export default {
       belongData: {},
       list: [],
       selProductVal: '',
-      statisticInfo: {
-        actual_underwrite_total_premium: 0
-      },
       productAge: '',
       searchModel: {
         keyword: '',
@@ -188,36 +185,7 @@ export default {
       supplierData: [],
       productCategoryData: [],
       productAgeData: [],
-      options: [
-        {
-          value: "选项1",
-          label: "黄金糕"
-        },
-        {
-          value: "选项2",
-          label: "双皮奶"
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎"
-        },
-        {
-          value: "选项4",
-          label: "龙须面"
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭"
-        }
-      ],
       value: [],
-      value1: '',
-      formValue: {
-        value2: '',
-        value3: ''
-      },
-      value2: '',
-      value3: '',
       tableLoading: true,
       statisticLoading: true,
       scrol2Lvisible: false,
@@ -268,6 +236,8 @@ export default {
     },
     debounceAjaxListData() {
       const func = debounce(() => {
+        this.productUrl = ''
+        this.selProductVal = ''
         this.ajaxListData()
       }, 300);
       func()

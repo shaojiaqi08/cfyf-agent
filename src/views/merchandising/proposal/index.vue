@@ -111,8 +111,8 @@
         },
         data() {
             return {
-                proposal_status,
-                proposalStatusMap,
+                proposal_status: Object.freeze(proposal_status),
+                proposalStatusMap: Object.freeze(proposalStatusMap),
                 isUserInfoModalShow: false,
                 isProposalMaterialShow: false,
                 previewVisible: false,
@@ -122,12 +122,11 @@
                 userInfo: {},
                 userHeadImg: '',
                 proposalInfo: {},
-                keywordType: [
+                keywordType: Object.freeze([
                     {value: 'name', label: '计划书名称'},
                     {value: 'proposal_product_name', label: '产品名称'}
-                ],
-                data: [
-                ],
+                ]),
+                data: [],
                 type: 'name',
                 dateRange: null,
                 searchForm: {

@@ -47,11 +47,11 @@
           new_password: '',
           confirm_new_password: ''
         },
-        rules: {
+        rules: Object.freeze({
           password: [baseValiObj, {validator: this.pwdValidator}],
-          new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-          confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-        }
+          new_password: [baseValiObj, {validator: this.pwdValidator}],
+          confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValidator}],
+        })
       }
     },
     methods: {
@@ -79,14 +79,14 @@
         }
         callback()
       },
-      comparePwdValitator(rule, value, callback) { // eslint-disable-line
-        const {password, confirm_password} = this.formModel
-        if (!password || !confirm_password) {
+      comparePwdValidator(rule, value, callback) { // eslint-disable-line
+        const {new_password, confirm_new_password} = this.formModel
+        if (!new_password || !confirm_new_password) {
           return callback()
-        } else if(password !== confirm_password) {
+        } else if(new_password !== confirm_new_password) {
           return callback(new Error('确认新密码必须跟新密码一致'))
         }
-        return callback()
+        callback()
       }
     }
   }

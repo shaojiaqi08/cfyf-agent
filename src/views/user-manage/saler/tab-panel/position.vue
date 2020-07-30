@@ -31,7 +31,7 @@
         >
         </side-filter-list>
         <div class="right" v-loading="detailLoading">
-            <template v-if="positionData.length">
+            <template v-if="selLv && selPos">
                 <el-scrollbar>
                     <permission-tree v-model="detailData"></permission-tree>
                 </el-scrollbar>
@@ -83,61 +83,20 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
-                accountStatusMap,
-                treeLoading: false,
                 treeDialogVisible: false,
                 submitting: false,
                 positionLoading: false,
                 lvLoading: false,
-                dialogLoading: false,
                 detailLoading: false,
                 posDialogVisible: false,
                 name: '',
-                searchModel: {
-                    account_status: '',
-                    company_id: '',
-                    position_id: '',
-                    team_id: '',
-                    resignation_start_date: '',
-                    resignation_end_date: '',
-                    close_start_date: '',
-                    close_end_date: '',
-                    keyword: ''
-                    // page: 1
-                },
                 selLv: '',
                 selPos: '',
                 detailData: [],
                 treeDetail: [],
-                editFormModel: {
-                    id: '',
-                    real_name: '',
-                    username: '',
-                    identity_card: '',
-                    resignation_at: '',
-                    mobile: '',
-                    position_id: '',
-                    team_id: '',
-                    password: '',
-                    confirm_password: '',
-                    role: 'sales'
-                },
-                editRules: {
-                    real_name: baseValiObj,
-                    username: baseValiObj,
-                    identity_card: baseValiObj,
-                    resignation_at: baseValiObj,
-                    mobile: baseValiObj,
-                    position_id: baseValiObj,
-                    team_id: baseValiObj,
-                    role: baseValiObj,
-                    password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}],
-                    confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValitator}]
-                },
-                editDialogVisible: false,
                 positionData: [],
                 lvData: [],
-                lvMap: [
+                lvMap: Object.freeze([
                     {label: '第一级', value: 1},
                     {label: '第二级', value: 2},
                     {label: '第三级', value: 3},
@@ -148,15 +107,16 @@
                     {label: '第八级', value: 8},
                     {label: '第九级', value: 9},
                     {label: '第十级', value: 10}
-                ],
-                posRules: {
+                ]),
+                posRules: Object.freeze({
                     level: baseValiObj,
                     name: baseValiObj
-                },
-                posFormModel: {
+                }),
+                posFormModel:{
                     level: '',
                     name: ''
-                }
+                },
+                accountStatusMap: Object.freeze(accountStatusMap)
             }
         },
         computed: {
@@ -174,8 +134,8 @@
                     permission_groups.length && this.dealTreeData(permission_groups)
                     const allChild = [...permission_groups, ...permissions]
                     const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
-                    item.is_checked = !!(checkedCount && allChild.length === checkedCount)
-                    item.indeterminate = permission_groups.some(item => item.indeterminate) || !!(checkedCount && checkedCount < allChild.length)
+                    item.is_checked = checkedCount > 0 && allChild.length === checkedCount
+                    item.indeterminate = permission_groups.some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
                 })
             },
             editTree() {
@@ -280,16 +240,7 @@
                         customClass: 'manager-msg-box'
                     }
                 )
-            },
-            comparePwdValitator(rule, value, callback) { // eslint-disable-line
-                const {password, confirmPassword} = this.editFormModel
-                if (!password || !confirmPassword) {
-                    return callback()
-                } else if(password !== confirmPassword) {
-                    return callback(new Error('确认新密码必须跟新密码一致'))
-                }
-                return callback()
-            },
+            }
         },
         created() {
             this.ajaxLvData()
