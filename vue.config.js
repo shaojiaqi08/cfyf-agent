@@ -10,6 +10,7 @@ module.exports = {
   publicPath: './',
   devServer: {
     disableHostCheck: true,
+    port: 8080,
     proxy: {
       '/api': {
         target: 'http://cfyf.beta.2239.com',   //代理接口

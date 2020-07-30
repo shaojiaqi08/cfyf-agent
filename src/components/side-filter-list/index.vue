@@ -121,7 +121,7 @@
                 box-sizing: border-box;
                 border-top: 1px solid #fff;
                 border-bottom: 1px solid #fff;
-                transition: all .2s ease-in;
+                transition: all .5s ease-in-out;
                 &.active, &:hover{
                     border-top: 1px solid #e6e6e6;
                     border-bottom: 1px solid #e6e6e6;

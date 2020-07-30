@@ -1,22 +1,28 @@
 <template>
-    <div :class="`tree-node-container ${expanded ? '' : 'no-expanded'}`">
+    <div class="tree-node-container">
         <div class="chkbox-wrap">
             <i :class="`${expanded ? 'icon-expanded' : ''} el-icon-caret-right arrow-btn`"
                v-if="showExpandedbtn"
                @click="triggerExpanded"></i>
-            <el-checkbox v-if="editable" :indeterminate="data.indeterminate" v-model="data.is_checked" @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
+            <el-checkbox v-if="editable"
+                         :indeterminate="data.indeterminate"
+                         v-model="data.is_checked"
+                         @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
             <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
         </div>
         <div v-show="expanded"
              v-if="showPermissionGroup"
              class="tree-group-container">
-            <tree-node @checked="handleSubChecked" :parent="data" :isGroup="true" :key="index" v-for="(item, index) in filterPermissionGroup" v-model="filterPermissionGroup[index]"></tree-node>
+            <tree-node @checked="handleSubChecked"
+                       :isGroup="true"
+                       :key="index"
+                       v-for="(item, index) in filterPermissionGroup"
+                       v-model="filterPermissionGroup[index]"></tree-node>
         </div>
         <div class="tree-permission-container"
              v-show="expanded"
              v-if="showPermission">
             <tree-node @checked="handleSubChecked"
-                       :parent="data"
                        :isGroup="false"
                        :key="index"
                        v-for="(item, index) in filterPermissionData"
@@ -38,8 +44,7 @@
                 type: Object,
                 default: () => {}
             },
-            isGroup: Boolean,
-            parent: Object
+            isGroup: Boolean
         },
         data() {
             return {
@@ -52,7 +57,7 @@
                 const {permission_groups: groups, permissions} = data
                 return editable ?
                     (groups && groups.length) || (permissions && permissions.length > 0) :
-                    (groups && groups.some(item => item.is_checked || item.indeterminate)) || (permissions && permissions.some(item => item.is_checked))
+                    (groups && groups.some(item => item.is_checked || item.indeterminate)) || (permissions > 0 && permissions.some(item => item.is_checked))
             },
             showPermissionGroup() {
                 const {data} = this
@@ -110,9 +115,9 @@
                     const checkedCount = allChild.reduce((prev, next) => {
                         return prev += next.is_checked ? 1 : 0
                     }, 0)
-                    parent.data.is_checked = allChild.length === checkedCount
+                    parent.data.is_checked = checkedCount > 0 && allChild.length === checkedCount
                     // 半选
-                    parent.data.indeterminate = d['permission_groups'].some(item => item.indeterminate) || (checkedCount && checkedCount < allChild.length)
+                    parent.data.indeterminate = d['permission_groups'].some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
                     parent = parent.$parent
                 }
             }
