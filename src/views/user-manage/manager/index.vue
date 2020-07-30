@@ -18,7 +18,7 @@
                 <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </side-filter-list>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-button v-if="curTabIdx==='permission'" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
+                <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
@@ -33,13 +33,13 @@
                         <div class="flex-center">
                             <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
                                 <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"
-                                         :disabled="managerData.length > 0"
+                                         :disabled="managerData.length > 0 || curSelRole.is_super_user"
                                          :underline="false"
                                          type="minor"
                                          class="mr30 del-link"
                                          @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
                             </el-tooltip>
-                            <el-button type="primary" @click="handleSetPos"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
+                            <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                         </div>
                     </div>
                     <el-table :data="managerData" border>
@@ -65,13 +65,11 @@
                         </el-table-column>
                         <el-table-column label="操作" prop="operate" :width="250" align="center">
                             <template v-slot="{row}">
-                                <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value">
-                                    <template v-if="row.is_super_user === '0'">
+                                <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
                                         <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
-                                    </template>
-                                    <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
-                                    <el-button type="text" @click="edit(row)">编辑</el-button>
+                                        <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
+                                        <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
+                                        <el-button type="text" @click="edit(row)">编辑</el-button>
                                 </template>
                                 <template v-else>
                                     <span>-</span>
@@ -466,7 +464,7 @@
                             if (data.id !== '') {
                                 this.ajaxDetail(curSelRole)
                             } else {
-                                this.ajaxRoleList(+res.role_id)
+                                this.ajaxRoleList(+res.position_id)
                             }
                             this.$message.success('修改成功!')
                             this.editDialogVisible = false
@@ -484,7 +482,7 @@
                         createRole(this.addRoleFormModel).then(res => {
                             this.$message.success('新增角色成功!')
                             this.addRoleDialogVisible = false
-                            this.ajaxRoleList(res.id)
+                            this.ajaxRoleList(+res.id)
                         }).finally(() => {
                             this.submitting = false
                         })
