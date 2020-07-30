@@ -118,7 +118,7 @@
 
 <style lang="scss">
   .popper-box {
-    color: red;
+    padding: 0 !important;
     .menu-list {
       margin-top: 8px;
       .menu-list-item {
