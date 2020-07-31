@@ -34,6 +34,8 @@ export const delMangePos = params => get('/agent/proxy/admin_position/delete', p
 // ----------------- 销售 -----------------------
 // 团队列表
 export const getTeamList = (params) => get('/agent/proxy/sales/get_all_teams_list', params)
+// 全部销售
+export const getAllSalesList = params => get('/agent/proxy/sales/get_page_list', params)
 // 销售人员列表
 export const getSalesList = (params) => get('/agent/proxy/sales/get_list_group_team_role', params)
 // 没有加入团队的销售列表

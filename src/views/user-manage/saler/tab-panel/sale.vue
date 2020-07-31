@@ -1,5 +1,5 @@
 <template>
-    <div class="sale-people-container">
+    <div class="sale-people-container" ref="container">
         <el-button class="add-button" type="primary" @click="handleAddSales"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
         <div class="side-filter-wrap flex-column flex-center">
             <side-filter-list
@@ -10,23 +10,24 @@
                 v-model="selTeam"
                 @change="handleSelTeam"
                 style="width: 240px"
-                :listData="teamData"
+                :listData="computedTeamData"
             >
-                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="addTeamDialogVisible = true">
+                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam">
                     <i class="iconfont iconxiao16_jiahao mr4"></i>
                     增加团队
                 </el-button>
             </side-filter-list>
         </div>
         <div class="right" v-loading="detailLoading">
-            <template v-if="detailData">
+            <template v-if="detailData || selTeam === -1">
                 <div class="sale-filter-bar">
                     <div>
-                        <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose>
+                        <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose @input="debounceAjaxDetail">
                             <el-select v-model="searchModel.account_status"
                                        clearable
                                        filterable
                                        style="width: 100%"
+                                       @change="debounceAjaxDetail"
                                        placeholder="请选择">
                                 <el-option v-for="(item, key) in accountStatusMap" :key="key" :label="item.label" :value="item.value"></el-option>
                             </el-select>
@@ -43,10 +44,11 @@
                                    @click.stop="searchModel.account_status = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="searchModel.position_id" :width="250" autoFocus autoClose>
+                        <filter-shell v-model="searchModel.position_id" :width="250" autoFocus autoClose @input="debounceAjaxDetail">
                             <el-select v-model="searchModel.position_id"
                                        clearable
                                        filterable
+                                       @change="debounceAjaxDetail"
                                        style="width: 100%"
                                        placeholder="请选择">
                                 <el-option v-for="(item, index) in positionData" :key="index" :label="item.name" :value="item.id"></el-option>
@@ -64,10 +66,11 @@
                                    @click.stop="searchModel.position_id = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose>
+                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="debounceAjaxDetail">
                             <el-date-picker type="daterange"
                                             v-model="resignationDateRange"
                                             clearable
+                                            @change="debounceAjaxDetail"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -81,10 +84,11 @@
                                    @click.stop="resignationDateRange=[]"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose>
+                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="debounceAjaxDetail">
                             <el-date-picker type="daterange"
                                             v-model="closeDateRange"
                                             clearable
+                                            @change="debounceAjaxDetail"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -99,9 +103,48 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceAjaxDetail"></el-input>
                 </div>
-                <el-scrollbar style="height: calc(100% - 64px)">
+                <el-table :data="allSalesData"
+                          border
+                          width="100%"
+                          v-if="selTeam === -1" :max-height="maxHeight"
+                          v-table-infinite-scroll="scroll2Bottom">
+                    <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
+                    <el-table-column label="账号" prop="username" align="center"></el-table-column>
+                    <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                    <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
+                    <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
+                    <el-table-column label="入职时间" prop="join_date" align="center">
+                        <template v-slot="{row}">
+                            <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="离职时间" prop="close_at" align="center">
+                        <template v-slot="{row}">
+                            <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
+                            <span v-else>-</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="状态" prop="join_date" align="center"  width="100px">
+                        <template v-slot="{row}">
+                            <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
+                        <template v-slot="{row}">
+                            <template v-if="row.account_status!==accountStatusMap.dimission.value">
+                                <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
+                                <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
+                                <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
+                                <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
+                            </template>
+                            <span v-else>-</span>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-scrollbar v-else style="height: calc(100% - 64px)">
                     <div class="team-info" v-if="detailData.parent">
                         <div class="flex-column">
                             <div class="name-wrap">
@@ -268,7 +311,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="团队主管" prop="leader_ids">
-                    <el-select multiple v-model="addTeamFormModel.leader_ids" style="width: 100%">
+                    <el-select multiple v-model="addTeamFormModel.leader_ids" style="width: 100%" :loading="loadingSales">
                         <el-option placeholder="请选择团队主管" v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -349,6 +392,7 @@
     import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
     import {getTeamList,
             getSalesList,
+            getAllSalesList,
             createSales,
             modifySales,
             dimission,
@@ -376,6 +420,20 @@
             SideFilterList,
             TeamPeopleDialog
         },
+        directives: {
+            'table-infinite-scroll' : {
+                inserted(el, binding) {
+                    const scrollWrap = el.querySelector('.el-table__body-wrapper')
+                    const scrollHandle = debounce(() => {
+                        const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
+                        if (scrollHeight > 768 && offsetHeight + scrollTop >= scrollHeight) { // 到底
+                            binding.value()
+                        }
+                    }, 300)
+                    scrollWrap.addEventListener('scroll', scrollHandle)
+                }
+            }
+        },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
@@ -399,10 +457,14 @@
                     close_end_date: '',
                     keyword: ''
                 },
+                page: 1,
+                per_page: 20,
+                total: 0,
                 selTeam: '',
                 selSales: '',
                 teamData: [],
                 noTeamSalesData: [],
+                allSalesData: [],
                 tableData: [],
                 editFormModel: {
                     id: '',
@@ -468,20 +530,48 @@
                     enable: 'success',
                     incumbency: 'primary',
                     dimission: 'minor'
-                })
+                }),
+                maxHeight: null
             }
         },
         computed: {
             filterTableData() {
                 const {name} = this
                 return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
+            },
+            computedTeamData() {
+                return [{
+                    name: '全部销售',
+                    id: -1
+                }, ...this.teamData]
             }
         },
         methods: {
             clearValue,
             hasValue,
             formatDate,
-            create() {},
+            scroll2Bottom() {
+                this.page += 1
+                this.ajaxAllSalesList()
+            },
+            ajaxAllSalesList() {
+                const {page, per_page} = this
+                this.detailLoading = true
+                getAllSalesList({...this.searchModel, page, per_page}).then(res => {
+                    this.total = res.total
+                    if (page <= 1) {
+                        this.allSalesData = res.data
+                    } else{
+                        this.allSalesData = [...this.allSalesData, ...res.data]
+                    }
+                }).finally(() => {
+                    this.detailLoading = false
+                })
+            },
+            handleAddTeam() {
+                this.addTeamDialogVisible = true
+                this.ajaxNoTeamSalesData()
+            },
             // 编辑销售
             edit(id) {
                 this.ajaxSalesDetail(id)
@@ -490,7 +580,6 @@
             handleAddSales() {
                 this.ajaxPositionData()
                 this.editDialogVisible = true
-
             },
             // 新增/编辑销售
             submitSalesEdit() {
@@ -546,14 +635,17 @@
             },
             handleSelTeam(obj) {
                 this.selTeam = obj.id
-                // this.searchModel.page = 1
                 this.editting = false
                 this.detailData = null
-                this.ajaxDetail(obj.id)
+                if (obj.id === -1) {
+                    this.ajaxAllSalesList()
+                } else {
+                    this.ajaxDetail(obj.id)
+                }
             },
             handleSetLeader() {
                 this.setLeaderDialogVisible = true
-                this.ajaxNoTeamSalesData()
+                this.ajaxNoTeamSalesData(this.selTeam)
             },
             // 解散团队
             dismissTeam() {
@@ -652,9 +744,9 @@
                     this.teamLoading = false
                 })
             },
-            ajaxNoTeamSalesData() {
+            ajaxNoTeamSalesData(team_id) {
                 this.loadingSales = true
-                getSalesListNoTeam({team_id: this.selTeam}).then(res => {
+                getSalesListNoTeam({team_id}).then(res => {
                     this.noTeamSalesData = res
                 }).finally(() => {
                     this.loadingSales = false
@@ -716,7 +808,13 @@
             },
             debounceAjaxDetail() {
                 const func = debounce(() => {
-                    this.ajaxDetail(this.selTeam)
+                    const {selTeam} = this
+                    this.page = 1
+                    if (selTeam === -1) {
+                        this.ajaxAllSalesList()
+                    } else {
+                        this.ajaxDetail(selTeam)
+                    }
                 }, 300)
                 func()
                 this.debounceAjaxDetail = func
@@ -771,15 +869,13 @@
                     return callback(new Error('请输入正确的手机格式'))
                 }
                 callback()
+            },
+            // 表格最大高度
+            setMaxHeight() {
+                this.maxHeight = this.$refs.container.offsetHeight - 80
             }
         },
         watch: {
-            searchModel: {
-                handler() {
-                    this.debounceAjaxDetail()
-                },
-                deep: true
-            },
             resignationDateRange(v) {
                 const [start = '', end = ''] = v
                 this.searchModel.resignation_start_date = start
@@ -793,6 +889,13 @@
         },
         created() {
             this.ajaxTeamData()
+            window.addEventListener('resize', this.setMaxHeight)
+        },
+        mounted() {
+            this.setMaxHeight()
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.setMaxHeight)
         }
     }
 </script>
@@ -827,6 +930,9 @@
                 &>.el-input{
                     width: 240px;
                 }
+            }
+            & > ::v-deep .el-table{
+                flex: none;
             }
 
             .team-info{
