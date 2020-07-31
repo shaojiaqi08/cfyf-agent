@@ -3,6 +3,7 @@
                width="620px"
                :close-on-click-modal="false"
                :destroy-on-close = "true"
+               @close="close"
                :visible.sync="visible">
         <div class="content flex-between" v-loading="loading">
             <div class="left">
@@ -11,7 +12,7 @@
                     <span>{{curDataCount}}</span>
                 </div>
                 <div class="body">
-                    <div class="search-wrap">
+                    <div class="search-wrap pr16">
                         <el-input prefix-icon="el-icon-search" placeholder="搜索姓名或者账号" v-model.trim="curKeyword" clearable></el-input>
                     </div>
                     <el-scrollbar>
@@ -19,7 +20,7 @@
                             <template  v-for="(parent, lv) in filterCurData">
                                 <div class="checkbox-item mb16" v-if="parent.sales.length" :key="lv">
                                     <span class="fs14 lh20 mb16">{{lv}}</span>
-                                    <div class="flex-between mb16" v-for="(item, index) in parent.sales" :key="index">
+                                    <div class="flex-between mb16 pr16" v-for="(item, index) in parent.sales" :key="index">
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
@@ -46,7 +47,7 @@
                     <span>{{allDataCount}}</span>
                 </div>
                 <div class="body">
-                    <div class="search-wrap">
+                    <div class="search-wrap pr16">
                         <el-input prefix-icon="el-icon-search" placeholder="搜索姓名或者账号" v-model.trim="allKeyword" clearable></el-input>
                     </div>
                     <el-scrollbar>
@@ -54,7 +55,7 @@
                             <template v-for="(parent, lv) in filterAllData">
                                 <div class="checkbox-item mb16" v-if="parent.sales.length" :key="lv">
                                     <span class="fs14 lh20 mb16">{{lv}}</span>
-                                    <div class="flex-between mb16" v-for="(item, index) in parent.sales" :key="index">
+                                    <div class="flex-between mb16 pr16" v-for="(item, index) in parent.sales" :key="index">
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
@@ -126,7 +127,8 @@
                 return this.filterData(this.allKeyword, true)
             },
             curIsCheckAll() {
-                return this.curDataCount === this.curSelected.length
+                const {curDataCount, curSelected} = this
+                return curDataCount > 0 && curDataCount === curSelected.length
             },
             curDataCount() {
                 const d = this.filterCurData
@@ -144,7 +146,8 @@
                 return res
             },
             allIsCheckAll() {
-                return this.allDataCount === this.allSelected.length
+                const {allDataCount, allSelected} = this
+                return allDataCount > 0 && allDataCount === allSelected.length
             },
             allDataCount() {
                 const d = this.filterAllData
@@ -158,6 +161,12 @@
                 this.$emit('submit', this.curData)
             },
             close() {
+                this.curData = {}
+                this.allData = {}
+                this.curKeyword = ''
+                this.allKeyword = ''
+                this.curSelected = []
+                this.allSelected = []
                 this.$emit('update:visible', false)
             },
             curCheckAll(v) {
@@ -264,16 +273,6 @@
             data() {
                 this.allData = this.data
                 this.initData()
-            },
-            visible(v) {
-                if (!v) {
-                    this.curData = {}
-                    this.allData = {}
-                    this.curKeyword = ''
-                    this.allKeyword = ''
-                    this.curSelected = []
-                    this.allSelected = []
-                }
             }
         }
     }
@@ -303,9 +302,10 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
-                padding: 0 16px;
+                padding: 0 0  0 16px;
                 border-top: 1px solid #e6e6e6;
                 border-bottom: 1px solid #e6e6e6;
+                overflow: hidden;
                 .search-wrap{
                     height: 64px;
                     line-height: 64px;

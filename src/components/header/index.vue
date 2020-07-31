@@ -21,7 +21,7 @@
       <div class="user-info normal-transition" slot="reference">
         <div class="user">
           <div class="avatar" :style="{backgroundImage: `url('${userInfo.avatar_url || require('../../assets/images/avatar.png')}')`}"></div>
-          <div class="name">{{userInfo.username}}</div>
+          <div class="name">{{userInfo.real_name}}</div>
         </div>
         <div class="permission">
           {{userInfo.sales_position && userInfo.sales_position.name}}

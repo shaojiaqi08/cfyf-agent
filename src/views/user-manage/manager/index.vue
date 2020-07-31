@@ -29,7 +29,6 @@
                             {{curSelRole.name}}
                             <span>{{curSelRole.remark}}</span>
                         </div>
-
                         <div class="flex-center">
                             <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
                                 <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"

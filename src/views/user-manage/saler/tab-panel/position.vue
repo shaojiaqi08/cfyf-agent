@@ -178,8 +178,9 @@
                 this.$refs.posForm.validate(flag => {
                     if (flag) {
                         this.submitting = true
-                        createPosLv(this.posFormModel).then(() => {
-                            this.ajaxLvData()
+                        const params = this.posFormModel
+                        createPosLv(params).then(res => {
+                            this.ajaxLvData(params.level, res.id)
                             this.$message.success('职位添加成功!')
                             this.posDialogVisible = false
                         }).catch(() => {}).finally(() => {
@@ -198,21 +199,29 @@
                     this.detailLoading = false
                 })
             },
-            ajaxPositionData(level) {
+            ajaxPositionData(level, id) {
                 this.positionLoading = true
                 this.detailData = []
                 this.positionData = []
                 this.selPos = ''
                 getPositionList({level, role: 'sales'}).then(res => {
                     this.positionData = res
+                    if (id) {
+                        this.selPos = id
+                        this.ajaxDetail(id)
+                    }
                 }).catch(() => {}).finally(() => {
                     this.positionLoading = false
                 })
             },
-            ajaxLvData() {
+            ajaxLvData(lv, id) {
                 this.lvLoading = true
                 getPosLvList().then(res => {
                     this.lvData = res
+                    if (id) {
+                        this.selLv = lv
+                        this.ajaxPositionData(lv, id)
+                    }
                 }).catch(() => {}).finally(() => {
                     this.lvLoading = false
                 })

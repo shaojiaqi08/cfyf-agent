@@ -2,7 +2,7 @@
     <div class="prospectus-container">
         <div class="header">
             内部管理员
-            <el-input type="primary" v-model="searchForm.name" placeholder="搜索计划书名称" clearable>
+            <el-input type="primary" v-model="searchForm.name" placeholder="搜索计划书名称" clearable @input="debounceAjaxData">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="handleSelType">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
@@ -13,9 +13,9 @@
                 </filter-shell>
             </el-input>
         </div>
-        <div class="content">
+        <div class="content" ref="content">
             <div class="filter-bar flex-between flex">
-                <filter-shell v-model="dateRange" :width="385" class="date-range-filter">
+                <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange">
                     <el-date-picker type="daterange" v-model="dateRange" @change="handleDateChange" clearable value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                     <template v-slot:label>
@@ -31,37 +31,34 @@
                     <el-button type="primary" @click="addProposal">新建计划书</el-button>
                 </div>
             </div>
-            <el-scrollbar>
-                <el-table  v-loading="loading"
-                           border
-                           :data="data"
-                           max-height="768px"
-                           v-table-infinite-scroll="scroll2Bottom">
-                    <el-table-column label="计划书名称" prop="name" align="center"></el-table-column>
-                    <el-table-column label="状态" align="center">
-                        <template v-slot="{row}">
-                            <el-tag :type="row.status === proposalStatusMap.done.value ? 'minor' : 'danger'">{{proposal_status[row.status]}}</el-tag>
+            <el-table v-loading="loading"
+                      border
+                      :data="data"
+                      :max-height="maxHeight"
+                      v-table-infinite-scroll="scroll2Bottom">
+                <el-table-column label="计划书名称" prop="name" align="center"></el-table-column>
+                <el-table-column label="状态" align="center">
+                    <template v-slot="{row}">
+                        <el-tag :type="row.status === proposalStatusMap.done.value ? 'minor' : 'danger'">{{proposal_status[row.status]}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
+                <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
+                <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
+                <el-table-column label="备注" prop="备注" align="center"></el-table-column>
+                <el-table-column label="操作" width="240px" align="center">
+                    <template v-slot="{row, index}">
+                        <template v-if="row.status === proposalStatusMap.done.value">
+                            <el-link type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
+                            <el-link type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
+                            <el-link type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
                         </template>
-                    </el-table-column>
-                    <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
-                    <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
-                    <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
-                    <el-table-column label="备注" prop="备注" align="center"></el-table-column>
-                    <el-table-column label="操作" width="240px" align="center">
-                        <template v-slot="{row, index}">
-                            <template v-if="row.status === proposalStatusMap.done.value">
-                                <el-link type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
-                                <el-link type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
-                                <el-link type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
-                            </template>
-                            <template v-else>
-                                <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>
-                            </template>
+                        <template v-else>
+                            <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>
                         </template>
-                    </el-table-column>
-                </el-table>
-            </el-scrollbar>
-
+                    </template>
+                </el-table-column>
+            </el-table>
         </div>
         <div class="new-preview-wrapper" v-if="previewVisible" @click="previewHandleClose">
             <div class="new-preview-dialog">
@@ -131,13 +128,14 @@
                 dateRange: null,
                 searchForm: {
                     page: 1,
-                    limit: 10,
+                    limit: 20,
                     name: '',
                     customer_name: '',
                     proposal_product_name: '',
                     start_created_at: '',
                     end_created_at: ''
-                }
+                },
+                maxHeight: null
             }
         },
         methods: {
@@ -148,6 +146,8 @@
                 const [start = '', end = ''] = v || []
                 this.searchForm.start_created_at = start
                 this.searchForm.end_created_at = end
+                this.searchForm.page = 1
+                this.ajaxData()
             },
             editUserInfo() {
                 this.isUserInfoModalShow = true
@@ -203,42 +203,51 @@
             },
             debounceAjaxData() {
                 const func = debounce(() => {
+                    this.searchForm.page = 1
                     this.ajaxData()
                 }, 300)
                 func()
                 this.debounceAjaxData = func
             },
             handleSelType(val) {
+                debugger
                const target = this.searchForm
                this.keywordType.forEach(item => {
                    if (item.value !== val) {
                        target[item.value] = ''
                    } else {
-                       target[val] =  this.name
+                       target[val] = target.name
                    }
                })
             },
             onStorage(e) {
-                if (e.key === 'updatePage') {
-                    this.searchForm.page = 1
-                    this.ajaxData()
+                if (e.key === 'closePage') {
+                   window.close()
                 }
+            },
+            setTableMaxHeight() {
+                this.maxHeight = this.$refs.content.offsetHeight - 80
             }
         },
         created() {
             this.ajaxData()
             window.addEventListener('storage', this.onStorage)
+            window.addEventListener('resize', this.setTableMaxHeight)
+        },
+        mounted() {
+            this.setTableMaxHeight()
         },
         beforeDestroy() {
             window.removeEventListener('storage', this.onStorage)
+            window.removeEventListener('resize', this.setTableMaxHeight)
         },
         watch: {
-            searchForm: {
-                handler() {
-                    this.debounceAjaxData()
-                },
-                deep: true
-            },
+            // searchForm: {
+            //     handler() {
+            //         this.debounceAjaxData()
+            //     },
+            //     deep: true
+            // },
             dateRange(v) {
                 v = v || ['', '']
                 this.searchForm.start_created_at = v[0]
@@ -299,8 +308,6 @@
             padding: 0 16px;
             flex: 1;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
             .filter-bar{
                 display: flex;
                 justify-content: space-between;

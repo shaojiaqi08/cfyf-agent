@@ -1377,8 +1377,10 @@ export default {
               message: '计划书暂存成功',
               type: 'success'
             })
-            window.localStorage.setItem('updatePage', new Date().getTime())
-            window.close()
+            window.localStorage.setItem('closePage', new Date().getTime())
+            setTimeout(() => {
+              this.$router.replace('/proposal')
+            }, 0)
           }
         })
         .catch(() => {

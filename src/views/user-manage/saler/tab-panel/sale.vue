@@ -3,19 +3,22 @@
         <el-button class="add-button" type="primary" @click="handleAddSales"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
         <div class="side-filter-wrap flex-column flex-center">
             <side-filter-list
-                    v-loading="teamLoading"
-                    label-key="name"
-                    value-key="id"
-                    :showFilter="false"
-                    v-model="selTeam"
-                    @change="handleSelTeam"
-                    style="width: 240px"
-                    :listData="teamData"
+                v-loading="teamLoading"
+                label-key="name"
+                value-key="id"
+                :showFilter="false"
+                v-model="selTeam"
+                @change="handleSelTeam"
+                style="width: 240px"
+                :listData="teamData"
             >
-                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="addTeamDialogVisible = true"><i class="iconfont iconxiao16_jiahao mr4"></i>增加团队</el-button>
+                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="addTeamDialogVisible = true">
+                    <i class="iconfont iconxiao16_jiahao mr4"></i>
+                    增加团队
+                </el-button>
             </side-filter-list>
         </div>
-            <div class="right" v-loading="detailLoading">
+        <div class="right" v-loading="detailLoading">
             <template v-if="detailData">
                 <div class="sale-filter-bar">
                     <div>
@@ -119,12 +122,12 @@
                             <el-button type="primary" @click="handleSetTeam"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
                         </div>
                     </div>
-                    <div class="table-wrap" v-if="detailData.leader">
+                    <div class="table-wrap">
                         <div class="flex-between table-header">
-                            <span>当前团队主管人数：{{detailData.leader.length}} 人</span>
+                            <span>当前团队主管人数：{{detailData.leader ? detailData.leader.length : 0}} 人</span>
                             <el-button type="primary" @click="handleSetLeader"><i class="iconfont iconxiao16_tihuan mr4"></i>更换主管团队</el-button>
                         </div>
-                        <el-table :data="detailData.leader" border width="100%" class="mb16" max-height="768px">
+                        <el-table :data="detailData.leader || []" border width="100%" class="mb16" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -160,12 +163,12 @@
                             </el-table-column>
                         </el-table>
                     </div>
-                    <div class="table-wrap" v-if="detailData.member">
+                    <div class="table-wrap">
                         <div class="flex-between table-header">
-                            <span>当前团队成员人数：{{detailData.member.length}} 人</span>
+                            <span>当前团队成员人数：{{detailData.member ? detailData.member.length : 0}} 人</span>
                             <el-button type="primary" @click="handleSetMember"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
                         </div>
-                        <el-table :data="detailData.member" border width="100%">
+                        <el-table :data="detailData.member || []" border width="100%">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -260,7 +263,7 @@
                    width="480px">
             <el-form ref="addTeamForm" :model="addTeamFormModel" :rules="addTeamRules" label-width="100px" label-position="left">
                 <el-form-item label="挂靠团队" prop="parent_id">
-                    <el-select v-model="addTeamFormModel.parent_id" style="width: 100%">
+                    <el-select v-model="addTeamFormModel.parent_id" style="width: 100%" clearable>
                         <el-option v-for="(item, index) in teamData" :key="index" :label="item.name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -284,8 +287,9 @@
                 :visible.sync="setLeaderDialogVisible"
                 custom-class="set-leader-dialog"
                 :close-on-click-modal="false"
+                @close="$refs.setLeaderForm.resetFields()"
                 width="480px">
-            <el-form v-if="detailData && detailData.leader" ref="setLeaderForm" :model="setLeaderFormModel" :rules="setLeaderRules" label-width="100px" label-position="left">
+            <el-form v-if="detailData" ref="setLeaderForm" :model="setLeaderFormModel" :rules="setLeaderRules" label-width="100px" label-position="left">
                 <div class="info-block mb20">
                     <div class="flex-between mb16">
                         团队名称
@@ -293,11 +297,11 @@
                     </div>
                     <div class="flex-between">
                         当前团队主管
-                        <span>{{detailData.leader.map(item => item.real_name).join(',')}}</span>
+                        <span>{{(detailData.leader || []).map(item => item.real_name).join(',')}}</span>
                     </div>
                 </div>
                 <el-form-item label="新团队主管" prop="leader_ids" style="width: 100%">
-                    <el-select multiple v-model="setLeaderFormModel.leader_ids" >
+                    <el-select multiple v-model="setLeaderFormModel.leader_ids" :loading="loadingSales">
                         <el-option v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
@@ -375,6 +379,7 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                loadingSales: false, // loading主管列表
                 submitting: false,
                 submittingEditName: false,
                 teamLoading: false,
@@ -514,7 +519,6 @@
                         this.submitting = true
                         createTeam(this.addTeamFormModel).then(() => {
                             this.ajaxTeamData()
-                            this.ajaxNoTeamSalesData()
                             this.$message.success('新增成功!')
                             this.addTeamDialogVisible = false
                         }).catch(() => {}).finally(() => {
@@ -549,6 +553,7 @@
             },
             handleSetLeader() {
                 this.setLeaderDialogVisible = true
+                this.ajaxNoTeamSalesData()
             },
             // 解散团队
             dismissTeam() {
@@ -590,7 +595,6 @@
                         this.submitting = true
                         setLeader({...this.setLeaderFormModel, team_id}).then(() => {
                             this.ajaxDetail(team_id)
-                            this.ajaxNoTeamSalesData()
                             this.$message.success('操作成功!')
                             this.setLeaderDialogVisible = false
                         }).catch(() => {}).finally(() => {
@@ -649,8 +653,11 @@
                 })
             },
             ajaxNoTeamSalesData() {
-                getSalesListNoTeam().then(res => {
+                this.loadingSales = true
+                getSalesListNoTeam({team_id: this.selTeam}).then(res => {
                     this.noTeamSalesData = res
+                }).finally(() => {
+                    this.loadingSales = false
                 })
             },
             ajaxDetail(team_id) {
@@ -786,8 +793,6 @@
         },
         created() {
             this.ajaxTeamData()
-            // 没加入团队的销售
-            this.ajaxNoTeamSalesData()
         }
     }
 </script>
