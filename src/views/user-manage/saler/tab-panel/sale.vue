@@ -18,7 +18,7 @@
                 </el-button>
             </side-filter-list>
         </div>
-        <div class="right" v-loading="detailLoading">
+        <div class="right" v-loading="detailLoading" v-if="selTeam">
             <template>
                 <div class="sale-filter-bar">
                     <div>
@@ -458,7 +458,7 @@
                     keyword: ''
                 },
                 page: 1,
-                per_page: 20,
+                page_size: 20,
                 total: 0,
                 selTeam: '',
                 selSales: '',
@@ -551,16 +551,16 @@
             hasValue,
             formatDate,
             scroll2Bottom() {
-                const {page, per_page, total} = this
-                if (page * per_page < total) {
+                const {page, page_size, total} = this
+                if (page * page_size < total) {
                     this.page += 1
                     this.ajaxAllSalesList()
                 }
             },
             ajaxAllSalesList() {
-                const {page, per_page} = this
+                const {page, page_size} = this
                 this.detailLoading = true
-                getAllSalesList({...this.searchModel, page, per_page}).then(res => {
+                getAllSalesList({...this.searchModel, page, page_size}).then(res => {
                     this.total = res.total
                     if (page <= 1) {
                         this.allSalesData = res.data
