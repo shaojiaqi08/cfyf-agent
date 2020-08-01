@@ -18,8 +18,8 @@
                 </el-button>
             </side-filter-list>
         </div>
-        <div class="right" v-loading="detailLoading" v-if="selTeam">
-            <template>
+        <div class="right" v-loading="detailLoading">
+            <template v-if="selTeam">
                 <div class="sale-filter-bar">
                     <div>
                         <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose @input="search">
