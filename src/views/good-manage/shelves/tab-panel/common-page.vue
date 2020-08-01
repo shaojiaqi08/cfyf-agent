@@ -64,7 +64,7 @@ export default {
         const scrollWrap = el.querySelector(".el-table__body-wrapper");
         const scrollHandle = debounce(() => {
           const { scrollHeight, scrollTop, offsetHeight } = scrollWrap;
-          if (offsetHeight + scrollTop >= scrollHeight) {
+          if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) {
             // 到底
             binding.value();
           }

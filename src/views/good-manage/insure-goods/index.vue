@@ -3,7 +3,7 @@
     <div class="header">
       保险商品
       <div class="flex-between">
-        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable>
+        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable @keyup.enter.native="ajaxListData">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -18,11 +18,12 @@
                         @change="handleSelProduct"
                         style="width: 884px">
         <div slot="extraFilter" class="filter-wrap">
-          <filter-shell v-model="searchModel.first_product_category_id" autoFocus autoClose>
+          <filter-shell v-model="searchModel.first_product_category_id" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.first_product_category_id"
                        clearable
                        filterable
+                       @change="ajaxListData"
                        placeholder="请选择">
               <el-option
                       v-for="item in productCategoryData"
@@ -42,11 +43,12 @@
                    @click="searchModel.first_product_category_id = ''"></i>
             </template>
           </filter-shell>
-          <filter-shell v-model="productAge" autoFocus autoClose>
+          <filter-shell v-model="productAge" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
                        v-model="productAge"
                        clearable
                        filterable
+                       @change="ajaxListData"
                        ref="focusRef"
                        placeholder="请选择">
               <el-option
@@ -61,17 +63,13 @@
                 {{ hasValue(productAge) ? productAgeData.find(i => i.id === productAge).title : '投保年龄' }}
             </span>
             </template>
-            <template v-slot:close>
-                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                   v-if="hasValue(productAge)"
-                   @click="productAge = ''"></i>
-            </template>
           </filter-shell>
-          <filter-shell v-model="searchModel.supplier_id" autoFocus autoClose>
+          <filter-shell v-model="searchModel.supplier_id" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.supplier_id"
                        clearable
                        filterable
+                       @change="ajaxListData"
                        ref="focusRef"
                        placeholder="请选择">
               <el-option
@@ -147,11 +145,11 @@
 
 <script>
 import { getInsureApiList, getInsureCpsList} from '@/apis/modules/good-manage'
-import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules' // eslint-disable-line
+import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
 import SideFilterList from '@/components/side-filter-list'
-import TextHiddenEllipsis from '@/components/text-hidden-ellipsis' // eslint-disable-line
+import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA} from "@/utils";
 export default {
   name: 'insure-goods',
@@ -185,12 +183,7 @@ export default {
       supplierData: [],
       productCategoryData: [],
       productAgeData: [],
-      value: [],
-      tableLoading: true,
-      statisticLoading: true,
-      scrol2Lvisible: false,
-      scrol2Rvisible: false,
-      scrollTranslateX: 0
+      value: []
     };
   },
   methods: {
@@ -225,6 +218,8 @@ export default {
     },
     ajaxListData() {
       this.loading = true
+      this.productUrl = ''
+      this.selProductVal = ''
       const params = this.searchModel
       getInsureApiList(params).then(apiData => {
         getInsureCpsList(params).then(cpsData => {
@@ -236,8 +231,6 @@ export default {
     },
     debounceAjaxListData() {
       const func = debounce(() => {
-        this.productUrl = ''
-        this.selProductVal = ''
         this.ajaxListData()
       }, 300);
       func()
@@ -258,12 +251,6 @@ export default {
       if (!v) {
         this.belongData = {};
       }
-    },
-    searchModel: {
-      handler() {
-        this.debounceAjaxListData()
-      },
-      deep: true
     },
     productAge(v) {
       const obj = this.productAgeData.find(item => item.id === v) || {}

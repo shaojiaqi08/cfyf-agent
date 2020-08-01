@@ -1,6 +1,10 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input clearable placeholder="搜索产品名称" class="search-input" v-model="searchModel.product_name" prefix-icon="el-icon-search" @change="debounceAjaxProductData"></el-input>
+        <el-input clearable placeholder="搜索产品名称"
+                  class="search-input"
+                  v-model="searchModel.product_name"
+                  prefix-icon="el-icon-search"
+                  @keyup.enter.native="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
                 label-key="product_name"
@@ -13,8 +17,8 @@
         >
             <div slot="extraFilter">
                 <div class="flex-between pt16 pb16 pl16">
-                    <filter-shell v-model="searchModel.notice" autoFocus>
-                        <el-input v-model="searchModel.notice" clearable @change="debounceAjaxProductData"></el-input>
+                    <filter-shell v-model.trim="searchModel.notice" autoFocus @input="ajaxProductData">
+                        <el-input v-model.trim="searchModel.notice" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>健康告知</span>
                         </template>
@@ -24,9 +28,10 @@
                                @click.stop="searchModel.notice = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.is_reverse" autoFocus autoClose>
+                    <filter-shell v-model="searchModel.is_reverse" autoFocus autoClose :clearable="false">
                         <el-select v-model="searchModel.is_reverse"
                                    filterable
+                                   @change="ajaxProductData"
                                    placeholder="请选择">
                             <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
                         </el-select>
@@ -154,14 +159,6 @@
                         document.body.removeChild(eleLink)
                     })
                 })
-            }
-        },
-        watch: {
-            searchModel: {
-                handler() {
-                    this.debounceAjaxProductData()
-                },
-                deep: true
             }
         },
         created() {

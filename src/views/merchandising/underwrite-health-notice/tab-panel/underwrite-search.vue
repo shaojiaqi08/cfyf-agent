@@ -1,6 +1,11 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input clearable placeholder="搜索产品名称" class="search-input" v-model="searchModel.product_name" prefix-icon="el-icon-search"></el-input>
+        <el-input clearable
+                  placeholder="搜索产品名称"
+                  class="search-input"
+                  v-model="searchModel.product_name"
+                  prefix-icon="el-icon-search"
+                  @keyup.enter.native="ajaxProductData"></el-input>
         <side-filter-list
             v-loading="loading"
             label-key="product_name"
@@ -14,7 +19,7 @@
             <div slot="extraFilter">
                 <div class="flex-between pt16 pl16 pr16">
                     <filter-shell v-model="searchModel.illness" autoFocus>
-                        <el-input v-model="searchModel.illness" clearable></el-input>
+                        <el-input v-model="searchModel.illness" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>病种</span>
                         </template>
@@ -25,7 +30,7 @@
                         </template>
                     </filter-shell>
                     <filter-shell v-model="searchModel.condition_search" autoFocus>
-                        <el-input v-model="searchModel.condition_search" clearable></el-input>
+                        <el-input v-model="searchModel.condition_search" clearable placeholder="多个条件以逗号分隔，最多5个" @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>条件</span>
                         </template>
@@ -37,11 +42,11 @@
                     </filter-shell>
                 </div>
                 <div class="flex-center pt16 pb16">
-                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter" autoFocus autoClose>
+                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter" autoFocus autoClose :clearable="false">
                         <el-select v-model="searchModel.is_reverse"
                                    style="width: 100%"
-                                   clearable
                                    filterable
+                                   @change="ajaxProductData"
                                    placeholder="请选择">
                             <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
                         </el-select>
@@ -65,7 +70,7 @@
                         <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
                     </div>
                 </div>
-                <el-table :data="tableData" border :max-height="tableMaxHeight" :style="{fontSize: fontSize + 'px'}">
+                <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}">
                     <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
                     <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
                     <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
@@ -154,28 +159,10 @@
                 }, 300)
                 func()
                 this.debounceAjaxProductData = func
-            },
-            calcTableMaxHeight() {
-                this.tableMaxHeight = this.$refs.detailWrap.offsetHeight - 80
-            }
-        },
-        watch: {
-            searchModel: {
-                handler() {
-                    this.debounceAjaxProductData()
-                },
-                deep: true
             }
         },
         created() {
             this.ajaxProductData()
-        },
-        mounted() {
-            this.calcTableMaxHeight()
-            window.addEventListener('resize', this.calcTableMaxHeight)
-        },
-        beforeDestroy() {
-            window.removeEventListener('resize', this.calcTableMaxHeight)
         }
     }
 </script>

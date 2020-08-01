@@ -72,7 +72,7 @@ service.interceptors.response.use(response => {
     return Promise.reject(response.data)
   }
 },
-error => {
+  error => {
   if (!error.response) {
     if (error.message === REPEATSYMBOL) {
       return console.log('取消重复请求')

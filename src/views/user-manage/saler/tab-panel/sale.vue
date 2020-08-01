@@ -19,15 +19,15 @@
             </side-filter-list>
         </div>
         <div class="right" v-loading="detailLoading">
-            <template v-if="detailData || selTeam === -1">
+            <template>
                 <div class="sale-filter-bar">
                     <div>
-                        <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose @input="debounceAjaxDetail">
+                        <filter-shell v-model="searchModel.account_status" :width="250" autoFocus autoClose @input="search">
                             <el-select v-model="searchModel.account_status"
                                        clearable
                                        filterable
                                        style="width: 100%"
-                                       @change="debounceAjaxDetail"
+                                       @change="search"
                                        placeholder="请选择">
                                 <el-option v-for="(item, key) in accountStatusMap" :key="key" :label="item.label" :value="item.value"></el-option>
                             </el-select>
@@ -44,11 +44,11 @@
                                    @click.stop="searchModel.account_status = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="searchModel.position_id" :width="250" autoFocus autoClose @input="debounceAjaxDetail">
+                        <filter-shell v-model="searchModel.position_id" :width="250" autoFocus autoClose @input="search">
                             <el-select v-model="searchModel.position_id"
                                        clearable
                                        filterable
-                                       @change="debounceAjaxDetail"
+                                       @change="search"
                                        style="width: 100%"
                                        placeholder="请选择">
                                 <el-option v-for="(item, index) in positionData" :key="index" :label="item.name" :value="item.id"></el-option>
@@ -66,11 +66,11 @@
                                    @click.stop="searchModel.position_id = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="debounceAjaxDetail">
+                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="search">
                             <el-date-picker type="daterange"
                                             v-model="resignationDateRange"
                                             clearable
-                                            @change="debounceAjaxDetail"
+                                            @change="search"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -84,11 +84,11 @@
                                    @click.stop="resignationDateRange=[]"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="debounceAjaxDetail">
+                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="search">
                             <el-date-picker type="daterange"
                                             v-model="closeDateRange"
                                             clearable
-                                            @change="debounceAjaxDetail"
+                                            @change="search"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -103,7 +103,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceAjaxDetail"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @keyup.enter.native="search"></el-input>
                 </div>
                 <el-table :data="allSalesData"
                           border
@@ -158,7 +158,7 @@
                                 </div>
 
                             </div>
-                            <span>当前团队挂靠：{{detailData.parent.name}}</span>
+                            <span>当前团队挂靠：{{detailData.parent && detailData.parent.name}}</span>
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false" type="minor" class="flex-center mr30" @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
@@ -409,7 +409,7 @@
             getGroupSalesList,
             transferTeam} from '@/apis/modules/user-manage'
     import SideFilterList from '@/components/side-filter-list'
-    import {debounce} from '@/utils'
+    import {debounce, throttle} from '@/utils'
     import {accountStatusMap} from '@/enums/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import TeamPeopleDialog from '../component/team-people-dialog'
@@ -426,7 +426,7 @@
                     const scrollWrap = el.querySelector('.el-table__body-wrapper')
                     const scrollHandle = debounce(() => {
                         const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                        if (scrollHeight > 768 && offsetHeight + scrollTop >= scrollHeight) { // 到底
+                        if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) { // 到底
                             binding.value()
                         }
                     }, 300)
@@ -445,7 +445,7 @@
                 dialogLoading: false,
                 detailLoading: false,
                 name: '',
-                detailData: null,
+                detailData: {},
                 searchModel: {
                     account_status: '',
                     company_id: '',
@@ -551,8 +551,11 @@
             hasValue,
             formatDate,
             scroll2Bottom() {
-                this.page += 1
-                this.ajaxAllSalesList()
+                const {page, per_page, total} = this
+                if (page * per_page < total) {
+                    this.page += 1
+                    this.ajaxAllSalesList()
+                }
             },
             ajaxAllSalesList() {
                 const {page, per_page} = this
@@ -636,7 +639,7 @@
             handleSelTeam(obj) {
                 this.selTeam = obj.id
                 this.editting = false
-                this.detailData = null
+                this.detailData = {}
                 if (obj.id === -1) {
                     this.ajaxAllSalesList()
                 } else {
@@ -652,7 +655,7 @@
                 this.confirm('解散团队后，过往业绩将进行归档，且无法恢复原团队，需重新建。是否确认解散？', '解散').then(() => {
                     dismissTeam({id: this.selTeam}).then(() => {
                         this.$message.success('操作成功!')
-                        this.detailData = null
+                        this.detailData = {}
                         this.ajaxTeamData()
                         this.ajaxNoTeamSalesData()
                     })
@@ -754,7 +757,7 @@
             },
             ajaxDetail(team_id) {
                 this.detailLoading = true
-                this.detailData = null
+                this.detailData = {}
                 const {searchModel} = this
                 getSalesList({...searchModel, team_id}).then(res => {
                     this.detailData = res
@@ -806,18 +809,14 @@
                     }).catch(() => {})
                 })
             },
-            debounceAjaxDetail() {
-                const func = debounce(() => {
-                    const {selTeam} = this
-                    this.page = 1
-                    if (selTeam === -1) {
-                        this.ajaxAllSalesList()
-                    } else {
-                        this.ajaxDetail(selTeam)
-                    }
-                }, 300)
-                func()
-                this.debounceAjaxDetail = func
+            search() {
+                const {selTeam} = this
+                this.page = 1
+                if (selTeam === -1) {
+                    this.ajaxAllSalesList()
+                } else {
+                    this.ajaxDetail(selTeam)
+                }
             },
             confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
                 const h = this.$createElement
@@ -872,7 +871,11 @@
             },
             // 表格最大高度
             setMaxHeight() {
-                this.maxHeight = this.$refs.container.offsetHeight - 80
+                const func = throttle(() => {
+                    this.maxHeight = this.$refs.container.offsetHeight - 80
+                }, 300)
+                func()
+                this.setMaxHeight = func
             }
         },
         watch: {

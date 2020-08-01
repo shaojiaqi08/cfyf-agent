@@ -1,6 +1,11 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input placeholder="搜索产品名称" class="search-input" v-model="product_name_like" prefix-icon="el-icon-search" clearable></el-input>
+        <el-input placeholder="搜索产品名称"
+                  class="search-input"
+                  v-model="product_name_like"
+                  prefix-icon="el-icon-search"
+                  clearable
+                  @keyup.enter.native="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
                 label-key="product_name"
@@ -117,7 +122,6 @@
 <script>
     import SideFilterList from '@/components/side-filter-list'
     import {getUnderwriteRuleList, getUnderwriteRuleDetail} from '@/apis/modules/underwriting'
-    import {debounce} from '@/utils'
     export default {
         name: 'underwrite-rules',
         components: {
@@ -163,22 +167,10 @@
                 }).catch(() => {}).finally(() => {
                     this.detailLoading = false
                 })
-            },
-            debounceAjaxProductData() {
-                const func = debounce(() => {
-                    this.ajaxProductData()
-                }, 400)
-                func()
-                this.debounceAjaxProductData = func
             }
         },
         created() {
             this.ajaxProductData()
-        },
-        watch: {
-            product_name_like() {
-                this.debounceAjaxProductData()
-            }
         }
     }
 </script>

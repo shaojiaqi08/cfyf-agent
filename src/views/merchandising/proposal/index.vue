@@ -2,9 +2,9 @@
     <div class="prospectus-container">
         <div class="header">
             内部管理员
-            <el-input type="primary" v-model="searchForm.name" placeholder="搜索计划书名称" clearable @input="debounceAjaxData">
+            <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @keyup.enter.native="search">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
-                    <el-select v-model="type" filterable style="width: 100%" @change="handleSelType">
+                    <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
                     </el-select>
                     <template v-slot:label>
@@ -15,7 +15,7 @@
         </div>
         <div class="content" ref="content">
             <div class="filter-bar flex-between flex">
-                <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange">
+                <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange" autoFocus autoClose>
                     <el-date-picker type="daterange" v-model="dateRange" @change="handleDateChange" clearable value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                     <template v-slot:label>
@@ -75,13 +75,12 @@
         <add-member-struct :show.sync="isAddProposal"></add-member-struct>
     </div>
 </template>
-
 <script>
     import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './proposal-operate/modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
-    import {debounce} from '@/utils'
+    import {debounce, throttle} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'
     import {getProposalList, getProposalMasterInfo} from '@/apis/modules/proposal'
     export default {
@@ -98,7 +97,7 @@
                     const scrollWrap = el.querySelector('.el-table__body-wrapper')
                     const scrollHandle = debounce(() => {
                         const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                        if (scrollHeight > 768 && offsetHeight + scrollTop >= scrollHeight) { // 到底
+                        if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) { // 到底
                             binding.value()
                         }
                     }, 300)
@@ -119,9 +118,11 @@
                 userInfo: {},
                 userHeadImg: '',
                 proposalInfo: {},
+                keyword: '',
                 keywordType: Object.freeze([
                     {value: 'name', label: '计划书名称'},
-                    {value: 'proposal_product_name', label: '产品名称'}
+                    {value: 'proposal_product_name', label: '产品名称'},
+                    {value: 'customer_name', label: '所属客户'}
                 ]),
                 data: [],
                 type: 'name',
@@ -129,13 +130,12 @@
                 searchForm: {
                     page: 1,
                     limit: 20,
-                    name: '',
-                    customer_name: '',
-                    proposal_product_name: '',
                     start_created_at: '',
                     end_created_at: ''
                 },
-                maxHeight: null
+                total: 0,
+                maxHeight: null,
+                paramsChanged: false
             }
         },
         methods: {
@@ -146,8 +146,7 @@
                 const [start = '', end = ''] = v || []
                 this.searchForm.start_created_at = start
                 this.searchForm.end_created_at = end
-                this.searchForm.page = 1
-                this.ajaxData()
+                this.search()
             },
             editUserInfo() {
                 this.isUserInfoModalShow = true
@@ -173,8 +172,12 @@
                 this.proposalInfo = item
             },
             scroll2Bottom() {
-                this.searchForm.page += 1
-                this.ajaxData()
+                const {total, searchForm} = this
+                const {page, limit} = searchForm
+                if (page * limit < total) {
+                    searchForm.page += 1
+                    this.ajaxData()
+                }
             },
             previewHandleClose() {
                 this.previewVisible = false
@@ -186,39 +189,30 @@
                 })
             },
             ajaxData() {
-                const {searchForm} = this
+                if (this.loading) {
+                    return this.paramsChanged = true
+                }
                 this.loading = true
-                getProposalList({...searchForm}).then(res => {
-                    if (searchForm.page === 1) {
+                const {searchForm, keywordType, keyword, type} = this
+                const key = keywordType.find(item => item.value === type).value
+                getProposalList({...searchForm, [key]: keyword}).then(res => {
+                    if (searchForm.page <= 1) {
                         this.data = res.data
-                    } else if (res.data.length > 0) {
-                        this.data = [...this.data, ...res.data]
                     } else {
-                        searchForm.page -= 1
+                        this.data = [...this.data, ...res.data]
                     }
+                    this.total = res.total
                 }).catch(()=> {}).finally(() => {
                     this.loading = false
+                    if (this.paramsChanged) {
+                        this.paramsChanged = false
+                        this.search()
+                    }
                 })
-                this.ajaxUserInfo()
             },
-            debounceAjaxData() {
-                const func = debounce(() => {
-                    this.searchForm.page = 1
-                    this.ajaxData()
-                }, 300)
-                func()
-                this.debounceAjaxData = func
-            },
-            handleSelType(val) {
-                debugger
-               const target = this.searchForm
-               this.keywordType.forEach(item => {
-                   if (item.value !== val) {
-                       target[item.value] = ''
-                   } else {
-                       target[val] = target.name
-                   }
-               })
+            search() {
+                this.searchForm.page = 1
+                this.ajaxData()
             },
             onStorage(e) {
                 if (e.key === 'closePage') {
@@ -226,10 +220,15 @@
                 }
             },
             setTableMaxHeight() {
-                this.maxHeight = this.$refs.content.offsetHeight - 80
+                const func = throttle(() => {
+                    this.maxHeight = this.$refs.content.offsetHeight - 80
+                }, 300)
+                func()
+                this.setTableMaxHeight = func
             }
         },
         created() {
+            this.ajaxUserInfo()
             this.ajaxData()
             window.addEventListener('storage', this.onStorage)
             window.addEventListener('resize', this.setTableMaxHeight)
@@ -242,12 +241,6 @@
             window.removeEventListener('resize', this.setTableMaxHeight)
         },
         watch: {
-            // searchForm: {
-            //     handler() {
-            //         this.debounceAjaxData()
-            //     },
-            //     deep: true
-            // },
             dateRange(v) {
                 v = v || ['', '']
                 this.searchForm.start_created_at = v[0]
