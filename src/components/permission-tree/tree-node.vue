@@ -57,7 +57,7 @@
                 const {permission_groups: groups, permissions} = data
                 return editable ?
                     (groups && groups.length) || (permissions && permissions.length > 0) :
-                    (groups && groups.some(item => item.is_checked || item.indeterminate)) || (permissions > 0 && permissions.some(item => item.is_checked))
+                    (groups && groups.some(item => item.is_checked || item.indeterminate)) || (permissions && permissions.some(item => item.is_checked))
             },
             showPermissionGroup() {
                 const {data} = this
@@ -126,6 +126,14 @@
 </script>
 
 <style scoped lang="scss">
+    .fold-enter-active, .fold-leave-active {
+        transition: all .3s ease;
+        &{overflow: hidden;}
+    }
+    .fold-enter, .fold-leave-to{
+        height: 0;
+    }
+
     .arrow-btn{
         cursor: pointer;
         transition: transform .3s ease-in-out;
@@ -140,6 +148,7 @@
         padding-left: 48px;
         position: relative;
         vertical-align: top;
+        transition: all .3s ease-in-out;
         .expanded-enter-active, .expanded-leave-active{
             transition: transform .2s ease-in-out;
             transform: scaleY(0);
@@ -154,7 +163,6 @@
             align-items: center;
             border-radius: 4px;
             padding: 0 8px;
-            overflow: hidden;
             &:hover{
                 background: #f5f5f5;
                 border: 4px;
@@ -163,7 +171,7 @@
         .tree-group-container{
             white-space: nowrap;
             position: relative;
-            transition: background-color .3s ease-in-out;
+            transition: all .3s ease-in-out;
         }
         &>div:last-of-type>.tree-node-container:last-of-type::before{
             height: 13px;
