@@ -7,28 +7,76 @@ export const routers = [
     icon: 'iconcebiandaohang20_yeji1',
     children: [
       {
-        path: '/order',
-        name: 'order',
+        path: '/achievement-company',
+        name: 'achievement-company',
         meta: {
-          title: '订单',
+          title: '公司业绩',
           header: true,
           menu: true,
           show: true,
           permission: 'a'
         },
-        component: getView('achievement/order')
+        component: getView('achievement/company')
       },
       {
-        path: '/order/detail/:id',
-        name: 'order-detail',
+        path: '/achievement-company/detail/:id',
+        name: 'achievement-company-detail',
         meta: {
-          title: '订单详情',
+          title: '公司业绩详情',
           header: true,
           menu: false,
           show: false,
           permission: 'a'
         },
         component: getView('achievement/order/detail')
+      },
+      {
+        path: '/achievement-team',
+        name: 'achievement-team',
+        meta: {
+          title: '团队业绩',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('achievement/team')
+      },
+      {
+        path: '/achievement-team/detail/:id',
+        name: 'achievement-team-detail',
+        meta: {
+          title: '团队业绩详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: 'a'
+        },
+        component: getView('achievement/team/detail')
+      },
+      {
+        path: '/achievement-self',
+        name: 'achievement-self',
+        meta: {
+          title: '我的业绩',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'a'
+        },
+        component: getView('achievement/self')
+      },
+      {
+        path: '/achievement-self/detail/:id',
+        name: 'achievement-self-detail',
+        meta: {
+          title: '我的业绩详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: 'a'
+        },
+        component: getView('achievement/self/detail')
       }
     ]
   },
@@ -149,14 +197,9 @@ export const routers = [
 const necessaryRoutes = [
   // TODO 404 403 ...
   {
-    path: "/",
-    name: "Home",
-    meta: {
-      title: 'home',
-      menu: true,
-      header: true
-    },
-    component: getView('home')
+    path: '/',
+    name: 'Home',
+    redirect: '/user-info'
   },
   {
     path: '/user-info',

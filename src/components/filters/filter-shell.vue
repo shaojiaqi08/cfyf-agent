@@ -11,8 +11,12 @@
         <slot></slot>
       </div>
       <div class="filter-item" :class="{ actived: popoverShow || isHasValue }" slot="reference">
-        <slot name="label"></slot>
-        <i class="iconfont iconxiao16_xiajiantou"></i>
+        <span>{{filterValue}}</span>
+        <el-badge type="primary"
+                  class="ml4"
+                  v-if="collapse && Array.isArray(value) && value.length > 1"
+                  :value="value.length"></el-badge>
+        <i class="iconfont iconxiao16_xiajiantou" style="margin-left: 2px"></i>
         <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
            v-if="clearable && hasValue(value)"
            @click.prevent.stop="clearValue($event, value)"></i>
@@ -76,6 +80,16 @@
       clearable: {
         type: Boolean,
         default: true
+      },
+      // 是否折叠
+      collapse: {
+        type: Boolean,
+        default: true
+      },
+      // 是否省略文本
+      textOverflow: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -102,9 +116,15 @@
     computed: {
       isHasValue() {
         return hasValue(this.value)
+      },
+      // 处理通过插槽传入的文本
+      filterValue() {
+        const {text, children} = this.$slots.label[0]
+        let txt = (text || (children[0] && children[0].text) || '').trim()
+        return this.textOverflow ?
+                  txt.length > 8 ? `${txt.slice(0, 8)}...` : txt :
+                  txt
       }
-    },
-    mounted() {
     },
     methods: {
       clearValue,
@@ -150,6 +170,10 @@
       background-color: #fff;
       border-radius: 50%;
       cursor: pointer;
+    }
+    & > .el-badge .el-badge__content{
+      top: -1px;
+      line-height: 16px;
     }
   }
   .filter-popover {

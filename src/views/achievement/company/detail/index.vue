@@ -42,7 +42,7 @@
         </div>
         <div>
           保单状态
-          <span>-</span>
+          <span>{{ policyInfo.policy_status_str }}</span>
         </div>
         <div>
           支付状态
@@ -61,10 +61,10 @@
           承保时间
           <span>{{ formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
         </div>
-        <!-- <div>
-          承保时间
-          <span>{{ formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
-        </div> -->
+        <div>
+          确认时间
+          <span>-</span>
+        </div>
         <div>
           回访成功日期
           <span>-</span>
@@ -76,7 +76,7 @@
         </div>
         <div>
           投保单号
-          <span>{{ policyInfo.payment_period_desc || '-' }}</span>
+          <span>{{ policyInfo.proposal_sn || '-' }}</span>
         </div>
         <div>
           缴费期限
@@ -84,7 +84,7 @@
         </div>
         <div>
           保障期限
-          <span>{{ policyInfo.payment_period_desc || '-' }}</span>
+          <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
         </div>
       </div>
       <h4>被保人信息</h4>

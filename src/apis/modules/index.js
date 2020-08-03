@@ -18,6 +18,9 @@ export const getRegion = params => get('/common/get_region_list', params)
 // 银行列表
 export const getBankList = params => get('/common/get_bank_list', params)
 
+// api和cps产品列表
+export const getAllProducts = params => get('/common/product/all-products', params)
+
 // 供应商类表
 export const getSupplierList = params => get('/common/product/supplier/list', params)
 
@@ -41,3 +44,4 @@ export const updatePassword = params => post('/agent/proxy/sales/change_personal
 
 // 更新头像
 export const uploadHeadImg = params => post('/agent/proxy/sales/change_personal_avatar', params)
+

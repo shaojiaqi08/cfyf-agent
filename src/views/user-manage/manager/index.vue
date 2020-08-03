@@ -170,7 +170,12 @@
             updateStatus,
             resetPassword,
             updateManageTree,
-            getManageTreeDetail, getRoleList, getEditRoleList, createRole, delMangePos, updateMangePos} from '@/apis/modules/user-manage' // eslint-disable-line
+            getManageTreeDetail,
+            getRoleList,
+            getEditRoleList,
+            createRole,
+            delMangePos,
+            updateMangePos} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import {manageAccountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
@@ -380,7 +385,7 @@
             // 更改状态
             triggerStatus(row) {
                 const {id, account_status} = row
-                const isDisabled = account_status === 'enable'
+                const isDisabled = account_status !== 'disable'
                 const confirmButtonText = isDisabled ? '禁用' : '启用'
                 const confirmButtonClass = isDisabled ? 'el-button--danger' : ''
                 const txt = isDisabled ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
@@ -453,19 +458,16 @@
                         const {editFormModel, curSelRole} = this
                         const data = {...editFormModel}
                         let handle = createManager
-                        if (data.id !== '') { // 编辑移除多余参数
+                        const isEdit =  data.id !== ''
+                        if (isEdit) { // 编辑移除多余参数
                             data.role_id = curSelRole.id
                             delete data.password
                             delete data.confirm_password
                             handle = editManager
                         }
                         handle({...data}).then(res => {
-                            if (data.id !== '') {
-                                this.ajaxDetail(curSelRole)
-                            } else {
-                                this.ajaxRoleList(+res.position_id)
-                            }
-                            this.$message.success('修改成功!')
+                            this.ajaxRoleList(isEdit ? data.position_id : +res.position_id)
+                            this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
                             this.editDialogVisible = false
                         }).catch(() => {}).finally(() => {
                             this.submitting = false
