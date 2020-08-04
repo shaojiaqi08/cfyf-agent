@@ -66,11 +66,18 @@
                                    @click.stop="searchModel.position_id = ''"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="resignationDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="search">
+                        <filter-shell v-model="resignationDateRange"
+                                      :width="385"
+                                      class="date-range-filter"
+                                      :textOverflow="false"
+                                      :collapse="false"
+                                      autoFocus
+                                      autoClose
+                                      @input="handleRegDateChange">
                             <el-date-picker type="daterange"
                                             v-model="resignationDateRange"
                                             clearable
-                                            @change="search"
+                                            @change="handleRegDateChange"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -84,11 +91,18 @@
                                    @click.stop="resignationDateRange=[]"></i>
                             </template>
                         </filter-shell>
-                        <filter-shell v-model="closeDateRange" :width="385" class="date-range-filter" autoFocus autoClose @input="search">
+                        <filter-shell v-model="closeDateRange"
+                                      :width="385"
+                                      class="date-range-filter"
+                                      autoFocus
+                                      autoClose
+                                      :textOverflow="false"
+                                      :collapse="false"
+                                      @input="handleCloseDateChange">
                             <el-date-picker type="daterange"
                                             v-model="closeDateRange"
                                             clearable
-                                            @change="search"
+                                            @change="handleCloseDateChange"
                                             start-placeholder="开始日期"
                                             end-placeholder="结束日期"
                                             value-format="yyyy-MM-dd">
@@ -137,7 +151,7 @@
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                 <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                 <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
+                                <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                 <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                             </template>
@@ -198,7 +212,7 @@
                                     <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                         <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                         <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                         <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                         <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                                     </template>
@@ -239,7 +253,7 @@
                                     <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                         <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                         <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                         <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                         <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                                     </template>
@@ -552,6 +566,20 @@
             clearValue,
             hasValue,
             formatDate,
+            handleRegDateChange() {
+                const {resignationDateRange} = this
+                const [start = '', end = ''] = resignationDateRange || []
+                this.searchModel.resignation_start_date = start
+                this.searchModel.resignation_end_date = end
+                this.search()
+            },
+            handleCloseDateChange() {
+                const {closeDateRange} = this
+                const [start = '', end = ''] = closeDateRange || []
+                this.searchModel.close_start_date = start
+                this.searchModel.close_end_date = end
+                this.search()
+            },
             genSimulatedLink(id) {
                 genSimulatedLink({id}).then(res => {
                     window.open(res.url, '_blank')
@@ -899,11 +927,6 @@
             }
         },
         watch: {
-            resignationDateRange(v) {
-                const [start = '', end = ''] = v
-                this.searchModel.resignation_start_date = start
-                this.searchModel.resignation_end_date = end
-            },
             closeDateRange(v) {
                 const [start = '', end = ''] = v
                 this.searchModel.close_start_date = start
