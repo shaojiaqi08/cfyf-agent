@@ -215,6 +215,7 @@
                 this.ajaxData()
             },
             onStorage(e) {
+                console.log(e)
                 if (e.key === 'closePage') {
                    window.close()
                 }

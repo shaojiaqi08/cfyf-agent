@@ -137,7 +137,7 @@
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                 <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                 <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                 <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                             </template>
@@ -198,7 +198,7 @@
                                     <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                         <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                         <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
                                         <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                         <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                                     </template>
@@ -239,7 +239,7 @@
                                     <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                         <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
                                         <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8">模拟登陆</el-link>
+                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登陆</el-link>
                                         <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                         <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
                                     </template>
@@ -409,6 +409,7 @@
             modifyTeamName,
             getGroupSalesList,
             transferTeam} from '@/apis/modules/user-manage'
+    import {genSimulatedLink} from '@/apis/modules'
     import SideFilterList from '@/components/side-filter-list'
     import {debounce, throttle} from '@/utils'
     import {accountStatusMap} from '@/enums/user-manage'
@@ -551,6 +552,11 @@
             clearValue,
             hasValue,
             formatDate,
+            genSimulatedLink(id) {
+                genSimulatedLink({id}).then(res => {
+                    window.open(res.url, '_blank')
+                })
+            },
             scroll2Bottom() {
                 const {page, page_size, total} = this
                 if (page * page_size < total) {

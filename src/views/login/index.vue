@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {login, getUserDetail} from '@/apis/modules/index'
+import {login, getUserDetail, simulatedLogin} from '@/apis/modules/index'
 import {mapActions} from 'vuex'
 export default {
   data() {
@@ -92,7 +92,15 @@ export default {
     }
   },
   created() {
-    document.addEventListener('keyup', this.handleEnter)
+    const query = this.$route
+    if (query._sign) {
+      simulatedLogin(query).then(res => {
+        this.updateUserInfo(res)
+        this.$router.replace('/user-info')
+      })
+    } else {
+      document.addEventListener('keyup', this.handleEnter)
+    }
   },
   beforeDestroy() {
     document.removeEventListener('keyup', this.handleEnter)

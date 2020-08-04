@@ -45,3 +45,8 @@ export const updatePassword = params => post('/agent/proxy/sales/change_personal
 // 更新头像
 export const uploadHeadImg = params => post('/agent/proxy/sales/change_personal_avatar', params)
 
+// 生成模拟登陆地址
+export const genSimulatedLink = params => get('/agent/proxy/sales/generate_auth_link', params)
+
+// 模拟登陆
+export const simulatedLogin = params => post('/agent/proxy/sales/simulated_landing', params)
