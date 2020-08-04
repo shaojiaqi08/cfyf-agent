@@ -46,6 +46,7 @@ export default {
   left: 180px;
   right: 0;
   bottom: 0;
+  min-width: 1050px;
   background-color: #e6e4e1;
 }
 .page-fade-enter-active, .page-fade-leave-active {
