@@ -926,13 +926,6 @@
                 this.setMaxHeight = func
             }
         },
-        watch: {
-            closeDateRange(v) {
-                const [start = '', end = ''] = v
-                this.searchModel.close_start_date = start
-                this.searchModel.close_end_date = end
-            }
-        },
         created() {
             this.ajaxTeamData()
             window.addEventListener('resize', this.setMaxHeight)
