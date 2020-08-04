@@ -18,7 +18,7 @@
         >
             <div slot="extraFilter">
                 <div class="flex-between pt16 pl16 pr16">
-                    <filter-shell v-model="searchModel.illness" autoFocus>
+                    <filter-shell v-model="searchModel.illness" autoFocus @input="debounceAjaxProductData">
                         <el-input v-model="searchModel.illness" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>病种</span>
@@ -29,7 +29,7 @@
                                @click.stop="searchModel.illness = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.condition_search" autoFocus>
+                    <filter-shell v-model="searchModel.condition_search" autoFocus @input="debounceAjaxProductData">
                         <el-input v-model="searchModel.condition_search" clearable placeholder="多个条件以逗号分隔，最多5个" @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
                             <span>条件</span>

@@ -32,6 +32,7 @@
                         <el-select v-model="searchModel.is_reverse"
                                    filterable
                                    @change="ajaxProductData"
+                                   style="width: 100%"
                                    placeholder="请选择">
                             <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
                         </el-select>
