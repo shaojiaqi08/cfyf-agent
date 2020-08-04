@@ -588,6 +588,8 @@ export default {
             font-weight: bold;
             font-size: 16px;
             line-height: 24px;
+            height: 24px;
+            display: block;
             white-space: nowrap;
             &.primary {
               color: #ff9000;

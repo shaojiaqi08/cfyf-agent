@@ -57,9 +57,7 @@ export default {
     login() {
       const {username, password} = this
       this.submitting = true
-      login({
-        username, password
-      }).then(res => {
+      login({username, password}).then(res => {
         // 更新token
         this.updateUserInfo(res)
         const path = this.$route.query.redirect
@@ -86,7 +84,8 @@ export default {
       this.isPasswordShow = !this.isPasswordShow
     },
     handleEnter(e) {
-      if (e.keyCode === 13 && this.username && this.password) {
+      const {submitting, username, password} = this
+      if (e.keyCode === 13 && !submitting && username && password) {
         this.login()
       }
     }
@@ -94,13 +93,15 @@ export default {
   created() {
     const query = this.$route.query
     if (query._sign) {
+      this.submitting = true
       simulatedLogin(query).then(res => {
         this.updateUserInfo(res)
         this.$router.replace('/user-info')
+      }).finally(() => {
+        this.submitting = false
       })
-    } else {
-      document.addEventListener('keyup', this.handleEnter)
     }
+    document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {
     document.removeEventListener('keyup', this.handleEnter)

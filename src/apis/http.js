@@ -15,7 +15,8 @@ service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencod
 service.interceptors.request.use(config => {
   const userInfo = store.state.users.userInfo
   if (userInfo.token) {
-    config.headers['Agent-Authorization'] = userInfo.token
+    config.headers['Cfyf-Authorization'] = userInfo.token
+    config.headers['Agent-Authorization'] = userInfo.agent_token
   }
 
   removePending(config, () => addPending(config))
