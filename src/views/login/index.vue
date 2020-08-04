@@ -11,7 +11,7 @@
           <div class="label">账号</div>
           <div class="input">
             <el-input placeholder="请输入账号名"
-                      v-model="username"
+                      v-model.trim="username"
                       clearable
                       @focus="inputFocus"
                       @blur="inputBlur"></el-input>
@@ -22,7 +22,7 @@
           <div class="input">
             <div class="click-block" @click="togglePasswordShow"></div>
             <el-input placeholder="请输入密码"
-                      v-model="password"
+                      v-model.trim="password"
                       :type="`${isPasswordShow ? 'text' : 'password'}`"
                       :suffix-icon="`iconfont fs14 ${isPasswordShow ? 'iconxiao16_dangqianchakan' : 'iconxiao16_dangqianyincang'}`"
                       @focus="inputFocus"
@@ -62,14 +62,17 @@ export default {
       }).then(res => {
         // 更新token
         this.updateUserInfo(res)
-        getUserDetail().then(ud => {
-          this.updateUserInfo({...res, ...ud})
-          const path = this.$route.query.redirect || '/user-info'
-          this.$router.replace(path)
-        }).finally(() => {
-          this.submitting = false
-        })
-      }).catch(() => {
+        const path = this.$route.query.redirect
+        // 如果不是跳转到个人信息页就获取用户信息
+        if (path && !path.includes('user-info')) {
+          getUserDetail().then(ud => {
+            this.updateUserInfo({...res, ...ud})
+            this.$router.replace(path)
+          })
+        } else {
+          this.$router.replace('/user-info')
+        }
+      }).catch(err => {console.log(err)}).finally(() => {
         this.submitting = false
       })
     },
@@ -83,7 +86,7 @@ export default {
       this.isPasswordShow = !this.isPasswordShow
     },
     handleEnter(e) {
-      if (e.keyCode === 13) {
+      if (e.keyCode === 13 && this.username && this.password) {
         this.login()
       }
     }

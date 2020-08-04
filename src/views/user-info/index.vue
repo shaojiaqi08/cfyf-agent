@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-info">
+    <div class="user-info" v-loading="loading">
       <div class="header">
         个人信息
       </div>
@@ -56,15 +56,16 @@
 
 <script>
   import modifyPassword from './modal/modify-password'
-  import {uploadHeadImg} from '@/apis/modules'
-  import {mapState} from 'vuex'
+  import {uploadHeadImg, getUserDetail} from '@/apis/modules'
+  import {mapState, mapActions} from 'vuex'
   export default {
     components: {
       modifyPassword
     },
     data() {
       return {
-        isModiifyPasswordShow: false
+        isModiifyPasswordShow: false,
+        loading: false
       }
     },
     computed: {
@@ -74,6 +75,7 @@
       }
     },
     methods: {
+      ...mapActions('users', ['updateUserInfo']),
       changePassword() {
         this.isModiifyPasswordShow = true
       },
@@ -98,7 +100,18 @@
           return false
         }
         return true
+      },
+      getUserDetail() {
+        this.loading = true
+        getUserDetail().then(ud => {
+          this.updateUserInfo({...this.userInfo, ...ud})
+        }).finally(() => {
+          this.loading = false
+        })
       }
+    },
+    created() {
+      this.getUserDetail()
     }
   }
 </script>

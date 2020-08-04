@@ -108,7 +108,8 @@
                 <el-table :data="allSalesData"
                           border
                           width="100%"
-                          v-if="selTeam === -1" :max-height="maxHeight"
+                          v-if="selTeam === -1"
+                          :max-height="maxHeight"
                           v-table-infinite-scroll="scroll2Bottom">
                     <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                     <el-table-column label="账号" prop="username" align="center"></el-table-column>
@@ -588,14 +589,18 @@
             submitSalesEdit() {
                 this.$refs.editForm.validate(flag => {
                     if (flag) {
-                        const {editFormModel: data} = this
+                        const {editFormModel: data, selTeam} = this
                         const isEdit = !!data.id
                         const handler = isEdit ? modifySales : createSales
                         this.submitting = true
                         const params = {...data, role: 'sales'}
                         params.resignation_at = ~~(new Date(params.resignation_at.replace(/-/g, '/')) / 1000)
                         handler(params).then(() => {
-                            this.ajaxDetail(this.selTeam)
+                            if (selTeam === -1) {
+                                this.ajaxAllSalesList()
+                            } else {
+                                this.ajaxDetail(selTeam)
+                            }
                             this.editDialogVisible = false
                             this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
                         }).catch(() => {}).finally(() => {
@@ -631,7 +636,11 @@
             dimission(id) {
                 this.confirm('账号离职后不可恢复，是否确认离职？', '离职').then(() => {
                     dimission({id}).then(() => {
-                        this.ajaxDetail(this.selTeam)
+                        if (this.selTeam === -1) {
+                            this.ajaxAllSalesList()
+                        } else {
+                            this.ajaxDetail(this.selTeam)
+                        }
                         this.$message.success('操作成功!')
                     })
                 })
@@ -645,6 +654,7 @@
                 } else {
                     this.ajaxDetail(obj.id)
                 }
+                this.ajaxPositionData()
             },
             handleSetLeader() {
                 this.setLeaderDialogVisible = true
@@ -804,7 +814,11 @@
                 this.confirm(content, btnTxt, btnColor, btnClass).then(() => {
                     const account_status = willDisable ? 'disable' : 'enable'
                     updateSalesStatus({id, account_status}).then(() => {
-                        this.ajaxDetail(this.selTeam)
+                        if (this.selTeam === -1) {
+                            this.ajaxAllSalesList()
+                        } else {
+                            this.ajaxDetail(this.selTeam)
+                        }
                         this.$message.success('操作成功!')
                     }).catch(() => {})
                 })
