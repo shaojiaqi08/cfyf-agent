@@ -796,7 +796,7 @@
             },
             triggerStatus(row) {
                 const {id, account_status: curStatus} = row // eslint-disable-line
-                const willDisable = curStatus === 'incumbency' || curStatus === 'enable'
+                const willDisable = curStatus !== 'disable'
                 const content = willDisable ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
                 const btnTxt = willDisable ? '禁用' : '启用'
                 const btnColor = willDisable ? '#FF4C4C' : '#FF9000'

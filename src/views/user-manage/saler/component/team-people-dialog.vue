@@ -25,7 +25,7 @@
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
                                             <el-link type="danger" class="ml8" :underline="false">
-                                                <i class="iconfont iconxiao16_yuanxingjianhao el-icon--left" @click="del(item, lv, index)"></i>
+                                                <i class="iconfont iconxiao16_yuanxingjianhao" @click="del(item, lv, index)"></i>
                                             </el-link>
                                         </div>
                                     </div>
@@ -60,7 +60,7 @@
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
                                             <el-link type="primary" class="ml8" :underline="false">
-                                                <i class="iconfont iconxiao16_yuanxingjiahao el-icon--left" @click="join(parent, item, lv)"></i>
+                                                <i class="iconfont iconxiao16_yuanxingjiahao" @click="join(parent, item, lv)"></i>
                                             </el-link>
                                         </div>
                                     </div>
