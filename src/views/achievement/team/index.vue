@@ -496,10 +496,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.scrollbox {
-  padding: 16px;
-  background-color: #fff;
-}
 .order-container {
   padding: 20px 20px 0 20px;
   display: flex;
