@@ -92,7 +92,7 @@ export default {
     }
   },
   created() {
-    const query = this.$route
+    const query = this.$route.query
     if (query._sign) {
       simulatedLogin(query).then(res => {
         this.updateUserInfo(res)
