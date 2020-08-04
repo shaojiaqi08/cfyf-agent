@@ -88,7 +88,7 @@
                    clearable
                    filterable
                    placeholder="请选择"
-                   @change="filterListConfirm">
+                   @change="searchModelChange">
           <el-option
                   v-for="item in insuranceTypeArray"
                   :key="item.value"
@@ -345,10 +345,6 @@ export default {
         this.getSelfPolicyList()
         this.getSelfPolicyStatistics()
       }
-    },
-    filterListConfirm(value, key) {
-      this.searchModel[key] = value
-      this.searchModelChange()
     },
     searchModelChange() {
       this.tableLoading = true
