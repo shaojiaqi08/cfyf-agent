@@ -2,7 +2,7 @@
     <div class="manager-container">
         <div class="header">
             内部管理员
-            <el-button type="primary" @click="editDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
+            <el-button type="primary" @click="addManager"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content">
             <side-filter-list
@@ -104,7 +104,7 @@
                     <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.username"></el-input>
                 </el-form-item>
                 <el-form-item label="管理员角色" prop="position_id">
-                    <el-select style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.position_id">
+                    <el-select :loading="selRoleLoading" style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.position_id">
                         <el-option v-for="(item, index) in editRoleData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -153,6 +153,9 @@
                 <el-form-item label="职位名称" prop="name">
                     <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
                 </el-form-item>
+                <el-form-item label="角色描述" prop="remark">
+                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="editPosFormModel.remark"></el-input>
+                </el-form-item>
             </el-form>
             <span slot="footer">
                 <el-button @click="editPosDialogVisible = false">取消</el-button>
@@ -187,6 +190,7 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                selRoleLoading: false,
                 leftLoading: false,
                 rightLoading: false,
                 treeLoading: false,
@@ -244,7 +248,8 @@
                 editRoleData: [],
                 editPosDialogVisible: false,
                 editPosFormModel: {
-                    name: ''
+                    name: '',
+                    remark: ''
                 },
                 editPosRules: Object.freeze({
                     name: baseValiObj
@@ -263,6 +268,10 @@
         },
         methods: {
             formatDate,
+            addManager() {
+                this.ajaxEditRoleList()
+                this.editDialogVisible = true
+            },
             // 初始化tree节点选中和半选状态
             dealTreeData(arr) {
                 arr.forEach(item => {
@@ -294,6 +303,8 @@
                 this.confirm('删除后，数据无法恢复，请确认', '删除').then(() => {
                     delMangePos({id: this.curSelRole.id}).then(() => {
                         this.$message.success('操作成功!')
+                        this.curSelRole = null
+                        this.selRole = ''
                         this.ajaxRoleList()
                     })
                 })
@@ -491,8 +502,11 @@
                 })
             },
             ajaxEditRoleList() {
+                this.selRoleLoading = true
                 getEditRoleList().then(res => {
                     this.editRoleData = res
+                }).finally(() => {
+                    this.selRoleLoading = false
                 })
             },
             ajaxRoleList(roleId) {

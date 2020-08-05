@@ -267,7 +267,7 @@
         </div>
         <!--编辑/新增销售-->
         <el-dialog custom-class="manager-dialog"
-                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}信息`"
+                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}销售`"
                    :visible.sync="editDialogVisible"
                    :close-on-click-modal="false"
                    @close="$refs.editForm.resetFields()"
@@ -283,7 +283,7 @@
                     <el-input placeholder="请输入身份证号" v-model="editFormModel.identity_card"></el-input>
                 </el-form-item>
                 <el-form-item label="入职日期" prop="resignation_at">
-                    <el-date-picker style="width: 100%" type="date" v-model="editFormModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>
+                    <el-date-picker placeholder="请选择入职日期" style="width: 100%" type="date" v-model="editFormModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="手机号" prop="mobile">
                     <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
@@ -294,7 +294,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="团队" prop="team_id">
-                    <el-select style="width: 100%" placeholder="团队" v-model="editFormModel.team_id" :loading="teamSelLoading">
+                    <el-select style="width: 100%" placeholder="请选择团队" v-model="editFormModel.team_id" :loading="teamSelLoading">
                         <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -617,6 +617,7 @@
             },
             handleAddSales() {
                 this.ajaxPositionData()
+                this.editFormModel.id = ''
                 this.editDialogVisible = true
             },
             // 新增/编辑销售
@@ -820,7 +821,7 @@
             },
             ajaxPositionData() {
                 this.teamSelLoading = true
-                getSalesPositionList({role: 'sales', level: 1}).then(res => {
+                getSalesPositionList({role: 'sales'}).then(res => {
                     this.positionData = res
                 }).finally(() => {
                     this.teamSelLoading = false
