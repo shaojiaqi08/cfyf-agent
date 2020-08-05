@@ -258,7 +258,7 @@
 <style lang="scss">
     .manager-dialog{
         .el-form-item__label::before{
-            display: none;
+            /*display: none;*/
         }
     }
     .permission-dialog{

@@ -86,8 +86,9 @@
         </div>
         <!--编辑/编辑管理员-->
         <el-dialog custom-class="manager-dialog"
-                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员信息`"
+                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员`"
                    :visible.sync="editDialogVisible"
+                   :close-on-click-modal="false"
                    @close="resetEditForm"
                    width="480px">
             <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
@@ -148,9 +149,9 @@
             </span>
         </el-dialog>
         <!--编辑职位-->
-        <el-dialog custom-class="manager-dialog" title="编辑职位" :visible.sync="editPosDialogVisible" width="480px" @close="$refs.editPosForm.resetFields()">
+        <el-dialog custom-class="manager-dialog" title="编辑角色" :visible.sync="editPosDialogVisible" width="480px" @close="$refs.editPosForm.resetFields()">
             <el-form ref="editPosForm" :model="editPosFormModel" :rules="editPosRules" label-width="100px" label-position="left">
-                <el-form-item label="职位名称" prop="name">
+                <el-form-item label="角色名称" prop="name">
                     <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
                 </el-form-item>
                 <el-form-item label="角色描述" prop="remark">
@@ -334,6 +335,9 @@
                 )
             },
             handleSetPos() {
+                const {editPosFormModel, curSelRole} = this
+                editPosFormModel.name = curSelRole.name
+                editPosFormModel.remark = curSelRole.remark
                 this.editPosDialogVisible = true
             },
             handleSelRole(obj) {

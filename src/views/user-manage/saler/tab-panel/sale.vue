@@ -207,18 +207,6 @@
                                     <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
-                                <template v-slot="{row}">
-                                    <template v-if="row.account_status!==accountStatusMap.dimission.value">
-                                        <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                        <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
-                                        <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                        <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
-                                    </template>
-                                    <span v-else>-</span>
-                                </template>
-                            </el-table-column>
                         </el-table>
                     </div>
                     <div class="table-wrap">
@@ -248,18 +236,6 @@
                                     <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
-                                <template v-slot="{row}">
-                                    <template v-if="row.account_status!==accountStatusMap.dimission.value">
-                                        <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                        <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
-                                        <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
-                                        <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                        <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
-                                    </template>
-                                    <span v-else>-</span>
-                                </template>
-                            </el-table-column>
                         </el-table>
                     </div>
                 </el-scrollbar>
@@ -272,7 +248,7 @@
                    :close-on-click-modal="false"
                    @close="$refs.editForm.resetFields()"
                    width="480px">
-            <el-form v-loading="dialogLoading" ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
+            <el-form v-loading="dialogLoading" ref="editForm" :model="editFormModel" :rules="editRules" label-width="110px" label-position="left">
                 <el-form-item label="姓名" prop="real_name">
                     <el-input placeholder="请输入姓名" v-model="editFormModel.real_name"></el-input>
                 </el-form-item>
@@ -294,7 +270,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="团队" prop="team_id">
-                    <el-select style="width: 100%" placeholder="请选择团队" v-model="editFormModel.team_id" :loading="teamSelLoading">
+                    <el-select style="width: 100%" placeholder="请选择团队" v-model="editFormModel.team_id" :loading="teamSelLoading" clearable>
                         <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
