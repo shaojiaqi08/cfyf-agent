@@ -84,7 +84,7 @@
                     placeholder="请输入保障内容"></el-input>
         </el-form-item>
       </el-form>
-      <div class="fr">
+      <div class="fr mb16">
         <el-button @click="modalClose">取消</el-button>
         <el-button type="primary" @click="submit">确定</el-button>
       </div>
