@@ -173,7 +173,7 @@
                     }, {})
                     console.log(formatData)
                     this.total = res.total
-                    if (page === 1) {
+                    if (page <= 1) {
                         this.proposalData = {...formatData}
                     } else {
                         this.proposalData = {...this.proposalData, ...formatData}

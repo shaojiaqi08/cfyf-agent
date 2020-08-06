@@ -263,11 +263,10 @@
         },
         methods: {
             nextPage() {
-                const {total, otherModel} = this
+                const {otherTotal, otherModel} = this
                 const {page, page_size} = otherModel
-                let nextPage
-                if (page_size * (nextPage = page + 1) <= total) {
-                    this.otherModel.page = nextPage
+                if (page_size * page < otherTotal) {
+                    this.otherModel.page = page + 1
                     this.getInteractiveLogOther()
                 }
             },
@@ -413,7 +412,7 @@
                     }, {})
                     console.log(formatData)
                     this.otherTotal = res.total
-                    if (page === 1) {
+                    if (page <= 1) {
                         this.otherData = formatData
                     } else {
                         this.otherData = {...this.otherData, ...formatData}

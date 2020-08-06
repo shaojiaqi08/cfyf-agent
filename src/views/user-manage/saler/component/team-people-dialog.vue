@@ -4,7 +4,7 @@
                :close-on-click-modal="false"
                :destroy-on-close = "true"
                @close="close"
-               :visible.sync="visible">
+               :visible="visible">
         <div class="content flex-between" v-loading="loading">
             <div class="left">
                 <div class="header">
