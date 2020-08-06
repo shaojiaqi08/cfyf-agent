@@ -83,7 +83,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} 至 ${resignationDateRange[1]}` : '入职时间'}}</span>
+                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} ~ ${resignationDateRange[1]}` : '入职时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -108,7 +108,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} 至 ${closeDateRange[1]}` : '离职时间'}}</span>
+                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} ~ ${closeDateRange[1]}` : '离职时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"

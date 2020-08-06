@@ -27,7 +27,7 @@
                     <div class="desc-wrap flex-between">
                         <div class="flex-center">
                             {{curSelRole.name}}
-                            <span>{{curSelRole.remark}}</span>
+                            <span :title="curSelRole.remark">{{curSelRole.remark}}</span>
                         </div>
                         <div class="flex-center">
                             <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
@@ -705,16 +705,21 @@
                             display: flex;
                             align-items: center;
                         }
-                        &>div:first-of-type>span{
-                            font-weight: normal;
-                            font-size: 14px;
-                            color:#999;
-                            margin-left: 16px;
+                        &>div:first-of-type{
                             flex: 1;
-                            display: inline-block;
                             overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;
+                            padding-right: 20px;
+                            & > span{
+                                font-weight: normal;
+                                font-size: 14px;
+                                color:#999;
+                                margin-left: 16px;
+                                flex: 1;
+                                display: inline-block;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                white-space: nowrap;
+                            }
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 <template>
     <div class="prospectus-container">
         <div class="header">
-            内部管理员
+            计划书
             <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @keyup.enter.native="search">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
@@ -15,11 +15,11 @@
         </div>
         <div class="content" ref="content">
             <div class="filter-bar flex-between flex">
-                <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange" autoFocus autoClose>
+                <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange" autoFocus autoClose :textOverflow="false" :collapse="false">
                     <el-date-picker type="daterange" v-model="dateRange" @change="handleDateChange" clearable value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
                     <template v-slot:label>
-                        <span>{{hasValue(dateRange) ? `${dateRange[0]} 至 ${dateRange[1]}` : '全部时间范围'}}</span>
+                        <span>{{hasValue(dateRange) ? `${dateRange[0]} ~ ${dateRange[1]}` : '全部时间范围'}}</span>
                     </template>
                 </filter-shell>
                 <div class="flex">

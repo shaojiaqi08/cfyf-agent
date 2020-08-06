@@ -117,7 +117,7 @@
                 @change="searchModelChange">
         </el-date-picker>
         <template v-slot:label>
-          {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} 至 ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '全部出单日期' }}
+          {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '全部出单日期' }}
         </template>
       </filter-shell>
       <div class="data-row" ref="dataRow">

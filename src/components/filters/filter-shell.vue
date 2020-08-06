@@ -122,8 +122,8 @@
         const {text, children} = this.$slots.label[0]
         let txt = (text || (children[0] && children[0].text) || '').trim()
         return this.textOverflow ?
-                  txt.length > 8 ? `${txt.slice(0, 8)}...` : txt :
-                  txt
+                txt.length > 8 ? `${txt.slice(0, 8)}...` : txt :
+                txt
       }
     },
     methods: {
