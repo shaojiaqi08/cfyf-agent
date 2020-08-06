@@ -25,7 +25,7 @@
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
                     <div class="desc-wrap flex-between">
-                        <div>
+                        <div class="flex-center">
                             {{curSelRole.name}}
                             <span>{{curSelRole.remark}}</span>
                         </div>
@@ -633,6 +633,7 @@
             box-sizing: border-box;
             border: 1px solid #e6e6e6;
             border-top: transparent;
+            overflow: hidden;
             .left-scroll-wrap{
                 width: 240px;
                 height: 100%;
