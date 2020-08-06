@@ -31,7 +31,7 @@ service.interceptors.response.use(response => {
   if (resCode === responseCode.SUCCESS) {
     const code = response.data.code
     const data = response.data
-    let message = response.data.message
+    let message = ''
     switch (code) {
       case statusCode.PASS:
       case statusCode.NOCONTENT:
