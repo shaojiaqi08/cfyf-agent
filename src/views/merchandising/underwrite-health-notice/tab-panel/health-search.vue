@@ -61,7 +61,7 @@
                         <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}">
                             <el-table-column class-name="p16">
                                 <template slot="header">
-                                    <h3 style="color: #333333; margin: 0">{{selVal}}</h3>
+                                    <h3 style="color: #333333; margin: 0; line-height: 38px;">{{selVal}}</h3>
                                 </template>
                                 <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
                                 <el-table-column label="健康告知内容" prop="notice" class-name="tj"></el-table-column>
@@ -152,7 +152,7 @@
                         // 创建隐藏的可下载链接
                         let eleLink = document.createElement('a')
                         eleLink.href = self.imgUrl // 转换后的图片地址
-                        eleLink.download = self.selName
+                        eleLink.download = self.selVal
                         // 触发点击
                         document.body.appendChild(eleLink)
                         eleLink.click()
@@ -181,6 +181,8 @@
             box-sizing: border-box;
             max-width: 100%;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
             .head{
                 height: 48px ;
                 position: relative;
@@ -197,6 +199,9 @@
                 .el-input-number{
                     width: 140px;
                 }
+            }
+            ::v-deep .el-scrollbar {
+                flex: 1;
             }
         }
         .side-filter-container{
