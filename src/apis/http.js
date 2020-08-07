@@ -31,7 +31,8 @@ service.interceptors.response.use(response => {
   if (resCode === responseCode.SUCCESS) {
     const code = response.data.code
     const data = response.data
-    let message = ''
+    // 100003 参数错误提示不显示
+    let message = code === 100003 ? '' : response.data.message
     switch (code) {
       case statusCode.PASS:
       case statusCode.NOCONTENT:

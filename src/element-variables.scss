@@ -199,6 +199,22 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   padding: 0;
 }
 
+.el-select {
+  // 多选框选项样式
+  & > .el-select__tags .el-tag{
+    background-color: #f0f2f5;
+    color:#909399;
+    .el-tag__close{
+      color:#909399;
+      background-color: #c0c4cc;
+      &:hover{
+        color:#fff;
+        background-color: #909399;
+      }
+    }
+  }
+}
+
 .el-dialog__body {
   padding: 20px;
 }

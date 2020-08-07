@@ -160,7 +160,7 @@
                     </el-table-column>
                 </el-table>
                 <el-scrollbar v-else style="height: calc(100% - 64px)">
-                    <div class="team-info" v-if="detailData.parent">
+                    <div class="team-info">
                         <div class="flex-column">
                             <div class="name-wrap">
                                 <template v-if="!editting">
@@ -352,11 +352,11 @@
                 custom-class="set-leader-dialog"
                 :close-on-click-modal="false"
                 width="480px">
-            <el-form v-if="detailData" ref="setTeamForm" :model="transferTeamFormModel" :rules="transferTeamRules" label-width="100px" label-position="left">
+            <el-form ref="setTeamForm" :model="transferTeamFormModel" :rules="transferTeamRules" label-width="100px" label-position="left">
                 <div class="info-block mb20" style="height: 60px">
                     <div class="flex-between mb16" >
                         当前团队挂靠
-                        <span>某团队</span>
+                        <span>{{detailData.parent && detailData.parent.name}}</span>
                     </div>
                 </div>
                 <el-form-item label="团队名称" prop="parent_id">
@@ -366,7 +366,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer">
-                <el-button @click="setLeaderDialogVisible = false">取消</el-button>
+                <el-button @click="transferTeamDialogVisible = false">取消</el-button>
                 <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submitSetTeam">更换</el-button>
             </span>
         </el-dialog>
@@ -677,6 +677,7 @@
                     dismissTeam({id: this.selTeam}).then(() => {
                         this.$message.success('操作成功!')
                         this.detailData = {}
+                        this.selTeam = ''
                         this.ajaxTeamData()
                         this.ajaxNoTeamSalesData()
                     })
