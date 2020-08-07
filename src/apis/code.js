@@ -25,7 +25,7 @@ export const notions = {
     message: '用户登录过期，请重新登录'
   },
   ERROR: {
-    title: '请求错误',
+    title: '错误',
     type: 'error',
     message: null
   },

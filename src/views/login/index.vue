@@ -39,7 +39,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import {login, getUserDetail, simulatedLogin} from '@/apis/modules/index'
 import {mapActions} from 'vuex'

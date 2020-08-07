@@ -125,32 +125,32 @@
                           v-if="selTeam === -1"
                           :max-height="maxHeight"
                           v-table-infinite-scroll="scroll2Bottom">
-                    <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
-                    <el-table-column label="账号" prop="username" align="center"></el-table-column>
-                    <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                    <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
-                    <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
-                    <el-table-column label="入职时间" prop="join_date" align="center">
+                    <el-table-column label="姓名" prop="real_name" width="150px" align="center"></el-table-column>
+                    <el-table-column label="账号" prop="username" width="150px" align="center"></el-table-column>
+                    <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
+                    <el-table-column label="职位" prop="sales_position.name" width="150px" align="center"></el-table-column>
+                    <el-table-column label="所属团队" prop="team.name" width="150px" align="center"></el-table-column>
+                    <el-table-column label="入职时间" width="150px" prop="join_date" align="center">
                         <template v-slot="{row}">
                             <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="离职时间" prop="close_at" align="center">
+                    <el-table-column label="离职时间" width="150px" prop="close_at" align="center">
                         <template v-slot="{row}">
                             <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="状态" prop="join_date" align="center"  width="100px">
+                    <el-table-column label="状态" prop="join_date" align="center" >
                         <template v-slot="{row}">
                             <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" fixed="right" prop="operate" width="300px" align="center">
+                    <el-table-column label="操作" fixed="right" prop="operate" width="260px" align="center">
                         <template v-slot="{row}">
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                 <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                <el-link type="primary" class="mr8" @click="resetPwd(row.id)">重置密码</el-link>
+                                <el-link type="primary" class="mr8" @click="modifyPwdVisible=true">修改密码</el-link>
                                 <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                 <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
@@ -159,7 +159,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <el-scrollbar v-else style="height: calc(100% - 64px)">
+                <el-scrollbar v-else>
                     <div class="team-info">
                         <div class="flex-column">
                             <div class="name-wrap">
@@ -171,9 +171,8 @@
                                     <el-input size="small" v-model.trim="editName" class="mr8"></el-input>
                                     <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
-
                             </div>
-                            <span>当前团队挂靠：{{detailData.parent && detailData.parent.name}}</span>
+                            <span>当前团队挂靠：{{detailData.parent ? detailData.parent.name : '-'}}</span>
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false" type="minor" class="flex-center mr30" @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
@@ -351,6 +350,7 @@
                 :visible.sync="transferTeamDialogVisible"
                 custom-class="set-leader-dialog"
                 :close-on-click-modal="false"
+                @close="$refs.setTeamForm.resetFields()"
                 width="480px">
             <el-form ref="setTeamForm" :model="transferTeamFormModel" :rules="transferTeamRules" label-width="100px" label-position="left">
                 <div class="info-block mb20" style="height: 60px">
@@ -377,6 +377,8 @@
                             :selected="groupSelected"
                             :submitting="submitting"
                             @submit="groupSalesSubmit"></team-people-dialog>
+        <!--修改密码-->
+        <modify-password-dialog :visible.sync="modifyPwdVisible" :submitting="submitting" @submit="submitModifyPwd"></modify-password-dialog>
     </div>
 </template>
 <script>
@@ -405,12 +407,15 @@
     import {accountStatusMap} from '@/enums/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import TeamPeopleDialog from '../component/team-people-dialog'
+    import ModifyPasswordDialog from '../../component/modify-password-dialog'
+
     export default {
         name: 'sale-pane',
         components: {
             FilterShell,
             SideFilterList,
-            TeamPeopleDialog
+            TeamPeopleDialog,
+            ModifyPasswordDialog
         },
         directives: {
             'table-infinite-scroll' : {
@@ -429,6 +434,7 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                modifyPwdVisible: false,
                 loadingSales: false, // loading主管列表
                 submitting: false,
                 submittingEditName: false,
@@ -542,6 +548,9 @@
             clearValue,
             hasValue,
             formatDate,
+            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
+
+            },
             handleRegDateChange() {
                 const {resignationDateRange} = this
                 const [start = '', end = ''] = resignationDateRange || []
@@ -696,6 +705,7 @@
                     this.submittingEditName = true
                     modifyTeamName({id, name}).then(() => {
                         this.$message.success('修改团队名成功!')
+                        this.ajaxTeamData()
                         this.ajaxDetail(id)
                         this.editting = false
                     }).finally(() => {
@@ -906,12 +916,14 @@
         },
         created() {
             this.ajaxTeamData()
-            window.addEventListener('resize', this.setMaxHeight)
         },
         mounted() {
             this.setMaxHeight()
         },
-        beforeDestroy() {
+        activated() {
+            window.addEventListener('resize', this.setMaxHeight)
+        },
+        deactivated() {
             window.removeEventListener('resize', this.setMaxHeight)
         }
     }
@@ -939,6 +951,13 @@
             border: 1px solid #f5f5f5;
             border-top: transparent;
             padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            &>.el-scrollbar{
+                flex: 1;
+                overflow: hidden;
+                margin-bottom: 16px;
+            }
             .sale-filter-bar{
                 display: flex;
                 justify-content: space-between;
@@ -951,7 +970,6 @@
             & > ::v-deep .el-table{
                 flex: none;
             }
-
             .team-info{
                 height: 84px;
                 display: flex;

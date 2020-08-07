@@ -158,6 +158,7 @@
         }
         & >.content{
             flex: 1;
+            overflow: hidden;
             display: flex;
             background-color: #fff;
             box-sizing: border-box;

@@ -65,10 +65,10 @@
                         <el-table-column label="操作" prop="operate" :width="250" align="center">
                             <template v-slot="{row}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
-                                        <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
-                                        <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                        <el-button type="text" @click="resetPwd(row.id)">重置密码</el-button>
-                                        <el-button type="text" @click="edit(row)">编辑</el-button>
+                                    <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
+                                    <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
+                                    <el-button type="text" @click="modifyPwdVisible = true">修改密码</el-button>
+                                    <el-button type="text" @click="edit(row)">编辑</el-button>
                                 </template>
                                 <template v-else>
                                     <span>-</span>
@@ -163,6 +163,8 @@
                 <el-button type="primary" @click="submitEditPos" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
+        <!--修改密码-->
+        <modify-password-dialog :visible.sync="modifyPwdVisible" :submitting="submitting" @submit="submitModifyPwd"></modify-password-dialog>
     </div>
 </template>
 
@@ -172,7 +174,6 @@
             getManagerList,
             removeEffect,
             updateStatus,
-            resetPassword,
             updateManageTree,
             getManageTreeDetail,
             getRoleList,
@@ -184,13 +185,15 @@
     import {manageAccountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
     import SideFilterList from '@/components/side-filter-list'
+    import ModifyPasswordDialog from '../component/modify-password-dialog'
 
     export default {
         name: 'manager',
-        components: {PermissionTree, SideFilterList},
+        components: {PermissionTree, SideFilterList, ModifyPasswordDialog},
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                modifyPwdVisible: false,
                 selRoleLoading: false,
                 leftLoading: false,
                 rightLoading: false,
@@ -235,16 +238,6 @@
                     name: baseValiObj,
                     remark: baseValiObj
                 }),
-                modPwdFormModel: {
-                    password: '',
-                    new_password: '',
-                    confirm_new_password: ''
-                },
-                modPwdRules: Object.freeze({
-                    password: [baseValiObj, {validator: this.pwdValidator}],
-                    new_password: [baseValiObj, {validator: this.pwdValidator}],
-                    confirm_new_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.compareModPwdValitator}]
-                }),
                 // 新增编辑用角色数据
                 editRoleData: [],
                 editPosDialogVisible: false,
@@ -269,6 +262,9 @@
         },
         methods: {
             formatDate,
+            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
+
+            },
             addManager() {
                 this.ajaxEditRoleList()
                 this.editDialogVisible = true
@@ -432,33 +428,6 @@
                     })
                 }).catch(() => {})
             },
-            // 重置密码
-            resetPwd(id) {
-                const h = this.$createElement
-                this.$confirm(
-                    h('div', [
-                        h('i', {
-                            class: {
-                                iconfont: true,
-                                'iconzhong20_gantanhao': true
-                            },
-                            style: {
-                                color: '#FFBB33',
-                                marginRight: '10px'
-                            }
-                        }),
-                        h('span', '是否确认重置密码？')
-                    ]),
-                    '提示',
-                    {
-                        confirmButtonText: '重置'
-                    }
-                ).then(() => {
-                    resetPassword({id}).then((res) => {
-                        this.$confirm(`重置密码成功,新密码【${res.password}】`, '提示')
-                    })
-                }).catch(() => {})
-            },
             edit(row) {
                 if (row) {
                     this.editFormModel = {...row, role_id: this.curSelRole.id}
@@ -566,15 +535,6 @@
                     return callback()
                 } else if(password !== confirm_password) {
                     return callback(new Error('确认密码必须跟密码一致'))
-                }
-                return callback()
-            },
-            compareModPwdValitator(rule, value, callback) { // eslint-disable-line
-                const {new_password, confirm_new_password} = this.modPwdFormModel
-                if (!new_password || !confirm_new_password) {
-                    return callback()
-                } else if(new_password !== confirm_new_password) {
-                    return callback(new Error('确认新密码必须跟新密码一致'))
                 }
                 return callback()
             },

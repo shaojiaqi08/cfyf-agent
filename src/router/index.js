@@ -12,7 +12,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title + '-' + 'xxx系统' || 'xxx系统'
+  document.title = to.meta.title + '-' + '创富云服' || '创富云服'
   const userInfo = store.state.users.userInfo
   if (!userInfo.token && to.name !== 'login' ) {
     return next('/login')

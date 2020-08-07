@@ -3,7 +3,7 @@
     <div class="header">
       保险商品
       <div class="flex-between">
-        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable @keyup.enter.native="ajaxListData">
+        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable @input="debounceAjaxListData">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -16,7 +16,7 @@
                         :listData="list"
                         v-loading="loading"
                         @change="handleSelProduct"
-                        style="width: 884px">
+                        customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
           <filter-shell v-model="searchModel.first_product_category_id" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
@@ -342,7 +342,12 @@ export default {
       }
     }
   }
-
+  .left-filter-list {
+    width: 884px;
+    ::v-deep .el-scrollbar .list-item:first-of-type{
+      border-top: transparent;
+    }
+  }
   & ::v-deep .el-scrollbar {
     height: calc(100vh - 78px);
     padding-top: 16px;

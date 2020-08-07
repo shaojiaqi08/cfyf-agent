@@ -85,6 +85,9 @@
 </template>
 
 <script>
+    /**
+     *  调整团队成员组件
+     * */
     export default {
         name: 'team-people-dialog',
         props: {
@@ -96,6 +99,7 @@
                 type: Object,
                 default: () => {}
             },
+            // 已选择数据id
             selected: {
                 type: Array,
                 default: () => []
@@ -201,6 +205,7 @@
                 }
                 data[key].sales.splice(idx, 1)
             },
+            // 批量删除
             batchDel() {
                 const {curData: data, curSelected: selected} = this
                 Object.keys(data).forEach(key => {
@@ -219,6 +224,7 @@
                     })
                 }
             },
+            // 批量加入
             batchJoin() {
                 const {allData: data, allSelected: selected, curData} = this
                 Object.keys(data).forEach(key => {
@@ -317,10 +323,6 @@
                         & > span {
                             display: block;
 
-                        }
-
-                        .iconfont {
-                            /*color: #FF4C4C;*/
                         }
                     }
                 }
