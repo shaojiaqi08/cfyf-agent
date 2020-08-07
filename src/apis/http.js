@@ -53,6 +53,7 @@ service.interceptors.response.use(response => {
         break
       case statusCode.CODE_ERROR:
         if (data.data) {
+          message = ''
           let msg =  ''
           Object.keys(data.data).forEach(key => {
             data.data[key].forEach(txt => {
