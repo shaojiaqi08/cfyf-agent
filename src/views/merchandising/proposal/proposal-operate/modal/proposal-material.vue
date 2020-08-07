@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     check(type) {
-      window.open(`${process.env.VUE_APP_PROXY}/proposal/pdf/${type}?proposal_id=${this.proposalInfo.id}`)
+      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/pdf/${type}?proposal_id=${this.proposalInfo.id}`)
     },
     modalClose() {
       this.$emit('update:show', false)

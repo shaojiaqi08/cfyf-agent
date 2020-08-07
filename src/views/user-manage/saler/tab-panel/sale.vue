@@ -356,7 +356,7 @@
                 <div class="info-block mb20" style="height: 60px">
                     <div class="flex-between mb16" >
                         当前团队挂靠
-                        <span>{{detailData.parent && detailData.parent.name}}</span>
+                        <span>{{detailData.parent ? detailData.parent.name : '-'}}</span>
                     </div>
                 </div>
                 <el-form-item label="团队名称" prop="parent_id">
