@@ -87,7 +87,7 @@
           <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
         </div>
       </div>
-      <h4>被保人信息</h4>
+      <h4>投被保人信息</h4>
       <div class="row">
         <div>
           投保人
