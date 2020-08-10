@@ -67,7 +67,7 @@
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
                                     <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="modifyPwdVisible = true">修改密码</el-button>
+                                    <el-button type="text" @click="modifyPwd(row)">修改密码</el-button>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
                                 </template>
                                 <template v-else>
@@ -180,6 +180,7 @@
             getEditRoleList,
             createRole,
             delMangePos,
+            updatePassword,
             updateMangePos} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import {manageAccountStatusMap} from '@/enums/user-manage'
@@ -262,8 +263,22 @@
         },
         methods: {
             formatDate,
-            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
-
+            modifyPwd(row) {
+                this.targetRow = row
+                this.modifyPwdVisible = true
+            },
+            submitModifyPwd([new_password, confirm_new_password]) { // eslint-disable-line
+                this.submitting = true
+                updatePassword({
+                    new_password,
+                    confirm_new_password,
+                    id: this.targetRow.id
+                }).then(()=>{
+                    this.$message.success('密码修改成功!')
+                    this.modifyPwdVisible = false
+                }).finally(() => {
+                    this.submitting = false
+                })
             },
             addManager() {
                 this.ajaxEditRoleList()

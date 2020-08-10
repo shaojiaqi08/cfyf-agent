@@ -194,12 +194,14 @@
       <div class="empty-product-list" v-if="!productList.length">暂时搜索不到合适的产品</div>
     </el-scrollbar>
     <el-dialog width="400px" :visible="isCommonTermShow" title="产品条款" @close="modalClose">
-      <div
-        v-for="(item, index) in commonTerms"
-        :key="index"
-        class="term-link"
-        @click="checkTermLink(item.file_url)"
-      >{{ item.name }}</div>
+      <div class="mb20">
+        <div
+                v-for="(item, index) in commonTerms"
+                :key="index"
+                class="term-link"
+                @click="checkTermLink(item.file_url)"
+        >{{ item.name }}</div>
+      </div>
     </el-dialog>
   </div>
 </template>

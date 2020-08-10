@@ -206,6 +206,9 @@
             .filter-item{
                 width: 100%;
                 text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
         ::v-deep .is-reverse-filter{

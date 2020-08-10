@@ -150,7 +150,7 @@
                         <template v-slot="{row}">
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                 <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                <el-link type="primary" class="mr8" @click="modifyPwdVisible=true">修改密码</el-link>
+                                <el-link type="primary" class="mr8" @click="modifyPwd(row)">修改密码</el-link>
                                 <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                 <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
@@ -400,6 +400,7 @@
             dismissTeam,
             modifyTeamName,
             getGroupSalesList,
+            updateSalesPassword,
             transferTeam} from '@/apis/modules/user-manage'
     import {genSimulatedLink} from '@/apis/modules'
     import SideFilterList from '@/components/side-filter-list'
@@ -442,6 +443,7 @@
                 teamSelLoading: false,
                 dialogLoading: false,
                 detailLoading: false,
+                targetRow: null,
                 name: '',
                 detailData: {},
                 searchModel: {
@@ -548,8 +550,18 @@
             clearValue,
             hasValue,
             formatDate,
-            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
-
+            modifyPwd(row) {
+                this.targetRow = row
+                this.modifyPwdVisible = true
+            },
+            submitModifyPwd([new_password, confirm_new_password]) { // eslint-disable-line
+                this.submitting = true
+                updateSalesPassword({new_password, confirm_new_password, id: this.targetRow.id}).then(() => {
+                    this.$message.success('密码修改成功!')
+                    this.modifyPwdVisible = false
+                }).finally(() => {
+                    this.submitting = false
+                })
             },
             handleRegDateChange() {
                 const {resignationDateRange} = this

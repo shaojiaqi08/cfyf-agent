@@ -51,8 +51,13 @@
                 this.$refs.form.resetFields()
             },
             submit() {
-                const {new_password, confirm_new_password} = this.formModel
-                this.$emit('submit', [new_password, confirm_new_password])
+                this.$refs.form.validate(flag => {
+                    if (flag) {
+                        const {new_password, confirm_new_password} = this.formModel
+                        this.$emit('submit', [new_password, confirm_new_password])
+                    }
+                })
+
             },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {
@@ -61,7 +66,7 @@
                 callback()
             },
             comparePwdValidator(rule, value, callback) { // eslint-disable-line
-                const {new_password, confirm_new_password} = this.modPwdFormModel
+                const {new_password, confirm_new_password} = this.formModel
                 if (!new_password || !confirm_new_password) {
                     return callback()
                 } else if(new_password !== confirm_new_password) {
