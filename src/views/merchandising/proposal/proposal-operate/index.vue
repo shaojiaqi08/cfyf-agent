@@ -138,7 +138,7 @@
           <div class="proposal-card-body" style="overflow: visible">
             <el-button class="proposal-add-scheme"
                        type="primary"
-                       size="small"
+                       size="mini"
                        @click="addProposal">
               <i class="iconfont fs12 iconxiao16_jiahao"></i>
               新建方案
@@ -634,12 +634,14 @@
       </div>
     </div>
     <el-dialog width="400px" :visible.sync="isTermsShow" title="产品条款">
-      <div
-        v-for="(item, index) in termsData"
-        :key="index"
-        class="term-link"
-        @click="checkTermLink(item.file_url)"
-      >{{ item.name }}</div>
+      <div class="mb20">
+        <div
+                v-for="(item, index) in termsData"
+                :key="index"
+                class="term-link"
+                @click="checkTermLink(item.file_url)"
+        >{{ item.name }}</div>
+      </div>
     </el-dialog>
     <proposal-material
       :show.sync="dialogVisible"
@@ -1891,7 +1893,7 @@ export default {
 }
 
 .proposal-tabs .el-tabs__item{
-  display: flex;
+  display: inline-flex;
   align-items: center;
 }
 </style>

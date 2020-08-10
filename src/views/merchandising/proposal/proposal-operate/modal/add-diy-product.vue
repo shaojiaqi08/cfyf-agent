@@ -209,12 +209,12 @@ export default {
     },
     payPeriodChange() {
       if (+this.formdata.pay_period_unit === 5) {
-        this.formdata.pay_period_value = ''
+        this.formdata.pay_period_value = 0
       }
     },
     guaranteePeriodChange() {
       if (+this.formdata.guarantee_period_unit === 6) {
-        this.formdata.guarantee_period_value = ''
+        this.formdata.guarantee_period_value = 0
       }
     },
     getProductCategoryList() {
@@ -232,12 +232,13 @@ export default {
       this.formdata.proposal_product_guarantee_content = ''
       this.formdata.category_name = ''
       this.formdata.category_icon = ''
-      this.formdata.guarantee_period_unit = ''
+      this.formdata.guarantee_period_unit = '1'
       this.formdata.guarantee_period_value = ''
-      this.formdata.guarantee_quota_unit = ''
+      this.formdata.guarantee_quota_unit = 'yuan'
       this.formdata.guarantee_quota_value = ''
-      this.formdata.pay_period_unit = ''
+      this.formdata.pay_period_unit = '1'
       this.formdata.pay_period_value = ''
+      this.$refs.ruleForm.clearValidate()
     }
   }
 }
