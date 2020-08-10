@@ -180,6 +180,7 @@
             getEditRoleList,
             createRole,
             delMangePos,
+            updatePassword,
             updateMangePos} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import {manageAccountStatusMap} from '@/enums/user-manage'
@@ -262,8 +263,17 @@
         },
         methods: {
             formatDate,
-            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
-
+            submitModifyPwd([new_password, confirm_new_password]) { // eslint-disable-line
+                this.submitting = true
+                updatePassword({
+                    new_password,
+                    confirm_new_password
+                }).then(()=>{
+                    this.$message.success('密码修改成功!')
+                    this.modifyPwdVisible = false
+                }).finally(() => {
+                    this.submitting = false
+                })
             },
             addManager() {
                 this.ajaxEditRoleList()

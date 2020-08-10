@@ -61,7 +61,7 @@
                 callback()
             },
             comparePwdValidator(rule, value, callback) { // eslint-disable-line
-                const {new_password, confirm_new_password} = this.modPwdFormModel
+                const {new_password, confirm_new_password} = this.formModel
                 if (!new_password || !confirm_new_password) {
                     return callback()
                 } else if(new_password !== confirm_new_password) {

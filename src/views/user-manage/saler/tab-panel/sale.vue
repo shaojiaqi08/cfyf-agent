@@ -400,6 +400,7 @@
             dismissTeam,
             modifyTeamName,
             getGroupSalesList,
+            updateSalesPassword,
             transferTeam} from '@/apis/modules/user-manage'
     import {genSimulatedLink} from '@/apis/modules'
     import SideFilterList from '@/components/side-filter-list'
@@ -548,8 +549,14 @@
             clearValue,
             hasValue,
             formatDate,
-            submitModifyPwd([password, confirm_password]) { // eslint-disable-line
-
+            submitModifyPwd([new_password, confirm_new_password]) { // eslint-disable-line
+                this.submitting = true
+                updateSalesPassword({new_password, confirm_new_password}).then(() => {
+                    this.$message.success('密码修改成功!')
+                    this.modifyPwdVisible = false
+                }).finally(() => {
+                    this.submitting = false
+                })
             },
             handleRegDateChange() {
                 const {resignationDateRange} = this

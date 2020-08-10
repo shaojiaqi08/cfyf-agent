@@ -19,7 +19,7 @@ export const updateStatus = (params) => post('/agent/proxy/admin/update_account_
 // 重置密码
 export const resetPassword = (params) => post('/agent/proxy/admin/reset_password', params)
 // 更新密码
-export const updatePassword = (params) => post('/management/sys_permission/sys_user/update_password', params)
+export const updatePassword = (params) => post('/agent/proxy/admin/update_password', params)
 // 权限树
 export const getManageTree = (params) => get('/management/rbac/sys_permission_group/get_tree', params)
 // 编辑权限树详情
@@ -53,7 +53,7 @@ export const modifySales = (params) => post('/agent/proxy/sales/update', params)
 // 离职
 export const dimission = (params) => post('/agent/proxy/sales/dimission', params)
 // 重置密码
-export const resetSalesPassword = (params) => post('/agent/proxy/sales/reset_password', params)
+export const updateSalesPassword = (params) => post('/agent/proxy/sales/update_password', params)
 // 销售详情
 export const getSalesDetail = (params) => get('/agent/proxy/sales/detail', params)
 // 职位列表
