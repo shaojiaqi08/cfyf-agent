@@ -601,7 +601,8 @@ export default {
     },
     submit() {
       this.submitting = true
-      this.formModel.schemes.map(i => {
+      const copyFormModel = JSON.parse(JSON.stringify(this.formModel))
+      copyFormModel.schemes.map(i => {
         let min = [], max = []
         i.rules.map((y, index) => {
           const guarantee_period = y.guarantee_period
@@ -613,7 +614,7 @@ export default {
             guarantee_period.guarantee_period_unit = target.unit
             guarantee_period.guarantee_period_value = target.value
           } else {
-            guarantee_period.guarantee_period_id = ''
+            guarantee_period.guarantee_period_id = 0
             guarantee_period.guarantee_period_unit = 0
             guarantee_period.guarantee_period_value = 0
           }
@@ -622,23 +623,25 @@ export default {
             payment_period.payment_period_unit = target.unit
             payment_period.payment_period_value = target.value
           } else {
-            payment_period.payment_period_id = ''
+            payment_period.payment_period_id = 0
             payment_period.payment_period_unit = 0
             payment_period.payment_period_value = 0
           }
 
           if (!index) {
-            min = y.renewal_rate.map(x => x.renewal_rate_min)
-            max = y.renewal_rate.map(x => x.renewal_rate_max)
+            min = y.renewal_rate.map(x => (x.renewal_rate_min || 0))
+            max = y.renewal_rate.map(x => (x.renewal_rate_max || 0))
+            y.renewal_rate[0].renewal_rate_min = y.renewal_rate[0].renewal_rate_min || 0
+            y.renewal_rate[0].renewal_rate_max = y.renewal_rate[0].renewal_rate_max || 0
           } else {
             y.renewal_rate.map((x, idx) => {
-              x.renewal_rate_min = min[idx]
-              x.renewal_rate_max = max[idx]
+              x.renewal_rate_min = min[idx] || 0
+              x.renewal_rate_max = max[idx] || 0
             })
           }
         })
       })
-      const d = Object.assign({}, this.formModel, {
+      const d = Object.assign({}, copyFormModel, {
         effect_start_at: +this.formModel.effect_start_at / 1000 || '',
         product_id: this.formModel.product_id.split('_')[0],
         product_type: this.formModel.product_id.split('_')[1],
