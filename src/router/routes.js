@@ -205,7 +205,7 @@ const necessaryRoutes = [
     path: '/user-info',
     name: 'userInfo',
     meta: {
-      title: '用户设置',
+      title: '个人信息',
       header: true,
       menu: true
     },

@@ -440,8 +440,14 @@
                               >查看条款</div>
                             </el-col>
                             <el-col :span="2">
-                              {{ +item.pay_period.split('_')[0] || '' }}{{ paytimeTypes.filter(i => i.value ==
-                              item.pay_period.split('_')[1])[0].label }}
+                              <span
+                                v-if="paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].value !== '6'"
+                              >{{ +item.pay_period.split('_')[0] || '' }}{{ paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].label }}</span>
+                              <span v-else>
+                                {{ paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].label.replace('n', v => {
+                                return item.pay_period.split('_')[0]
+                                }) }}
+                              </span>
                             </el-col>
                             <el-col :span="2">
                               <span
@@ -1282,8 +1288,8 @@ export default {
       this.proposal = {}
       const data = {
         id: this.$route.query.proposal_id
-          ? this.$route.query.proposal_id
-          : null,
+                ? this.$route.query.proposal_id
+                : null,
         customer_id: this.$route.query.id || this.customerId || 0,
         proposal_struct_id: this.proposal_struct_id,
         name: this.formData.name,
@@ -1295,26 +1301,26 @@ export default {
         illustration: this.formData.illustration,
         is_show_premium: this.formData.is_show_premium ? 1 : 0,
         pdf_illustration: this.formData.has_pdf_illustration
-          ? this.formData.pdf_illustration
-          : '',
+                ? this.formData.pdf_illustration
+                : '',
         has_pdf_illustration: this.formData.has_pdf_illustration ? 1 : 0,
         pdf_illustration_type: this.formData.pdf_illustration_type,
         illustration_type: this.formData.illustration_type,
         schemes: this.productsSelected.map((i, index) => {
           const recognizeePolicyMember = this.relationsSelected[index]
-            .recognizee_policy_member
+                  .recognizee_policy_member
           const policyHolderMember = this.relationsSelected[index]
-            .policy_holder_member
+                  .policy_holder_member
           return {
             recognizee_policy_member_id: recognizeePolicyMember.id,
             recognizee_policy_name: this.relationsSelected[index].name
-              ? this.relationsSelected[index].name
-              : recognizeePolicyMember.name,
+                    ? this.relationsSelected[index].name
+                    : recognizeePolicyMember.name,
             recognizee_policy_relation: recognizeePolicyMember.relation,
             recognizee_policy_sex: recognizeePolicyMember.sex,
             recognizee_policy_birthday: recognizeePolicyMember.birthday,
             recognizee_policy_struct_member_id:
-              recognizeePolicyMember.struct_member_id,
+            recognizeePolicyMember.struct_member_id,
             policy_holder_member_id: policyHolderMember.id,
             policy_holder_name: policyHolderMember.name,
             policy_holder_relation: policyHolderMember.relation,
@@ -1323,7 +1329,7 @@ export default {
             policy_holder_struct_member_id: policyHolderMember.struct_member_id,
             has_illustration: this.ect[index].has_illustration ? 1 : 0,
             illustration: this.ect[index].illustration,
-            products: i.map((y) => {
+            products: i.map(y => {
               if (y.source === productFrom.MANUALLY_ENTER) {
                 return {
                   source: y.source,
@@ -1340,6 +1346,7 @@ export default {
                   pay_period_unit: y.pay_period.split('_')[1],
                   guarantee_quota: y.base_coverage_value,
                   has_social_security: 0,
+                  supplier_name: y.supplier_name,
                   insurances: []
                 }
               }
@@ -1358,8 +1365,7 @@ export default {
           }
         })
       }
-      saveProposal({ data: JSON.stringify(data) })
-        .then(res => {
+      saveProposal({ data: JSON.stringify(data) }).then(res => {
           this.isButtonLoading = false
           this.proposal = res
           if (cb) {
@@ -1513,7 +1519,7 @@ export default {
         pay_period: `${data.pay_period_value}_${data.pay_period_unit}`,
         product_id: 0,
         product_name: data.product_name,
-        supplier_name: null,
+        supplier_name: data.supplier_name,
         total_premium: +data.premium,
         source_category_id: data.source_category_id || 0,
         proposal_product_guarantee_content: data.proposal_product_guarantee_content,
@@ -1522,7 +1528,8 @@ export default {
 
       const product = JSON.parse(JSON.stringify(d))
       if (type === 'edit') {
-        this.productsSelected[this.currentSchemeIndex][this.currentEditProductIndex] = product
+        this.$set(this.productsSelected[this.currentSchemeIndex], this.currentEditProductIndex, product)
+        // this.productsSelected[this.currentSchemeIndex][this.currentEditProductIndex] = product
       } else {
         this.productsSelected[this.currentSchemeIndex].push(product)
       }
