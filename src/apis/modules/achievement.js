@@ -23,3 +23,5 @@ export const getSalesData = params => get('/agent/proxy/sales/list', params)
 
 // 销售团队下拉数据
 export const getSalesTeamData = params => get('/agent/proxy/sales/get_all_teams_list', params)
+// b端公司
+export const getManagementCompanyList = (params) => get('/management/proxy/company/list', params)

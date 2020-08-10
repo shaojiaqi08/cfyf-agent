@@ -1,283 +1,785 @@
 <template>
-    <el-dialog custom-class="rate-setting-dialog"
-               v-loading="loading"
-               top="4vh"
-               title="设置服务费率"
-               :visible.sync="visible"
-               width="1094px"
-               :close-on-click-modal="false"
-               @close="$emit('update:visible', false)">
-        <el-form ref="form" :model="formModel" :rules="rules" label-width="110px" size="small" label-position="left">
-            <el-form-item label="B端公司">某某某某保险科技有限公司</el-form-item>
-            <el-form-item label="保险产品">复星XXXXX重疾险</el-form-item>
-            <el-form-item label="服务费类型">
-                <el-radio-group :value="3">
-                    <el-radio :label="1">首年</el-radio>
-                    <el-radio :label="2">第2年</el-radio>
-                    <el-radio :label="3">第3年</el-radio>
-                    <el-radio :label="4">第3年</el-radio>
-                    <el-radio :label="5">第3年</el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <el-form-item label="达成条件" class="input-number-wrap">
-                <div>续保率 ≥ <el-input-number placeholder="请输入数值" :controls="false" class="mr4 ml4"></el-input-number> %</div>
-            </el-form-item>
-            <el-form-item label="生效日期范围">
-                <el-date-picker type="daterange"
-                                value-format="yyyy-MM-dd"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="费率计算方法">
-                <el-radio-group :value="3">
-                    <el-radio :label="1">
-                        按保障期限算
-                        <el-tooltip content="费率将直接根据订单的保障期限进行计算" placement="top">
-                            <i class="iconfont iconxiao16_gengduoxinxi" style="color:#ff9000"></i>
-                        </el-tooltip>
-                    </el-radio>
-                    <el-radio :label="1">
-                        按保障期限和年龄算
-                        <el-tooltip content="按保障期限和年龄算" placement="top">
-                            <i class="iconfont iconxiao16_gengduoxinxi" style="color:#ff9000"></i>
-                        </el-tooltip>
-                    </el-radio>
-                    <el-radio :label="1">
-                        按整单系数算
-                        <el-tooltip content="费率将直接根据订单的保障期限进行计算" placement="top">
-                            <i class="iconfont iconxiao16_gengduoxinxi" style="color:#ff9000"></i>
-                        </el-tooltip>
-                    </el-radio>
-                </el-radio-group>
-            </el-form-item>
-            <h3 style="margin-bottom: 0">服务费率</h3>
-            <el-form-item label-width="0px" class="rate-wrap flex flex-wrap">
-                <div class="item" v-for="(item, index) in formModel.rate" :key="index">
-                    <div class="head flex-between pl16 pr16">
-                        <span>
-                            服务费率
-                            <span class="ml16" style="cursor: pointer">
-                                <i class="iconfont iconxiao16_fuzhi mr4"></i>
-                                复制
-                            </span>
-                        </span>
-                        <i class="iconfont iconxiao16_yuanxingchahao" @click="formModel.rate.splice(index, 1)"></i>
-                    </div>
-                    <div class="content flex-item pt20 pl16 pr16">
-                        <el-form-item label="保障期限"
-                                      :prop="'rate.'+ index + '.payment_period_value'"
-                                      :rules="baseValiObj">
-                            <el-select size="small" placeholder="请选择保障期限" v-model="item.payment_period_value"></el-select>
-                        </el-form-item>
-                        <el-form-item label="保障期限范围"
-                                      class="payment-period-values-item">
-                            <el-form-item label-width="0" :prop="'rate.'+ index + '.payment_period_values'"
-                                          :rules="baseValiObj">
-                                <el-input-number :controls="false"></el-input-number>
-                            </el-form-item><span></span>
-                            <el-form-item label-width="0" :prop="'rate.'+ index + '.payment_period_values'"
-                                          :rules="baseValiObj">
-                                <el-input-number :controls="false"></el-input-number>
-                            </el-form-item>年
-                        </el-form-item>
-                        <el-form-item label="是否含身故"
-                                      v-model="item.includeDie"
-                                      :prop="'rate.'+ index + '.includeDie'"
-                                      :rules="baseValiObj">
-                            <el-radio size="small" label="1">是</el-radio>
-                            <el-radio size="small" label="0">否</el-radio>
-                        </el-form-item>
-                        <el-form-item label="缴费期限"
-                                      :prop="'rate.'+ index + '.guarantee_period_values'"
-                                      :rules="baseValiObj">
-                            <el-select size="small" v-model="item.guarantee_period_values" placeholder="请选择缴费期限" multiple></el-select>
-                        </el-form-item>
-                        <el-form-item label="基础服务费率"
-                                      class="input-number-item"
-                                      :min="0"
-                                      :prop="'rate.'+ index + '.baseRate'"
-                                      :rules="baseValiObj">
-                            <el-input-number size="small" placeholder="请输入数值" v-model="item.baseRate" :controls="false"></el-input-number>%
-                        </el-form-item>
-                        <el-form-item label="额外奖励"
-                                      :min="0"
-                                      class="input-number-item"
-                                      :prop="'rate.'+ index + '.extraRate'"
-                                      :rules="baseValiObj">
-                            <el-input-number size="small" placeholder="请输入数值" v-model="item.extraRate" :controls="false"></el-input-number>%
-                        </el-form-item>
-                    </div>
-                </div>
-                <div class="item add-block">
-                    <el-button type="primary" plain @click="addRate"><i class="iconfont iconxiao16_jiahao mr4"></i>添加费率</el-button>
-                </div>
-            </el-form-item>
-        </el-form>
-        <span slot="footer" class="footer">
-            <el-button @click="$emit('update:visible', false)">取消</el-button>
-            <el-button type="primary" @click="submit">保存</el-button>
+  <el-dialog
+    custom-class="rate-setting-dialog"
+    top="4vh"
+    title="设置服务费率"
+    :visible="visible"
+    v-if="visible"
+    width="1094px"
+    :close-on-click-modal="false"
+    @close="closeModal"
+  >
+    <el-form
+      ref="form"
+      :model="formModel"
+      label-width="110px"
+      size="small"
+      v-loading="loading"
+      label-position="left">
+      <!-- <el-form-item label="B端公司">
+        <el-select placeholder="请选择B端公司"
+                   class="w300"
+                   multiple
+                   filterable
+                   :disabled="singleCompany"
+                   v-model="formModel.company_id"
+                   v-if="type === 'add' || type === 'copy'">
+          <el-option v-for="item in companyList"
+                     :key="item.id"
+                     :value="item.id"
+                     :label="item.name">
+            {{ item.name }}
+          </el-option>
+        </el-select>
+        <span v-else>
+          {{ formModel.company_id.length && formModel.company_id.map(i => {
+            if (companyList.length) {
+              return companyList.find(y => y.id === i).name
+            } else {
+              return '-'
+            }
+          }).join(',') }}
         </span>
-    </el-dialog>
+      </el-form-item> -->
+      <el-form-item label="保险产品">
+        <el-select placeholder="请选择保险产品"
+                   class="w300"
+                   filterable
+                   v-if="type === 'add'"
+                   :disabled="singleCompany"
+                   v-model="formModel.product_id"
+                   @change="productChange">
+          <el-option v-for="item in productList"
+                     :key="item.id_type"
+                     :value="item.id_type"
+                     :label="item.name">
+            {{ item.name }}
+          </el-option>
+        </el-select>
+        <span v-else>
+          {{ formModel.product_name }}
+        </span>
+      </el-form-item>
+      <el-form-item label="生效日期范围">
+        <el-date-picker
+          class="w300"
+          v-model="formModel.effect_start_at"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          placeholder="选择日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="销售职位">
+        <el-select v-model="formModel.position_id"
+                   placeholder="请选择销售职位"
+                   filterable
+                   multiple
+                   class="w300">
+          <el-option-group
+            v-for="group in salePositionList"
+            :key="group.level_str"
+            :label="group.level_str">
+            <el-option
+              v-for="item in group.items"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-option-group>
+        </el-select>
+        <!-- <el-select placeholder="请选择销售职位"
+                   class="w300"
+                   filterable
+                   v-model="formModel.product_id"
+                   @change="getProductAttributeList">
+          <el-option v-for="item in productList"
+                     :key="item.id_type"
+                     :value="item.id_type"
+                     :label="item.name">
+            {{ item.name }}
+          </el-option>
+        </el-select> -->
+      </el-form-item>
+      <el-form-item label="费率计算方法">
+        <el-radio-group v-model="formModel.calculate_way"
+                        v-if="hasCalculateWay"
+                        @change="calculateWayChange">
+          <el-radio :label="item.value"
+                    v-for="item in calculateWays"
+                    :key="item.value"
+                    :disabled="true">
+            {{ item.label }}
+            <el-tooltip :content="item.desc" placement="top">
+              <i class="iconfont iconxiao16_gengduoxinxi" style="color:#ff9000"></i>
+            </el-tooltip>
+          </el-radio>
+        </el-radio-group>
+        <span v-else style="color: #FF4C4C;">
+          未设置服务费计算方法，请联系创富云服管理员
+        </span>
+      </el-form-item>
+      <h3 style="margin-bottom: 0">服务费率</h3>
+      <div style="position: relative;">
+        <div class="add-button-group">
+            <el-button class="add-button"
+                       type="primary"
+                       :loading="tableLoading"
+                       @click="addRow">
+              <i class="iconfont iconxiao16_hang"></i>
+              添加行
+            </el-button>
+          <el-button class="add-button"
+                     type="primary"
+                     v-if="tabSelected != 1"
+                     :loading="tableLoading"
+                     @click="addCol">
+            <i class="iconfont iconxiao16_lie"></i>
+            添加列
+          </el-button>
+        </div>
+        <el-tabs class="mt10" v-model="tabSelected">
+          <el-tab-pane v-for="(item, index) in tabs"
+                      :key="index"
+                      :name="item.value"
+                      :label="item.label">
+            <el-table
+              :data="currentTableData()"
+              border
+              stripe
+              v-loading="tableLoading"
+              max-height="300"
+              v-if="!loading && !tableEmpty">
+              <el-table-column
+                label="缴费期限"
+                width="120"
+                align="center">
+                <!-- <template slot-scope="scope">
+                  {{ scope.row.guarantee_period.guarantee_period_id }}
+                </template> -->
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.payment_period.payment_period_id"
+                             v-if="formModel.calculate_way === calculateWayKey.GUARANTEEPERIOD || formModel.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD">
+                    <el-option v-for="(item, index) in paymentList"
+                              :key="index"
+                              :value="item.id"
+                              :label="item.label">
+                      {{ item.label }}
+                    </el-option>
+                  </el-select>
+                  <span v-else>全部</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="formModel.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD ? '保障期限（年）' : '保障期限'"
+                :width="formModel.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD ? 165 : 120"
+                align="center">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.guarantee_period.guarantee_period_id"
+                             v-if="formModel.calculate_way === calculateWayKey.GUARANTEEPERIOD">
+                    <el-option v-for="(item, index) in guaranteeList"
+                              :key="index"
+                              :value="item.id"
+                              :label="item.label">
+                      {{ item.label }}
+                    </el-option>
+                  </el-select>
+                  <span v-if="formModel.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD">
+                    <el-input placeholder="最小"
+                              class="rate-small-input"
+                              v-model="scope.row.guarantee_period.min_guarantee_year"></el-input> -
+                    <el-input placeholder="最大"
+                              class="rate-small-input"
+                              v-model="scope.row.guarantee_period.max_guarantee_year"></el-input>
+                  </span>
+                  <span v-if="formModel.calculate_way === calculateWayKey.SINGLEPOLICY && tabSelected != 1">全部</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                v-for="(rate, index) in currentTableRateHeader()"
+                :key="`${rate.type}_${index}`"
+                label="服务费率"
+                :width="rate.type !== 'single' ? 356 : ''"
+                align="center">
+                <template slot="header"
+                          slot-scope="scope">
+                  <div v-if="rate.type !== 'single'">
+                    <div class="header-top" :nest="scope">
+                      <span class="copy-button" @click="copyCol(rate, index)">复制</span>
+                      <span class="delete-button" @click="removeCol(index)">删除</span>
+                    </div>
+                    <div class="header-bottom">
+                      <el-input class="rate-input"
+                                placeholder="最小"
+                                v-model="rate.renewal_rate_min"
+                                type="number">
+                        <template slot="append">%</template>
+                      </el-input>
+                      ≤ 续保率 ＜
+                      <el-input class="rate-input"
+                                placeholder="最大"
+                                v-model="rate.renewal_rate_max"
+                                type="number">
+                        <template slot="append">%</template>
+                      </el-input>
+                    </div> 
+                  </div>
+                  <div v-else>
+                    服务费率
+                  </div>
+                </template>
+                <template slot-scope="scope">
+                  <el-input placeholder="基础"
+                            class="rate-input"
+                            type="number"
+                            v-model="scope.row.renewal_rate[index].base_proportion">
+                    <template slot="append">%</template>
+                  </el-input>
+                  +
+                  <el-input placeholder="奖励"
+                            class="rate-input"
+                            type="number"
+                            v-model="scope.row.renewal_rate[index].reward_proportion">
+                    <template slot="append">%</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                fixed="right"
+                min-width="100"
+                align="center">
+                <template slot-scope="scope">
+                  <span class="copy-button" @click="copy(scope.$index)">复制</span>
+                  <span class="delete-button"
+                        @click="remove(scope.$index)">删除</span>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="tc pt20 pb20"
+                 v-if="tableEmpty">
+              暂无数据
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </el-form>
+    <span slot="footer" class="footer">
+      <el-button :loading="submitting" @click="closeModal">取消</el-button>
+      <el-button :loading="submitting" type="primary" @click="submit">保存</el-button>
+    </span>
+  </el-dialog>
 </template>
 <script>
-    export default {
-        name: 'rate-setting-dialog',
-        props: {
-            visible: {
-                type: Boolean,
-                default: false
-            },
-            loading: {
-                type: Boolean,
-                default: false
-            },
-            submitting: {
-                type: Boolean,
-                default: false
-            }
-        },
-        data() {
-            const baseValiObj = {required: true, message: '此项不可为空'}
-            return {
-                baseValiObj,
-                formModel: {
-                    rate: [
-                        {
-                            payment_period_value: '',
-                            guarantee_period_values: [],
-                            includeDie: '',
-                            baseRate: undefined,
-                            extraRate: undefined,
-                            payment_period_start: '',
-                            payment_period_end: ''
-                        },
-                        {
-                            payment_period_value: '',
-                            guarantee_period_values: [],
-                            inculudeDie: '',
-                            baseRate: undefined,
-                            extraRate: undefined,
-                            payment_period_start: '',
-                            payment_period_end: ''
-                        }
-                    ]
-                },
-                rules: {}
-            }
-        },
-        methods: {
-            addRate(obj = {}) {
-                const target = this.formModel.rate
-                target.push({
-                    payment_period_value: '',
-                    guarantee_period_values: [],
-                    includeDie: '',
-                    baseRate: undefined,
-                    extraRate: undefined,
-                    ...obj
-                })
-            },
-            submit() {
-                this.$refs.form.validate(flag => {
-                    if (flag) {
-                        console.log(flag)
-                    }
-                })
-            }
-        }
+import { guaranteePeriodUnitArray, paymentPeriodUnitArray } from '@/enums/common'
+import { calculateWays, calculateWayKey, terms } from '@/enums/good-manage'
+import { getCompanyList,
+         getCommissionAllProduct,
+         getProductAttributeList, getCompanyCommissionDetail,
+         companyCommissionUpdate, companyCommissionCreate,
+         getSalesPositionList, getCalculateWay } from '@/apis/modules/good-manage'
+export default {
+  name: "rate-setting-dialog",
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    info: {
+      type: Object
+    },
+    type: {
+      type: String
+    },
+    singleCompany: {
+      type: Boolean
+    },
+    multCompany: {
+      type: Boolean
+    },
+    companyId: {},
+    productId: {}
+  },
+  data() {
+    const baseValiObj = { required: true, message: "此项不可为空" };
+    return {
+      baseValiObj,
+      calcType: calculateWays[0].value,
+      tabs: terms,
+      search: '',
+      input: '',
+      loading: false,
+      tableLoading: false,
+      tableEmpty: false,
+      submitting: false,
+      hasCalculateWay: true,
+      guaranteePeriodUnitArray,
+      paymentPeriodUnitArray,
+      tabSelected: '1',
+      calculateWays,
+      calculateWayKey,
+      date: '',
+      companyList: [],
+      productList: [],
+      guaranteeList: [],
+      paymentList: [],
+      salePositionList: [],
+      tableData: [],
+      formModel: {
+        calculate_way: calculateWayKey.GUARANTEEPERIOD,
+        company_id: [],
+        effect_start_at: '',
+        id: '',
+        name: '',
+        position_id: [],
+        product_id: '',
+        product_name: '',
+        product_type: '',
+        remark: '',
+        schemes: []
+      }
+    };
+  },
+  computed: {
+    targetRules() {
+      return this.formModel.schemes.find(i => i.stage == this.tabSelected).rules
     }
+  },
+  watch: {
+    visible(v) {
+      if (v) {
+        this.hasCalculateWay = true
+        this.tabSelected = '1'
+        this.getProductList()
+        // this.getCompanyList()
+        this.getSalesPositionList()
+        if (this.type === 'edit' || this.type === 'copy') {
+          this.getCompanyCommissionDetail()
+        } 
+        if (this.type === 'add') {
+          this.init()
+        }
+      } else {
+        this.formModel = this.$options.data().formModel
+      }
+    },
+    tabSelected() {
+      this.tableEmpty = false
+      this.tableLoading = true
+      this.judgeScheme()
+      setTimeout(() => {
+        this.tableLoading = false
+      }, 500)
+    }
+  },
+  methods: {
+    productChange() {
+      this.getProductAttributeList()
+      this.getCalculateWay(this.formModel.product_id)
+    },
+    getCalculateWay(productInfo) {
+      const [product_id, product_type] = productInfo ? productInfo.split('_') : this.productId.split('_')
+      const data = { product_id, product_type }
+      getCalculateWay(data).then(res => {
+        const way = res.calculate_way
+        if (way) {
+          this.formModel.calculate_way = way
+        } else {
+          this.hasCalculateWay = false
+        }
+      })
+    },
+    getSalesPositionList() {
+      getSalesPositionList()
+        .then(res => {
+          this.salePositionList = res
+        })
+    },
+    calculateWayChange() {
+      const schemes = this.formModel.schemes
+      schemes.map(i => {
+        i.rules = []
+        i.rules.push(this.getRuleModel('new'))
+      })
+      this.tabSelected = '1'
+    },
+    judgeScheme() {
+      const rules = this.formModel.schemes.find(i => i.stage == this.tabSelected)
+      if (!rules) {
+        this.formModel.schemes.push({
+          rules: [this.getRuleModel('new')],
+          stage: this.tabSelected
+        })
+      }
+    },
+    currentTableRateHeader() {
+      if (this.tabSelected == 1) {
+        return [{
+          label: '服务费率',
+          renewal_rate_min: 0,
+          renewal_rate_max: 0,
+          type: 'single'
+        }]
+      }
+      const schemes = this.formModel.schemes
+      if (!schemes.find(i => i.stage == this.tabSelected)) {
+        return this.tableEmpty = true
+      }
+      const rules = schemes.find(i => i.stage == this.tabSelected).rules
+      return rules[0].renewal_rate
+    },
+    currentTableData() {
+      const schemes = this.formModel.schemes
+      if (!schemes.find(i => i.stage == this.tabSelected)) {
+        return this.tableEmpty = true
+      }
+      return schemes.find(i => i.stage == this.tabSelected).rules
+    },
+    init() {
+      if (this.singleCompany) {
+        this.formModel.company_id = [this.companyId]
+        this.formModel.product_id = this.productId
+        this.getCalculateWay()
+      }
+      this.formModel.schemes.push({
+        rules: [this.getRuleModel('new')],
+        stage: '1'
+      })
+    },
+    getCompanyCommissionDetail() {
+      const data = { id: this.info.id }
+      this.loading = true
+      getCompanyCommissionDetail(data).then(res => {
+        Object.assign(this.formModel, res, {
+          effect_start_at: res.effect_start_at * 1000,
+          product_id: `${res.product_id}_${res.product_type}`,
+          company_id: Array.isArray(res.company_id) ? res.company_id : [res.company_id],
+          position_id: Array.isArray(res.position_id) ? res.position_id : [res.position_id],
+        })
+        this.getProductAttributeList()
+        this.loading = false
+      })
+    },
+    getProductAttributeList() {
+      this.tableLoading = true
+      const productId = this.formModel.product_id
+      // this.formModel.product_name = this.productList.find(i => i.id_type === productId).name
+      const data = { type: productId.split('_')[1], product_id: productId.split('_')[0] }
+      getProductAttributeList(data).then(res => {
+        // 这里el-table有个小坑点，当外部数据更新是，table内部数据只会通过tableData进行更新渲染
+        // 所以需要改变tableData去触发table里面数据绑定的变化
+        this.tableData.push([1])
+        this.$nextTick(() => {
+          this.guaranteeList = res.guarantee
+          this.paymentList = res.payment
+          this.tableData.pop()
+          this.tableLoading = false
+        })
+      })
+    },
+    getCompanyList() {
+      getCompanyList().then(res => {
+        this.companyList = res
+      })
+    },
+    getProductList() {
+      getCommissionAllProduct().then(res => {
+        // this.formModel.product_id = ''
+        // TODO TEST
+        if (this.singleCompany) {
+          this.formModel.product_id = this.productId
+          this.getProductAttributeList()
+        }
+        this.productList = res
+      })
+    },
+    getRuleModel(type) {
+      let renewalRate
+      if (type === 'new') {
+        renewalRate = [{
+          renewal_rate_max: 0,
+          renewal_rate_min: 0,
+          base_proportion: 0,
+          reward_proportion: 0
+        }]
+      } else {
+        const rules = this.targetRules
+        const { renewal_rate } = rules[0]
+        renewalRate = renewal_rate.map(i => {
+          return {
+            renewal_rate_max: i.renewal_rate_max,
+            renewal_rate_min: i.renewal_rate_min,
+            base_proportion: 0,
+            reward_proportion: 0
+          }
+        })
+      }
+      return {
+        guarantee_period: {
+          guarantee_period_id: '',
+          guarantee_period_unit: 0,
+          guarantee_period_value: 0,
+          max_guarantee_year: 0,
+          min_guarantee_year: 0
+        },
+        payment_period: {
+          payment_period_id: '',
+          payment_period_unit: 0,
+          payment_period_value: 0
+        },
+        renewal_rate: renewalRate
+      }
+    },
+    // 增加行
+    addRow() {
+      this.tableLoading = true
+      const rules = this.targetRules
+      rules.push(JSON.parse(JSON.stringify(this.getRuleModel())))
+      setTimeout(() => this.tableLoading = false, 1000)
+    },
+    // 增加列
+    addCol() {
+      const rules = this.targetRules
+      const renewalRate = {
+        base_proportion: 0,
+        renewal_rate_max: 0,
+        renewal_rate_min: 0,
+        reward_proportion: 0
+      }
+      rules.map(i => {
+        i.renewal_rate.push(renewalRate)
+      })
+    },
+    // 复制列
+    copyCol(rate, index) {
+      const rules = this.targetRules
+      rules.map(i => {
+        const targetRate = JSON.parse(JSON.stringify(i.renewal_rate[index]))
+        i.renewal_rate.push(targetRate)
+      })
+    },
+    // 复制行
+    copy(index) {
+      this.tableLoading = true
+      const rules = this.targetRules
+      const target = JSON.parse(JSON.stringify(rules[index]))
+      rules.push(target)
+      setTimeout(() => this.tableLoading = false, 1000)
+    },
+    // 删除行
+    remove(index) {
+      const rules = this.targetRules
+      if (rules.length === 1) {
+        return this.$message.warning('需至少一个规则')
+      }
+      rules.splice(index, 1)
+    },
+    // 删除列
+    removeCol(index) {
+      const rules = this.targetRules
+      rules.map(i => {
+        if (i.renewal_rate.length === 1) {
+          this.$message.warning('需至少一个规则')
+        } else {
+          i.renewal_rate.splice(index, 1)
+        }
+      })
+    },
+    closeModal(needFresh = false) {
+      this.$emit('update:visible', false)
+      if (needFresh) {
+        this.$root.$emit('updateList')
+      }
+    },
+    submit() {
+      this.submitting = true
+      this.formModel.schemes.map(i => {
+        let min = [], max = []
+        i.rules.map((y, index) => {
+          const guarantee_period = y.guarantee_period
+          const guarantee_period_id = guarantee_period.guarantee_period_id
+          const payment_period = y.payment_period
+          const payment_period_id = payment_period.payment_period_id
+          if (guarantee_period_id) {
+            const target = this.guaranteeList.find(z => z.id === guarantee_period_id)
+            guarantee_period.guarantee_period_unit = target.unit
+            guarantee_period.guarantee_period_value = target.value
+          } else {
+            guarantee_period.guarantee_period_id = 0
+            guarantee_period.guarantee_period_unit = 0
+            guarantee_period.guarantee_period_value = 0
+          }
+          if (payment_period_id) {
+            const target = this.paymentList.find(z => z.id === payment_period_id)
+            payment_period.payment_period_unit = target.unit
+            payment_period.payment_period_value = target.value
+          } else {
+            payment_period.payment_period_id = 0
+            payment_period.payment_period_unit = 0
+            payment_period.payment_period_value = 0
+          }
+
+          if (!index) {
+            min = y.renewal_rate.map(x => x.renewal_rate_min)
+            max = y.renewal_rate.map(x => x.renewal_rate_max)
+          } else {
+            y.renewal_rate.map((x, idx) => {
+              x.renewal_rate_min = min[idx]
+              x.renewal_rate_max = max[idx]
+            })
+          }
+        })
+      })
+      const d = Object.assign({}, this.formModel, {
+        effect_start_at: +this.formModel.effect_start_at / 1000,
+        product_id: this.formModel.product_id.split('_')[0],
+        product_type: this.formModel.product_id.split('_')[1],
+        product_name: this.productList.find(i => i.id_type === this.formModel.product_id).name
+      })
+      if (this.type === 'edit') {
+        companyCommissionUpdate(d).then(() => {
+          this.$message.success('保存成功！')
+          this.closeModal(true)
+        }).finally(() => {
+          this.submitting = false
+        })
+      } else {
+        companyCommissionCreate(d).then(() => {
+          this.$message.success('保存成功！')
+          this.closeModal(true)
+        }).finally(() => {
+          this.submitting = false
+        })
+      }
+    }
+  }
+};
 </script>
 
 <style scoped lang="scss">
-    ::v-deep .rate-setting-dialog{
-        .input-number-wrap .el-input__inner{
-            text-align: left;
-        }
-        .rate-wrap{
-            align-items: flex-start;
-            &>.el-form-item__content{
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-            }
-            .payment-period-values-item{
-                 margin-bottom: 0;
-                .el-form-item__content{
-                    display: flex;
-                    .el-input-number {
-                        width: 68px;
-                        margin-right:8px;
-                    }
-                    &>span{
-                        display: inline-block;
-                        width: 9px;
-                        height: 1px;
-                        background: #1A1A1A;
-                        margin-right:8px;
-                        line-height: 32px;
-                        transform: translateY(16px);
-                    }
-                }
-            }
-            .item {
-                display: flex;
-                flex-direction: column;
-                box-sizing: border-box;
-                flex-basis: calc(33.3333333% - 11px);
-                margin-top: 16px;
-                min-height:336px;
-                background:rgba(245,245,245,1);
-                border-radius:4px;
-                border:1px solid rgba(230,230,230,1);
-                position: relative;
-                &:nth-of-type(3n-1) {
-                    margin: 16px 16px 0 16px;
-                }
-                .head{
-                    height: 56px;
-                    border-bottom: 1px solid #e6e6e6;
-                    &>span{
-                        font-size: 16px;
-                        color:#1a1a1a;
-                        font-weight: bold;
-                        &>span{
-                            font-size: 14px;
-                            font-weight: normal;
-                            color: #FF9000;
-                            display: inline-flex;
-                            align-items: center;
-                        }
-                    }
-                    &>i{
-                        color: #FF4C4C;
-                        cursor: pointer;
-                        font-size: 16px;
-                    }
-                }
-                .content{
-                    background: #ffffff;
-                }
-                &.add-block .el-button{
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    transform: translate(-50%, -50%);
-                }
-                .input-number-item .el-form-item__content{
-                    display: flex;
-                    .el-input-number{
-                        flex: 1;
-                        margin-right: 4px;
-                        .el-input__inner{
-                            text-align: left;
-                        }
-                    }
-                }
-            }
-        }
-        .el-dialog__footer{
-            padding-top: 20px;
-        }
+::v-deep .rate-setting-dialog {
+  .header-top {
+    padding-top: 2px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #E6E6E6;
+  }
+  .small-input {
+    width: 60px;
+  }
+  .header-bottom {
+    padding-top: 16px;
+    .rate-input {
+      width: 120px;
     }
+  }
+  .add-button-group {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 2;
+  }
+  .copy-button {
+    margin-right: 10px;
+    color: #ff9000;
+    cursor: pointer;
+  }
+  .delete-button {
+    color: #ff4c4c;
+    cursor: pointer;
+  }
+  .input-number-wrap .el-input__inner {
+    text-align: left;
+  }
+  .rate-wrap {
+    align-items: flex-start;
+    & > .el-form-item__content {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .payment-period-values-item {
+      margin-bottom: 0;
+      .el-form-item__content {
+        display: flex;
+        .el-input-number {
+          width: 68px;
+          margin-right: 8px;
+        }
+        & > span {
+          display: inline-block;
+          width: 9px;
+          height: 1px;
+          background: #1a1a1a;
+          margin-right: 8px;
+          line-height: 32px;
+          transform: translateY(16px);
+        }
+      }
+    }
+    .item {
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      flex-basis: calc(33.3333333% - 11px);
+      margin-top: 16px;
+      min-height: 336px;
+      background: rgba(245, 245, 245, 1);
+      border-radius: 4px;
+      border: 1px solid rgba(230, 230, 230, 1);
+      position: relative;
+      &:nth-of-type(3n-1) {
+        margin: 16px 16px 0 16px;
+      }
+      .head {
+        height: 56px;
+        border-bottom: 1px solid #e6e6e6;
+        & > span {
+          font-size: 16px;
+          color: #1a1a1a;
+          font-weight: bold;
+          & > span {
+            font-size: 14px;
+            font-weight: normal;
+            color: #ff9000;
+            display: inline-flex;
+            align-items: center;
+          }
+        }
+        & > i {
+          color: #ff4c4c;
+          cursor: pointer;
+          font-size: 16px;
+        }
+      }
+      .content {
+        background: #ffffff;
+      }
+      &.add-block .el-button {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .input-number-item .el-form-item__content {
+        display: flex;
+        .el-input-number {
+          flex: 1;
+          margin-right: 4px;
+          .el-input__inner {
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+  .rate-input {
+    width: 150px;
+  }
+  .rate-small-input {
+    width: 60px;
+  }
+  .el-dialog__footer {
+    padding-top: 20px;
+  }
+}
 </style>

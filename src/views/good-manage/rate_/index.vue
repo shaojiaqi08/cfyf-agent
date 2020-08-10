@@ -5,12 +5,12 @@
                 <el-tab-pane name="server-rate" label="服务费率"></el-tab-pane>
                 <el-tab-pane name="commission-rate" label="佣金费率"></el-tab-pane>
             </el-tabs>
-            <el-button v-if="tabIndex === 'commission-rate'" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置服务费率</el-button>
+            <el-button v-if="tabIndex === 'server-rate'" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置服务费率</el-button>
         </div>
         <div class="content">
             <Component :is="tabIndex"></Component>
         </div>
-        <rate-setting-dialog type="add" :multCompany="true" :visible.sync="dialogVisible"></rate-setting-dialog>
+        <rate-setting-dialog :visible.sync="dialogVisible"></rate-setting-dialog>
     </div>
 </template>
 <script>
@@ -40,7 +40,7 @@
 
 <style scoped lang="scss">
     .rate-container{
-        padding: 16px;
+        padding: 16px 16px 0 16px;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
@@ -60,7 +60,6 @@
         .content{
             background-color: #fff;
             flex: 1;
-            height: 800px;
             overflow: hidden;
             border: 1px solid #e6e6e6;
             border-top: transparent;

@@ -1,337 +1,472 @@
 <template>
-    <div class="commission-rate-container">
-        <side-filter-list
-            v-loading="companyLoading"
-            :list-data="filterCompanyList"
-            label-key="label"
-            value-key="value"
-            placeholder="搜索B端公司"
-            v-model="selVal"
-            @change="handleSelCompany"
-        ></side-filter-list>
-        <el-scrollbar class="pos-filter-list">
-            <div v-for="(item, index) in positionList" :key="index">
-                <div class="group-item">
-                    <el-divider v-if="index !== 0"/>
-                    {{item.label}}
-                </div>
-                <div v-for="(item, index) in item.children"
-                     :key="index"
-                     @click="selPosVal=item.value"
-                     :class="{'list-item': true, active: selPosVal=== item.value}">
-                        {{item.label}}
-                </div>
-            </div>
-        </el-scrollbar>
-        <side-filter-list
-            v-loading="positionLoading"
-            :list-data="productList"
-            label-key="label"
-            value-key="value"
-            placeholder="搜索产品名称"
-            v-model="selProductVal"
-            @change="handleSelProduct"
-        >
-            <template slot="extraFilter">
-                <div class="extra-filter-bar">
-                    <el-tag>占位置</el-tag>
-                </div>
-            </template>
-            <template v-slot:list="{row}">
-                <div class="product-list-item">
-                    <span>{{row.label}}</span>
-                </div>
-            </template>
-        </side-filter-list>
-        <div class="detail-wrap" v-loading="detailLoading">
-            <div class="head">
-                <p>佣金费率记录</p>
-                某某某保险产品名称过长换行超过两行就换行展示产品
-            </div>
-            <el-scrollbar class="flex-item">
-                <div class="card">
-                    <div class="flex-between">
-                                <span class="flex-center">
-                                    <el-tooltip content="添加时间" placement="top">
-                                        <i class="iconfont iconxiao16_tianjiashijian mr4"></i>
-                                    </el-tooltip>
-                                    2020年2月15日 09:44
-                                </span>
-                        <span class="flex-center">
-                                    <el-tooltip content="生效日期" placement="top">
-                                        <i class="iconfont iconxiao16_shengxiaoriqi mr4"></i>s
-                                    </el-tooltip>
-                                    2020年3月1日—2020年6月30日
-                                    <el-tag type="success" class="ml16">生效中</el-tag>
-                                </span>
-                    </div>
-                    <div class="flex">
-                        <div class="pay-block">
-                            10年缴费/保障30年<br>
-                            <span>20%<i class="iconfont iconxiao16_jiahao"></i><span>6%</span></span>
-                        </div>
-                        <div class="pay-block">
-                            20年缴费/保障30年<br>
-                            <span>20%<i class="iconfont iconxiao16_jiahao"></i><span>6%</span></span>
-                        </div>
-                        <div class="pay-block">
-                            20年缴费/保障40年<br>
-                            <span>20%<i class="iconfont iconxiao16_jiahao"></i><span>6%</span></span>
-                        </div>
-                        <div class="pay-block">
-                            30年缴费/保至终生<br>
-                            <span>20%<i class="iconfont iconxiao16_jiahao"></i><span>6%</span></span>
-                        </div>
-
-                    </div>
-                    <el-divider></el-divider>
-                    <div class="flex flex-between">
-                                <span class="flex-center">
-                                    <i class="iconfont iconxiao16_feishuaijisuanfangfa mr4"></i>按保障期限算
-                                </span>
-                    </div>
-                </div>
-            </el-scrollbar>
+  <div class="commission-rate-container">
+    <!-- <side-filter-list
+      v-loading="companyLoading"
+      :list-data="filterCompanyList"
+      label-key="label"
+      value-key="value"
+      placeholder="搜索B端公司"
+      v-model="selVal"
+      @change="handleSelCompany"
+    ></side-filter-list> -->
+    <el-scrollbar class="pos-filter-list" v-loading="positionLoading">
+      <div v-for="(item, index) in positionList" :key="index">
+        <div class="group-item">
+          <el-divider v-if="index !== 0" />
+          {{item.label}}
         </div>
+        <div
+          v-for="(item, index) in item.children"
+          :key="index"
+          @click="handleSelPosition(item)"
+          :class="{'list-item': true, active: selPosVal === item.value}"
+        >{{item.label}}</div>
+      </div>
+      <div class="tc mt30" v-if="!positionList.length">暂无数据</div>
+    </el-scrollbar>
+    <side-filter-list
+      v-loading="productLoading"
+      :list-data="productList"
+      label-key="label"
+      value-key="value"
+      placeholder="搜索产品名称"
+      v-model="selProductVal"
+      @change="handleSelProduct"
+    >
+      <template slot="extraFilter">
+        <div class="extra-filter-bar flex flex-between">
+          <filter-shell
+            v-model="productFilter.status"
+            autoClose
+            autoFocus
+            :width="200"
+            @input="filterChange"
+          >
+            <el-select
+              v-model="productFilter.status"
+              clearable
+              filterable
+              placeholder="请选择"
+              @change="filterChange"
+            >
+              <el-option
+                v-for="(item, index) in effectStatus"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <template v-slot:label>
+              <span>{{ hasValue(productFilter.status) ? effectStatus.find(i => i.value === productFilter.status).label : '状态' }}</span>
+            </template>
+          </filter-shell>
+          <filter-shell
+            v-model="productFilter.insType"
+            autoClose
+            autoFocus
+            :width="200"
+            @input="filterChange"
+          >
+            <el-select
+              v-model="productFilter.insType"
+              clearable
+              filterable
+              placeholder="请选择"
+              @change="filterChange"
+            >
+              <el-option
+                v-for="(item, index) in insuranceTypeArray"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <template v-slot:label>
+              <span>{{ hasValue(productFilter.insType) ? insuranceTypeArray.find(i => i.value === productFilter.insType).label : '险种' }}</span>
+            </template>
+          </filter-shell>
+        </div>
+      </template>
+      <template v-slot:list="{row}">
+        <div class="product-list-item">
+          <span>{{row.label}}</span>
+        </div>
+      </template>
+    </side-filter-list>
+    <div class="detail-wrap">
+      <div class="head">
+        <p>佣金费率记录</p>
+        <el-button type="primary"
+                   v-if="selProductVal"
+                   @click="openRateDialog">
+          <i class="iconfont iconxiao16_shezhi mr4"></i>
+          设置服务费率
+        </el-button>
+      </div>
+      <el-scrollbar class="flex-item" v-loading="settingLoadLoading">
+        <div v-if="!settingLoadLoading">
+          <card-table v-for="item in settingList"
+                      :key="item.id"
+                      :info="item"
+                      :editable="true"></card-table>
+        </div>
+      </el-scrollbar>
     </div>
+    <rate-setting-dialog type="add"
+                         :companyId="selVal"
+                         :productId="selProductVal"
+                         :singleCompany="true"
+                         :visible.sync="dialogVisible"></rate-setting-dialog>
+  </div>
 </template>
 <script>
-    import SideFilterList from "@/components/side-filter-list"
-
-    export default {
-        name: 'commission-rate',
-        components: {SideFilterList},
-        data() {
-            return {
-                companyLoading: false,
-                productLoading: false,
-                positionLoading: false,
-                detailLoading: false,
-                companyList: [
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                    {label: 'xxx有限公司', value: 'aa'},
-                    {label: 'xxxx无限公司', value: 'bb'},
-                    {label: 'xxxsx上市公司', value: 'cc'},
-                ],
-                positionList: [
-                    {
-                        label: '一级职位',
-                        children: [
-                            {label: '公司老大', value: 'aa'},
-                            {label: '财务老大', value: 'bb'},
-                        ]
-                    }, {
-                        label: '二级职位',
-                        children: [
-                            {label: '程序员', value: 'cc'}
-                        ]
-                    }
-
-                ],
-                productList: [
-                    {label: '产品111产品111产品111产品111产品111产品111', value: 'aa', color: '#339AFF', tip_text: '未设置'},
-                    {label: '产品222', value: 'bb', color: '#40D659', tip_text: '未设置'},
-                    {label: '产品333', value: 'cc', color: '#FF4C4C', tip_text: '未设置'},
-                    {label: '产品444', value: 'dd', color: '#4D4D4D', tip_text: '未设置'},
-                ],
-                selVal: 'aa', // 公司选中值
-                selProductVal: 'aa', // 产品选中值
-                selPosVal: '', // 职位选中值
-                extra: '',
-                productFilter: {},
-                tabIdx: '1'
-            }
-        },
-        computed: {
-            filterCompanyList() {
-                const {extra, companyList} = this
-                return companyList.filter(item => item['label'].includes(extra))
-            },
-            filterProductList() {
-                const {productFilter, companyList} = this
-                return companyList.filter(item => item['label'].includes(productFilter))
-            }
-        },
-        methods: {
-            handleSelCompany() {
-            },
-            handleSelProduct() {
-
-            }
-        },
-        created() {
-        }
+import SideFilterList from "@/components/side-filter-list";
+import cardTable from "../component/card-table";
+import RateSettingDialog from "../component/rate-setting-dialog";
+import FilterShell, { hasValue } from "@/components/filters/filter-shell";
+import {
+  getSalesPositionList,
+  getProductsOfPosition,
+  getCommissionSettingList
+} from "@/apis/modules/good-manage";
+import { getManagementCompanyList } from "@/apis/modules/achievement";
+import { effectStatus } from "@/enums/good-manage";
+import { insuranceTypeArray } from "@/enums/common";
+export default {
+  name: "commission-rate",
+  components: {
+    SideFilterList,
+    cardTable,
+    FilterShell,
+    RateSettingDialog
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      companyLoading: false,
+      productLoading: false,
+      positionLoading: false,
+      settingLoadLoading: false,
+      companyList: [],
+      positionList: [],
+      productList: [],
+      originlProductList: [],
+      settingList: [],
+      selVal: "", // 公司选中值
+      selProductVal: "", // 产品选中值
+      selPosVal: "", // 职位选中值
+      extra: "",
+      effectStatus,
+      insuranceTypeArray,
+      productFilter: {
+        status: "",
+        insType: ""
+      },
+      tabIdx: "1"
+    };
+  },
+  computed: {
+    filterCompanyList() {
+      const { extra, companyList } = this;
+      return companyList.filter(item => {
+        return item["label"].indexOf(extra) !== -1;
+      });
     }
+  },
+  methods: {
+    hasValue,
+    openRateDialog() {
+      this.dialogVisible = true;
+    },
+    filterChange() {
+      const { status, insType } = this.productFilter;
+      if (!status && !insType) {
+        this.$nextTick(() => {
+          this.productList = JSON.parse(
+            JSON.stringify(this.originlProductList)
+          );
+        });
+      }
+      if (status && insType) {
+        this.$nextTick(() => {
+          this.productList = this.originlProductList
+            .filter(i => {
+              return i.effect_status === status;
+            })
+            .filter(i => {
+              return i.sale_status === insType;
+            });
+        });
+      }
+      if (status) {
+        this.$nextTick(() => {
+          this.productList = this.originlProductList.filter(i => {
+            return i.effect_status === status;
+          });
+        });
+      }
+      if (insType) {
+        this.$nextTick(() => {
+          this.productList = this.originlProductList.filter(i => {
+            return i.sale_status === insType;
+          });
+        });
+      }
+    },
+    handleSelPosition(v) {
+      const data = { position_id: v.value, company_id: this.selVal };
+      this.selPosVal = v.value;
+      this.productLoading = true;
+      this.settingList = [];
+      getProductsOfPosition(data)
+        .then(res => {
+        //   this.productList = res.map(i => ({
+        //     label: i.product_name || "-",
+        //     value: i.product_id,
+        //     type: i.product_type
+        //   }));
+            this.productList = res.map(i => {
+            return Object.assign(i, {
+                label: i.product_name || "-",
+                value: i.id_type,
+                type: i.product_type,
+                color: effectStatus.find(y => y.value === i.effect_status).color,
+                tip_text: effectStatus.find(y => y.value === i.effect_status).label
+            });
+            });
+          this.originlProductList = JSON.parse(JSON.stringify(res));
+          this.settingList = [];
+          this.productFilter.status = "";
+          this.productFilter.insType = "";
+        })
+        .finally(() => {
+          this.productLoading = false;
+        });
+    },
+    getManagementCompanyList() {
+      this.companyLoading = true;
+      getManagementCompanyList()
+        .then(res => {
+          this.companyList = res.map(i => ({ label: i.name, value: i.id }));
+        })
+        .finally(() => {
+          this.companyLoading = false;
+        });
+    },
+    handleSelCompany() {
+      // const data = { company_id: v.value };
+      this.positionLoading = true;
+      this.productList = [];
+      this.settingList = [];
+      getSalesPositionList()
+        .then(res => {
+          this.positionList = res.map(i => {
+            return {
+              label: i.level_str,
+              children: i.items.map(y => {
+                return {
+                  label: y.name,
+                  value: y.id
+                };
+              })
+            };
+          });
+        })
+        .finally(() => {
+          this.positionLoading = false;
+        });
+    },
+    updateListHandler() {
+        const data = {
+            product_id: this.selProductVal.split('_')[0],
+            product_type: this.selProductVal.split('_')[1],
+            company_id: this.selVal
+        }
+      this.handleSelProduct(data)
+    },
+    handleSelProduct(v) {
+      const data = {
+        company_id: this.selVal,
+        position_id: this.selPosVal,
+        product_id: v.product_id,
+        product_type: v.product_type
+      };
+      this.settingLoadLoading = true;
+      getCommissionSettingList(data)
+        .then(res => {
+          this.settingList = res;
+        })
+        .finally(() => {
+          this.settingLoadLoading = false;
+        });
+    }
+  },
+  created() {
+    // this.getManagementCompanyList();
+    this.handleSelCompany()
+  },
+  mounted() {
+    this.$root.$on('updateList', this.updateListHandler)
+  },
+  destroyed() {
+    this.$root.$off('updateList', this.updateListHandler)
+  }
+};
 </script>
 
 <style scoped lang="scss">
-    .commission-rate-container{
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        align-items: stretch;
-        justify-content: stretch;
-        .extra-filter-bar{
-            padding-top: 16px;
-        }
-        .pos-filter-list{
-            width: 240px;
-            border-right: 1px solid #e6e6e6;
-            .group-item, .list-item{
-                height: 44px;
-                line-height: 44px;
-                background: #fff;
-                padding: 0 16px;
-                color:#999;
-                box-sizing: border-box;
-                font-size: 14px;
-            }
-            .group-item{
-               .el-divider{
-                   margin: 0;
-               }
-            }
-            .list-item {
-                color:#4d4d4d;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                cursor: pointer;
-                &.active, &:hover{
-                    border-top: 1px solid #e6e6e6;
-                    border-bottom: 1px solid #e6e6e6;
-                }
-                &.active{
-                    background: #f5f5f5;
-                }
-                &:hover{
-                    background: #e6e6e6;
-                }
-            }
-        }
-        .product-list-item{
-            width: 100%;
-            &>span:first-of-type{
-                line-height: 20px;
-                display: inline-block;
-                flex: 1;
-                padding-right: 8px;
-            }
-        }
-        .detail-wrap{
-            flex: auto;
-            padding: 16px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            .head{
-                height: 68px ;
-                position: relative;
-                font-size: 14px;
-                line-height: 20px;
-                color:#999999;
-                padding-bottom: 16px;
-                &>p{
-                    line-height: 28px;
-                    color: #1a1a1a;
-                    font-size: 18px;
-                    margin: 0 0 2px 0;
-                    font-weight: bold;
-                }
-                .el-button{
-                    position: absolute;
-                    right: 0;
-                    top: 0;
-                }
-            }
-            ::v-deep .el-scrollbar {
-                height: 100%;
-                .el-scrollbar__wrap{
-                    overflow-x: hidden;
-                }
-            }
-            .card{
-                background:rgba(245,245,245,1);
-                border-radius:4px;
-                border:1px solid rgba(230,230,230,1);
-                padding: 16px;
-                box-sizing: border-box;
-                &>div:nth-of-type(1){
-                    span{
-                        font-weight: bold;
-                    }
-                    i{
-                        font-weight: normal;
-                    }
-                }
-                &>div:nth-of-type(2){
-                    flex-wrap: wrap;
-                    .pay-block{
-                        height: 86px;
-                        width: 33.333333%;
-                        padding-top: 18px;
-                        color: #4d4d4d;
-                        font-size: 14px;
-                        line-height: 20px;
-                        &>span{
-                            margin-top: 4px;
-                            line-height: 28px;
-                            font-size: 18px;
-                            font-weight: bold;
-                            color:#131415;
-                            &>span{
-                                color: #ff9000;
-                            }
-                        }
-                    }
-                }
-                .el-divider{
-                    margin: 0 0 16px 0;
-                    width: calc(100% + 32px);
-                    transform: translateX(-16px);
-                }
-            }
-        }
-        .side-filter-container{
-            border-right: 1px solid #e6e6e6;
-            &.pos-side-filter-list .pos-group-block{
-                background: #fff;
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 44px;
-                line-height: 44px;
-                text-indent: 16px;
-                color: #999;
-                border-top: 1px solid #e6e6e6;
-            }
-        }
+.commission-rate-container {
+  flex: 0 0 240px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  .extra-filter-bar {
+    justify-content: space-around;
+    margin-bottom: 16px;
+    ::v-deep .filter-bar .filter-item {
+      width: 96px;
+      text-align: center;
+      margin-right: 0;
     }
+  }
+  .pos-filter-list {
+    flex: 0 0 240px;
+    border-right: 1px solid #e6e6e6;
+    .group-item,
+    .list-item {
+      height: 44px;
+      line-height: 44px;
+      background: #fff;
+      padding: 0 16px;
+      color: #999;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    .group-item {
+      .el-divider {
+        margin: 0;
+      }
+    }
+    .list-item {
+      color: #4d4d4d;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      &.active,
+      &:hover {
+        border-top: 1px solid #e6e6e6;
+        border-bottom: 1px solid #e6e6e6;
+      }
+      &.active {
+        background: #f5f5f5;
+      }
+      &:hover {
+        background: #e6e6e6;
+      }
+    }
+  }
+  .product-list-item {
+    width: 100%;
+    & > span:first-of-type {
+      line-height: 20px;
+      display: inline-block;
+      flex: 1;
+      padding-right: 8px;
+    }
+  }
+  .detail-wrap {
+    flex: auto;
+    padding: 16px;
+    width: 100px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    .head {
+      height: 68px;
+      position: relative;
+      font-size: 14px;
+      line-height: 20px;
+      color: #999999;
+      padding-bottom: 16px;
+      & > p {
+        line-height: 28px;
+        color: #1a1a1a;
+        font-size: 18px;
+        margin: 0 0 2px 0;
+        font-weight: bold;
+      }
+      .el-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+    ::v-deep .el-scrollbar {
+      height: 100%;
+      .el-scrollbar__wrap {
+        overflow-x: hidden;
+      }
+    }
+    .card {
+      background: rgba(245, 245, 245, 1);
+      border-radius: 4px;
+      border: 1px solid rgba(230, 230, 230, 1);
+      padding: 16px;
+      box-sizing: border-box;
+      & > div:nth-of-type(1) {
+        span {
+          font-weight: bold;
+        }
+        i {
+          font-weight: normal;
+        }
+      }
+      & > div:nth-of-type(2) {
+        flex-wrap: wrap;
+        .pay-block {
+          height: 86px;
+          width: 33.333333%;
+          padding-top: 18px;
+          color: #4d4d4d;
+          font-size: 14px;
+          line-height: 20px;
+          & > span {
+            margin-top: 4px;
+            line-height: 28px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #131415;
+            & > span {
+              color: #ff9000;
+            }
+          }
+        }
+      }
+      .el-divider {
+        margin: 0 0 16px 0;
+        width: calc(100% + 32px);
+        transform: translateX(-16px);
+      }
+    }
+  }
+  .side-filter-container {
+    flex: 0 0 240px;
+    border-right: 1px solid #e6e6e6;
+    &.pos-side-filter-list .pos-group-block {
+      background: #fff;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 44px;
+      line-height: 44px;
+      text-indent: 16px;
+      color: #999;
+      border-top: 1px solid #e6e6e6;
+    }
+  }
+}
 </style>
