@@ -51,8 +51,13 @@
                 this.$refs.form.resetFields()
             },
             submit() {
-                const {new_password, confirm_new_password} = this.formModel
-                this.$emit('submit', [new_password, confirm_new_password])
+                this.$refs.form.validate(flag => {
+                    if (flag) {
+                        const {new_password, confirm_new_password} = this.formModel
+                        this.$emit('submit', [new_password, confirm_new_password])
+                    }
+                })
+
             },
             pwdValidator(rule, value, callback) {
                 if (value.length < 6) {
