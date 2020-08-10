@@ -64,6 +64,7 @@
         <el-date-picker
           class="w300"
           v-model="formModel.effect_start_at"
+          :picker-options="pickerOptions"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -303,6 +304,11 @@ export default {
   data() {
     const baseValiObj = { required: true, message: "此项不可为空" };
     return {
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() < Date.now()
+        }
+      },
       baseValiObj,
       calcType: calculateWays[0].value,
       tabs: terms,
@@ -361,6 +367,8 @@ export default {
         }
       } else {
         this.formModel = this.$options.data().formModel
+        this.guaranteeList = []
+        this.paymentList = []
       }
     },
     tabSelected() {
@@ -497,10 +505,10 @@ export default {
       let renewalRate
       if (type === 'new') {
         renewalRate = [{
-          renewal_rate_max: 0,
-          renewal_rate_min: 0,
-          base_proportion: 0,
-          reward_proportion: 0
+          renewal_rate_max: '',
+          renewal_rate_min: '',
+          base_proportion: '',
+          reward_proportion: ''
         }]
       } else {
         const rules = this.targetRules
@@ -509,8 +517,8 @@ export default {
           return {
             renewal_rate_max: i.renewal_rate_max,
             renewal_rate_min: i.renewal_rate_min,
-            base_proportion: 0,
-            reward_proportion: 0
+            base_proportion: '',
+            reward_proportion: ''
           }
         })
       }
@@ -519,8 +527,8 @@ export default {
           guarantee_period_id: '',
           guarantee_period_unit: 0,
           guarantee_period_value: 0,
-          max_guarantee_year: 0,
-          min_guarantee_year: 0
+          max_guarantee_year: '',
+          min_guarantee_year: ''
         },
         payment_period: {
           payment_period_id: '',
@@ -541,10 +549,10 @@ export default {
     addCol() {
       const rules = this.targetRules
       const renewalRate = {
-        base_proportion: 0,
-        renewal_rate_max: 0,
-        renewal_rate_min: 0,
-        reward_proportion: 0
+        base_proportion: '',
+        renewal_rate_max: '',
+        renewal_rate_min: '',
+        reward_proportion: ''
       }
       rules.map(i => {
         i.renewal_rate.push(renewalRate)
@@ -605,7 +613,7 @@ export default {
             guarantee_period.guarantee_period_unit = target.unit
             guarantee_period.guarantee_period_value = target.value
           } else {
-            guarantee_period.guarantee_period_id = 0
+            guarantee_period.guarantee_period_id = ''
             guarantee_period.guarantee_period_unit = 0
             guarantee_period.guarantee_period_value = 0
           }
@@ -614,7 +622,7 @@ export default {
             payment_period.payment_period_unit = target.unit
             payment_period.payment_period_value = target.value
           } else {
-            payment_period.payment_period_id = 0
+            payment_period.payment_period_id = ''
             payment_period.payment_period_unit = 0
             payment_period.payment_period_value = 0
           }
@@ -631,7 +639,7 @@ export default {
         })
       })
       const d = Object.assign({}, this.formModel, {
-        effect_start_at: +this.formModel.effect_start_at / 1000,
+        effect_start_at: +this.formModel.effect_start_at / 1000 || '',
         product_id: this.formModel.product_id.split('_')[0],
         product_type: this.formModel.product_id.split('_')[1],
         product_name: this.productList.find(i => i.id_type === this.formModel.product_id).name
