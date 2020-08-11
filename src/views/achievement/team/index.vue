@@ -136,7 +136,9 @@
                 type="daterange"
                 style="width: 265px;"
                 value-format="timestamp"
-                placeholder="选择日期"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :clearable="false"
                 @change="searchModelChange">
         </el-date-picker>
         <template v-slot:label>

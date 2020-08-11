@@ -50,14 +50,14 @@
               @change="filterChange"
             >
               <el-option
-                v-for="(item, index) in effectStatus"
+                v-for="(item, index) in effectStatusV2"
                 :key="index"
                 :label="item.label"
                 :value="item.value"
               ></el-option>
             </el-select>
             <template v-slot:label>
-              <span>{{ hasValue(productFilter.status) ? effectStatus.find(i => i.value === productFilter.status).label : '状态' }}</span>
+              <span>{{ hasValue(productFilter.status) ? effectStatusV2.find(i => i.value === productFilter.status).label : '状态' }}</span>
             </template>
           </filter-shell>
           <!-- <filter-shell
@@ -130,7 +130,7 @@ import {
   getCommissionSettingList
 } from "@/apis/modules/good-manage";
 import { getManagementCompanyList } from "@/apis/modules/achievement";
-import { effectStatus } from "@/enums/good-manage";
+import { effectStatus, effectStatusKeys, effectStatusKeysV2, effectStatusV2 } from "@/enums/good-manage";
 import { insuranceTypeArray } from "@/enums/common";
 export default {
   name: "commission-rate",
@@ -142,6 +142,7 @@ export default {
   },
   data() {
     return {
+      effectStatusV2,
       dialogVisible: false,
       companyLoading: false,
       productLoading: false,
@@ -191,7 +192,7 @@ export default {
         this.$nextTick(() => {
           this.productList = this.originlProductList
             .filter(i => {
-              return i.effect_status === status;
+              return i.settingType === status;
             })
             .filter(i => {
               return i.sale_status === insType;
@@ -201,7 +202,7 @@ export default {
       if (status) {
         this.$nextTick(() => {
           this.productList = this.originlProductList.filter(i => {
-            return i.effect_status === status;
+            return i.settingType === status;
           });
         });
       }
@@ -226,7 +227,8 @@ export default {
               value: i.id_type,
               type: i.product_type,
               color: effectStatus.find(y => y.value === i.effect_status).color,
-              tip_text: effectStatus.find(y => y.value === i.effect_status).label
+              tip_text: effectStatus.find(y => y.value === i.effect_status).label,
+              settingType: i.effect_status === effectStatusKeys.PENDING || i.effect_status === effectStatusKeys.EFFECTIVE ? effectStatusKeysV2.HAVE_SETTING : effectStatusKeysV2.NO_SETTING
           });
           });
           this.originlProductList = JSON.parse(JSON.stringify(res));

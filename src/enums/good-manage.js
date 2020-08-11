@@ -88,6 +88,26 @@ export const effectStatus = [
   }
 ]
 
+export const effectStatusKeysV2 = {
+  NO_SETTING: 'no_setting',
+  HAVE_SETTING: 'have_setting'
+}
+
+export const effectStatusV2 = [
+  {
+    label: '未设置',
+    value: effectStatusKeysV2.NO_SETTING,
+    color: '#339AFF',
+    tag: ''
+  },
+  {
+    label: '已设置',
+    value: effectStatusKeysV2.HAVE_SETTING,
+    color: '#40D659',
+    tag: 'success'
+  }
+]
+
 // 商品上下架
 export const sellStatus = {
   UP: 1,
