@@ -1,5 +1,5 @@
 <template>
-  <div class="order-detail-container">
+  <div class="order-detail-container" v-loading="loading">
     <div class="header">订单详情</div>
     <div class="content">
       <h4>产品信息</h4>
@@ -126,12 +126,13 @@
 </template>
 
 <script>
-import { getManagementPolicyDetail } from '@/apis/modules/achievement'
+import { getPolicyDetail } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 export default {
   name: "order-detail",
   data() {
     return {
+      loading: false,
       policyInfo: {}
     }
   },
@@ -142,9 +143,11 @@ export default {
     formatDate,
     init() {
       const { id } = this.$route.params
-      getManagementPolicyDetail({ id })
-      .then(res => {
+      this.loading = true
+      getPolicyDetail({ id }).then(res => {
           this.policyInfo = res
+      }).finally(() => {
+        this.loading = false
       })
     }
   }
@@ -157,6 +160,7 @@ export default {
   width: 1200px;
   margin: 20px auto;
   border: 1px solid #e6e6e6;
+  height: initial !important;
   .header {
     font-size: 16px;
     font-weight: bold;
