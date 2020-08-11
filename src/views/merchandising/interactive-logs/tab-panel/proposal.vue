@@ -1,6 +1,11 @@
 <template>
     <div class="proposal-container">
-        <el-input v-model="searchModel.keyword" prefix-icon="el-icon-search" class="search-input" placeholder="搜索产品名称" clearable></el-input>
+        <el-input v-model="searchModel.keyword"
+                  prefix-icon="el-icon-search"
+                  class="search-input"
+                  placeholder="搜索产品名称"
+                  @input="debounceGetProposal"
+                  clearable></el-input>
         <div class="list" v-loading="loading">
             <template v-if="proposalDateArr.length > 0">
                 <div class="list-content">
@@ -30,7 +35,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </el-scrollbar>
                 </div>
             </template>
@@ -171,7 +175,6 @@
                         }
                         return prev
                     }, {})
-                    console.log(formatData)
                     this.total = res.total
                     if (page <= 1) {
                         this.proposalData = {...formatData}
@@ -195,16 +198,16 @@
             nextPage() {
                 const {total, searchModel} = this
                 const {page, page_size} = searchModel
-                let nextPage
-                if (page_size * (nextPage = page + 1) <= total) {
-                    this.searchModel.page = nextPage
+                if (page_size * page  < total) {
+                    this.searchModel.page += 1
                     this.getInteractiveLogProposal()
                 }
             },
             debounceGetProposal() {
                 const func = debounce(() => {
+                    this.searchModel.page = 1
                     this.getInteractiveLogProposal()
-                }, 400)
+                }, 300)
                 func()
                 this.debounceGetProposal = func
             },

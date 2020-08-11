@@ -6,7 +6,8 @@
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
                   size="small"
-                  @keyup.enter.native="searchModelChange">
+                  clearable
+                  @input="searchModelChange">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -389,10 +390,14 @@ export default {
       this.searchModelChange()
     },
     searchModelChange() {
-      this.tableLoading = true
-      this.statisticLoading = true
-      this.getCompanyPolicyList()
-      this.getCompanyPolicyStatistics()
+      const func = debounce(() => {
+        this.tableLoading = true
+        this.statisticLoading = true
+        this.getCompanyPolicyList()
+        this.getCompanyPolicyStatistics()
+      }, 300)
+      func()
+      this.searchModelChange = func
     },
     hasValue,
     // dir 0: 左 1: 右
