@@ -45,7 +45,7 @@
                 <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
                 <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
                 <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
-                <el-table-column label="备注" prop="备注" align="center"></el-table-column>
+                <el-table-column label="备注" prop="remark" align="center"></el-table-column>
                 <el-table-column label="操作" width="240px" align="center">
                     <template v-slot="{row, index}">
                         <template v-if="row.status === proposalStatusMap.done.value">

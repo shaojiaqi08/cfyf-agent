@@ -10,6 +10,16 @@
                          @change="handleChecked(data)">{{data.name || data.display_name}}</el-checkbox>
             <span v-else style="font-size: 14px">{{data.name || data.display_name}}</span>
         </div>
+        <div class="tree-permission-container"
+             :class="{'has-group-follow': filterPermissionGroup.length > 0}"
+             v-show="expanded"
+             v-if="showPermission">
+            <tree-node @checked="handleSubChecked"
+                       :isGroup="false"
+                       :key="index"
+                       v-for="(item, index) in filterPermissionData"
+                       v-model="filterPermissionData[index]"></tree-node>
+        </div>
         <div v-show="expanded"
              v-if="showPermissionGroup"
              class="tree-group-container">
@@ -18,15 +28,6 @@
                        :key="index"
                        v-for="(item, index) in filterPermissionGroup"
                        v-model="filterPermissionGroup[index]"></tree-node>
-        </div>
-        <div class="tree-permission-container"
-             v-show="expanded"
-             v-if="showPermission">
-            <tree-node @checked="handleSubChecked"
-                       :isGroup="false"
-                       :key="index"
-                       v-for="(item, index) in filterPermissionData"
-                       v-model="filterPermissionData[index]"></tree-node>
         </div>
     </div>
 </template>
@@ -126,14 +127,6 @@
 </script>
 
 <style scoped lang="scss">
-    .fold-enter-active, .fold-leave-active {
-        transition: all .3s ease;
-        &{overflow: hidden;}
-    }
-    .fold-enter, .fold-leave-to{
-        height: 0;
-    }
-
     .arrow-btn{
         cursor: pointer;
         transition: transform .3s ease-in-out;
@@ -148,7 +141,6 @@
         padding-left: 48px;
         position: relative;
         vertical-align: top;
-        transition: all .3s ease-in-out;
         .expanded-enter-active, .expanded-leave-active{
             transition: transform .2s ease-in-out;
             transform: scaleY(0);
@@ -163,6 +155,7 @@
             align-items: center;
             border-radius: 4px;
             padding: 0 8px;
+            overflow: hidden;
             &:hover{
                 background: #f5f5f5;
                 border: 4px;
@@ -171,7 +164,7 @@
         .tree-group-container{
             white-space: nowrap;
             position: relative;
-            transition: all .3s ease-in-out;
+            transition: background-color .3s ease-in-out;
         }
         &>div:last-of-type>.tree-node-container:last-of-type::before{
             height: 13px;
@@ -228,6 +221,9 @@
                 left: 14px;
                 height: calc(100% - 14px) !important;
                 border-right: 1px dashed #ccc;
+            }
+            &.has-group-follow::before{
+                height: 100% !important;
             }
             &>.tree-node-container::after{
                 content: '';
