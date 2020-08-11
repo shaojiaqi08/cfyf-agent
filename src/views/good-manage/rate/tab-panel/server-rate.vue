@@ -83,7 +83,7 @@
     </side-filter-list>
     <div class="detail-wrap">
       <div class="head">
-        <p>服务费率记录</p>
+        <p>佣金费率记录</p>
         <!-- 某某某保险产品名称过长换行超过两行就换行展示产品 -->
         <!-- <el-button type="primary"
                    v-if="selProductVal"
