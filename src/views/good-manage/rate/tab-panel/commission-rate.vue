@@ -100,7 +100,7 @@
                    v-if="selProductVal"
                    @click="openRateDialog">
           <i class="iconfont iconxiao16_shezhi mr4"></i>
-          设置服务费率
+          设置佣金费率
         </el-button>
       </div>
       <el-scrollbar class="flex-item" v-loading="settingLoadLoading">
@@ -114,6 +114,7 @@
     </div>
     <rate-setting-dialog type="add"
                          :companyId="selVal"
+                         :positionId="selPosVal"
                          :productId="selProductVal"
                          :singleCompany="true"
                          :visible.sync="dialogVisible"></rate-setting-dialog>

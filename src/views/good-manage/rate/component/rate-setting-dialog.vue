@@ -2,7 +2,7 @@
   <el-dialog
     custom-class="rate-setting-dialog"
     top="4vh"
-    title="设置服务费率"
+    :title="multCompany ? '批量设置佣金费率' : '设置佣金费率'"
     :visible="visible"
     v-if="visible"
     width="1094px"
@@ -75,6 +75,7 @@
       <el-form-item label="销售职位">
         <el-select v-model="formModel.position_id"
                    placeholder="请选择销售职位"
+                   :disabled="!multCompany"
                    filterable
                    multiple
                    class="w300">
@@ -118,10 +119,10 @@
           </el-radio>
         </el-radio-group>
         <span v-else style="color: #FF4C4C;">
-          未设置服务费计算方法，请联系创富云服管理员
+          {{ calculateWayMessage }}
         </span>
       </el-form-item>
-      <h3 style="margin-bottom: 0">服务费率</h3>
+      <h3 style="margin-bottom: 0">佣金费率</h3>
       <div style="position: relative;">
         <div class="add-button-group">
             <el-button class="add-button"
@@ -200,7 +201,7 @@
               <el-table-column
                 v-for="(rate, index) in currentTableRateHeader()"
                 :key="`${rate.type}_${index}`"
-                label="服务费率"
+                label="佣金费率"
                 :width="rate.type !== 'single' ? 356 : ''"
                 align="center">
                 <template slot="header"
@@ -227,7 +228,7 @@
                     </div> 
                   </div>
                   <div v-else>
-                    服务费率
+                    佣金费率
                   </div>
                 </template>
                 <template slot-scope="scope">
@@ -300,7 +301,8 @@ export default {
       type: Boolean
     },
     companyId: {},
-    productId: {}
+    productId: {},
+    positionId: {}
   },
   data() {
     const baseValiObj = { required: true, message: "此项不可为空" };
@@ -319,7 +321,7 @@ export default {
       tableLoading: false,
       tableEmpty: false,
       submitting: false,
-      hasCalculateWay: true,
+      hasCalculateWay: false,
       guaranteePeriodUnitArray,
       paymentPeriodUnitArray,
       tabSelected: '1',
@@ -332,6 +334,7 @@ export default {
       paymentList: [],
       salePositionList: [],
       tableData: [],
+      calculateWayMessage: '',
       formModel: {
         calculate_way: calculateWayKey.GUARANTEEPERIOD,
         company_id: [],
@@ -355,7 +358,7 @@ export default {
   watch: {
     visible(v) {
       if (v) {
-        this.hasCalculateWay = true
+        this.hasCalculateWay = false
         this.tabSelected = '1'
         this.getProductList()
         // this.getCompanyList()
@@ -393,8 +396,10 @@ export default {
         const way = res.calculate_way
         if (way) {
           this.formModel.calculate_way = way
+          this.hasCalculateWay = true
         } else {
           this.hasCalculateWay = false
+          this.calculateWayMessage = '未设置佣金费计算方法，请联系创富云服管理员'
         }
       })
     },
@@ -424,7 +429,7 @@ export default {
     currentTableRateHeader() {
       if (this.tabSelected == 1) {
         return [{
-          label: '服务费率',
+          label: '佣金费率',
           renewal_rate_min: 0,
           renewal_rate_max: 0,
           type: 'single'
@@ -448,6 +453,7 @@ export default {
       if (this.singleCompany) {
         this.formModel.company_id = [this.companyId]
         this.formModel.product_id = this.productId
+        this.formModel.position_id = [this.positionId]
         this.getCalculateWay()
       }
       this.formModel.schemes.push({
@@ -459,6 +465,7 @@ export default {
       const data = { id: this.info.id }
       this.loading = true
       getCompanyCommissionDetail(data).then(res => {
+        this.hasCalculateWay = true
         Object.assign(this.formModel, res, {
           effect_start_at: res.effect_start_at * 1000,
           product_id: `${res.product_id}_${res.product_type}`,
