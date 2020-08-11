@@ -45,7 +45,7 @@
               <span>{{ hasValue(productFilter.status) ? effectStatus.find(i => i.value === productFilter.status).label : '状态' }}</span>
             </template>
           </filter-shell>
-          <filter-shell
+          <!-- <filter-shell
             v-model="productFilter.insType"
             autoClose
             autoFocus
@@ -69,7 +69,7 @@
             <template v-slot:label>
               <span>{{ hasValue(productFilter.insType) ? insuranceTypeArray.find(i => i.value === productFilter.insType).label : '险种' }}</span>
             </template>
-          </filter-shell>
+          </filter-shell> -->
         </div>
       </template>
       <template v-slot:list="{row}">

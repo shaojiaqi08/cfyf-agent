@@ -7,7 +7,7 @@
     v-if="visible"
     width="1094px"
     :close-on-click-modal="false"
-    @close="closeModal"
+    @close="closeModal(false)"
   >
     <el-form
       ref="form"
@@ -65,6 +65,7 @@
           class="w300"
           v-model="formModel.effect_start_at"
           :picker-options="pickerOptions"
+          type="datetime"
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -266,7 +267,7 @@
       </div>
     </el-form>
     <span slot="footer" class="footer">
-      <el-button :loading="submitting" @click="closeModal">取消</el-button>
+      <el-button :loading="submitting" @click="closeModal(false)">取消</el-button>
       <el-button :loading="submitting" type="primary" @click="submit">保存</el-button>
     </span>
   </el-dialog>

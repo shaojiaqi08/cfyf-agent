@@ -17,7 +17,7 @@
         <el-tooltip content="添加时间" placement="top">
           <i class="iconfont iconxiao16_tianjiashijian mr4"></i>
         </el-tooltip>
-        {{ formatDate(info.add_time * 1000, 'yyyy-MM-dd') }}
+        {{ formatDate(info.add_time * 1000, 'yyyy-MM-dd hh:mm:ss') }}
       </span>
     </div>
     <div class="table-body">

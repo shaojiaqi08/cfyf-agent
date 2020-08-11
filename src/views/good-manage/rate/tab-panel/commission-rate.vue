@@ -60,7 +60,7 @@
               <span>{{ hasValue(productFilter.status) ? effectStatus.find(i => i.value === productFilter.status).label : '状态' }}</span>
             </template>
           </filter-shell>
-          <filter-shell
+          <!-- <filter-shell
             v-model="productFilter.insType"
             autoClose
             autoFocus
@@ -84,7 +84,7 @@
             <template v-slot:label>
               <span>{{ hasValue(productFilter.insType) ? insuranceTypeArray.find(i => i.value === productFilter.insType).label : '险种' }}</span>
             </template>
-          </filter-shell>
+          </filter-shell> -->
         </div>
       </template>
       <template v-slot:list="{row}">
@@ -220,20 +220,15 @@ export default {
       this.settingList = [];
       getProductsOfPosition(data)
         .then(res => {
-        //   this.productList = res.map(i => ({
-        //     label: i.product_name || "-",
-        //     value: i.product_id,
-        //     type: i.product_type
-        //   }));
-            this.productList = res.map(i => {
-            return Object.assign(i, {
-                label: i.product_name || "-",
-                value: i.id_type,
-                type: i.product_type,
-                color: effectStatus.find(y => y.value === i.effect_status).color,
-                tip_text: effectStatus.find(y => y.value === i.effect_status).label
-            });
-            });
+          this.productList = res.map(i => {
+          return Object.assign(i, {
+              label: i.product_name || "-",
+              value: i.id_type,
+              type: i.product_type,
+              color: effectStatus.find(y => y.value === i.effect_status).color,
+              tip_text: effectStatus.find(y => y.value === i.effect_status).label
+          });
+          });
           this.originlProductList = JSON.parse(JSON.stringify(res));
           this.settingList = [];
           this.productFilter.status = "";
