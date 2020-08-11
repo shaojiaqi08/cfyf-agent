@@ -120,7 +120,7 @@
         </template>
       </side-filter-list>
       <div class="right">
-        <iframe :src="productUrl"></iframe>
+        <iframe v-if="productUrl" :src="`${productUrl}&user_token=${$store.state.users.userInfo.agent_token}&platform=crm_web`"></iframe>
       </div>
     </div>
     <el-dialog title="售前告知" :visible.sync="notifyVisible" width="480px">
