@@ -195,7 +195,7 @@
                               class="rate-small-input"
                               v-model="scope.row.guarantee_period.max_guarantee_year"></el-input>
                   </span>
-                  <span v-if="formModel.calculate_way === calculateWayKey.SINGLEPOLICY && tabSelected != 1">全部</span>
+                  <span v-if="formModel.calculate_way === calculateWayKey.SINGLEPOLICY">全部</span>
                 </template>
               </el-table-column>
               <el-table-column
