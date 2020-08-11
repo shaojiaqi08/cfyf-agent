@@ -45,15 +45,6 @@
         </el-row>
       </div>
       <el-form label-width="100px">
-        <el-form-item label="归属B端公司">
-          <el-select placeholder="请选择此订单归属的B端公司"
-                     v-model="formdata.company">
-            <el-option v-for="item in companyList"
-                       :key="item.id"
-                       :value="item.id"
-                       :label="item.name">{{ item.name }}</el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="归属成员">
           <el-select placeholder="请选择此订单归属的成员"
                      v-model="formdata.member">
@@ -73,7 +64,7 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getManagementCompanyList, getManagementSalesList, setPolicyTransfer } from '@/apis/modules/achievement'
+import { getManagementSalesList, setPolicyTransfer } from '@/apis/modules/achievement'
 export default {
   props: {
     show: {
@@ -101,9 +92,7 @@ export default {
   watch: {
     show(v) {
       if (v) {
-        this.getManagementCompanyList()
         this.getManagementSalesList()
-
         this.$nextTick(() => {
           this.formdata.company = this.belongData.sales_company_id || ''
           this.formdata.member = this.belongData.sales_id || ''
@@ -130,11 +119,6 @@ export default {
     getManagementSalesList() {
       getManagementSalesList().then(res => {
         this.salesList = res
-      })
-    },
-    getManagementCompanyList() {
-      getManagementCompanyList().then(res => {
-        this.companyList = res
       })
     },
     close() {

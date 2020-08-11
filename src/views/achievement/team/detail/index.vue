@@ -122,12 +122,13 @@
 </template>
 
 <script>
-import { getManagementPolicyDetail } from '@/apis/modules/achievement'
+import { getPolicyDetail } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 export default {
   name: "order-detail",
   data() {
     return {
+      loading: false,
       policyInfo: {}
     }
   },
@@ -138,9 +139,12 @@ export default {
     formatDate,
     init() {
       const { id } = this.$route.params
-      getManagementPolicyDetail({ id })
+      this.loading = true
+      getPolicyDetail({ id })
       .then(res => {
           this.policyInfo = res
+      }).finally(() => {
+        this.loading = false
       })
     }
   }
@@ -153,6 +157,7 @@ export default {
   width: 1200px;
   margin: 20px auto;
   border: 1px solid #e6e6e6;
+  height: initial !important;
   .header {
     font-size: 16px;
     font-weight: bold;

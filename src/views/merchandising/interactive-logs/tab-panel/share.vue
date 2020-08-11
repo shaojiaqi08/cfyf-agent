@@ -1,6 +1,11 @@
 <template>
     <div class="share-container">
-        <el-input v-model="otherModel.keyword" prefix-icon="el-icon-search" class="search-input" placeholder="搜索产品名称" clearable></el-input>
+        <el-input v-model="otherModel.keyword"
+                  prefix-icon="el-icon-search"
+                  class="search-input"
+                  placeholder="搜索产品名称"
+                  @input="debounceGetLogOther"
+                  clearable></el-input>
         <div class="list"  v-loading="loading">
             <template v-if="otherDateArr.length > 0">
                 <div class="list-content">
@@ -266,12 +271,13 @@
                 const {otherTotal, otherModel} = this
                 const {page, page_size} = otherModel
                 if (page_size * page < otherTotal) {
-                    this.otherModel.page = page + 1
+                    this.otherModel.page += 1
                     this.getInteractiveLogOther()
                 }
             },
             debounceGetLogOther() {
                 const func = debounce(() => {
+                    this.otherModel.page = 1
                     this.getInteractiveLogOther()
                 }, 400)
                 func()

@@ -28,7 +28,7 @@ export const routers = [
           show: false,
           permission: 'a'
         },
-        component: getView('achievement/order/detail')
+        component: getView('achievement/company/detail')
       },
       {
         path: '/achievement-team',

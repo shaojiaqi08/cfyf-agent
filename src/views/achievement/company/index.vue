@@ -6,7 +6,8 @@
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
                   size="small"
-                  @keyup.enter.native="searchModelChange">
+                  clearable
+                  @input="searchModelChange">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -262,14 +263,14 @@
                 border
                 stripe
                 v-loading="tableLoading">
-        <el-table-column label="产品名称" prop="product_name" align="center"></el-table-column>
-        <el-table-column label="保险公司" prop="supplier_name" align="center"></el-table-column>
+        <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="保险公司" prop="supplier_name" align="center" width="200px"></el-table-column>
         <el-table-column label="所属销售" prop="sales_real_name" align="center"></el-table-column>
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
-        <el-table-column label="保费" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="服务费" prop="company_commission" align="center"></el-table-column>
-        <el-table-column label="佣金" prop="sales_position_commission" align="center"></el-table-column>
+        <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="服务费" prop="company_commission" align="center" width="100px"></el-table-column>
+        <el-table-column label="佣金" prop="sales_position_commission" align="center" width="100px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at" width="150px" align="center">
           <template slot-scope="{row}">
             {{ formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
@@ -292,11 +293,11 @@
         <el-table-column label="保额" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
-        <el-table-column label="保单号" prop="policy_sn" align="center"></el-table-column>
-        <el-table-column label="投保单号" prop="proposal_sn" align="center"></el-table-column>
-        <el-table-column label="操作" prop fixed="right" width="100px">
+        <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
+        <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
+        <el-table-column label="操作" prop fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
-            <el-link type="primary" @click="showInfoDialog(row)">订单详情</el-link>
+            <el-link type="primary" @click="showInfoDialog(row)" class="mr8">订单详情</el-link>
             <el-link type="primary" @click="showBelongDialog(row)">修改归属</el-link>
           </template>
         </el-table-column>
@@ -389,10 +390,14 @@ export default {
       this.searchModelChange()
     },
     searchModelChange() {
-      this.tableLoading = true
-      this.statisticLoading = true
-      this.getCompanyPolicyList()
-      this.getCompanyPolicyStatistics()
+      const func = debounce(() => {
+        this.tableLoading = true
+        this.statisticLoading = true
+        this.getCompanyPolicyList()
+        this.getCompanyPolicyStatistics()
+      }, 300)
+      func()
+      this.searchModelChange = func
     },
     hasValue,
     // dir 0: 左 1: 右

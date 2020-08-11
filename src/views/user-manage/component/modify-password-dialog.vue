@@ -1,6 +1,6 @@
 <template>
     <el-dialog custom-class="manager-dialog"
-               title="修改密码"
+               title="重置密码"
                :visible="visible"
                width="480px"
                @close="handleClose"

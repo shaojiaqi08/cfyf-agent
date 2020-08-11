@@ -5,7 +5,7 @@
                   v-model="product_name_like"
                   prefix-icon="el-icon-search"
                   clearable
-                  @keyup.enter.native="ajaxProductData"></el-input>
+                  @input="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
                 label-key="product_name"

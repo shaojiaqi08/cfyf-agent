@@ -377,7 +377,7 @@
                             :selected="groupSelected"
                             :submitting="submitting"
                             @submit="groupSalesSubmit"></team-people-dialog>
-        <!--修改密码-->
+        <!--重置密码-->
         <modify-password-dialog :visible.sync="modifyPwdVisible" :submitting="submitting" @submit="submitModifyPwd"></modify-password-dialog>
     </div>
 </template>
@@ -557,7 +557,7 @@
             submitModifyPwd([new_password, confirm_new_password]) { // eslint-disable-line
                 this.submitting = true
                 updateSalesPassword({new_password, confirm_new_password, id: this.targetRow.id}).then(() => {
-                    this.$message.success('密码修改成功!')
+                    this.$message.success('密码重置成功!')
                     this.modifyPwdVisible = false
                 }).finally(() => {
                     this.submitting = false
@@ -621,17 +621,20 @@
             submitSalesEdit() {
                 this.$refs.editForm.validate(flag => {
                     if (flag) {
-                        const {editFormModel: data, selTeam} = this
+                        const {editFormModel: data} = this
                         const isEdit = !!data.id
                         const handler = isEdit ? modifySales : createSales
                         this.submitting = true
                         const params = {...data, role: 'sales'}
                         params.resignation_at = ~~(new Date(params.resignation_at.replace(/-/g, '/')) / 1000)
                         handler(params).then(() => {
-                            if (selTeam === -1) {
-                                this.ajaxAllSalesList()
+                            if (data.team_id !== '') {
+                                this.selTeam = data.team_id
+                                this.detailData = {}
+                                this.ajaxDetail(data.team_id)
                             } else {
-                                this.ajaxDetail(selTeam)
+                                this.selTeam = -1
+                                this.ajaxAllSalesList()
                             }
                             this.editDialogVisible = false
                             this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)

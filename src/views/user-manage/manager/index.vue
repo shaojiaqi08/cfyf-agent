@@ -67,7 +67,7 @@
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
                                     <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="modifyPwd(row)">修改密码</el-button>
+                                    <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
                                 </template>
                                 <template v-else>
@@ -163,7 +163,7 @@
                 <el-button type="primary" @click="submitEditPos" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
-        <!--修改密码-->
+        <!--重置密码-->
         <modify-password-dialog :visible.sync="modifyPwdVisible" :submitting="submitting" @submit="submitModifyPwd"></modify-password-dialog>
     </div>
 </template>
@@ -200,7 +200,7 @@
                 rightLoading: false,
                 treeLoading: false,
                 submitting: false, // dialog公用loading
-                targetRow: null, // 修改密码目标对象
+                targetRow: null, // 重置密码目标对象
                 treeData: [],
                 treeDetail: [],
                 editTreeDetail: [],
@@ -274,7 +274,7 @@
                     confirm_new_password,
                     id: this.targetRow.id
                 }).then(()=>{
-                    this.$message.success('密码修改成功!')
+                    this.$message.success('密码重置成功!')
                     this.modifyPwdVisible = false
                 }).finally(() => {
                     this.submitting = false
