@@ -60,15 +60,13 @@
           {{ formModel.product_name }}
         </span>
       </el-form-item>
-      <el-form-item label="生效日期范围">
+      <el-form-item label="生效日期">
         <el-date-picker
           class="w300"
           v-model="formModel.effect_start_at"
           :picker-options="pickerOptions"
           type="datetime"
           range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
           placeholder="选择日期"
         ></el-date-picker>
       </el-form-item>
@@ -202,12 +200,12 @@
                 v-for="(rate, index) in currentTableRateHeader()"
                 :key="`${rate.type}_${index}`"
                 label="佣金费率"
-                :width="rate.type !== 'single' ? 356 : ''"
+                :width="rate.type !== 'single' && formModel.calculate_way !== calculateWayKey.SINGLEPOLICY ? 356 : ''"
                 align="center">
                 <template slot="header"
                           slot-scope="scope">
                   <div v-if="rate.type !== 'single'">
-                    <div class="header-top" :nest="scope">
+                    <div class="header-top" ref="headerTop" :nest="scope">
                       <span class="copy-button" @click="copyCol(rate, index)">复制</span>
                       <span class="delete-button" @click="removeCol(index)">删除</span>
                     </div>
@@ -380,11 +378,21 @@ export default {
       this.tableLoading = true
       this.judgeScheme()
       setTimeout(() => {
+        this.tableHeaderTopHack()
         this.tableLoading = false
       }, 500)
     }
   },
   methods: {
+    tableHeaderTopHack() {
+      const array = this.$refs.headerTop
+      array.map(i => {
+        while (!i.classList.contains('cell')) {
+          i = i.parentElement
+        }
+        i.style.padding = `0px`
+      })
+    },
     productChange() {
       this.getProductAttributeList()
       this.getCalculateWay(this.formModel.product_id)
@@ -548,58 +556,74 @@ export default {
     },
     // 增加行
     addRow() {
-      this.tableLoading = true
-      const rules = this.targetRules
-      rules.push(JSON.parse(JSON.stringify(this.getRuleModel())))
-      setTimeout(() => this.tableLoading = false, 1000)
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        rules.push(JSON.parse(JSON.stringify(this.getRuleModel())))
+      })
     },
     // 增加列
     addCol() {
-      const rules = this.targetRules
-      const renewalRate = {
-        base_proportion: '',
-        renewal_rate_max: '',
-        renewal_rate_min: '',
-        reward_proportion: ''
-      }
-      rules.map(i => {
-        i.renewal_rate.push(renewalRate)
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        const renewalRate = {
+          base_proportion: '',
+          renewal_rate_max: '',
+          renewal_rate_min: '',
+          reward_proportion: ''
+        }
+        rules.map(i => {
+          i.renewal_rate.push(renewalRate)
+        })
       })
     },
     // 复制列
     copyCol(rate, index) {
-      const rules = this.targetRules
-      rules.map(i => {
-        const targetRate = JSON.parse(JSON.stringify(i.renewal_rate[index]))
-        i.renewal_rate.push(targetRate)
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        rules.map(i => {
+          const targetRate = JSON.parse(JSON.stringify(i.renewal_rate[index]))
+          i.renewal_rate.push(targetRate)
+        })
       })
     },
     // 复制行
     copy(index) {
-      this.tableLoading = true
-      const rules = this.targetRules
-      const target = JSON.parse(JSON.stringify(rules[index]))
-      rules.push(target)
-      setTimeout(() => this.tableLoading = false, 1000)
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        const target = JSON.parse(JSON.stringify(rules[index]))
+        rules.push(target)
+      })
     },
     // 删除行
     remove(index) {
-      const rules = this.targetRules
-      if (rules.length === 1) {
-        return this.$message.warning('需至少一个规则')
-      }
-      rules.splice(index, 1)
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        if (rules.length === 1) {
+          return this.$message.warning('需至少一个规则')
+        }
+        rules.splice(index, 1)
+      })
     },
     // 删除列
     removeCol(index) {
-      const rules = this.targetRules
-      rules.map(i => {
-        if (i.renewal_rate.length === 1) {
-          this.$message.warning('需至少一个规则')
-        } else {
-          i.renewal_rate.splice(index, 1)
-        }
+      this.forceRenderTable(() => {
+        const rules = this.targetRules
+        rules.map(i => {
+          if (i.renewal_rate.length === 1) {
+            this.$message.warning('需至少一个规则')
+          } else {
+            i.renewal_rate.splice(index, 1)
+          }
+        })
       })
+    },
+    forceRenderTable(callback) {
+      this.tableLoading = true
+      callback()
+      setTimeout(() => {
+        this.tableHeaderTopHack()
+        this.tableLoading = false
+      }, 800)
     },
     closeModal(needFresh = false) {
       this.$emit('update:visible', false)
@@ -608,6 +632,16 @@ export default {
       }
     },
     submit() {
+      const { position_id, effect_start_at, product_id } = this.formModel
+      if (!product_id) {
+        return this.$message.warning('请选择保险产品')
+      }
+      if (!effect_start_at) {
+        return this.$message.warning('请选择生效日期')
+      }
+      if (!position_id.length) {
+        return this.$message.warning('请选择销售职位')
+      }
       this.submitting = true
       const copyFormModel = JSON.parse(JSON.stringify(this.formModel))
       copyFormModel.schemes.map(i => {
