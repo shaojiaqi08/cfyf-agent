@@ -73,7 +73,7 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
-    color: #ff9000;
+    color: #1F78FF;
   }
 }
 </style>

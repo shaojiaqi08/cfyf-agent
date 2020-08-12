@@ -60,81 +60,82 @@
 </script>
 
 <style lang="scss" scoped>
-  .header {
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    width: 100%;
-    height: 40px;
-    border-bottom: 1px solid #E6E6E6;
-    z-index: 2;
-    .logo {
-      width: 200px;
-      height: 24px;
-      background-color: #ccc;
-      opacity: 0.6;
-      cursor: pointer;
-      &:hover {
-        opacity: 1;
-      }
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-      height: 24px;
-      opacity: 0.6;
-      cursor: pointer;
-      &:hover {
-        opacity: 1;
-      }
-      .user {
-        display: flex;
-        align-items: center;
-        margin-right: 8px;
-        .avatar {
-          display: inline-block;
-          margin-right: 8px;
-          width: 24px;
-          height: 24px;
-          border-radius: 12px;
-          overflow: hidden;
-          background-size: cover;
-        }
-        .name {
-          display: inline-block;
-          font-weight: bold;
-        }
-      }
-      .permission {
-        display: flex;
-        align-items: center;
-        color: #999;
-      }
+.header {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid #E6E6E6;
+  z-index: 2;
+  .logo {
+    width: 200px;
+    height: 24px;
+    background: url(../../assets/images/navbar-logo.png) no-repeat;
+    background-size: contain;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
     }
   }
+  .user-info {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      margin-right: 8px;
+      .avatar {
+        display: inline-block;
+        margin-right: 8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        overflow: hidden;
+        background-size: cover;
+      }
+      .name {
+        display: inline-block;
+        font-weight: bold;
+      }
+    }
+    .permission {
+      display: flex;
+      align-items: center;
+      color: #999;
+    }
+  }
+}
 </style>
 
 <style lang="scss">
-  .popper-box {
-    padding: 0 !important;
-    .menu-list {
-      margin-top: 8px;
-      .menu-list-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        white-space: nowrap;
-        padding: 18px;
-        color: #4D4D4D;
-        text-align: center;
-        cursor: pointer;
-        &:hover {
-          color: #FF9000;
-          background-color: rgba(255, 144, 0, 0.1);
-        }
+.popper-box {
+  color: red;
+  .menu-list {
+    margin-top: 8px;
+    .menu-list-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      white-space: nowrap;
+      padding: 18px;
+      color: #4D4D4D;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        color: #1F78FF;
+        background-color: rgba(31, 120, 255, 0.1);
       }
     }
   }
+}
 </style>

@@ -32,7 +32,7 @@
                 <el-switch
                   class="ml10"
                   v-model="formData.has_pdf_illustration"
-                  active-color="#FF9B19"
+                  active-color="#1F78FF"
                   inactive-color="#E6E6E6"
                 ></el-switch>
                 <span
@@ -108,7 +108,7 @@
               <el-switch
                 class="ml10"
                 v-model="is_show_company_profile"
-                active-color="#FF9B19"
+                active-color="#1F78FF"
                 inactive-color="#E6E6E6"
               ></el-switch>
               <span
@@ -123,7 +123,7 @@
               <el-switch
                 style="margin-left: 37px;"
                 v-model="is_show_link"
-                active-color="#FF9B19"
+                active-color="#1F78FF"
                 inactive-color="#E6E6E6"
               ></el-switch>
               <span
@@ -535,7 +535,7 @@
                       <el-switch
                         class="ml10"
                         v-model="ect[index].has_illustration"
-                        active-color="#FF9B19"
+                        active-color="#1F78FF"
                         inactive-color="#E6E6E6"
                       ></el-switch>
                       <span
@@ -589,7 +589,7 @@
               <el-switch
                 class="ml10"
                 v-model="formData.is_show_premium"
-                active-color="#FF9B19"
+                active-color="#1F78FF"
                 inactive-color="#E6E6E6"
               ></el-switch>
               <span

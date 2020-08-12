@@ -152,46 +152,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.order-detail-container {
-  background-color: #fff;
-  width: 1200px;
-  margin: 20px auto;
-  border: 1px solid #e6e6e6;
-  height: initial !important;
-  .header {
-    font-size: 16px;
-    font-weight: bold;
-    padding: 0 16px;
-    height: 56px;
-    line-height: 56px;
-    background: #f5f5f5;
-    border-radius: 4px 4px 0px 0px;
-    border-bottom: 1px solid #e6e6e6;
-  }
-  .content {
-    padding: 16px;
-    h4 {
-      color: #1a1a1a;
-      line-height: 24px;
-      margin: 0 0 8px 0;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-      & > div {
-        width: 25%;
-        font-size: 14px;
-        color: #4d4d4d;
-        margin-bottom: 12px;
-        line-height: 20px;
-        & > span {
-          color: #1a1a1a;
-          margin-left: 8px;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-}
+@import '../../detail.scss';
 </style>

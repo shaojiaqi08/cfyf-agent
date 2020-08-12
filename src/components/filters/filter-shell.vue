@@ -33,7 +33,7 @@
       }
       return false
     }
-    if (value) {
+    if (value || value === 0) {
       return true
     }
     return false
@@ -134,72 +134,68 @@
 </script>
 
 <style lang="scss">
-  .filter-bar {
-    display: inline-block;
-  }
-  .filter-item {
-    display: inline-block;
-    position: relative;
-    margin-right: 16px;
-    padding: 4px 12px;
-    color: #1a1a1a;
-    font-size: 14px;
-    background-color: #f5f5f5;
-    border: 1px solid rgba(230, 230, 230, 1);
-    border-radius: 4px;
-    cursor: pointer;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-      .filter-clear {
-        display: block;
-      }
-    }
-    &.actived {
-      color: #FF9000;
-      background-color: rgba(255, 144, 0, 0.1);
-      border-color: #FF9000;
-    }
+.filter-bar {
+  display: inline-block;
+}
+.filter-item {
+  display: inline-block;
+  position: relative;
+  margin-right: 16px;
+  padding: 4px 12px;
+  color: #1a1a1a;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border: 1px solid rgba(230, 230, 230, 1);
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
     .filter-clear {
-      display: none;
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 16px;
-      height: 16px;
-      color: #FF5D5D;
-      background-color: #fff;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    & > .el-badge .el-badge__content{
-      top: -1px;
-      line-height: 16px;
+      display: block;
     }
   }
-  .filter-popover {
-    .inner-box {
-      padding: 16px;
-      &.noPadding {
-        padding: 0;
-      }
+  &.actived {
+    color: #1F78FF;
+    background-color: rgba(31, 120, 255, 0.1);
+    border-color: #1F78FF;
+  }
+  .filter-clear {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 16px;
+    height: 16px;
+    color: #FF5D5D;
+    background-color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+.filter-popover {
+  .inner-box {
+    padding: 16px;
+    &.noPadding {
+      padding: 0;
     }
   }
-  .filter-shell-list {
-    padding: 10px 0 4px;
-    .filter-list-item {
-      width: 100%;
-      height: 34px;
-      line-height: 34px;
-      text-align: center;
-      cursor: pointer;
-      &.actived {
-        background: #fff3e5;
-        color: #ffa531;
-      }
-      &:hover {
-        background: #fff3e5;
-        color: #ffa531;
-      }
+}
+.filter-shell-list {
+  padding: 10px 0 4px;
+  .filter-list-item {
+    width: 100%;
+    height: 34px;
+    line-height: 34px;
+    text-align: center;
+    cursor: pointer;
+    &.actived {
+      background: rgba(31, 120, 255, 0.1);
+      color: #1F78FF;
+    }
+    &:hover {
+      background: rgba(31, 120, 255, 0.1);
+      color: #1F78FF;
     }
   }
+}
 </style>

@@ -2,13 +2,12 @@
   <div>
     <div class="login-logo">
       <div class="logo"></div>
-      <div class="title">创富云服</div>
     </div>
     <div class="login-form">
       <div class="title">欢迎登录创富云服</div>
       <div class="form">
         <div class="form-item">
-          <div class="label">账号</div>
+          <!-- <div class="label">账号</div> -->
           <div class="input">
             <el-input placeholder="请输入账号名"
                       v-model.trim="username"
@@ -18,7 +17,7 @@
           </div>
         </div>
         <div class="form-item">
-          <div class="label">密码</div>
+          <!-- <div class="label">密码</div> -->
           <div class="input">
             <div class="click-block" @click="togglePasswordShow"></div>
             <el-input placeholder="请输入密码"
@@ -39,8 +38,9 @@
     </div>
   </div>
 </template>
+
 <script>
-import {login, getUserDetail, simulatedLogin} from '@/apis/modules/index'
+import {login, getUserDetail} from '@/apis/modules/index'
 import {mapActions} from 'vuex'
 export default {
   data() {
@@ -56,7 +56,9 @@ export default {
     login() {
       const {username, password} = this
       this.submitting = true
-      login({username, password}).then(res => {
+      login({
+        username, password
+      }).then(res => {
         // 更新token
         this.updateUserInfo(res)
         const path = this.$route.query.redirect
@@ -83,23 +85,12 @@ export default {
       this.isPasswordShow = !this.isPasswordShow
     },
     handleEnter(e) {
-      const {submitting, username, password} = this
-      if (e.keyCode === 13 && !submitting && username && password) {
+      if (e.keyCode === 13 && this.username && this.password) {
         this.login()
       }
     }
   },
   created() {
-    const query = this.$route.query
-    if (query._sign) {
-      this.submitting = true
-      simulatedLogin(query).then(res => {
-        this.updateUserInfo(res)
-        this.$router.replace('/user-info')
-      }).finally(() => {
-        this.submitting = false
-      })
-    }
     document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {
@@ -110,14 +101,15 @@ export default {
 
 <style lang="scss" scoped>
 .login-logo {
-  margin: 120px auto 0;
+  margin: 140px auto 0;
   width: 120px;
-  height: 120px;
+  height: 140px;
   .logo {
     margin: 0 auto;
-    width: 72px;
-    height: 72px;
-    background-color: #FF9000;
+    width: 120px;
+    height: 140px;
+    background: url(../../assets/images/login-logo.png) no-repeat;
+    background-size: contain;
     border-radius: 7px;
   }
   .title {
@@ -132,17 +124,18 @@ export default {
   margin: 18px auto;
   padding: 24px;
   width: 288px;
-  height: 320px;
+  height: 280px;
   // text-align: center;
   background-color: #fff;
   border-radius: 4px;
   .title {
+    text-align: center;
     color: #1A1A1A;
     font-size: 28px;
     font-weight: bold;
   }
   .form {
-    margin-top: 20px;
+    margin-top: 40px;
     .form-item {
       margin-bottom: 24px;
       .label {
@@ -163,7 +156,9 @@ export default {
           z-index: 1;
         }
         ::v-deep .el-input {
-
+          .el-input__inner {
+            padding-left: 10px;
+          }
           &:after {
             content: '';
             position: absolute;
@@ -174,7 +169,7 @@ export default {
             background-color: #E6E6E6;
           }
           &.focus:after {
-            background-color: #FF9000;
+            background-color: #1F78FF;
           }
         }
         ::v-deep .el-input__inner {

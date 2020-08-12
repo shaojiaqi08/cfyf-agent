@@ -407,7 +407,7 @@ export default {
           this.hasCalculateWay = true
         } else {
           this.hasCalculateWay = false
-          this.calculateWayMessage = '未设置佣金费计算方法，请联系创富云服管理员'
+          this.calculateWayMessage = '未设置服务费计算方法，请联系创富云服管理员'
         }
       })
     },

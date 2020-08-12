@@ -106,7 +106,7 @@
     }
     .sum {
       margin-left: 8px;
-      color: #FF9000;
+      color: #1F78FF;
       font-size: 18px;
       font-weight: bold;
       .unit {
@@ -153,7 +153,7 @@
 .proposal-tabs {
   // margin-top: 16px;
   ::v-deep .el-tabs__item.is-active {
-    background-color: #FF9000;
+    background-color: #1F78FF;
     color: #fff;
     font-size: 14px;
     &.el-icon-close {
@@ -423,7 +423,7 @@
 .qr-title {
   margin-bottom: 20px;
   font-size: 20px;
-  color: #FF9000;
+  color: #1F78FF;
 }
 .qr-tips {
   margin: 10px 0;

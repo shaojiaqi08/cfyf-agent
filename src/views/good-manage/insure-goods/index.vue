@@ -300,7 +300,7 @@ export default {
       .list-item{
         overflow: visible;
         &.active{
-          border-left: 3px solid #ff9000;
+          border-left: 3px solid #1F78FF;
         }
       }
       .list-item-wrap{

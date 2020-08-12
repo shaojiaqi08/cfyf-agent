@@ -57,55 +57,55 @@
 </script>
 
 <style lang="scss" scoped>
-  .menu {
-    position: fixed;
-    top: 40px;
-    left: 0;
-    width: 160px;
-    height: 1000px;
-    .menu-list {
-      padding: 14px 0 20px 20px;
-      height: 96vh;
-      .menu-header {
-        margin-top: 24px;
-        margin-bottom: 8px;
-        padding: 3px 8px;
-        width: 140px;
-        color: #4D4D4D;
-        font-size: 16px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        &:first-child {
-          // margin-top: 0;
-        }
-        .iconfont{
-          font-size: 20px;
-        }
+.menu {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 160px;
+  height: 1000px;
+  .menu-list {
+    padding: 14px 0 20px 20px;
+    height: 96vh;
+    .menu-header {
+      margin-top: 24px;
+      margin-bottom: 8px;
+      padding: 3px 8px;
+      width: 140px;
+      color: #4D4D4D;
+      font-size: 16px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      &:first-child {
+        // margin-top: 0;
       }
-      .menu-item {
-        padding: 10px 0 10px 36px;
-        width: 140px;
-        height: 40px;
-        color: #4d4d4d;
-        font-size: 14px;
-        line-height: 22px;
-        border-radius: 4px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        cursor: pointer;
-        &.actived {
-          color: #FF9000;
-          font-weight: bold;
-          &:hover {
-            background-color: rgba(0, 0, 0, .1);
-          }
-        }
-        &:hover{
+      .iconfont{
+        font-size: 20px;
+      }
+    }
+    .menu-item {
+      padding: 10px 0 10px 36px;
+      width: 140px;
+      height: 40px;
+      color: #4d4d4d;
+      font-size: 14px;
+      line-height: 22px;
+      border-radius: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      &.actived {
+        color: #1F78FF;
+        font-weight: bold;
+        &:hover {
           background-color: rgba(0, 0, 0, .1);
         }
       }
+      &:hover{
+        background-color: rgba(0, 0, 0, .1);
+      }
     }
   }
+}
 </style>

@@ -1,6 +1,6 @@
-$color-primary: #FF9000;
+$color-primary: #1F78FF;
 $color-danger: #FF4C4C;
-$color-info: #FFBB33;
+$color-info: #999999;
 $color-warning: #339AFF;
 $color-success: #40D659;
 $button-font-size: 14px;
@@ -65,31 +65,23 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
   &.el-button--default{
     &:hover{
-      border:1px solid rgba(255,144,0,0.4);
+      border:1px solid rgba(31, 120, 255, 0.4);
     }
     &:active{
-      border: 1px solid #FF9000;
+      border: 1px solid $color-primary;
     }
   }
   &.el-button--ghost{
     color:$default-font-color;
     border: transparent;
     &:hover{
-      background:rgba(255,144,0,0.1);
+      background:rgba(31, 120, 255, 0.1);
       color:$color-primary;
     }
     &:active{
-      background:rgba(255,144,0,0.2);
+      background:rgba(31, 120, 255, 0.2);
       color:$color-primary;
     }
-  }
-}
-
-/* 链接按钮(el-link) */
-.el-link {
-  .el-link--inner{
-    display: flex;
-    align-items: center;
   }
 }
 
@@ -187,16 +179,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       height: 8px;
     }
   }
-}
-
-.el-divider{
-  background: #e6e6e6;
-}
-.el-popover--plain {
-  padding: 0;
-}
-.el-popover {
-  padding: 0;
+  .el-dialog__close {
+    color: #4D4D4D;
+  }
 }
 
 .el-select {
@@ -213,6 +198,16 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       }
     }
   }
+}
+
+.el-divider{
+  background: #e6e6e6;
+}
+.el-popover--plain {
+  padding: 0;
+}
+.el-popover {
+  padding: 0;
 }
 
 .el-dialog__body {
