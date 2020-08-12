@@ -410,7 +410,7 @@ export default {
       }
     },
     showInfoDialog(row) {
-      this.$router.push({ path: `/achievement-company/detail/${row.id}` })
+      this.$router.push({ path: `/achievement-team/detail/${row.id}` })
     },
     showBelongDialog(row) {
       this.belongData = row;

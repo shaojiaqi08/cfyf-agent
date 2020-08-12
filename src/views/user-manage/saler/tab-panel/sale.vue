@@ -150,7 +150,7 @@
                         <template v-slot="{row}">
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
                                 <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
-                                <el-link type="primary" class="mr8" @click="modifyPwd(row)">修改密码</el-link>
+                                <el-link type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
                                 <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
@@ -168,7 +168,7 @@
                                     <el-link  @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
                                 </template>
                                 <div v-else class="flex">
-                                    <el-input size="small" v-model.trim="editName" class="mr8"></el-input>
+                                    <el-input size="small" v-model.trim="editName" class="mr8" @keyup.native.enter="submitTeamName"></el-input>
                                     <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
                             </div>
@@ -513,7 +513,7 @@
                     parent_id: ''
                 },
                 transferTeamRules: Object.freeze({
-                    parent_id: baseValiObj
+                    parent_id: {required: true, message: '请选择在哪个团队下挂靠'}
                 }),
                 positionData: [],
                 resignationDateRange: [],
@@ -808,7 +808,9 @@
                 const {searchModel} = this
                 getSalesList({...searchModel, team_id}).then(res => {
                     this.detailData = res
-                }).catch(() => {}).finally(() => {
+                }).catch(() => {
+
+                }).finally(() => {
                     this.detailLoading = false
                 })
             },

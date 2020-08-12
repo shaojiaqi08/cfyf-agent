@@ -44,15 +44,6 @@
           保单状态
           <span>{{ policyInfo.policy_status_str }}</span>
         </div>
-        <!-- <div>
-          支付状态
-          <span>-</span>
-        </div> -->
-        <!-- <div>
-          客户确认状态
-          <span>-</span>
-        </div> -->
-        <!-------------------------------->
         <div>
           投保时间
           <span>{{ formatDate(policyInfo.proposal_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
@@ -61,15 +52,11 @@
           承保时间
           <span>{{ formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
         </div>
-        <!-- <div>
-          确认时间
-          <span>-</span>
-        </div> -->
+        <!-------------------------------->
         <div>
           回访成功日期
           <span>-</span>
         </div>
-        <!-------------------------------->
         <div>
           过犹日期
           <span>{{ formatDate(policyInfo.over_hesitation_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
@@ -82,6 +69,7 @@
           缴费期限
           <span>{{ policyInfo.payment_period_desc || '-' }}</span>
         </div>
+        <!-------------------------------->
         <div>
           保障期限
           <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
