@@ -341,6 +341,9 @@ export default {
     };
   },
   methods: {
+    showInfoDialog(row) {
+      this.$router.push({ path: `/achievement-self/detail/${row.id}`})
+    },
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
