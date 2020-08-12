@@ -13,6 +13,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '/api': {
+        // target: 'http://cfyf_service.test:8000',
         target: 'http://cfyf.beta.2239.com',   //代理接口
         changeOrigin: true,
         pathRewrite: {
