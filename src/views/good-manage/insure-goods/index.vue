@@ -419,12 +419,10 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
-  .el-popover{
-    padding: 16px 20px;
-  }
-  .filter-popover{
-    padding: 0;
-  }
+::v-deep.el-popover{
+  padding: 16px 20px;
+}
+::v-deep.filter-popover{
+  padding: 0;
+}
 </style>
