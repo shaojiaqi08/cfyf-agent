@@ -97,6 +97,7 @@
           <card-table v-for="item in settingList"
                       :key="item.id"
                       :info="item"
+                      tableHeaderLabel="服务费率"
                       :editable="false"></card-table>
         </div>
       </el-scrollbar>

@@ -44,14 +44,14 @@
           保单状态
           <span>{{ policyInfo.policy_status_str }}</span>
         </div>
-        <div>
+        <!-- <div>
           支付状态
           <span>-</span>
-        </div>
-        <div>
+        </div> -->
+        <!-- <div>
           客户确认状态
           <span>-</span>
-        </div>
+        </div> -->
         <!-------------------------------->
         <div>
           投保时间
@@ -61,10 +61,10 @@
           承保时间
           <span>{{ formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
         </div>
-        <div>
+        <!-- <div>
           确认时间
           <span>-</span>
-        </div>
+        </div> -->
         <div>
           回访成功日期
           <span>-</span>

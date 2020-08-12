@@ -108,6 +108,7 @@
           <card-table v-for="item in settingList"
                       :key="item.id"
                       :info="item"
+                      tableHeaderLabel="佣金费率"
                       :editable="true"></card-table>
         </div>
       </el-scrollbar>

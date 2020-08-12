@@ -129,6 +129,9 @@ export default {
     },
     editable: {
       type: Boolean
+    },
+    tableHeaderLabel: {
+      type: String
     }
   },
   components: {
@@ -214,7 +217,7 @@ export default {
             const data = this.rowDataFormat(rules)
             return prev.concat(data);
           }, []);
-        this.tableHeader = [{ label: "佣金费率", key: "proportion" }];
+        this.tableHeader = [{ label: this.tableHeaderLabel, key: "proportion" }];
       } else {
         const targetSchemes = this.info.schemes.filter(i => i.stage == this.tabIndex);
         if (targetSchemes.length) {
