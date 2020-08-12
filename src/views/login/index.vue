@@ -23,7 +23,7 @@
             <el-input placeholder="请输入密码"
                       v-model.trim="password"
                       :type="`${isPasswordShow ? 'text' : 'password'}`"
-                      :suffix-icon="`iconfont fs14 ${isPasswordShow ? 'iconxiao16_dangqianchakan' : 'iconxiao16_dangqianyincang'}`"
+                      :suffix-icon="`iconfont passage-word-icon fs14 ${isPasswordShow ? 'iconxiao16_dangqianchakan' : 'iconxiao16_dangqianyincang'}`"
                       @focus="inputFocus"
                       @blur="inputBlur"></el-input>
           </div>
@@ -124,12 +124,12 @@ export default {
   margin: 18px auto;
   padding: 24px;
   width: 288px;
-  height: 280px;
+  height: 276px;
   // text-align: center;
   background-color: #fff;
   border-radius: 4px;
   .title {
-    text-align: center;
+    text-align: left;
     color: #1A1A1A;
     font-size: 28px;
     font-weight: bold;
@@ -146,6 +146,9 @@ export default {
       }
       .input {
         position: relative;
+        ::v-deep .passage-word-icon {
+          color: #4d4d4d;
+        }
         .click-block {
           position: absolute;
           width: 36px;
@@ -165,7 +168,7 @@ export default {
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 2px;
+            height: 1px;
             background-color: #E6E6E6;
           }
           &.focus:after {

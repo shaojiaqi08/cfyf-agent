@@ -41,7 +41,8 @@
         <div class="item">
           <div class="label">密码</div>
           <div class="value">
-            <el-button type="primary"
+            <el-button type="text"
+                       style="margin-right: -12px;"
                        @click="changePassword">
               <i class="iconfont iconxiao16_bianji"></i>
               修改密码
@@ -131,7 +132,8 @@
       width: 100%;
       background-color: #F5F5F5;
       color: #1A1A1A;
-      font-size: 20px;
+      font-size: 18px;
+      line-height: 1.6;
       font-weight: bold;
       border-bottom: 1px solid rgba(230,230,230,1);
     }
@@ -141,7 +143,9 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px;
+        padding: 14px;
+        font-weight: bold;
+        line-height: 1.45;
         .label {
           color: #999999;
         }

@@ -48,8 +48,8 @@ export default {
   left: 180px;
   right: 0;
   bottom: 0;
-  min-width: 1050px;
-  background-color: #e6e4e1;
+  min-width: 1240px;
+  background-color: #e1e3e6;
   & > ::v-deep .el-scrollbar__wrap > .el-scrollbar__view{
     height: 100%;
     & > div{

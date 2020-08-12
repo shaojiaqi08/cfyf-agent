@@ -69,6 +69,7 @@
   width: 100%;
   height: 40px;
   border-bottom: 1px solid #E6E6E6;
+  background-color: #e1e3e6;
   z-index: 2;
   .logo {
     width: 200px;

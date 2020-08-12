@@ -112,7 +112,7 @@
                     :disabled="true">
             {{ item.label }}
             <el-tooltip :content="item.desc" placement="top">
-              <i class="iconfont iconxiao16_gengduoxinxi" style="color:#ff9000"></i>
+              <i class="iconfont iconxiao16_gengduoxinxi" style="color:#1F78FF"></i>
             </el-tooltip>
           </el-radio>
         </el-radio-group>
@@ -621,7 +621,9 @@ export default {
       this.tableLoading = true
       callback()
       setTimeout(() => {
-        this.tableHeaderTopHack()
+        if (this.tabSelected != 1) {
+          this.tableHeaderTopHack()
+        }
         this.tableLoading = false
       }, 800)
     },
@@ -733,7 +735,7 @@ export default {
   }
   .copy-button {
     margin-right: 10px;
-    color: #ff9000;
+    color: #1F78FF;
     cursor: pointer;
   }
   .delete-button {
@@ -793,7 +795,7 @@ export default {
           & > span {
             font-size: 14px;
             font-weight: normal;
-            color: #ff9000;
+            color: #1F78FF;
             display: inline-flex;
             align-items: center;
           }

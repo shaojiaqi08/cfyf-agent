@@ -63,6 +63,7 @@
   left: 0;
   width: 160px;
   height: 1000px;
+  background-color: #e1e3e6;
   .menu-list {
     padding: 14px 0 20px 20px;
     height: 96vh;
