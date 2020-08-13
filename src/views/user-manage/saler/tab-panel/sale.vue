@@ -141,7 +141,7 @@
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="状态" prop="join_date" align="center" >
+                    <el-table-column label="状态" prop="join_date" align="center" width="150px">
                         <template v-slot="{row}">
                             <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                         </template>
@@ -201,7 +201,7 @@
                                     <span v-else>-</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态" prop="join_date" align="center" width="100px">
+                            <el-table-column label="状态" prop="join_date" align="center" width="150px">
                                 <template  v-slot="{row}">
                                     <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
@@ -230,7 +230,7 @@
                                     <span v-else>-</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="状态" prop="join_date" align="center"  width="100px">
+                            <el-table-column label="状态" prop="join_date" align="center"  width="150px">
                                 <template v-slot="{row}">
                                     <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                                 </template>
@@ -360,8 +360,8 @@
                     </div>
                 </div>
                 <el-form-item label="团队名称" prop="parent_id">
-                    <el-select filterable style="width: 100%" placeholder="团队" v-model="transferTeamFormModel.parent_id">
-                        <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
+                    <el-select filterable style="width: 100%" placeholder="团队" v-model="transferTeamFormModel.parent_id" :loading="dialogLoading">
+                        <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>
@@ -401,6 +401,7 @@
             modifyTeamName,
             getGroupSalesList,
             updateSalesPassword,
+            getTransferTeamSelData,
             transferTeam} from '@/apis/modules/user-manage'
     import {genSimulatedLink} from '@/apis/modules'
     import SideFilterList from '@/components/side-filter-list'
@@ -511,6 +512,7 @@
                     leader_ids: baseValiObj
                 }),
                 transferTeamDialogVisible: false,
+                transferTeamSelData: [],
                 transferTeamFormModel: {
                     parent_id: ''
                 },
@@ -552,6 +554,15 @@
             clearValue,
             hasValue,
             formatDate,
+            // 转移团队团队下拉数据
+            ajaxTransferTeamSelData() {
+                this.dialogLoading = true
+                getTransferTeamSelData({id: this.selTeam}).then(res => {
+                    this.transferTeamSelData = res
+                }).finally(() => {
+                    this.dialogLoading = false
+                })
+            },
             modifyPwd(row) {
                 this.targetRow = row
                 this.modifyPwdVisible = true
@@ -754,6 +765,7 @@
                 this.teamPeopleVisible = true
             },
             handleSetTeam() {
+                this.ajaxTransferTeamSelData()
                 this.transferTeamDialogVisible = true
             },
             submitSetTeam() {

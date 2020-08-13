@@ -68,6 +68,8 @@ export const setMember = (params) => post('/agent/proxy/sales/team/set-member', 
 export const transferTeam = (params) => post('/agent/proxy/sales/team/change-team-parent', params)
 // 更新状态
 export const updateSalesStatus = (params) => post('/agent/proxy/sales/update_account_status', params)
+// 转移团队-团队下拉数据
+export const getTransferTeamSelData = params => get('/agent/proxy/sales/team/transfer_team_select_list', params)
 
 // --------------------  职位 ------------------------------
 // 职位列表
