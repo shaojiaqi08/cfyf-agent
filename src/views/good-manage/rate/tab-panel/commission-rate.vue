@@ -88,8 +88,11 @@
         </div>
       </template>
       <template v-slot:list="{row}">
-        <div class="product-list-item">
+        <div class="product-list-item flex">
           <span>{{row.label}}</span>
+          <el-tooltip :content="row.tip_text" placement="top">
+            <span :style="{backgroundColor: row.color}"></span>
+          </el-tooltip>
         </div>
       </template>
     </side-filter-list>
@@ -375,6 +378,12 @@ export default {
       display: inline-block;
       flex: 1;
       padding-right: 8px;
+    }
+    & > span:last-of-type {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
     }
   }
   .detail-wrap {

@@ -120,6 +120,7 @@
 
 <style lang="scss">
 .popper-box {
+  padding: 0 !important;
   min-width: 120px !important;
   .menu-list {
     margin-top: 8px;

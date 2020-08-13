@@ -182,6 +182,7 @@ export default {
   }
 }
 .filter-popover {
+  padding: 0 !important;
   .inner-box {
     padding: 16px;
     &.noPadding {
