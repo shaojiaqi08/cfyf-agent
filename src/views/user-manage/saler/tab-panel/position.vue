@@ -288,7 +288,7 @@
             position: fixed;
             z-index: 3;
             top: 72.5px;
-            right: 32px;
+            right: 37px;
         }
         .right {
             flex: 1;

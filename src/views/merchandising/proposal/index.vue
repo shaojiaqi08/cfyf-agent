@@ -2,7 +2,7 @@
     <div class="prospectus-container">
         <div class="header">
             计划书
-            <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @input="search">
+            <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @input="search" size="small">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button type="primary" @click="addProposal">新建计划书</el-button>
+                    <el-button type="primary" @click="addProposal"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
@@ -282,6 +282,7 @@
                 }
                 .el-input__inner{
                     border-left: transparent;
+                    padding-left: 4px;
                     &:focus{
                         border-color: rgb(220, 223, 230);
                     }
@@ -297,6 +298,11 @@
                     display: flex !important;
                     align-items: center;
                     justify-content: center;
+                    &.actived{
+                        color:#1A1A1A;
+                        background: #f5f5f5;
+                        border-color: #e6e6e6;
+                    }
                 }
             }
 

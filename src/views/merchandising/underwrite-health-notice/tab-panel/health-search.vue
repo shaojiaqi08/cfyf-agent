@@ -16,7 +16,7 @@
                 :listData="productData"
         >
             <div slot="extraFilter">
-                <div class="flex-between pt16 pb16 pl16">
+                <div class="flex-between pt16 pb16 pl16 pr16">
                     <filter-shell v-model.trim="searchModel.notice" autoFocus @input="ajaxProductData">
                         <el-input v-model.trim="searchModel.notice" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
@@ -28,7 +28,7 @@
                                @click.stop="searchModel.notice = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.is_reverse" autoFocus autoClose :clearable="false">
+                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter" autoFocus autoClose :clearable="false">
                         <el-select v-model="searchModel.is_reverse"
                                    filterable
                                    @change="ajaxProductData"
@@ -206,6 +206,15 @@
         }
         .side-filter-container{
             border-right: 1px solid #e6e6e6;
+        }
+        ::v-deep .is-reverse-filter{
+            width: 100px;
+            .filter-item{
+                margin-right: 0;
+                width: initial;
+                border: none;
+                background: #fff;
+            }
         }
     }
 </style>

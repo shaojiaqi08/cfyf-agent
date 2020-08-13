@@ -138,9 +138,8 @@
           <div class="item-block">
             <div>
               佣金(元)
-              <span class="primary">
-                {{ statisticInfo.commission_expenses }}
-              </span>
+              <span v-if="!parseInt(statisticInfo.sales_position_commission)" class="primary">0</span>
+              <span v-else class="primary" v-to-fixed:[2]="statisticInfo.sales_position_commission">{{ statisticInfo.sales_position_commission }}</span>
             </div>
           </div>
           <div class="item-block">
@@ -233,14 +232,18 @@
                 stripe
                 v-table-infinite-scroll="scroll2Bottom"
                 v-loading="tableLoading">
-        <el-table-column label="产品名称" prop="product_name" align="center"></el-table-column>
-        <el-table-column label="保险公司" prop="supplier_name" align="center"></el-table-column>
+        <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="保险公司" prop="supplier_name" align="center" width="200px"></el-table-column>
         <el-table-column label="所属销售" prop="sales_real_name" align="center"></el-table-column>
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
-        <el-table-column label="保费" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="服务费" prop="service_fee" align="center"></el-table-column>
-        <el-table-column label="佣金" prop="commission" align="center"></el-table-column>
+        <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="佣金" prop="sales_position_commission" align="center" width="100px">
+          <template v-slot="{row}">
+            <span v-if="!parseInt(row.sales_position_commission)">0</span>
+            <span v-else v-to-fixed:[2]="row.sales_position_commission"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at" width="150px" align="center">
           <template slot-scope="{row}">
             {{ formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
@@ -267,9 +270,9 @@
             {{ formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
-        <el-table-column label="保单号" prop="policy_sn" align="center"></el-table-column>
-        <el-table-column label="投保单号" prop="proposal_sn" align="center"></el-table-column>
-        <el-table-column label="操作" prop fixed="right" width="100px">
+        <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
+        <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
+        <el-table-column label="操作" fixed="right" width="100px" align="center">
           <template slot-scope="{row}">
             <el-link type="primary" @click="showInfoDialog(row)">订单详情</el-link>
           </template>

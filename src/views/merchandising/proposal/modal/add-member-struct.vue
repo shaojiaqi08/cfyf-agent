@@ -29,7 +29,7 @@
                     :key="`${idx}${family.value}`"
                     :value="family.value"
                     :label="family.label"
-                    :disabled="(members.filter(i => i.relation === 'spouse').length > 0 && family.value === 'spouse') || family.value === 'self'">
+                    :disabled="family.value === 'self'">
           {{ family.label }}
         </el-option>
       </el-select>
@@ -53,7 +53,7 @@
       </el-date-picker>
       <div style="width: 80px;">
         {{ calcAge(item.birthday) || 0 }} 周岁
-        <i class="remove iconfont iconxiao_yuanxingguanbi fs16"
+        <i class="remove iconfont iconxiao16_yuanxingchahao fs16"
            v-if="index"
            @click="deleteMember(index)"></i>
       </div>
@@ -137,6 +137,12 @@ export default {
       done()
     },
     modalClose() {
+      this.customerName = ''
+      this.members = [{ relation: 'self',
+        sex: '1',
+        member_name: '',
+        birthday: ''
+      }]
       this.$emit('update:show', false)
       this.$emit('fresh')
     }

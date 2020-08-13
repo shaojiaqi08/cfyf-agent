@@ -65,7 +65,7 @@ export default {
 
 <style lang="scss" scoped>
 .material-item {
-  margin-bottom: 8px;
+  margin-bottom: 20px;
   background-color: #F5F5F5;
   border-radius: 4px;
   .title {

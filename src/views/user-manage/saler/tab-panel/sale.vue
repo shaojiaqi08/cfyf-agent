@@ -14,7 +14,7 @@
             >
                 <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam">
                     <i class="iconfont iconxiao16_jiahao mr4"></i>
-                    增加团队
+                    新增团队
                 </el-button>
             </side-filter-list>
         </div>

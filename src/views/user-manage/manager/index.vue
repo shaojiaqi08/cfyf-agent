@@ -19,7 +19,7 @@
             </side-filter-list>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
                 <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
-                <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper">
+                <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper" @tab-click="handleTabChange" size="small">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
                 </el-tabs>
@@ -265,6 +265,15 @@
         },
         methods: {
             formatDate,
+            handleTabChange() {
+                this[`${this.curTabIdx}TabHandle`]()
+            },
+            peopleTabHandle() {
+                this.managerData.length <= 0 && this.ajaxDetail(this.curSelRole)
+            },
+            permissionTabHandle() {
+                this.treeDetail.length <= 0 && this.ajaxTreeDetail()
+            },
             modifyPwd(row) {
                 this.targetRow = row
                 this.modifyPwdVisible = true
@@ -354,8 +363,11 @@
                 this.editPosDialogVisible = true
             },
             handleSelRole(obj) {
+                this.page = 1
+                this.curTabIdx = 'people'
+                this.treeDetail = []
+                this.managerData = []
                 this.ajaxDetail(obj)
-                this.ajaxTreeDetail()
             },
             submitModifyPermission() {
                 const permission_ids = []
@@ -645,7 +657,7 @@
                         height:56px;
                         line-height: 56px;
                         padding: 0 16px;
-                        margin: 16px 0;
+                        margin: 0 0 16px 0;
                         background:rgba(245,245,245,1);
                         border-radius:4px;
                         border:1px solid rgba(230,230,230,1);

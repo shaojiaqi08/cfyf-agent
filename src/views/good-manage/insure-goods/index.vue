@@ -124,7 +124,7 @@
       </div>
     </div>
     <el-dialog title="售前告知" :visible.sync="notifyVisible" width="480px">
-      <div class="pb20" ref="notifyContent">
+      <div class="pb20 fs14" style="line-height: 1.45" ref="notifyContent">
         {{notifyText}}
       </div>
       <div slot="footer" class="flex-center">
@@ -133,11 +133,11 @@
                    v-clipboard:copy="notifyText"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="下载保存责任保险图片" :visible.sync="picVisible" width="480px">
+    <el-dialog title="下载保存保险责任图片" :visible.sync="picVisible" width="480px">
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
         <el-button type="primary"
-             @click="download"><i class="iconfont iconxiao16_fuzhi mr4"></i>下载保存责任保险图片</el-button>
+             @click="download"><i class="iconfont iconxiao16_xiazai mr4"></i>下载保险责任图片</el-button>
       </div>
     </el-dialog>
   </div>
@@ -344,9 +344,16 @@ export default {
   }
   .left-filter-list {
     width: 884px;
-    ::v-deep .el-scrollbar .list-item:first-of-type{
-      border-top: transparent;
+    ::v-deep .el-scrollbar {
+      .list-item{
+        border-bottom: 1px solid #e6e6e6;
+        padding: 16px;
+      }
+      .list-item:first-of-type{
+        border-top: transparent;
+      }
     }
+
   }
   & ::v-deep .el-scrollbar {
     height: calc(100vh - 78px);
