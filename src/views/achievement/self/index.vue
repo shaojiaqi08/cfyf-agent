@@ -265,7 +265,7 @@
         <el-table-column label="被保人" prop="policy_recognizee_name" align="center"></el-table-column>
         <el-table-column label="保额" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
-        <el-table-column label="保障日期" prop="guarantee_period_desc" align="center">
+        <el-table-column label="保障期限" prop="guarantee_period_desc" align="center">
           <template slot-scope="{row}">
             {{ row.guarantee_period_desc && formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
           </template>
