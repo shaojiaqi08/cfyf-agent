@@ -2,7 +2,8 @@
   <div class="menu">
     <el-scrollbar class="menu-list scrollbar">
       <div v-for="item in routers"
-           :key="item.label">
+           :key="item.label"
+           class="mb24">
         <div class="menu-header">
           <i class="mr8 iconfont" :class="[item.icon]"></i>
           {{ item.label }}
@@ -65,16 +66,17 @@
   height: 1000px;
   background-color: #e1e3e6;
   .menu-list {
-    padding: 14px 0 20px 20px;
+    padding: 20px 0 20px 20px;
     height: 96vh;
+    .mb24 {
+      margin-bottom: 24px;
+    }
     .menu-header {
-      margin-top: 24px;
       margin-bottom: 8px;
       padding: 3px 8px;
       width: 140px;
       color: #4D4D4D;
       font-size: 16px;
-      font-weight: bold;
       display: flex;
       align-items: center;
       &:first-child {

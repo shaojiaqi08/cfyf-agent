@@ -2,7 +2,7 @@
     <div :class="`side-filter-container ${customClass}`">
         <div class="search-bar" v-if="showFilter">
             <el-input size="small"
-                      prefix-icon="el-icon-search"
+                      prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                       :placeholder="placeholder"
                       v-model.trim="keyword"
                       @input="updateFilter"

@@ -3,7 +3,7 @@
     <div class="flex-between">
       <span class="flex-between">
         <el-tag
-          class="mr20"
+          class="mr16"
           :type="effectStatus.find(i => i.value === info.effect_status).tag"
         >{{ info.effect_status_name }}</el-tag>
         <span class="flex-center">
@@ -21,7 +21,7 @@
       </span>
     </div>
     <div class="table-body">
-      <el-tabs v-model="tabIndex">
+      <el-tabs v-model="tabIndex" class="small-tabs">
         <el-tab-pane
           v-for="(item) in tabs"
           :key="item.value"
@@ -82,19 +82,20 @@
           </span> -->
         </div>
         <div v-if="editable">
-          <el-button type="plain"
+          <el-button type="ghost"
                      @click="remove"
                      v-if="info.effect_status === effectStatusKeys.PENDING">
             <i class="iconfont iconxiao16_lajitong mr4"></i>
             删除
           </el-button>
           <el-button type="plain"
-                     style="margin: 0 6px 0 16px"
+                     style="margin: 0 0 0 16px"
                      @click="copyRules">
             <i class="iconfont iconxiao16_fuzhi mr4"></i>
             复制
           </el-button>
           <el-button type="plain"
+                     style="margin-left: 16px"
                      v-if="info.effect_status === effectStatusKeys.PENDING"
                      @click="editRules">
             <i class="iconfont iconxiao16_bianji mr4"></i>
@@ -244,16 +245,43 @@ export default {
       }
     },
     remove() {
-      this.$confirm("是否确认删除？删除后不可恢复。", "提示")
-        .then(() => {
-          const data = { id: this.info.id }
-          deleteCompanyCommission(data).then(() => {
-            this.$root.$emit('updateList')
-          })
+      const h = this.$createElement
+      this.$msgbox({
+        title: '提示',
+        message: h('p', null, [
+          h('i', { class: {
+              iconfont: true,
+              'iconzhong20_gantanhao': true
+            },
+            style: {
+              color: 'red',
+              marginRight: '10px'
+            }
+          }),
+          h('span', null, '是否确认删除？删除后不可恢复。')
+        ]),
+        confirmButtonClass: 'el-button--danger',
+        showCancelButton: true
+      })
+      .then(() => {
+        const data = { id: this.info.id }
+        deleteCompanyCommission(data).then(() => {
+          this.$root.$emit('updateList')
         })
-        .catch(() => {
+      })
+      .catch(() => {
+        
+      });
+      // this.$confirm("是否确认删除？删除后不可恢复。", "提示")
+      //   .then(() => {
+      //     const data = { id: this.info.id }
+      //     deleteCompanyCommission(data).then(() => {
+      //       this.$root.$emit('updateList')
+      //     })
+      //   })
+      //   .catch(() => {
           
-        });
+      //   });
     }
   }
 };
@@ -265,6 +293,9 @@ export default {
   padding: 16px;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
+  &:first-child {
+    margin-top: 0;
+  }
   .add-time {
     color: #ccc;
   }

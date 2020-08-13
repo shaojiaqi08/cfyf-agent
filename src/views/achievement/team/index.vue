@@ -8,7 +8,7 @@
                   size="small"
                   clearable
                   @input="searchModelChange">
-          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
     </div>
@@ -410,7 +410,9 @@ export default {
       }
     },
     showInfoDialog(row) {
-      this.$router.push({ path: `/achievement-team/detail/${row.id}` })
+      let routeUrl = this.$router.resolve(`/achievement-team/detail/${row.id}`)
+      window.open(routeUrl.href, '_blank')
+      // this.$router.push({ path: `/achievement-team/detail/${row.id}` })
     },
     showBelongDialog(row) {
       this.belongData = row;

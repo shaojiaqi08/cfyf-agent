@@ -1,7 +1,7 @@
 <template>
     <div class="rate-container">
         <div class="header">
-            <el-tabs v-model="tabIndex">
+            <el-tabs class="tabs" v-model="tabIndex">
                 <el-tab-pane name="server-rate" label="服务费率"></el-tab-pane>
                 <el-tab-pane name="commission-rate" label="佣金费率"></el-tab-pane>
             </el-tabs>
@@ -45,12 +45,15 @@
         flex-direction: column;
         box-sizing: border-box;
         .header{
-            padding: 16px 0 0 16px;
+            padding: 16px 0 0;
             height: 56px;
             background: #F5F5F5;
             border-radius: 4px 4px 0px 0px;
             border: 1px solid #E6E6E6;
             position: relative;
+            .tabs {
+                padding-left: 18px;
+            }
             .el-button{
                 position: absolute;
                 top:12px;

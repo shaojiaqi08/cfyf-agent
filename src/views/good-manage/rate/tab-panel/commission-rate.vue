@@ -96,6 +96,7 @@
     <div class="detail-wrap">
       <div class="head">
         <p>佣金费率记录</p>
+        {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <el-button type="primary"
                    v-if="selProductVal"
                    @click="openRateDialog">
@@ -325,7 +326,7 @@ export default {
     justify-content: space-around;
     margin-bottom: 16px;
     ::v-deep .filter-bar .filter-item {
-      width: 96px;
+      // width: 96px;
       text-align: center;
       margin-right: 0;
     }
