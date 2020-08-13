@@ -246,18 +246,18 @@
         </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at" width="150px" align="center">
           <template slot-scope="{row}">
-            {{ formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
+            {{ row.proposal_at && formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="承保时间" prop="policy_at" width="150px" align="center">
           <template slot-scope="{row}">
-            {{ formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
+            {{ row.policy_at && formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="回访成功日期" prop="" width="150px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at" width="150px" align="center">
           <template slot-scope="{row}">
-            {{ formatDate(row.over_hesitation_at * 1000, 'yyyy-MM-dd') }}
+            {{ row.over_hesitation_at && formatDate(row.over_hesitation_at * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
@@ -267,7 +267,7 @@
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障日期" prop="guarantee_period_desc" align="center">
           <template slot-scope="{row}">
-            {{ formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
+            {{ row.guarantee_period_desc && formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
