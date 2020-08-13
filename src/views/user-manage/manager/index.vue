@@ -187,9 +187,11 @@
     import PermissionTree from '@/components/permission-tree'
     import SideFilterList from '@/components/side-filter-list'
     import ModifyPasswordDialog from '../component/modify-password-dialog'
+    import validatorMixin from "../validatorMixin";
 
     export default {
         name: 'manager',
+        mixins: [validatorMixin],
         components: {PermissionTree, SideFilterList, ModifyPasswordDialog},
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
@@ -223,7 +225,7 @@
                 },
                 editRules: Object.freeze({
                     real_name: baseValiObj,
-                    username: baseValiObj,
+                    username: [baseValiObj, {validator: this.usernameValidator}],
                     position_id: baseValiObj,
                     mobile: [baseValiObj, {validator: this.moblieValidator}],
                     email: [baseValiObj, {validator: this.emailValidator}],
@@ -543,33 +545,6 @@
                 }).finally(() => {
                     this.rightLoading = false
                 })
-            },
-            comparePwdValidator(rule, value, callback) { // eslint-disable-line
-                const {password, confirm_password} = this.editFormModel
-                if (!password || !confirm_password) {
-                    return callback()
-                } else if(password !== confirm_password) {
-                    return callback(new Error('确认密码必须跟密码一致'))
-                }
-                return callback()
-            },
-            pwdValidator(rule, value, callback) {
-                if (value.length < 6) {
-                    return callback(new Error('密码至少是6位任意字符'))
-                }
-                callback()
-            },
-            emailValidator(rule, value, callback) { // eslint-disable-line
-                if(!/^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/.test(value)) {
-                    return callback(new Error('请输入正确的email格式'))
-                }
-                callback()
-            },
-            moblieValidator(rule, value, callback) { // eslint-disable-line
-                if (!/^1[3456789]\d{9}$/.test(value)) {
-                    return callback(new Error('请输入正确的手机格式'))
-                }
-                callback()
             },
             resetEditForm() {
                 this.editFormModel = this.$options.data().editFormModel
