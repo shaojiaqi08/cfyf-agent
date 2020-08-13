@@ -18,6 +18,8 @@ export const getInsureCpsList = (data) => get('/agent/proxy/product/distribution
 // 详情
 export const getInsureDetail = data => get('/agent/proxy/policy/detail', data)
 
+// 显示管理员角色的职位列表
+export const getPositionsWithAdminRoles = (data) => get('/agent/proxy/sales_position/positions_with_admin_roles', data)
 // 公司产品列表（带服务费规则状态）
 export const getProductListOfCompany = (data) => get('/agent/proxy/company-commission/product_list_of_company', data)
 // 规则列表

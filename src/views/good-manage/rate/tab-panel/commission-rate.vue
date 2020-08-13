@@ -131,7 +131,7 @@ import cardTable from "../component/card-table";
 import RateSettingDialog from "../component/rate-setting-dialog";
 import FilterShell, { hasValue } from "@/components/filters/filter-shell";
 import {
-  getSalesPositionList,
+  getPositionsWithAdminRoles,
   getProductsOfPosition,
   getCommissionSettingList
 } from "@/apis/modules/good-manage";
@@ -261,7 +261,7 @@ export default {
       this.positionLoading = true;
       this.productList = [];
       this.settingList = [];
-      getSalesPositionList()
+      getPositionsWithAdminRoles()
         .then(res => {
           this.positionList = res.map(i => {
             return {
