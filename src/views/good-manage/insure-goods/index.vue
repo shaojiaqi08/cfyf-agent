@@ -4,7 +4,7 @@
       保险商品
       <div class="flex-between">
         <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable @input="debounceAjaxListData">
-          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
     </div>

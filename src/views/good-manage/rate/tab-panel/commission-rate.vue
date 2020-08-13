@@ -88,14 +88,18 @@
         </div>
       </template>
       <template v-slot:list="{row}">
-        <div class="product-list-item">
+        <div class="product-list-item flex">
           <span>{{row.label}}</span>
+          <el-tooltip :content="row.tip_text" placement="top">
+            <span :style="{backgroundColor: row.color}"></span>
+          </el-tooltip>
         </div>
       </template>
     </side-filter-list>
     <div class="detail-wrap">
       <div class="head">
         <p>佣金费率记录</p>
+        {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <el-button type="primary"
                    v-if="selProductVal"
                    @click="openRateDialog">
@@ -127,7 +131,7 @@ import cardTable from "../component/card-table";
 import RateSettingDialog from "../component/rate-setting-dialog";
 import FilterShell, { hasValue } from "@/components/filters/filter-shell";
 import {
-  getSalesPositionList,
+  getPositionsWithAdminRoles,
   getProductsOfPosition,
   getCommissionSettingList
 } from "@/apis/modules/good-manage";
@@ -257,7 +261,7 @@ export default {
       this.positionLoading = true;
       this.productList = [];
       this.settingList = [];
-      getSalesPositionList()
+      getPositionsWithAdminRoles()
         .then(res => {
           this.positionList = res.map(i => {
             return {
@@ -325,7 +329,7 @@ export default {
     justify-content: space-around;
     margin-bottom: 16px;
     ::v-deep .filter-bar .filter-item {
-      width: 96px;
+      // width: 96px;
       text-align: center;
       margin-right: 0;
     }
@@ -374,6 +378,12 @@ export default {
       display: inline-block;
       flex: 1;
       padding-right: 8px;
+    }
+    & > span:last-of-type {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
     }
   }
   .detail-wrap {

@@ -40,6 +40,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 /* 按钮(button) */
 .el-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 72px;
   padding: 0 12px;
   box-sizing: border-box;
@@ -57,7 +60,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
       vertical-align: middle;
     }
   }
-  &.el-button--small, &.el-button--medium{
+  &.el-button--medium{
+    height: 36px;
+  }
+  &.el-button--small{
     height: 32px;
   }
   &.el-button--mini{
@@ -69,6 +75,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     }
     &:active{
       border: 1px solid $color-primary;
+    }
+  }
+  &.el-button--danger{
+    &:hover{
+      border:1px solid rgba(255, 76, 76, .4);
+    }
+    &:active{
+      border: 1px solid rgba(255, 76, 76, .4);
     }
   }
   &.el-button--ghost{
@@ -126,10 +140,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 /* 选项卡(tabs)*/
 .el-tabs{
+  // padding: 0 18px;
   .el-tabs__active-bar{
     border-radius: 1px;
   }
   .el-tabs__item{
+    padding: 0 18px;
     height: 32px;
     line-height: 24px;
     font-size: 16px;
@@ -141,6 +157,14 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     height: 26px;
     line-height: 20px;
     font-size: 14px;
+    padding: 0 12px;
+  }
+  &.small-tabs .el-tabs__item {
+    height: 28px;
+    font-size: 14px;
+  }
+  &.small-tabs {
+    padding-left: 0;
   }
 }
 
@@ -200,6 +224,10 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
   }
 }
 
+.el-table__row.hover-row {
+  // background-color: #E5E5E5;
+}
+
 .el-divider{
   background: #e6e6e6;
 }
@@ -212,8 +240,12 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 .el-dialog__body {
   padding: 20px;
+  .el-form-item:last-child {
+    margin-bottom: 0;
+  }
 }
 .el-dialog__footer {
+  margin-top: 20px;
   padding: 0 20px 20px;
 }
 .el-dialog__header {
@@ -230,6 +262,18 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 }
 .el-message-box__wrapper {
   z-index: 10000000 !important;
+  .el-message-box {
+    padding-bottom: 0;
+    .el-message-box__header {
+      padding: 20px 20px 0;
+    }
+    .el-message-box__content {
+      padding: 20px;
+    }
+    .el-message-box__btns {
+      padding: 0 20px 20px;
+    }
+  }
 }
 
 // .el-scrollbar__wrap {

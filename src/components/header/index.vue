@@ -3,7 +3,7 @@
     <div class="logo normal-transition"></div>
     <el-popover
             placement="bottom"
-            width="80"
+            width="120"
             v-model="isPopoverShow"
             popper-class="popper-box"
             trigger="click">
@@ -120,12 +120,15 @@
 
 <style lang="scss">
 .popper-box {
-  color: red;
+  padding: 0 !important;
+  min-width: 120px !important;
   .menu-list {
     margin-top: 8px;
     .menu-list-item {
       display: flex;
       justify-content: center;
+      width: 100%;
+      margin: 0 auto;
       align-items: center;
       white-space: nowrap;
       padding: 18px;

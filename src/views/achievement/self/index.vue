@@ -8,7 +8,7 @@
                   size="small"
                   clearable
                   @input="searchModelChange">
-          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
     </div>
@@ -345,7 +345,9 @@ export default {
   },
   methods: {
     showInfoDialog(row) {
-      this.$router.push({ path: `/achievement-self/detail/${row.id}`})
+      let routeUrl = this.$router.resolve(`/achievement-self/detail/${row.id}`)
+      window.open(routeUrl.href, '_blank')
+      // this.$router.push({ path: `/achievement-self/detail/${row.id}`})
     },
     scroll2Bottom() {
       const {page, page_size, total} = this
