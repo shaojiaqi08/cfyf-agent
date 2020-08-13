@@ -53,8 +53,8 @@
                 :value="item.id"
             ></el-option>
         </el-select>
-        <div class="mt8 mb8 flex-between">
-          查看子团队
+        <div class="mt20 mb10 flex-between">
+          包含子团队
           <el-switch  style="float: right" v-model="searchModel.include_child_team"></el-switch>
         </div>
         <template v-slot:label>
@@ -285,12 +285,12 @@
         </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at" width="150px" align="center">
           <template slot-scope="{row}">
-            {{ row.proposal_at && formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
+            {{row.proposal_at && formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="承保时间" prop="policy_at" width="150px" align="center">
           <template slot-scope="{row}">
-            {{ row.policy_at && formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
+            {{row.policy_at && formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
           </template>
         </el-table-column>
         <el-table-column label="回访成功日期" prop="" width="150px" align="center"></el-table-column>
