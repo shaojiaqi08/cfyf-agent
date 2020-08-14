@@ -373,8 +373,7 @@ export default {
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0',
-      },
-      maxHeight: null
+      }
     };
   },
   methods: {
@@ -507,17 +506,6 @@ export default {
         this.supplierList = res
       })
       .catch(err => console.log(err))
-    },
-    setMaxHeight() {
-      this.maxHeight = this.$refs.content.offsetHeight - 158
-    },
-    handleResize() {
-      const func = debounce(() => {
-        this.checkNeedScroll()
-        this.setMaxHeight()
-      }, 300)
-      func()
-      this.handleResize = func
     }
   },
   watch: {
@@ -539,13 +527,6 @@ export default {
     this.getSalesTeamData()
     this.getAllProducts()
     this.getSupplierList()
-  },
-  mounted() {
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize);
   }
 };
 </script>

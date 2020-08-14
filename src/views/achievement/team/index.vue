@@ -345,8 +345,7 @@ export default {
         supplier_id: [],
         product_insurance_class: [],
         date_range: []
-      },
-      maxHeight: null
+      }
     };
   },
   methods: {
@@ -467,17 +466,6 @@ export default {
       getSalesData().then(res => {
         this.salesList = res
       }).catch(err => console.log(err))
-    },
-    setMaxHeight() {
-      this.maxHeight = this.$refs.content.offsetHeight - 158
-    },
-    handleResize() {
-      const func = debounce(() => {
-        this.checkNeedScroll()
-        this.setMaxHeight()
-      }, 300)
-      func()
-      this.handleResize = func
     }
   },
   created() {
@@ -486,13 +474,6 @@ export default {
     this.getAllProducts()
     this.getSupplierList()
     this.getSalesData()
-  },
-  mounted() {
-    this.handleResize()
-    window.addEventListener('resize', this.handleResize)
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
   }
 };
 </script>
