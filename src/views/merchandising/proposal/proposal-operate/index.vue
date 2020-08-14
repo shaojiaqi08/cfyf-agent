@@ -1179,7 +1179,7 @@ export default {
               total_premium: product.premium,
               product_id: 0,
               product_name: product.product_name,
-              supplier_name: null,
+              supplier_name: product.supplier_name,
               source_category_id: product.source_category_id,
               proposal_product_guarantee_content: product.proposal_product_guarantee_content,
               category_icon: product.category_icon,
@@ -1193,7 +1193,7 @@ export default {
             try {
               let response = await getCost(item)
               let insurances = response.insurances.filter(
-                item => item.select_status === 1
+                      item => item.select_status === 1
               )
               this.productsSelected[tabIndex].push({
                 source: product.source,
@@ -1212,26 +1212,24 @@ export default {
                   coverage: i.coverage,
                   type: i.type,
                   coverageText: i.coverages
-                    ? i.coverages.filter(y => +y.value === +i.coverage)[0]
-                        .value_text
-                    : ''
+                          ? i.coverages.filter(y => +y.value === +i.coverage)[0]
+                                  .value_text
+                          : ''
                 })),
                 guarantee_responsibilities: insurances
-                  .filter(i => i.guarantee_responsibilities)
-                  .reduce((prev, next) => {
-                    return prev.concat(
-                      next.guarantee_responsibilities.map(
-                        y => `${y.name}: ${y.value_text}`
-                      )
-                    )
-                  }, []),
+                        .filter(i => i.guarantee_responsibilities)
+                        .reduce((prev, next) => {
+                          return prev.concat(
+                                  next.guarantee_responsibilities.map(
+                                          y => `${y.name}: ${y.value_text}`
+                                  )
+                          )
+                        }, []),
                 total_premium: response.total_premium
               })
 
               this.totalSum = (response.total_premium + this.totalSum).toFixed(2)
-            } catch (error) {
-              console.log(error)
-            }
+            } catch (error) {console.log(error)}
           }
 
           itemIndex += 1

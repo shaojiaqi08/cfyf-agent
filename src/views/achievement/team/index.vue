@@ -258,16 +258,8 @@
             <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
           </template>
         </el-table-column>
-        <el-table-column label="投保时间" prop="proposal_at" align="center" width="150px">
-          <template slot-scope="{row}">
-            {{ row.proposal_at && formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}
-          </template>
-        </el-table-column>
-        <el-table-column label="承保时间" prop="policy_at" width="150px" align="center">
-          <template slot-scope="{row}">
-            {{ row.policy_at && formatDate(row.policy_at * 1000, 'yyyy-MM-dd') }}
-          </template>
-        </el-table-column>
+        <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="180px"></el-table-column>
+        <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
          <el-table-column label="回访成功日期" prop="" width="150px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at" width="150px" align="center">
           <template slot-scope="{row}">

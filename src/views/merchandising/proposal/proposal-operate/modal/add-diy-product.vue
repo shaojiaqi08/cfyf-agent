@@ -31,6 +31,7 @@
           <el-input class="form-medium-input"
                     placeholder="请输入保额"
                     type="number"
+                    @change="formdata.guarantee_quota_value < 0 && (formdata.guarantee_quota_value = '')"
                     v-model="formdata.guarantee_quota_value"></el-input>
           <el-select class="form-small-select"
                      v-model="formdata.guarantee_quota_unit"
@@ -44,6 +45,7 @@
         <el-form-item label="缴费年限" prop="pay_period_value">
           <el-input class="form-medium-input"
                     type="number"
+                    @change="formdata.pay_period_value < 0 && (formdata.pay_period_value = '')"
                     :disabled="formdata.pay_period_unit == 5"
                     v-model="formdata.pay_period_value"
                     placeholder="请输入缴费年限"></el-input>
@@ -60,6 +62,7 @@
         <el-form-item label="保障期限" prop="guarantee_period_value">
           <el-input class="form-medium-input"
                     type="number"
+                    @change="formdata.guarantee_period_value < 0 && (formdata.guarantee_period_value = '')"
                     :disabled="formdata.guarantee_period_unit == 6"
                     v-model="formdata.guarantee_period_value"
                     placeholder="请输入保障期限"></el-input>
@@ -76,6 +79,7 @@
         <el-form-item label="保费(元)" prop="premium">
           <el-input class="form-input"
                     type="number"
+                    @change="formdata.premium < 0 && (formdata.premium = '')"
                     v-model="formdata.premium"
                     placeholder="请输入保费"></el-input>
         </el-form-item>

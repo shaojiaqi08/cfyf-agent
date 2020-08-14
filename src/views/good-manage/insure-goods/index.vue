@@ -100,17 +100,18 @@
               </div>
             </div>
             <div class="flex-between">
-              <span>{{row.min_price}}&nbsp;元起</span>
+              <span>{{row.isCpsData ? '' : `${row.min_price} 元起`}}&nbsp;</span>
               <div class="flex">
                 <el-link v-if="row.duty_pic_url"
                          type="primary"
                          :underline="false"
-                         class="mr20"
                          @click="handleViewPic(row.duty_pic_url)">
                   <i class="iconfont iconxiao16_baoxianzeren mr4"></i>保险责任
                 </el-link>
-                <el-link v-if="row.inquiry_info" type="primary"
+                <el-link v-if="row.inquiry_info"
+                         type="primary"
                          :underline="false"
+                         class="ml20"
                         @click="handleNotify(row.inquiry_info)">
                   <i class="iconfont iconxiao16_shouqiangaozhi  mr4"></i>售前告知
                 </el-link>
@@ -227,7 +228,8 @@ export default {
             ...i,
             title: i.share_title,
             duty_pic_url: i.share_cover,
-            web_url: i.link
+            web_url: i.link,
+            isCpsData: true
           }))]
         }).finally(() => {
           this.loading = false

@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import {login, getUserDetail} from '@/apis/modules/index'
+import {login, getUserDetail, simulatedLogin} from '@/apis/modules/index'
 import {mapActions} from 'vuex'
 export default {
   data() {
@@ -85,12 +85,23 @@ export default {
       this.isPasswordShow = !this.isPasswordShow
     },
     handleEnter(e) {
-      if (e.keyCode === 13 && this.username && this.password) {
+      const {submitting, username, password} = this
+      if (e.keyCode === 13 && !submitting && username && password) {
         this.login()
       }
     }
   },
   created() {
+    const query = this.$route.query
+    if (query._sign) {
+      this.submitting = true
+      simulatedLogin(query).then(res => {
+        this.updateUserInfo(res)
+        this.$router.replace('/user-info')
+      }).finally(() => {
+        this.submitting = false
+      })
+    }
     document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {

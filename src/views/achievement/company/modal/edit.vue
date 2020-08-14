@@ -44,7 +44,7 @@
           </el-col>
         </el-row>
       </div>
-      <el-form label-width="100px">
+      <el-form label-width="70px">
         <el-form-item label="归属成员">
           <el-select placeholder="请选择此订单归属的成员"
                      v-model="formdata.member">

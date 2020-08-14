@@ -46,11 +46,11 @@
         </div>
         <div>
           投保时间
-          <span>{{ policyInfo.proposal_at ? formatDate(policyInfo.proposal_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-' }}</span>
+          <span>{{policyInfo.proposal_at_str || '-' }}</span>
         </div>
         <div>
           承保时间
-          <span>{{policyInfo.policy_at ? formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-'}}</span>
+          <span>{{ policyInfo.policy_at_str || '-' }}</span>
         </div>
         <!-------------------------------->
         <div>
