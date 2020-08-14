@@ -1,5 +1,5 @@
 <template>
-    <div class="rate-container">
+    <div class="rate-container page-container">
         <div class="header">
             <el-tabs class="tabs" v-model="tabIndex">
                 <el-tab-pane name="server-rate" label="服务费率"></el-tab-pane>
@@ -40,7 +40,7 @@
 
 <style scoped lang="scss">
     .rate-container{
-        padding: 16px;
+        // padding: 16px;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;

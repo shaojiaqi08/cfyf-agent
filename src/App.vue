@@ -2,12 +2,12 @@
   <div id="app">
     <Header v-if="$route.meta.header"></Header>
     <Menu v-if="$route.meta.menu"></Menu>
-    <el-scrollbar class="cover scrollbar"
-                  :style="coverStyle">
-      <transition name="page-fade" mode="out-in">
+    <div class="cover" :style="coverStyle">
+      <transition name="page-fade"
+                  mode="out-in">
         <router-view  />
       </transition>
-    </el-scrollbar>
+    </div>
   </div>
 </template>
 
@@ -48,14 +48,14 @@ export default {
   left: 180px;
   right: 0;
   bottom: 0;
-  min-width: 1240px;
+  min-width: 1280px;
   background-color: #e1e3e6;
-  & > ::v-deep .el-scrollbar__wrap > .el-scrollbar__view{
-    height: 100%;
-    & > div{
-      height: 100%
-    }
-  }
+  // & > ::v-deep .el-scrollbar__wrap > .el-scrollbar__view{
+  //   height: 100%;
+  //   & > div{
+  //     height: 100%
+  //   }
+  // }
 }
 .page-fade-enter-active, .page-fade-leave-active {
   transition: opacity .3s ease;

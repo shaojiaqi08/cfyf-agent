@@ -1,5 +1,5 @@
 <template>
-    <div class="health-notice-container">
+    <div class="health-notice-container page-container">
         <div class="header">
             <el-tabs v-model="tabIndex">
                 <el-tab-pane name="proposal" label="计划书"></el-tab-pane>

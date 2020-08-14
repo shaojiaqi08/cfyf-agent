@@ -1,5 +1,5 @@
 <template>
-  <div class="order-container">
+  <div class="order-container page-container">
     <div class="header">
       团队业绩
       <div class="flex-between">
@@ -243,7 +243,7 @@
         ></el-button>
       </div>
       <el-table :data="list"
-                :max-height="maxHeight"
+                height="calc(100vh - 260px)"
                 border
                 stripe
                 v-table-infinite-scroll="scroll2Bottom"
@@ -355,9 +355,10 @@ export default {
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
+        this.tableLoading = true
         this.page += 1
-        this.getCompanyPolicyList()
-        this.getCompanyPolicyStatistics()
+        this.getTeamPolicyList()
+        this.getTeamPolicyStatistics()
       }
     },
     searchModelChange() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="manager-container">
+    <div class="manager-container page-container">
         <div class="header">
             内部管理员
             <el-button type="primary" @click="addManager"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>

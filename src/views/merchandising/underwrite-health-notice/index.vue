@@ -1,5 +1,5 @@
 <template>
-    <div class="health-notice-container">
+    <div class="health-notice-container page-container">
         <div class="header">
             <el-tabs v-model="tabIndex">
                 <el-tab-pane name="underwrite-search" label="核保查询"></el-tab-pane>

@@ -1,5 +1,5 @@
 <template>
-    <div class="product-compare-container">
+    <div class="product-compare-container page-container">
         <div class="header">
             产品对比
             <div class="flex-between">

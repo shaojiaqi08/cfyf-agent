@@ -1,5 +1,5 @@
 <template>
-  <div class="order-container">
+  <div class="order-container page-container">
     <div class="header">
       我的业绩
       <div class="flex-between">
@@ -227,7 +227,7 @@
         ></el-button>
       </div>
       <el-table :data="list"
-                :max-height="maxHeight"
+                height="calc(100vh - 260px)"
                 border
                 stripe
                 v-table-infinite-scroll="scroll2Bottom"
@@ -344,6 +344,7 @@ export default {
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
+        this.tableLoading = true
         this.page += 1
         this.getSelfPolicyList()
         this.getSelfPolicyStatistics()

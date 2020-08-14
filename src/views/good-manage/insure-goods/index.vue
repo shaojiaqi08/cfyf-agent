@@ -1,5 +1,5 @@
 <template>
-  <div class="insure-goods-container">
+  <div class="insure-goods-container page-container">
     <div class="header">
       保险商品
       <div class="flex-between">

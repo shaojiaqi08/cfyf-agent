@@ -1,5 +1,5 @@
 <template>
-    <div class="sale-container">
+    <div class="sale-container page-container">
         <div class="header">
             <el-tabs v-model="curTabIdx">
                 <el-tab-pane name="sale-pane" label="销售人员"></el-tab-pane>

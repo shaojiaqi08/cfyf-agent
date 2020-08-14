@@ -679,3 +679,12 @@ img {
     overflow-x: hidden;
   }
 }
+
+.page-container {
+  padding: 20px 20px 0 20px;
+  height: calc(100vh - 40px);
+  .scroll-container {
+    padding: 16px 6px 16px 16px;
+    background-color: #fff;
+  }
+}

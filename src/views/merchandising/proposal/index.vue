@@ -1,5 +1,5 @@
 <template>
-    <div class="prospectus-container">
+    <div class="prospectus-container page-container">
         <div class="header">
             计划书
             <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @input="search" size="small">
