@@ -338,6 +338,7 @@
             .list-personnel{
                 padding: 16px;
                 color: #1A1A1A;
+                border-bottom: 1px solid #e6e6e6;
                 .item{
                     &>div{
                         line-height: 20px;
