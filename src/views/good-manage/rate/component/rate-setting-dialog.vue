@@ -473,13 +473,14 @@ export default {
       const data = { id: this.info.id }
       this.loading = true
       getCompanyCommissionDetail(data).then(res => {
-        this.hasCalculateWay = true
+        // this.hasCalculateWay = true
         Object.assign(this.formModel, res, {
           effect_start_at: res.effect_start_at * 1000,
           product_id: `${res.product_id}_${res.product_type}`,
           company_id: Array.isArray(res.company_id) ? res.company_id : [res.company_id],
           position_id: Array.isArray(res.position_id) ? res.position_id : [res.position_id],
         })
+        this.getCalculateWay(this.formModel.product_id)
         this.getProductAttributeList()
         this.loading = false
       })
