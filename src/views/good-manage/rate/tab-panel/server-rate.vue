@@ -16,6 +16,7 @@
       value-key="value"
       placeholder="搜索产品名称"
       v-model="selProductVal"
+      @updateFilter="updateFilterHandler"
       @change="handleSelProduct"
     >
       <template slot="extraFilter">
@@ -166,14 +167,14 @@ export default {
   },
   methods: {
     hasValue,
-    // getManagementCompanyList() {
-    //   // getManagementCompanyList().then(res => {
-    //   //   this.companyLoading = false;
-    //   //   this.companyList = res.map(i => ({ label: i.name, value: i.id }));
-    //   // });
-    // },
+    updateFilterHandler() {
+      this.settingList = []
+      this.selProductVal = ''
+    },
     filterChange() {
       const { status, insType } = this.productFilter;
+      this.settingList = []
+      this.selProductVal = ''
       if (!status && !insType) {
         this.$nextTick(() => {
           this.productList = JSON.parse(

@@ -32,6 +32,7 @@
       placeholder="搜索产品名称"
       v-model="selProductVal"
       @change="handleSelProduct"
+      @updateFilter="updateFilterHandler"
     >
       <template slot="extraFilter">
         <div class="extra-filter-bar flex flex-between">
@@ -182,11 +183,17 @@ export default {
   },
   methods: {
     hasValue,
+    updateFilterHandler() {
+      this.settingList = []
+      this.selProductVal = ''
+    },
     openRateDialog() {
       this.dialogVisible = true;
     },
     filterChange() {
       const { status, insType } = this.productFilter;
+      this.settingList = []
+      this.selProductVal = ''
       if (!status && !insType) {
         this.$nextTick(() => {
           this.productList = JSON.parse(
@@ -225,6 +232,7 @@ export default {
       this.selPosVal = v.value;
       this.productLoading = true;
       this.settingList = [];
+      this.selProductVal = ''
       getProductsOfPosition(data)
         .then(res => {
           this.productList = res.map(i => {
