@@ -3,7 +3,7 @@
     <div class="header">
       保险商品
       <div class="flex-between">
-        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.keyword" clearable @input="debounceAjaxListData">
+        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.title" clearable @input="debounceAjaxListData">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
@@ -100,7 +100,7 @@
               </div>
             </div>
             <div class="flex-between">
-              <span>{{row.min_price}}起</span>
+              <span>{{row.min_price}}&nbsp;元起</span>
               <div class="flex">
                 <el-link v-if="row.duty_pic_url"
                          type="primary"
@@ -133,7 +133,7 @@
                    v-clipboard:copy="notifyText"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="下载保存保险责任图片" :visible.sync="picVisible" width="480px">
+    <el-dialog title="下载保存保险责任图片" :visible.sync="picVisible" width="480px" class="pic-dialog">
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
         <el-button type="primary"
@@ -174,7 +174,7 @@ export default {
       selProductVal: '',
       productAge: '',
       searchModel: {
-        keyword: '',
+        title: '',
         first_product_category_id: '',
         min_age: '',
         max_age: '',
@@ -223,7 +223,12 @@ export default {
       const params = this.searchModel
       getInsureApiList(params).then(apiData => {
         getInsureCpsList(params).then(cpsData => {
-          this.list = [...apiData, ...cpsData]
+          this.list = [...apiData, ...cpsData.map(i => ({
+            ...i,
+            title: i.share_title,
+            duty_pic_url: i.share_cover,
+            web_url: i.link
+          }))]
         }).finally(() => {
           this.loading = false
         })
@@ -232,7 +237,7 @@ export default {
     debounceAjaxListData() {
       const func = debounce(() => {
         this.ajaxListData()
-      }, 300);
+      }, 400);
       func()
       this.debounceAjaxListData = func;
     },
@@ -366,6 +371,10 @@ export default {
     .el-scrollbar__bar {
       z-index: 999;
     }
+  }
+
+  ::v-deep .pic-dialog .el-dialog__body{
+    text-align: center;
   }
 
   .el-dialog__wrapper ::v-deep .belong-dialog {

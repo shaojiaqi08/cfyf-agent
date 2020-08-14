@@ -252,7 +252,12 @@
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="200px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="佣金" prop="sales_position_commission" align="center"></el-table-column>
+        <el-table-column label="服务费" prop="company_actually_commission" align="center" width="100px">
+          <template v-slot="{row}">
+            <span v-if="!parseInt(row.company_actually_commission)">0</span>
+            <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
+          </template>
+        </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at" align="center" width="150px">
           <template slot-scope="{row}">
             {{ row.proposal_at && formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') }}

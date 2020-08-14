@@ -6,51 +6,51 @@
       <div class="row">
         <div>
           出单平台
-          <span>{{ policyInfo.actually_sales_platform }}</span>
+          <span>{{ policyInfo.actually_sales_platform || '-' }}</span>
         </div>
         <div>
           公司名
-          <span>{{ policyInfo.supplier_name }}</span>
+          <span>{{ policyInfo.supplier_name  || '-'}}</span>
         </div>
         <div>
           产品名称
-          <span>{{ policyInfo.product_name }}</span>
+          <span>{{ policyInfo.product_name  || '-'}}</span>
         </div>
       </div>
       <h4>保单信息</h4>
       <div class="row">
         <div>
           保单号
-          <span>{{ policyInfo.policy_sn }}</span>
+          <span>{{ policyInfo.policy_sn || '-'}}</span>
         </div>
         <div>
           投保单号
-          <span>{{ policyInfo.proposal_sn }}</span>
+          <span>{{ policyInfo.proposal_sn || '-'}}</span>
         </div>
         <div>
           缴费期限
-          <span>{{ policyInfo.payment_period_desc }}</span>
+          <span>{{ policyInfo.payment_period_desc || '-'}}</span>
         </div>
         <div>
           保障期限
-          <span>{{ policyInfo.guarantee_quota_str }}</span>
+          <span>{{ policyInfo.guarantee_quota_str  || '-'}}</span>
         </div>
         <!-------------------------------->
         <div>
           保费(元)
-          <span>{{ policyInfo.actually_premium }}</span>
+          <span>{{ policyInfo.actually_premium  || '-'}}</span>
         </div>
         <div>
           保单状态
-          <span>{{ policyInfo.policy_status_str }}</span>
+          <span>{{ policyInfo.policy_status_str  || '-'}}</span>
         </div>
         <div>
           投保时间
-          <span>{{ formatDate(policyInfo.proposal_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
+          <span>{{ policyInfo.proposal_at ? formatDate(policyInfo.proposal_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-' }}</span>
         </div>
         <div>
           承保时间
-          <span>{{ formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
+          <span>{{policyInfo.policy_at ? formatDate(policyInfo.policy_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-'}}</span>
         </div>
         <!-------------------------------->
         <div>
@@ -59,7 +59,7 @@
         </div>
         <div>
           过犹日期
-          <span>{{ formatDate(policyInfo.over_hesitation_at * 1000, 'yyyy-MM-dd hh:mm:ss') }}</span>
+          <span>{{policyInfo.over_hesitation_at ? formatDate(policyInfo.over_hesitation_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-' }}</span>
         </div>
         <div>
           投保单号
