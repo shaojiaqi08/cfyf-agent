@@ -50,12 +50,6 @@ export default {
   bottom: 0;
   min-width: 1280px;
   background-color: #e1e3e6;
-  // & > ::v-deep .el-scrollbar__wrap > .el-scrollbar__view{
-  //   height: 100%;
-  //   & > div{
-  //     height: 100%
-  //   }
-  // }
 }
 .page-fade-enter-active, .page-fade-leave-active {
   transition: opacity .3s ease;

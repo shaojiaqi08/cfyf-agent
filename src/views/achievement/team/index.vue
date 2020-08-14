@@ -249,10 +249,12 @@
                 v-table-infinite-scroll="scroll2Bottom"
                 v-loading="tableLoading">
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="保险公司" prop="supplier_name" align="center" width="200px"></el-table-column>
+        <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="所属销售" prop="sales_real_name" align="center"></el-table-column>
+        <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
-        <el-table-column label="保费" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="服务费" prop="company_actually_commission" align="center" width="100px">
+        <el-table-column label="保费(元)" prop="actually_premium" align="center"></el-table-column>
+        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px">
           <template v-slot="{row}">
             <span v-if="!parseInt(row.company_actually_commission)">0</span>
             <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
@@ -260,16 +262,12 @@
         </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="180px"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
-         <el-table-column label="回访成功日期" prop="" width="150px" align="center"></el-table-column>
-        <el-table-column label="过犹日期" prop="over_hesitation_at" width="150px" align="center">
-          <template slot-scope="{row}">
-            {{ row.over_hesitation_at && formatDate(row.over_hesitation_at * 1000, 'yyyy-MM-dd') }}
-          </template>
-        </el-table-column>
+         <el-table-column label="回访成功日期" prop="visit_at_str" width="150px" align="center"></el-table-column>
+        <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="150px" align="center"></el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy_recognizee_name" align="center"></el-table-column>
-        <el-table-column label="保额" prop="guarantee_quota_str" align="center"></el-table-column>
+        <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障期限" prop="guarantee_period_desc" align="center">
           <template slot-scope="{row}">
@@ -278,7 +276,7 @@
         </el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
-        <el-table-column label="操作" prop fixed="right" width="100px">
+        <el-table-column label="操作" prop fixed="right" width="100px" align="center">
           <template slot-scope="{row}">
             <el-link type="primary" @click="showInfoDialog(row)">订单详情</el-link>
           </template>
