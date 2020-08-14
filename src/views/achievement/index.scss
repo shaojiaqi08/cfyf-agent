@@ -97,6 +97,7 @@
 
   .el-dialog__wrapper ::v-deep .belong-dialog {
     width: 200px;
+    overflow: visible;
     .el-dialog__body {
       .card {
         background: #f5f5f5;

@@ -55,11 +55,11 @@
         <!-------------------------------->
         <div>
           回访成功日期
-          <span>-</span>
+          <span>{{policyInfo.visit_at_str || '-'}}</span>
         </div>
         <div>
           过犹日期
-          <span>{{policyInfo.over_hesitation_at ? formatDate(policyInfo.over_hesitation_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-' }}</span>
+          <span>{{policyInfo.over_hesitation_at_str || '-' }}</span>
         </div>
         <div>
           投保单号
@@ -105,7 +105,7 @@
           <span>{{ policyInfo.sales_team_name || '-' }}</span>
         </div>
         <div>
-          佣金
+          佣金(元)
           <span>{{ policyInfo.commission || '-' }}</span>
         </div>
       </div>

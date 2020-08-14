@@ -360,7 +360,7 @@
                     </div>
                 </div>
                 <el-form-item label="团队名称" prop="parent_id">
-                    <el-select filterable style="width: 100%" placeholder="团队" v-model="transferTeamFormModel.parent_id" :loading="dialogLoading">
+                    <el-select filterable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="transferTeamFormModel.parent_id" :loading="dialogLoading">
                         <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
                     </el-select>
                 </el-form-item>
@@ -517,7 +517,7 @@
                     parent_id: ''
                 },
                 transferTeamRules: Object.freeze({
-                    parent_id: {required: true, message: '请选择在哪个团队下挂靠'}
+                    parent_id: baseValiObj
                 }),
                 positionData: [],
                 resignationDateRange: [],
@@ -641,14 +641,7 @@
                         const params = {...data, role: 'sales'}
                         params.resignation_at = ~~(new Date(params.resignation_at.replace(/-/g, '/')) / 1000)
                         handler(params).then(() => {
-                            if (data.team_id !== '') {
-                                this.selTeam = data.team_id
-                                this.detailData = {}
-                                this.ajaxDetail(data.team_id)
-                            } else {
-                                this.selTeam = -1
-                                this.ajaxAllSalesList()
-                            }
+                            this.ajaxAllSalesList()
                             this.editDialogVisible = false
                             this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
                         }).catch(() => {}).finally(() => {
@@ -1016,19 +1009,24 @@
             }
         }
     }
-    ::v-deep .set-leader-dialog .info-block{
-        height:96px;
-        background:rgba(245,245,245,1);
-        border-radius:4px;
-        border:1px solid rgba(230,230,230,1);
-        padding: 20px;
-        &>div{
-            line-height: 20px;
-            color:#4d4d4d;
-            font-size: 14px;
-            &>span{
-                color: #1a1a1a;
-                font-weight: bold;
+    ::v-deep .set-leader-dialog {
+        .el-dialog__body{
+            overflow: visible;
+        }
+        .info-block{
+            height:96px;
+            background:rgba(245,245,245,1);
+            border-radius:4px;
+            border:1px solid rgba(230,230,230,1);
+            padding: 20px;
+            &>div{
+                line-height: 20px;
+                color:#4d4d4d;
+                font-size: 14px;
+                &>span{
+                    color: #1a1a1a;
+                    font-weight: bold;
+                }
             }
         }
     }

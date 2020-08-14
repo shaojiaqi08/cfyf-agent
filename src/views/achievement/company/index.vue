@@ -55,7 +55,7 @@
         </el-select>
         <div class="mt20 mb10 flex-between">
           包含子团队
-          <el-switch  style="float: right" v-model="searchModel.include_child_team" @change="searchModelChange"></el-switch>
+          <el-switch :disabled="searchModel.sales_team_id.length<=0"  style="float: right" inactive-value="0" active-value="1" v-model="searchModel.include_child_team" @change="searchModelChange"></el-switch>
         </div>
         <template v-slot:label>
           {{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '全部团队' }}
@@ -270,14 +270,14 @@
         <el-table-column label="所属销售" prop="sales_real_name" align="center"></el-table-column>
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
-        <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="服务费" prop="company_actually_commission" align="center" width="100px">
+        <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px">
           <template v-slot="{row}">
             <span v-if="!parseInt(row.company_actually_commission)">0</span>
             <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
           </template>
         </el-table-column>
-        <el-table-column label="佣金" prop="sales_position_commission" align="center" width="100px">
+        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px">
           <template v-slot="{row}">
             <span v-if="!parseInt(row.sales_position_commission)">0</span>
             <span v-else v-to-fixed:[2]="row.sales_position_commission"></span>
@@ -285,16 +285,12 @@
         </el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="180px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
-        <el-table-column label="回访成功日期" prop="" width="150px" align="center"></el-table-column>
-        <el-table-column label="过犹日期" prop="over_hesitation_at" width="150px" align="center">
-          <template slot-scope="{row}">
-            {{ row.over_hesitation_at && formatDate(row.over_hesitation_at * 1000, 'yyyy-MM-dd') }}
-          </template>
-        </el-table-column>
+        <el-table-column label="回访成功日期" prop="visit_at_str" width="150px" align="center"></el-table-column>
+        <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="150px" align="center"></el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy_recognizee_name" align="center"></el-table-column>
-        <el-table-column label="保额" prop="guarantee_quota_str" align="center"></el-table-column>
+        <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
@@ -376,7 +372,7 @@ export default {
         date_range: [],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: false,
+        include_child_team: '0',
       },
       maxHeight: null
     };
@@ -460,6 +456,10 @@ export default {
           model[key] = model[key].join(',')
         }
       })
+      // 没有选择团队删除包含子团队参数
+      if (model.sales_team_id.length <= 0) {
+        delete model.include_child_team
+      }
       delete model.date_range
       return model
     },
@@ -523,6 +523,11 @@ export default {
     belongVisible(v) {
       if (!v) {
         this.belongData = {};
+      }
+    },
+    'searchModel.sales_team_id'(v) {
+      if(v.length <= 0) {
+        this.searchModel.include_child_team = '0'
       }
     }
   },
