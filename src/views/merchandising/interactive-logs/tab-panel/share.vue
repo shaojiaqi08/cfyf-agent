@@ -527,7 +527,7 @@
                 padding: 16px;
                 &.active{
                     background: #f5f5f5;
-                    border-left: 3px solid #ff9000;
+                    border-left: 3px solid #1F78FF;
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
