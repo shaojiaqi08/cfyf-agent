@@ -319,6 +319,7 @@ export default {
       tableLoading: false,
       tableEmpty: false,
       submitting: false,
+      isGetProductAttribute: false,
       hasCalculateWay: false,
       guaranteePeriodUnitArray,
       paymentPeriodUnitArray,
@@ -371,6 +372,7 @@ export default {
         this.formModel = this.$options.data().formModel
         this.guaranteeList = []
         this.paymentList = []
+        this.isGetProductAttribute = false
       }
     },
     tabSelected() {
@@ -489,10 +491,12 @@ export default {
       })
     },
     getProductAttributeList() {
+      if (this.isGetProductAttribute) return
       this.tableLoading = true
+      this.isGetProductAttribute = true
       const productId = this.formModel.product_id
-      // this.formModel.product_name = this.productList.find(i => i.id_type === productId).name
-      const data = { type: productId.split('_')[1], product_id: productId.split('_')[0] }
+      const [product_id, type] = productId.split('_')
+      const data = { type, product_id }
       getProductAttributeList(data).then(res => {
         // 这里el-table有个小坑点，当外部数据更新是，table内部数据只会通过tableData进行更新渲染
         // 所以需要改变tableData去触发table里面数据绑定的变化
@@ -689,21 +693,21 @@ export default {
           }
         })
       })
-      const d = Object.assign({}, copyFormModel, {
+      const data = Object.assign({}, copyFormModel, {
         effect_start_at: +this.formModel.effect_start_at / 1000 || '',
         product_id: this.formModel.product_id.split('_')[0],
         product_type: this.formModel.product_id.split('_')[1],
         product_name: this.productList.find(i => i.id_type === this.formModel.product_id).name
       })
       if (this.type === 'edit') {
-        companyCommissionUpdate(d).then(() => {
+        companyCommissionUpdate(data).then(() => {
           this.$message.success('保存成功！')
           this.closeModal(true)
         }).finally(() => {
           this.submitting = false
         })
       } else {
-        companyCommissionCreate(d).then(() => {
+        companyCommissionCreate(data).then(() => {
           this.$message.success('保存成功！')
           this.closeModal(true)
         }).finally(() => {

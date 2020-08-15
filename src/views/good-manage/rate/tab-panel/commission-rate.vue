@@ -288,12 +288,17 @@ export default {
         });
     },
     updateListHandler() {
-        const data = {
-            product_id: this.selProductVal.split('_')[0],
-            product_type: this.selProductVal.split('_')[1],
-            company_id: this.selVal
-        }
-      this.handleSelProduct(data)
+      const selProductVal = this.selProductVal
+      const data = {
+          product_id: this.selProductVal.split('_')[0],
+          product_type: this.selProductVal.split('_')[1],
+          company_id: this.selVal
+      }
+      // this.handleSelPosition({ value: this.selVal })
+      setTimeout(() => {
+        this.selProductVal = selProductVal
+        this.handleSelProduct(data)
+      }, 500)
     },
     handleSelProduct(v) {
       const data = {
