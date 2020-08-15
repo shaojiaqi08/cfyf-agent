@@ -277,8 +277,7 @@ import { calculateWays, calculateWayKey, terms } from '@/enums/good-manage'
 import { getCompanyList,
          getCommissionAllProduct,
          getProductAttributeList, getCompanyCommissionDetail,
-         companyCommissionUpdate, companyCommissionCreate,
-         getSalesPositionList, getCalculateWay } from '@/apis/modules/good-manage'
+         companyCommissionUpdate, companyCommissionCreate, getCalculateWay, getPositionsWithAdminRoles } from '@/apis/modules/good-manage'
 export default {
   name: "rate-setting-dialog",
   props: {
@@ -417,7 +416,7 @@ export default {
       })
     },
     getSalesPositionList() {
-      getSalesPositionList()
+      getPositionsWithAdminRoles()
         .then(res => {
           this.salePositionList = res
         })
