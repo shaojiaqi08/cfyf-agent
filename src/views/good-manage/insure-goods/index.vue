@@ -45,7 +45,7 @@
           </filter-shell>
           <filter-shell v-model="productAge" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
-                       v-model="productAge"
+                       v-model="searchModel.age_id"
                        clearable
                        filterable
                        @change="ajaxListData"
@@ -173,12 +173,10 @@ export default {
       belongData: {},
       list: [],
       selProductVal: '',
-      productAge: '',
       searchModel: {
         title: '',
         first_product_category_id: '',
-        min_age: '',
-        max_age: '',
+        age_id: '',
         supplier_id: ''
       },
       supplierData: [],
@@ -239,7 +237,7 @@ export default {
     debounceAjaxListData() {
       const func = debounce(() => {
         this.ajaxListData()
-      }, 400);
+      }, 300);
       func()
       this.debounceAjaxListData = func;
     },
@@ -258,11 +256,6 @@ export default {
       if (!v) {
         this.belongData = {};
       }
-    },
-    productAge(v) {
-      const obj = this.productAgeData.find(item => item.id === v) || {}
-      this.searchModel.min_age = obj.min_age
-      this.searchModel.max_age = obj.max_age
     }
   },
   created() {

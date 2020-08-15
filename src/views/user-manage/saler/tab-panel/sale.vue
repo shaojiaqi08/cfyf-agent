@@ -117,7 +117,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @keyup.enter.native="search"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
                 </div>
                 <el-table :data="allSalesData"
                           border
@@ -625,6 +625,13 @@
                 } else {
                     this.ajaxDetail(selTeam)
                 }
+            },
+            debounceSearch() {
+                const func = debounce(() => {
+                    this.search()
+                }, 300)
+                func()
+                this.debounceSearch = func
             },
             confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
                 const h = this.$createElement

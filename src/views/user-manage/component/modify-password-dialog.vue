@@ -83,5 +83,8 @@
         .el-form-item__label::before{
             display: none;
         }
+        .el-dialog__body{
+            overflow: visible;
+        }
     }
 </style>
