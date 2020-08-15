@@ -1372,21 +1372,14 @@ export default {
           if (type === 1) {
             this.previewVisible = true
           } else if (type === 2) {
-            // this.$message({
-            //   message: '计划书生成成功',
-            //   type: 'success'
-            // })
-
             this.dialogVisible = true
           } else {
             this.$message({
               message: '计划书暂存成功',
               type: 'success'
             })
-            window.localStorage.setItem('closePage', new Date().getTime())
-            setTimeout(() => {
-              this.$router.replace('/proposal')
-            }, 0)
+            window.localStorage.setItem('refreshPage', new Date().getTime())
+            window.close()
           }
         })
         .catch(() => {

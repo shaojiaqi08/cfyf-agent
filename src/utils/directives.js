@@ -1,5 +1,6 @@
-import Vue from "vue";
-import store from "@/store";
+import Vue from 'vue';
+import store from '@/store';
+import { debounce } from '@/utils';
 
 // 权限隐藏
 Vue.directive('allowed', {
@@ -48,5 +49,18 @@ Vue.directive('phone-hidden', {
       str = `${str.substr(0, 3)}****${str.substr(7)}`
     }
     el.innerHTML = str
+  }
+})
+
+Vue.directive('table-infinite-scroll', {
+  inserted(el, binding) {
+    const scrollWrap = el.querySelector('.el-table__body-wrapper')
+    const scrollHandle = debounce(() => {
+      const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
+      if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) {
+        binding.value()
+      }
+    }, 300)
+    scrollWrap.addEventListener('scroll', scrollHandle)
   }
 })

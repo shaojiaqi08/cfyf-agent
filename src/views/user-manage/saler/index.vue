@@ -97,8 +97,8 @@
                 return callback()
             },
             pwdValidator(rule, value, callback) {
-                if (value.length < 6) {
-                    return callback(new Error('密码至少是6位任意字符'))
+                if (value.length < 5) {
+                    return callback(new Error('密码至少是5位任意字符'))
                 }
                 callback()
             },
