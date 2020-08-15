@@ -36,7 +36,7 @@
                     <permission-tree v-model="detailData"></permission-tree>
                 </el-scrollbar>
                 <div class="flex-center">
-                    <el-button type="primary" @click="editTree">编辑权限</el-button>
+                    <el-button type="primary" @click="editTree" size="small">编辑权限</el-button>
                 </div>
             </template>
         </div>

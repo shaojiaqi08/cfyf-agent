@@ -14,6 +14,7 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://cfyf.beta.2239.com',   //代理接口
+        // target: 'http://cfyf_service.test:8000',   //代理接口
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''    //代理的路径

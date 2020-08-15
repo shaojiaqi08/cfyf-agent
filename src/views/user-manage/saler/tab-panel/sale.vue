@@ -12,7 +12,7 @@
                 style="width: 240px"
                 :listData="computedTeamData"
             >
-                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam">
+                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam" size="small">
                     <i class="iconfont iconxiao16_jiahao mr4"></i>
                     新增团队
                 </el-button>
@@ -176,13 +176,13 @@
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false" type="minor" class="flex-center mr30" @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button type="primary" @click="handleSetTeam"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                            <el-button type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队主管人数：{{detailData.leader ? detailData.leader.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetLeader"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
+                            <el-button type="primary" @click="handleSetLeader" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
                         </div>
                         <el-table :data="detailData.leader || []" border width="100%" class="mb16" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
@@ -211,7 +211,7 @@
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队成员人数：{{detailData.member ? detailData.member.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetMember"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
+                            <el-button type="primary" @click="handleSetMember" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
                         </div>
                         <el-table :data="detailData.member || []" border width="100%" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>

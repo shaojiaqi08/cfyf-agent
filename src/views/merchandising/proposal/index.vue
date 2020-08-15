@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button type="primary" @click="addProposal"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
+                    <el-button type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
