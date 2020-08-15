@@ -43,7 +43,7 @@
                    @click="searchModel.first_product_category_id = ''"></i>
             </template>
           </filter-shell>
-          <filter-shell v-model="productAge" autoFocus autoClose @input="ajaxListData">
+          <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.age_id"
                        clearable
@@ -60,7 +60,7 @@
             </el-select>
             <template v-slot:label>
             <span>
-                {{ hasValue(productAge) ? productAgeData.find(i => i.id === productAge).title : '投保年龄' }}
+                {{ hasValue(searchModel.age_id) ? productAgeData.find(i => i.id === searchModel.age_id).title : '投保年龄' }}
             </span>
             </template>
           </filter-shell>
