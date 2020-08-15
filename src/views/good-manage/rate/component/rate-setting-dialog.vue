@@ -402,8 +402,11 @@ export default {
       const data = { product_id, product_type }
       getCalculateWay(data).then(res => {
         const way = res.calculate_way
-        if (way) {
+        if (this.formModel.calculate_way !== way) {
+          this.calculateWayChange()
           this.formModel.calculate_way = way
+        }
+        if (way) {
           this.hasCalculateWay = true
         } else {
           this.hasCalculateWay = false

@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { effectStatus, effectStatusKeys, terms, calculateWays } from "@/enums/good-manage";
+import { effectStatus, effectStatusKeys, terms, calculateWays, calculateWayKey } from "@/enums/good-manage";
 import { formatDate } from "@/utils/formatTime";
 import RateSettingDialog from "./rate-setting-dialog";
 import { deleteCompanyCommission } from '@/apis/modules/good-manage'
@@ -172,7 +172,7 @@ export default {
     },
     rowDataFormat(rules) {
       return rules.map(y => {
-        if (y.guarantee_period_unit === 0 && y.payment_period_unit === 0) {
+        if (this.info.calculate_way === calculateWayKey.SINGLEPOLICY) {
           return {
             paymentPeriodText: '全部',
             guaranteePeriodText: '全部',
@@ -186,7 +186,7 @@ export default {
           y.payment_period_unit === paymentPeriodUnit.SINGLE
             ? paymentPeriodUnitText
             : `${y.payment_period_value}${paymentPeriodUnitText}`;
-        if (y.guarantee_period_unit === 0 && (y.min_guarantee_year || y.max_guarantee_year)) {
+        if (this.info.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD) {
           const guaranteePeriodText = `${y.min_guarantee_year}年至${y.max_guarantee_year}年`
           return {
             paymentPeriodText,
