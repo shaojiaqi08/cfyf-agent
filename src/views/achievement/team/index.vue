@@ -269,11 +269,7 @@
         <el-table-column label="被保人" prop="policy_recognizee_name" align="center"></el-table-column>
         <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
-        <el-table-column label="保障期限" prop="guarantee_period_desc" align="center">
-          <template slot-scope="{row}">
-            {{ row.guarantee_period_desc && formatDate(row.guarantee_period_desc * 1000, 'yyyy-MM-dd') }}
-          </template>
-        </el-table-column>
+        <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="操作" prop fixed="right" width="100px" align="center">

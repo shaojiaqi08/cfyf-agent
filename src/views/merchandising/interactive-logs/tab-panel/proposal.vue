@@ -75,9 +75,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="item fs12" v-for="(it,index) in item['read_content_list']" :key="index">
-                                <div class="mb5">{{it.title}}</div>
-                                <div class="gray word-break">{{it.content}}</div>
+                            <div class="item fs14 mt16" v-for="(it,index) in item['read_content_list']" :key="index">
+                                <div class="mb5 bold">{{it.title}}</div>
+                                <div class="word-break">{{it.content}}</div>
                             </div>
                         </div>
                     </el-scrollbar>
@@ -279,7 +279,7 @@
         & > .list {
             width: 320px;
             border-right: 1px solid #e6e6e6;
-            ::v-deep .scroll-bar-wap-pro{
+            ::v-deep .scroll-bar-wap-other{
                 overflow-x: hidden;
             }
             .list-content{
@@ -290,27 +290,71 @@
                 padding: 16px;
                 &.active{
                     background: #f5f5f5;
-                    border-left: 3px solid #1F78FF;
+                    border-left: 3px solid #ff9000;
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
                 }
-                .icon-prospectus {
-                    background: url("../../../../assets/images/icon-prospectus.png") no-repeat center;
+                .icon-product {
                     display: inline-block;
                     width: 14px;
                     height: 14px;
                     background-size: contain;
                     vertical-align: top;
                     margin-right: 5px;
+                    background: url("../../../../assets/images/icon-product.png") no-repeat center;
+                }
+                .icon-article{
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    background-size: contain;
+                    vertical-align: top;
+                    margin-right: 5px;
+                    background: url("../../../../assets/images/icon-article.png") no-repeat center;
+                }
+                .icon-promote{
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    background-size: contain;
+                    vertical-align: top;
+                    margin-right: 5px;
+                    background: url("../../../../assets/images/icon-promote.png") no-repeat center;
                 }
             }
         }
         & > .detail {
             width: 360px;
             border-right: 1px solid #e6e6e6;
+            .detail-warp{
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
             .detail-content{
                 padding: 16px;
+            }
+            .list-personnel{
+                padding: 16px;
+                color: #1A1A1A;
+                border-bottom: 1px solid #e6e6e6;
+                .item{
+                    &>div{
+                        line-height: 20px;
+                    }
+                    &>div:nth-of-type(2){
+                        color: #999;
+                    }
+                }
+            }
+            .detail-personnel{
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                .scroll-bar{
+                    flex: 1;
+                }
             }
         }
         & > .iframe {
@@ -330,6 +374,7 @@
                 padding: 0;
                 .iframe-item{
                     height: 100%;
+                    width: 100%;
                     outline: none;
                     overflow: auto;
                 }
@@ -353,6 +398,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        ::v-deep .scroll-bar .el-scrollbar__wrap{
+            overflow-x: hidden;
         }
     }
 </style>
