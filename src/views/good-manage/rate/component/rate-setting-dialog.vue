@@ -371,7 +371,7 @@ export default {
         this.formModel = this.$options.data().formModel
         this.guaranteeList = []
         this.paymentList = []
-        this.isGetProductAttribute = false
+        // this.isGetProductAttribute = false
       }
     },
     tabSelected() {
@@ -490,9 +490,9 @@ export default {
       })
     },
     getProductAttributeList() {
-      if (this.isGetProductAttribute) return
+      // if (this.isGetProductAttribute) return
       this.tableLoading = true
-      this.isGetProductAttribute = true
+      // this.isGetProductAttribute = true
       const productId = this.formModel.product_id
       const [product_id, type] = productId.split('_')
       const data = { type, product_id }
