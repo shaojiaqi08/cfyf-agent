@@ -241,13 +241,13 @@
             </template>
         </div>
         <!--编辑/新增销售-->
-        <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" :team-data="teamData"></edit-sales-dialog>
+        <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" :team-data="teamData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
-        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData"></add-team-dialog>
+        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->
-        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam"></set-leader-dialog>
+        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="ajaxDetail"></set-leader-dialog>
         <!--转移团队-->
-        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam"></transfer-team-dialog>
+        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="ajaxDetail"></transfer-team-dialog>
         <!--调整团队成员-->
         <team-people-dialog :loading="groupSalesLoading"
                             :visible.sync="teamPeopleVisible"
@@ -290,11 +290,6 @@
     export default {
         name: 'sale-pane',
         mixins: [validatorMixin],
-        provide() {
-            return {
-                $parent: this
-            }
-        },
         components: {
             FilterShell,
             SideFilterList,

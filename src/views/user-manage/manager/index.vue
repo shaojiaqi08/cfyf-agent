@@ -67,9 +67,9 @@
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" prop="operate" :width="250" align="center">
-                            <template v-slot="{row}">
+                            <template v-slot="{row, $index}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
-                                    <el-button type="text" @click="lostEffect(row.id)">使失效</el-button>
+                                    <el-button type="text" @click="lostEffect(row.id, $index)">使失效</el-button>
                                     <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
                                     <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
                                     <el-button type="text" @click="edit(row)">编辑</el-button>
@@ -214,6 +214,9 @@
                 curSelRole: null,
                 selRole: '',
                 roleData: [],
+                page: 1,
+                page_size: 20,
+                total: 0,
                 managerData: [],
                 curTabIdx: 'people',
                 treeDialogVisible: false,
@@ -258,8 +261,8 @@
                 }),
                 manageAccountStatusMap: Object.freeze(manageAccountStatusMap),
                 statusColorMap: Object.freeze({
-                    disabled: 'danger',
-                    enabled: 'success',
+                    disable: 'danger',
+                    enable: 'success',
                     invalidation: 'minor'
                 }),
                 maxHeight: null
@@ -403,7 +406,7 @@
                 })
             },
             // 使失效
-            lostEffect(id) {
+            lostEffect(id, index) {
                 const h = this.$createElement
                 this.$confirm(
                     h('div', [
@@ -426,9 +429,9 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-                    removeEffect({id}).then(() => {
+                    removeEffect({id}).then(row => {
                         this.$message.success('操作成功!')
-                        this.ajaxDetail(this.curSelRole)
+                        this.$set(this.managerData, index, row)
                     })
                 }).catch(() => {})
             },
@@ -461,9 +464,12 @@
                         customClass: 'manager-msg-box'
                     }
                 ).then(() => {
-                    updateStatus({id, account_status: isDisabled ? 'disable' : 'enable'}).then(() => {
-                        this.$message.success(`${isDisabled ? '禁用' : '启用'}成功!`)
-                        this.ajaxDetail(this.curSelRole)
+                    const account_status = isDisabled ? 'disable' : 'enable'
+                    const account_status_str = isDisabled ? '禁用' : '启用'
+                    updateStatus({id, account_status}).then(() => {
+                        this.$message.success(`${account_status_str}成功!`)
+                        row.account_status = account_status
+                        row.account_status_str = account_status_str
                     })
                 }).catch(() => {})
             },
@@ -562,8 +568,11 @@
             ajaxDetail(obj) {
                 this.rightLoading = true
                 this.curSelRole = obj
-                getManagerList({position_id: obj.id}).then(res => {
-                    this.managerData = this.managerData.concat(res.data)
+                const {page, page_size, managerData} = this
+                getManagerList({position_id: obj.id, page, page_size}).then(res => {
+                    const d = res.data
+                    this.managerData = page <= 1 ? d : [...managerData, ...d]
+                    this.total = res.total
                 }).finally(() => {
                     this.rightLoading = false
                 })
@@ -723,6 +732,9 @@
                     padding: 0;
                 }
             }
+        }
+        ::v-deep .manager-dialog .el-dialog__body{
+            overflow: visible;
         }
     }
 </style>

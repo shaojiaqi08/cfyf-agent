@@ -75,7 +75,7 @@
                         this.submitting = true
                         const team_id = this.teamId
                         transferTeam({team_id, ...this.formModel}).then(() => {
-                            this.$parent.ajaxDetail(team_id)
+                            this.$emit('success', team_id)
                             this.$message.success('操作成功!')
                             this.closeDialog()
                         }).catch(() => {}).finally(() => {
