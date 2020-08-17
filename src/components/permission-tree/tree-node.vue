@@ -193,12 +193,12 @@
         }
         .tree-permission-container {
             position: relative;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
             &::after{
                 display: none;
             }
             &>.tree-node-container{
-                display: inline-block !important;
                 padding-left: 48px;
                 &> ::v-deep .chkbox-wrap::after{
                     display: none;
@@ -221,6 +221,7 @@
                 left: 14px;
                 height: calc(100% - 14px) !important;
                 border-right: 1px dashed #ccc;
+                z-index: 10;
             }
             &.has-group-follow::before{
                 height: 100% !important;
@@ -238,9 +239,17 @@
                 left: 14px;
                 width: 32px;
             }
-            &:hover{
+            &:hover {
                 background: #f5f5f5;
-                border: 4px;
+                .tree-node-container{
+                    background: #f5f5f5;
+                    &:first-of-type{
+                        border-radius: 4px 0 0 4px;
+                    }
+                    &:last-of-type{
+                        border-radius: 0 4px 4px 0;
+                    }
+                }
             }
             .chkbox-wrap:hover{
                 background: transparent;
