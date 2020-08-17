@@ -69,6 +69,7 @@ export default {
             this.$router.replace(path)
           })
         } else {
+          this.updateUserInfo(res)
           this.$router.replace('/user-info')
         }
       }).catch(err => {console.log(err)}).finally(() => {

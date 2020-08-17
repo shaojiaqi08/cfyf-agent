@@ -2,7 +2,7 @@
     <div class="manager-container page-container">
         <div class="header">
             内部管理员
-            <el-button type="primary" @click="addManager" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
+            <el-button v-if="$checkAuth('/manager')" type="primary" @click="addManager" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content" ref="content">
             <side-filter-list
