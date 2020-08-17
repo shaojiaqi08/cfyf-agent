@@ -342,7 +342,6 @@ export default {
       supplierList: [],
       companyList: [],
       statisticInfo: {
-        actual_underwrite_total_premium: 0
       },
       tableLoading: true,
       statisticLoading: true,
@@ -379,6 +378,10 @@ export default {
       const func = debounce(() => {
         this.tableLoading = true
         this.statisticLoading = true
+        this.page = 1
+        this.list = []
+        this.total = 0
+        this.statisticInfo = {}
         this.getCompanyPolicyList()
         this.getCompanyPolicyStatistics()
       }, 300)
@@ -453,11 +456,11 @@ export default {
       const {page, page_size, list} = this
       getCompanyPolicyList({...this.searchModelFormat(), page, page_size}).then(res => {
         this.tableLoading = false
-        this.list = page <= 1 ? res.data : [...list, ...res.data]
+        this.list = [...list, ...res.data]
         this.total = res.total
       })
-      .catch(err => {
-        console.log(err)
+      .catch(() => {
+        this.page = Math.max(1, page - 1)
         this.tableLoading = false
       })
     },
