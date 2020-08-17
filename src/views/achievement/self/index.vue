@@ -276,20 +276,6 @@ export default {
   components: {
     FilterShell
   },
-  directives: {
-    'table-infinite-scroll' : {
-      inserted(el, binding) {
-        const scrollWrap = el.querySelector('.el-table__body-wrapper')
-        const scrollHandle = debounce(() => {
-          const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-          if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) { // 到底
-            binding.value()
-          }
-        }, 300)
-        scrollWrap.addEventListener('scroll', scrollHandle)
-      }
-    }
-  },
   data() {
     return {
       formatDate,

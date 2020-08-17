@@ -1,6 +1,6 @@
 <template>
     <div class="sale-people-container" ref="container">
-        <el-button class="add-button" type="primary" @click="handleAddSales"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
+        <el-button class="add-button" type="primary" @click="editSales('')" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
         <div class="side-filter-wrap flex-column flex-center">
             <side-filter-list
                 v-loading="teamLoading"
@@ -12,7 +12,7 @@
                 style="width: 240px"
                 :listData="computedTeamData"
             >
-                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam">
+                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam" size="small">
                     <i class="iconfont iconxiao16_jiahao mr4"></i>
                     新增团队
                 </el-button>
@@ -117,7 +117,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @keyup.enter.native="search"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
                 </div>
                 <el-table :data="allSalesData"
                           border
@@ -141,15 +141,15 @@
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="状态" prop="join_date" align="center" width="150px">
+                    <el-table-column label="状态" prop="join_date" align="center" width="100px">
                         <template v-slot="{row}">
                             <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" fixed="right" prop="operate" width="260px" align="center">
+                    <el-table-column label="操作" fixed="right" prop="operate" min-width="260px" align="center">
                         <template v-slot="{row}">
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
-                                <el-link type="primary" class="mr8" @click="edit(row.id)">编辑</el-link>
+                                <el-link type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
                                 <el-link type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
@@ -176,13 +176,13 @@
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false" type="minor" class="flex-center mr30" @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button type="primary" @click="handleSetTeam"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                            <el-button type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队主管人数：{{detailData.leader ? detailData.leader.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetLeader"><i class="iconfont iconxiao16_tihuan mr4"></i>更换主管团队</el-button>
+                            <el-button type="primary" @click="handleSetLeader" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
                         </div>
                         <el-table :data="detailData.leader || []" border width="100%" class="mb16" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
@@ -211,9 +211,9 @@
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队成员人数：{{detailData.member ? detailData.member.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetMember"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
+                            <el-button type="primary" @click="handleSetMember" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
                         </div>
-                        <el-table :data="detailData.member || []" border width="100%">
+                        <el-table :data="detailData.member || []" border width="100%" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -241,135 +241,13 @@
             </template>
         </div>
         <!--编辑/新增销售-->
-        <el-dialog custom-class="manager-dialog"
-                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}销售`"
-                   :visible.sync="editDialogVisible"
-                   :close-on-click-modal="false"
-                   @close="$refs.editForm.resetFields()"
-                   width="480px">
-            <el-form v-loading="dialogLoading" ref="editForm" :model="editFormModel" :rules="editRules" label-width="110px" label-position="left">
-                <el-form-item label="姓名" prop="real_name">
-                    <el-input placeholder="请输入姓名" v-model="editFormModel.real_name"></el-input>
-                </el-form-item>
-                <el-form-item label="登录账号" prop="username">
-                    <el-input placeholder="请输入登录账号" v-model="editFormModel.username"></el-input>
-                </el-form-item>
-                <el-form-item label="身份证号" prop="identity_card">
-                    <el-input placeholder="请输入身份证号" v-model="editFormModel.identity_card"></el-input>
-                </el-form-item>
-                <el-form-item label="入职日期" prop="resignation_at">
-                    <el-date-picker placeholder="请选择入职日期" style="width: 100%" type="date" v-model="editFormModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="手机号" prop="mobile">
-                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="职位" prop="position_id">
-                    <el-select style="width: 100%" placeholder="请选择职位" v-model="editFormModel.position_id">
-                        <el-option v-for="(item, index) in positionData" :key="index" :value="item.id" :label="item.name"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="团队" prop="team_id">
-                    <el-select style="width: 100%" placeholder="请选择团队" v-model="editFormModel.team_id" :loading="teamSelLoading" clearable>
-                        <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
-                    </el-select>
-                </el-form-item>
-                <template v-if="editFormModel.id === ''">
-                    <el-form-item label="登录密码" prop="password">
-                        <el-input auto-complete="new_password" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="再次输入密码" prop="confirm_password">
-                        <el-input auto-complete="new_password" type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
-                    </el-form-item>
-                </template>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="editDialogVisible = false">取消</el-button>
-                <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submitSalesEdit">确认</el-button>
-            </span>
-        </el-dialog>
+        <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" :team-data="teamData"></edit-sales-dialog>
         <!--新增团队-->
-        <el-dialog
-                   title="新增团队"
-                   :visible.sync="addTeamDialogVisible"
-                   :close-on-click-modal="false"
-                   @close="$refs.addTeamForm.resetFields()"
-                   width="480px">
-            <el-form ref="addTeamForm" :model="addTeamFormModel" :rules="addTeamRules" label-width="100px" label-position="left">
-                <el-form-item label="挂靠团队" prop="parent_id">
-                    <el-select v-model="addTeamFormModel.parent_id" style="width: 100%" clearable>
-                        <el-option v-for="(item, index) in teamData" :key="index" :label="item.name" :value="item.id"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="团队主管" prop="leader_ids">
-                    <el-select multiple v-model="addTeamFormModel.leader_ids" style="width: 100%" :loading="loadingSales">
-                        <el-option placeholder="请选择团队主管" v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="团队名称" prop="name">
-                    <el-input placeholder="请输入团队名称" v-model="addTeamFormModel.name"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="addTeamDialogVisible = false">取消</el-button>
-                <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submitAddTeam">确认</el-button>
-            </span>
-        </el-dialog>
+        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData"></add-team-dialog>
         <!--更换团队主管-->
-        <el-dialog
-                title="更换团队主管"
-                :visible.sync="setLeaderDialogVisible"
-                custom-class="set-leader-dialog"
-                :close-on-click-modal="false"
-                @close="$refs.setLeaderForm.resetFields()"
-                width="480px">
-            <el-form v-if="detailData" ref="setLeaderForm" :model="setLeaderFormModel" :rules="setLeaderRules" label-width="100px" label-position="left">
-                <div class="info-block mb20">
-                    <div class="flex-between mb16">
-                        团队名称
-                        <span>{{detailData.name}}</span>
-                    </div>
-                    <div class="flex-between">
-                        当前团队主管
-                        <span>{{(detailData.leader || []).map(item => item.real_name).join(',')}}</span>
-                    </div>
-                </div>
-                <el-form-item label="新团队主管" prop="leader_ids" style="width: 100%">
-                    <el-select multiple v-model="setLeaderFormModel.leader_ids" :loading="loadingSales">
-                        <el-option v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="setLeaderDialogVisible = false">取消</el-button>
-                <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submitSetLeader">更换</el-button>
-            </span>
-        </el-dialog>
+        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam"></set-leader-dialog>
         <!--转移团队-->
-        <el-dialog
-                title="转移团队"
-                :visible.sync="transferTeamDialogVisible"
-                custom-class="set-leader-dialog"
-                :close-on-click-modal="false"
-                @close="$refs.setTeamForm.resetFields()"
-                width="480px">
-            <el-form ref="setTeamForm" :model="transferTeamFormModel" :rules="transferTeamRules" label-width="100px" label-position="left">
-                <div class="info-block mb20" style="height: 60px">
-                    <div class="flex-between mb16" >
-                        当前团队挂靠
-                        <span>{{detailData.parent ? detailData.parent.name : '-'}}</span>
-                    </div>
-                </div>
-                <el-form-item label="团队名称" prop="parent_id">
-                    <el-select filterable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="transferTeamFormModel.parent_id" :loading="dialogLoading">
-                        <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="transferTeamDialogVisible = false">取消</el-button>
-                <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submitSetTeam">更换</el-button>
-            </span>
-        </el-dialog>
+        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam"></transfer-team-dialog>
         <!--调整团队成员-->
         <team-people-dialog :loading="groupSalesLoading"
                             :visible.sync="teamPeopleVisible"
@@ -386,57 +264,48 @@
     import {getTeamList,
             getSalesList,
             getAllSalesList,
-            createSales,
-            modifySales,
             dimission,
-            resetSalesPassword,
             getSalesDetail,
             getSalesPositionList,
             getSalesListNoTeam,
             updateSalesStatus,
-            createTeam,
-            setLeader,
             setMember,
             dismissTeam,
             modifyTeamName,
             getGroupSalesList,
             updateSalesPassword,
-            getTransferTeamSelData,
-            transferTeam} from '@/apis/modules/user-manage'
+            getTransferTeamSelData} from '@/apis/modules/user-manage'
     import {genSimulatedLink} from '@/apis/modules'
     import SideFilterList from '@/components/side-filter-list'
-    import {debounce, throttle} from '@/utils'
+    import {debounce} from '@/utils'
     import {accountStatusMap} from '@/enums/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import TeamPeopleDialog from '../component/team-people-dialog'
     import ModifyPasswordDialog from '../../component/modify-password-dialog'
     import validatorMixin from "../../validatorMixin";
-
+    import EditSalesDialog  from '../component/edit-sales-dialog'
+    import AddTeamDialog  from '../component/add-team-dialog'
+    import SetLeaderDialog  from '../component/set-leader-dialog'
+    import TransferTeamDialog  from '../component/transfer-team-dialog'
     export default {
         name: 'sale-pane',
         mixins: [validatorMixin],
+        provide() {
+            return {
+                $parent: this
+            }
+        },
         components: {
             FilterShell,
             SideFilterList,
             TeamPeopleDialog,
-            ModifyPasswordDialog
-        },
-        directives: {
-            'table-infinite-scroll' : {
-                inserted(el, binding) {
-                    const scrollWrap = el.querySelector('.el-table__body-wrapper')
-                    const scrollHandle = debounce(() => {
-                        const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                        if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) { // 到底
-                            binding.value()
-                        }
-                    }, 300)
-                    scrollWrap.addEventListener('scroll', scrollHandle)
-                }
-            }
+            ModifyPasswordDialog,
+            EditSalesDialog,
+            AddTeamDialog,
+            SetLeaderDialog,
+            TransferTeamDialog
         },
         data() {
-            const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
                 modifyPwdVisible: false,
                 loadingSales: false, // loading主管列表
@@ -469,56 +338,12 @@
                 noTeamSalesData: [],
                 allSalesData: [],
                 tableData: [],
-                editFormModel: {
-                    id: '',
-                    real_name: '',
-                    username: '',
-                    identity_card: '',
-                    resignation_at: '',
-                    mobile: '',
-                    position_id: '',
-                    team_id: '',
-                    password: '',
-                    confirm_password: '',
-                    role: 'sales'
-                },
-                editRules: Object.freeze({
-                    real_name: baseValiObj,
-                    username: [baseValiObj, {validator: this.usernameValidator}],
-                    identity_card: baseValiObj,
-                    resignation_at: baseValiObj,
-                    mobile: [baseValiObj, {validator: this.moblieValidator}],
-                    position_id: baseValiObj,
-                    role: baseValiObj,
-                    password: [baseValiObj, {validator: this.pwdValidator}],
-                    confirm_password: [baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValidator}]
-                }),
+                editDialogId: '',
                 editDialogVisible: false,
                 addTeamDialogVisible: false,
-                addTeamFormModel: {
-                    parent_id: '',
-                    leader_ids: [],
-                    name: ''
-                },
-                addTeamRules: Object.freeze({
-                    leader_ids: baseValiObj,
-                    name: baseValiObj,
-                }),
                 setLeaderDialogVisible: false,
-                setLeaderFormModel: {
-                    leader_ids: []
-                },
-                setLeaderRules: Object.freeze({
-                    leader_ids: baseValiObj
-                }),
                 transferTeamDialogVisible: false,
                 transferTeamSelData: [],
-                transferTeamFormModel: {
-                    parent_id: ''
-                },
-                transferTeamRules: Object.freeze({
-                    parent_id: baseValiObj
-                }),
                 positionData: [],
                 resignationDateRange: [],
                 closeDateRange: [],
@@ -620,58 +445,12 @@
                 this.addTeamDialogVisible = true
                 this.ajaxNoTeamSalesData()
             },
-            // 编辑销售
-            edit(id) {
-                this.ajaxSalesDetail(id)
-                this.editDialogVisible = true
-            },
-            handleAddSales() {
-                this.ajaxPositionData()
-                this.editFormModel.id = ''
-                this.editDialogVisible = true
-            },
             // 新增/编辑销售
-            submitSalesEdit() {
-                this.$refs.editForm.validate(flag => {
-                    if (flag) {
-                        const {editFormModel: data} = this
-                        const isEdit = !!data.id
-                        const handler = isEdit ? modifySales : createSales
-                        this.submitting = true
-                        const params = {...data, role: 'sales'}
-                        params.resignation_at = ~~(new Date(params.resignation_at.replace(/-/g, '/')) / 1000)
-                        handler(params).then(() => {
-                            this.ajaxAllSalesList()
-                            this.editDialogVisible = false
-                            this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
-                        }).catch(() => {}).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
-            // 新增团队提交
-            submitAddTeam() {
-                this.$refs.addTeamForm.validate(flag => {
-                    if (flag) {
-                        this.submitting = true
-                        createTeam(this.addTeamFormModel).then(() => {
-                            this.ajaxTeamData()
-                            this.$message.success('新增成功!')
-                            this.addTeamDialogVisible = false
-                        }).catch(() => {}).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
-            // 重置密码
-            resetPwd(id) {
-                this.confirm('是否确认重置密码？', '重置').then(() => {
-                    resetSalesPassword({id}).then((res) => {
-                        this.$confirm(`重置密码成功,新密码【${res.password}】, 请妥善保管`, '提示')
-                    })
-                }).catch(() => {})
+            editSales(id) {
+                this.ajaxPositionData()
+                id && this.ajaxSalesDetail(id)
+                this.editDialogId = id
+                this.editDialogVisible = true
             },
             // 离职
             dimission(id) {
@@ -735,22 +514,6 @@
                 }
 
             },
-            // 提交更换领导
-            submitSetLeader() {
-                this.$refs.setLeaderForm.validate(flag => {
-                    if (flag) {
-                        const team_id = this.selTeam
-                        this.submitting = true
-                        setLeader({...this.setLeaderFormModel, team_id}).then(() => {
-                            this.ajaxDetail(team_id)
-                            this.$message.success('操作成功!')
-                            this.setLeaderDialogVisible = false
-                        }).catch(() => {}).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
             // 调整团队成员
             handleSetMember() {
                 this.groupSelected = this.detailData.member.map(item => item.id)
@@ -760,21 +523,6 @@
             handleSetTeam() {
                 this.ajaxTransferTeamSelData()
                 this.transferTeamDialogVisible = true
-            },
-            submitSetTeam() {
-                this.$refs.setTeamForm.validate(flag => {
-                    if (flag) {
-                        this.submitting = true
-                        const team_id = this.selTeam
-                        transferTeam({team_id, ...this.transferTeamFormModel}).then(() => {
-                            this.ajaxDetail(team_id)
-                            this.transferTeamDialogVisible = false
-                            this.$message.success('操作成功!')
-                        }).catch(() => {}).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
             },
             // 调整成员提交
             groupSalesSubmit(data) {
@@ -878,6 +626,13 @@
                     this.ajaxDetail(selTeam)
                 }
             },
+            debounceSearch() {
+                const func = debounce(() => {
+                    this.search()
+                }, 300)
+                func()
+                this.debounceSearch = func
+            },
             confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
                 const h = this.$createElement
                 return this.$confirm(
@@ -904,7 +659,7 @@
             },
             // 表格最大高度
             setMaxHeight() {
-                const func = throttle(() => {
+                const func = debounce(() => {
                     this.maxHeight = this.$refs.container.offsetHeight - 80
                 }, 300)
                 func()
@@ -940,7 +695,7 @@
             position: fixed;
             z-index: 3;
             top: 72.5px;
-            right: 32px;
+            right: 36px;
         }
         .right {
             flex: 1;

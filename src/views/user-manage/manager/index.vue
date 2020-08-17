@@ -2,7 +2,7 @@
     <div class="manager-container page-container">
         <div class="header">
             内部管理员
-            <el-button type="primary" @click="addManager"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
+            <el-button type="primary" @click="addManager" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content">
             <side-filter-list
@@ -15,10 +15,14 @@
                     style="width: 240px;border-right: 1px solid #e6e6e6;"
                     :listData="roleData"
             >
-                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
+                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </side-filter-list>
             <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
-                <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user" type="primary" style="position: absolute;top:16px;right:16px;z-index: 10" @click="editTree">编辑</el-button>
+                <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user"
+                           type="primary"
+                           size="small"
+                           style="position: absolute;top:16px;right:16px;z-index: 10"
+                           @click="editTree">编辑</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper" @tab-click="handleTabChange" size="small">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
@@ -38,7 +42,7 @@
                                          class="mr30 del-link"
                                          @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
                             </el-tooltip>
-                            <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
+                            <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos" size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                         </div>
                     </div>
                     <el-table :data="managerData" border>

@@ -1,6 +1,6 @@
 <template>
     <div class="position-pane-container">
-        <el-button class="add-button" type="primary" @click="posDialogVisible = true"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
+        <el-button class="add-button" type="primary" @click="posDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
         <side-filter-list
                 custom-class="pos-side-filter"
                 v-loading="lvLoading"
@@ -36,7 +36,7 @@
                     <permission-tree v-model="detailData"></permission-tree>
                 </el-scrollbar>
                 <div class="flex-center">
-                    <el-button type="primary" @click="editTree">编辑权限</el-button>
+                    <el-button type="primary" @click="editTree" size="small">编辑权限</el-button>
                 </div>
             </template>
         </div>
@@ -288,7 +288,7 @@
             position: fixed;
             z-index: 3;
             top: 72.5px;
-            right: 37px;
+            right: 36px;
         }
         .right {
             flex: 1;

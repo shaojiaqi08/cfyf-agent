@@ -14,6 +14,8 @@ export const getTeamPolicyStatistics = params => get('/agent/proxy/policy/sales_
 // 公司业绩
 export const getCompanyPolicyList = params => get('/agent/proxy/policy/company_policy_list', params)
 export const getCompanyPolicyStatistics = params => get('/agent/proxy/policy/company_statistics', params)
+// 归属成员
+export const getManagementSalesList = params => get('', params)
 
 // 保单详情
 export const getPolicyDetail = params => get('/agent/proxy/policy/detail', params)

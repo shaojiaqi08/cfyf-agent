@@ -53,7 +53,7 @@
                     <div class="flex-center">
                         调整字号
                         <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
-                        <el-button class="ml16" type="primary" @click="createImg"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
+                        <el-button class="ml16" type="primary" @click="createImg" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
                     </div>
                 </div>
                 <el-scrollbar style="height: 100%;">

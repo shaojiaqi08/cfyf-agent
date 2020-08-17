@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button type="primary" @click="addProposal"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
+                    <el-button type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
@@ -80,7 +80,7 @@
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './proposal-operate/modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
-    import {debounce, throttle} from '@/utils'
+    import {debounce} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'
     import {getProposalList, getProposalMasterInfo} from '@/apis/modules/proposal'
     export default {
@@ -90,20 +90,6 @@
             ProposalMaterial,
             AddMemberStruct,
             FilterShell
-        },
-        directives: {
-            'table-infinite-scroll' : {
-                inserted(el, binding) {
-                    const scrollWrap = el.querySelector('.el-table__body-wrapper')
-                    const scrollHandle = debounce(() => {
-                        const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
-                        if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) { // 到底
-                            binding.value()
-                        }
-                    }, 300)
-                    scrollWrap.addEventListener('scroll', scrollHandle)
-                }
-            }
         },
         data() {
             return {
@@ -219,13 +205,10 @@
                 this.search = func
             },
             onStorage(e) {
-                console.log(e)
-                if (e.key === 'closePage') {
-                   window.close()
-                }
+                e.key === 'refreshPage' && this.search()
             },
             setTableMaxHeight() {
-                const func = throttle(() => {
+                const func = debounce(() => {
                     this.maxHeight = this.$refs.content.offsetHeight - 80
                 }, 300)
                 func()

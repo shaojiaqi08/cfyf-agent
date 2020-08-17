@@ -1,0 +1,1 @@
+export default {required: true, message: '此项不可为空', trigger: 'blur'}
