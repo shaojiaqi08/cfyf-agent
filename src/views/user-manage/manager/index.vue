@@ -45,7 +45,7 @@
                             <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos" size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                         </div>
                     </div>
-                    <el-table :data="managerData" border :height="maxHeight" v-table-infinite-scroll="scroll2Bottom">
+                    <el-table :data="managerData" border :max-height="maxHeight" v-table-infinite-scroll="scroll2Bottom">
                         <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                         <el-table-column label="账号" prop="username" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -153,7 +153,7 @@
             </span>
         </el-dialog>
         <!--编辑职位-->
-        <el-dialog custom-class="manager-dialog" title="编辑角色" :visible.sync="editPosDialogVisible" width="480px" @close="$refs.editPosForm.resetFields()">
+        <el-dialog custom-class="manager-dialog" title="编辑角色" :visible.sync="editPosDialogVisible" width="480px" :close-on-click-modal="false"  @close="$refs.editPosForm.resetFields()">
             <el-form ref="editPosForm" :model="editPosFormModel" :rules="editPosRules" label-width="100px" label-position="left">
                 <el-form-item label="角色名称" prop="name">
                     <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
