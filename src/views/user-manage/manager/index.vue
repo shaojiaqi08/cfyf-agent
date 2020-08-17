@@ -4,7 +4,7 @@
             内部管理员
             <el-button type="primary" @click="addManager" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
-        <div class="content">
+        <div class="content" ref="content">
             <side-filter-list
                     v-loading="leftLoading"
                     label-key="name"
@@ -17,21 +17,21 @@
             >
                 <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </side-filter-list>
-            <el-scrollbar class="right-scroll-bar" v-loading="rightLoading">
+            <div class="right-content" v-loading="rightLoading">
                 <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user"
                            type="primary"
                            size="small"
                            style="position: absolute;top:16px;right:16px;z-index: 10"
-                           @click="editTree">编辑</el-button>
+                           @click="editTree">编辑权限</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper" @tab-click="handleTabChange" size="small">
                     <el-tab-pane name="people" label="成员"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限"></el-tab-pane>
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
                     <div class="desc-wrap flex-between">
-                        <div class="flex-center">
+                        <div class="flex-center fs16">
                             {{curSelRole.name}}
-                            <span :title="curSelRole.remark">{{curSelRole.remark}}</span>
+                            <span :title="curSelRole.remark" class="fs14">{{curSelRole.remark}}</span>
                         </div>
                         <div class="flex-center">
                             <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
@@ -45,7 +45,7 @@
                             <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos" size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                         </div>
                     </div>
-                    <el-table :data="managerData" border>
+                    <el-table :data="managerData" border :height="maxHeight" v-table-infinite-scroll="scroll2Bottom">
                         <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                         <el-table-column label="账号" prop="username" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -86,7 +86,7 @@
                         <permission-tree :data="treeDetail"></permission-tree>
                     </el-scrollbar>
                 </div>
-            </el-scrollbar>
+            </div>
         </div>
         <!--编辑/编辑管理员-->
         <el-dialog custom-class="manager-dialog"
@@ -192,6 +192,7 @@
     import SideFilterList from '@/components/side-filter-list'
     import ModifyPasswordDialog from '../component/modify-password-dialog'
     import validatorMixin from "../validatorMixin";
+    import {debounce} from "../../../utils";
 
     export default {
         name: 'manager',
@@ -260,15 +261,20 @@
                     disabled: 'danger',
                     enabled: 'success',
                     invalidation: 'minor'
-                })
+                }),
+                maxHeight: null
             }
-        },
-        created() {
-            this.ajaxRoleList()
-            this.ajaxEditRoleList()
         },
         methods: {
             formatDate,
+            scroll2Bottom() {
+                const {page, total, page_size} = this
+                if (page * page_size < total) {
+                    this.page += 1
+                    this.managerData = []
+                    this.ajaxDetail(this.curSelRole)
+                }
+            },
             handleTabChange() {
                 this[`${this.curTabIdx}TabHandle`]()
             },
@@ -557,7 +563,7 @@
                 this.rightLoading = true
                 this.curSelRole = obj
                 getManagerList({position_id: obj.id}).then(res => {
-                    this.managerData = res.data
+                    this.managerData = this.managerData.concat(res.data)
                 }).finally(() => {
                     this.rightLoading = false
                 })
@@ -567,7 +573,25 @@
                 this.$nextTick(() => {
                     this.$refs.editForm.clearValidate()
                 })
+            },
+            setMaxHeight() {
+                const func = debounce(() => {
+                    this.maxHeight = this.$refs.content.offsetHeight - 145
+                }, 300)
+                func()
+                this.setMaxHeight = func
             }
+        },
+        mounted() {
+            this.setMaxHeight()
+        },
+        created() {
+            this.ajaxRoleList()
+            this.ajaxEditRoleList()
+            window.addEventListener('resize', this.setMaxHeight)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.setMaxHeight)
         }
     }
 </script>
@@ -644,10 +668,11 @@
                     }
                 }
             }
-            ::v-deep .right-scroll-bar{
+            .right-content{
                 flex: 1;
                 height: 100%;
-                .el-tabs{
+                position: relative;
+                ::v-deep .el-tabs{
                     padding: 16px 16px 0 16px;
                     .el-tabs__header{
                         margin: 0;
