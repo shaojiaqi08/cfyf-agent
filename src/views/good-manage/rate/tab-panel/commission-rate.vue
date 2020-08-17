@@ -227,7 +227,7 @@ export default {
         });
       }
     },
-    handleSelPosition(v) {
+    handleSelPosition(v, selProductVal) {
       const data = { position_id: v.value, company_id: this.selVal };
       this.selPosVal = v.value;
       this.productLoading = true;
@@ -247,6 +247,7 @@ export default {
           });
           this.originlProductList = JSON.parse(JSON.stringify(res));
           this.settingList = [];
+          this.selProductVal = selProductVal || ''
           this.productFilter.status = "";
           this.productFilter.insType = "";
         })
@@ -289,12 +290,13 @@ export default {
     },
     updateListHandler() {
       const selProductVal = this.selProductVal
+      if (!selProductVal) return
       const data = {
           product_id: this.selProductVal.split('_')[0],
           product_type: this.selProductVal.split('_')[1],
           company_id: this.selVal
       }
-      // this.handleSelPosition({ value: this.selVal })
+      this.handleSelPosition({ value: this.selPosVal }, selProductVal)
       setTimeout(() => {
         this.selProductVal = selProductVal
         this.handleSelProduct(data)
