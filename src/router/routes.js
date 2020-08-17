@@ -225,22 +225,24 @@ const necessaryRoutes = [
     path: "/404",
     name: "404",
     meta: {
-      title: '404'
+      title: '404',
+      header: true,
+      menu: false
     },
     component: getView('404')
   },
-  {
-    // 样式规范
-    path: "/design",
-    name: "design",
-    meta: {
-      title: 'about',
-      header: false,
-      menu: false
-    },
-    component: () =>
-        import("@/views/DesignSpec.vue")
-  },
+  // {
+  //   // 样式规范
+  //   path: "/design",
+  //   name: "design",
+  //   meta: {
+  //     title: 'about',
+  //     header: false,
+  //     menu: false
+  //   },
+  //   component: () =>
+  //       import("@/views/DesignSpec.vue")
+  // },
   {
     path: '*',
     redirect: '/404'

@@ -1,14 +1,5 @@
 <template>
   <div class="commission-rate-container">
-    <!-- <side-filter-list
-      v-loading="companyLoading"
-      :list-data="filterCompanyList"
-      label-key="label"
-      value-key="value"
-      placeholder="搜索B端公司"
-      v-model="selVal"
-      @change="handleSelCompany"
-    ></side-filter-list> -->
     <el-scrollbar class="pos-filter-list" v-loading="positionLoading">
       <div v-for="(item, index) in positionList" :key="index">
         <div class="group-item">

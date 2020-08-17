@@ -1,14 +1,5 @@
 <template>
   <div class="server-rate-container">
-    <!-- <side-filter-list
-      v-loading="companyLoading"
-      :list-data="filterCompanyList"
-      label-key="label"
-      value-key="value"
-      placeholder="搜索B端公司"
-      v-model="selVal"
-      @change="handleSelCompany"
-    ></side-filter-list> -->
     <side-filter-list
       v-loading="productLoading"
       :list-data="productList"
@@ -87,12 +78,6 @@
         <p>佣金费率记录</p>
         {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <!-- 某某某保险产品名称过长换行超过两行就换行展示产品 -->
-        <!-- <el-button type="primary"
-                   v-if="selProductVal"
-                   @click="openRateDialog">
-          <i class="iconfont iconxiao16_shezhi mr4"></i>
-          设置服务费率
-        </el-button> -->
       </div>
       <el-scrollbar class="body scrollbar" v-loading="settingLoadLoading">
         <div v-if="!settingLoadLoading">
