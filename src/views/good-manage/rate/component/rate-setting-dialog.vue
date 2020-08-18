@@ -579,7 +579,7 @@ export default {
           reward_proportion: ''
         }
         rules.map(i => {
-          i.renewal_rate.push(renewalRate)
+          i.renewal_rate.push(JSON.parse(JSON.stringify(renewalRate)))
         })
       })
     },
