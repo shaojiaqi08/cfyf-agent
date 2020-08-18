@@ -2,10 +2,10 @@
     <div class="rate-container page-container">
         <div class="header">
             <el-tabs class="tabs" v-model="tabIndex">
-                <el-tab-pane name="server-rate" label="服务费率"></el-tab-pane>
-                <el-tab-pane name="commission-rate" label="佣金费率"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/rate/service_rate')" name="server-rate" label="服务费率"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/rate/commission_management')" name="commission-rate" label="佣金费率"></el-tab-pane>
             </el-tabs>
-            <el-button v-if="tabIndex === 'commission-rate'" size="small" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置佣金费率</el-button>
+            <el-button v-if="$checkAuth('/rate/commission_management/batch_create') && tabIndex === 'commission-rate'" size="small" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置佣金费率</el-button>
         </div>
         <div class="content">
             <Component :is="tabIndex"></Component>
@@ -33,6 +33,14 @@
         methods: {
             openRateDialog() {
                 this.dialogVisible = true
+            }
+        },
+        created() {
+            // 初始化tab权限
+            if (this.$checkAuth('/rate/service_rate')) {
+                this.tabIndex = 'server-rate'
+            } else if (this.$checkAuth('/rate/commission_management')) {
+                this.tabIndex = 'commission-rate'
             }
         }
     }

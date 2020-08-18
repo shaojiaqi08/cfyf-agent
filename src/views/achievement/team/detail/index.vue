@@ -32,6 +32,10 @@
           <span>{{ policyInfo.payment_period_desc || '-' }}</span>
         </div>
         <div>
+          保障期限
+          <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
+        </div>
+        <div>
           保额(元)
           <span>{{ policyInfo.guarantee_quota_str || '-' }}</span>
         </div>
@@ -60,11 +64,6 @@
         <div>
           过犹日期
           <span>{{ policyInfo.over_hesitation_at_str || '-'}}</span>
-        </div>
-        <!-------------------------------->
-        <div>
-          保障期限
-          <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
         </div>
       </div>
       <h4>投被保人信息</h4>

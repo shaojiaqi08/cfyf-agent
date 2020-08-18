@@ -251,7 +251,7 @@
         <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="操作" fixed="right" width="100px" align="center">
           <template slot-scope="{row}">
-            <el-link type="primary" @click="showInfoDialog(row)">订单详情</el-link>
+            <el-link v-if="$checkAuth('/achievement-self/detail')" type="primary" @click="showInfoDialog(row)">订单详情</el-link>
           </template>
         </el-table-column>
       </el-table>

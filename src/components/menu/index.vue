@@ -59,6 +59,11 @@
         if (this.$route.name === name) return
         this.$router.push({ name })
       }
+    },
+    watch: {
+      permission() {
+        this.menuInit()
+      }
     }
   }
 </script>

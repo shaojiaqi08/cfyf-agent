@@ -6,7 +6,7 @@
             :close-on-click-modal="false"
             @close="closeDialog"
             width="480px">
-        <el-form ref="form" :model="formModel" :rules="rules" label-width="100px" label-position="left">
+        <el-form ref="form" :model="formModel" label-width="100px" label-position="left">
             <div class="info-block mb20" style="height: 60px">
                 <div class="flex-between mb16" >
                     当前团队挂靠
@@ -14,15 +14,15 @@
                 </div>
             </div>
             <el-form-item label="挂靠团队" prop="parent_id">
-                <el-select filterable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="formModel.parent_id">
+                <el-select filterable clearable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="formModel.parent_id">
                     <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
                 </el-select>
             </el-form-item>
         </el-form>
         <span slot="footer">
-                <el-button @click="closeDialog">取消</el-button>
-                <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submit">更换</el-button>
-            </span>
+            <el-button @click="closeDialog">取消</el-button>
+            <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submit">更换</el-button>
+        </span>
     </el-dialog>
 </template>
 
@@ -30,7 +30,6 @@
     /**
      *  新增团队 Dialog
      * */
-    import baseValiObj from '../../baseValiObj'
     import {transferTeam} from '@/apis/modules/user-manage'
     export default {
         name: 'transfer-team-dialog',
@@ -61,10 +60,7 @@
                 teamSelLoading: false,
                 formModel: {
                     parent_id: ''
-                },
-                rules: Object.freeze({
-                    parent_id: baseValiObj
-                })
+                }
             }
         },
         methods: {

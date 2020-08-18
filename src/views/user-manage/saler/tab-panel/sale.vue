@@ -1,6 +1,10 @@
 <template>
     <div class="sale-people-container" ref="container">
-        <el-button class="add-button" type="primary" @click="editSales('')" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
+        <el-button class="add-button"
+                   type="primary"
+                   @click="editSales('')"
+                   v-if="$checkAuth('/sale/store')"
+                   size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增销售</el-button>
         <div class="side-filter-wrap flex-column flex-center">
             <side-filter-list
                 v-loading="teamLoading"
@@ -12,7 +16,12 @@
                 style="width: 240px"
                 :listData="computedTeamData"
             >
-                <el-button slot="footer" type="primary" class="mt8 mb16 ml16 mr16" @click="handleAddTeam" size="small">
+                <el-button slot="footer"
+                           type="primary"
+                           v-if="$checkAuth('/sale/team/create')"
+                           class="mt8 mb16 ml16 mr16"
+                           @click="handleAddTeam"
+                           size="small">
                     <i class="iconfont iconxiao16_jiahao mr4"></i>
                     新增团队
                 </el-button>
@@ -147,13 +156,13 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" fixed="right" prop="operate" min-width="260px" align="center">
-                        <template v-slot="{row}">
+                        <template v-slot="{row, $index}">
                             <template v-if="row.account_status!==accountStatusMap.dimission.value">
-                                <el-link type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
-                                <el-link type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
-                                <el-link type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
-                                <el-link type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                <el-link type="primary" class="mr8" @click="dimission(row.id)">离职</el-link>
+                                <el-link v-if="$checkAuth('/sale/update')" type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
+                                <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
+                                <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
+                                <el-link v-if="$checkAuth('/sale/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
+                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">离职</el-link>
                             </template>
                             <span v-else>-</span>
                         </template>
@@ -165,7 +174,7 @@
                             <div class="name-wrap">
                                 <template v-if="!editting">
                                     {{detailData.name}}
-                                    <el-link  @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
+                                    <el-link v-if="$checkAuth('/sale/team/modify_name')" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
                                 </template>
                                 <div v-else class="flex">
                                     <el-input size="small" v-model.trim="editName" class="mr8" @keyup.native.enter="submitTeamName"></el-input>
@@ -175,14 +184,18 @@
                             <span>当前团队挂靠：{{detailData.parent ? detailData.parent.name : '-'}}</span>
                         </div>
                         <div class="flex-center">
-                            <el-link :underline="false" type="minor" class="flex-center mr30" @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                            <el-link :underline="false"
+                                     v-if="$checkAuth('/sale/team/disband_team')"
+                                     type="minor"
+                                     class="flex-center mr30"
+                                     @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
+                            <el-button v-if="$checkAuth('/sale/team/change_team_parent')" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队主管人数：{{detailData.leader ? detailData.leader.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetLeader" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
+                            <el-button v-if="$checkAuth('/sale/team/set_team_leader')" type="primary" @click="handleSetLeader" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
                         </div>
                         <el-table :data="detailData.leader || []" border width="100%" class="mb16" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
@@ -211,7 +224,7 @@
                     <div class="table-wrap">
                         <div class="flex-between table-header">
                             <span>当前团队成员人数：{{detailData.member ? detailData.member.length : 0}} 人</span>
-                            <el-button type="primary" @click="handleSetMember" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
+                            <el-button v-if="$checkAuth('/sale/team/set_member')" type="primary" @click="handleSetMember" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
                         </div>
                         <el-table :data="detailData.member || []" border width="100%" max-height="768px">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
@@ -448,14 +461,10 @@
                 this.editDialogVisible = true
             },
             // 离职
-            dimission(id) {
+            dimission(id, index) {
                 this.confirm('账号离职后不可恢复，是否确认离职？', '离职').then(() => {
-                    dimission({id}).then(() => {
-                        if (this.selTeam === -1) {
-                            this.ajaxAllSalesList()
-                        } else {
-                            this.ajaxDetail(this.selTeam)
-                        }
+                    dimission({id}).then(res => {
+                        this.$set(this.allSalesData, index, res)
                         this.$message.success('操作成功!')
                     })
                 })
@@ -603,11 +612,8 @@
                 this.confirm(content, btnTxt, btnColor, btnClass).then(() => {
                     const account_status = willDisable ? 'disable' : 'enable'
                     updateSalesStatus({id, account_status}).then(() => {
-                        if (this.selTeam === -1) {
-                            this.ajaxAllSalesList()
-                        } else {
-                            this.ajaxDetail(this.selTeam)
-                        }
+                        row.account_status = willDisable ? 'disable' : 'enable'
+                        row.account_status_str = willDisable ? '禁用' : '启用'
                         this.$message.success('操作成功!')
                     }).catch(() => {})
                 })

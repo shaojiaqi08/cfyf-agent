@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
+                    <el-button v-if="$checkAuth('/proposal/store')" type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
@@ -49,9 +49,9 @@
                 <el-table-column label="操作" width="240px" align="center">
                     <template v-slot="{row, index}">
                         <template v-if="row.status === proposalStatusMap.done.value">
-                            <el-link type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
-                            <el-link type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
-                            <el-link type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
+                            <el-link v-if="$checkAuth('/proposal/materials')" type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
+                            <el-link v-if="$checkAuth('/proposal/proposal-operate/copy')" type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
+                            <el-link v-if="$checkAuth('/proposal/h5')" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
                         </template>
                         <template v-else>
                             <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>

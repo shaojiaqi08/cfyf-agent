@@ -4,6 +4,7 @@
             内部管理员
             <el-button type="primary"
                        @click="addManager"
+                       v-if="$checkAuth('/manager/admin/store')"
                        size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content" ref="content">
@@ -17,17 +18,24 @@
                     style="width: 240px;border-right: 1px solid #e6e6e6;"
                     :listData="roleData"
             >
-                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="editRoleDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
+                <el-button slot="footer"
+                           class="mt8 mb16 mr16 ml16"
+                           type="primary"
+                           @click="editRoleDialogVisible = true"
+                           v-if="$checkAuth('/manager/admin_position/store')"
+                           size="small">
+                    <i class="iconfont iconxiao16_jiahao mr4"></i>新增管理员角色
+                </el-button>
             </side-filter-list>
             <div class="right-content" v-loading="rightLoading">
-                <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user"
+                <el-button v-if="$checkAuth('/manager/admin/authority') && curTabIdx==='permission' && !curSelRole.is_super_user"
                            type="primary"
                            size="small"
                            style="position: absolute;top:16px;right:16px;z-index: 10"
                            @click="editTree">编辑权限</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper" @tab-click="handleTabChange" size="small">
-                    <el-tab-pane name="people" label="成员"></el-tab-pane>
-                    <el-tab-pane name="permission" label="权限"></el-tab-pane>
+                    <el-tab-pane name="people" label="成员" v-if="$checkAuth('/manager')"></el-tab-pane>
+                    <el-tab-pane name="permission" label="权限" v-if="$checkAuth('/manager/admin/authority')"></el-tab-pane>
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
                     <div class="desc-wrap flex-between">
@@ -36,7 +44,10 @@
                             <span :title="curSelRole.remark" class="fs14">{{curSelRole.remark}}</span>
                         </div>
                         <div class="flex-center">
-                            <el-tooltip content="角色内无成员才可以删除" :disabled="managerData.length <= 0" placement="top">
+                            <el-tooltip content="角色内无成员才可以删除"
+                                        v-if="$checkAuth('/manager/admin_position/delete')"
+                                        :disabled="managerData.length <= 0"
+                                        placement="top">
                                 <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"
                                          :disabled="managerData.length > 0 || curSelRole.is_super_user"
                                          :underline="false"
@@ -44,7 +55,11 @@
                                          class="mr30 del-link"
                                          @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
                             </el-tooltip>
-                            <el-button type="primary" :disabled="curSelRole.is_super_user" @click="handleSetPos" size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
+                            <el-button type="primary"
+                                       :disabled="curSelRole.is_super_user"
+                                       @click="handleSetPos"
+                                       v-if="$checkAuth('/manager/admin_position/update')"
+                                       size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                         </div>
                     </div>
                     <el-table :data="managerData" border :max-height="maxHeight" v-table-infinite-scroll="scroll2Bottom">
@@ -68,13 +83,13 @@
                                 <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="250" align="center">
+                        <el-table-column label="操作" prop="operate" :width="200" align="center">
                             <template v-slot="{row, $index}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
-                                    <el-button type="text" @click="lostEffect(row.id, $index)">使失效</el-button>
-                                    <el-button type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                    <el-button type="text" @click="modifyPwd(row)">重置密码</el-button>
-                                    <el-button type="text" @click="edit(row)">编辑</el-button>
+                                    <el-link v-if="$checkAuth('/manager/admin/close')" type="primary" class="mr8" @click="lostEffect(row.id, $index)">使失效</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>
                                 <template v-else>
                                     <span>-</span>
@@ -166,7 +181,7 @@
                 page_size: 20,
                 total: 0,
                 managerData: [],
-                curTabIdx: 'people',
+                curTabIdx: '',
                 treeDialogVisible: false,
                 editDialogVisible: false,
                 editFormModel: {
@@ -492,6 +507,12 @@
             this.setMaxHeight()
         },
         created() {
+            // 初始化tab权限
+            if (this.$checkAuth('/manager')) {
+                this.curTabIdx = 'people'
+            } else if (this.$checkAuth('/manager/admin/authority')) {
+                this.curTabIdx = 'permission'
+            }
             this.ajaxRoleList()
             window.addEventListener('resize', this.setMaxHeight)
         },
