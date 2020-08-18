@@ -241,7 +241,7 @@
             </template>
         </div>
         <!--编辑/新增销售-->
-        <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" :team-data="teamData" @success="ajaxAllSalesList"></edit-sales-dialog>
+        <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
         <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->

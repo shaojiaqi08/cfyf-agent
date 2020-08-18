@@ -34,7 +34,6 @@
     import {transferTeam} from '@/apis/modules/user-manage'
     export default {
         name: 'transfer-team-dialog',
-        inject: ['$parent'],
         props: {
             visible: {
                 type: Boolean,

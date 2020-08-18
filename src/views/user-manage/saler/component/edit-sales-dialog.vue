@@ -26,11 +26,11 @@
                     <el-option v-for="(item, index) in positionData" :key="index" :value="item.id" :label="item.name"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="团队" prop="team_id">
-                <el-select style="width: 100%" placeholder="请选择团队" v-model="formModel.team_id" :loading="teamSelLoading" clearable>
-                    <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>
-                </el-select>
-            </el-form-item>
+<!--            <el-form-item label="团队" prop="team_id">-->
+<!--                <el-select style="width: 100%" placeholder="请选择团队" v-model="formModel.team_id" :loading="teamSelLoading" clearable>-->
+<!--                    <el-option v-for="(item, index) in teamData" :key="index" :value="item.id" :label="item.name"></el-option>-->
+<!--                </el-select>-->
+<!--            </el-form-item>-->
             <template v-if="id === ''">
                 <el-form-item label="登录密码" prop="password">
                     <el-input autocomplete="off" auto-complete="new_password" type="password" placeholder="请输入管理员登录密码" v-model="formModel.password"></el-input>
@@ -88,7 +88,7 @@
                     resignation_at: '',
                     mobile: '',
                     position_id: '',
-                    team_id: '',
+                    // team_id: '',
                     password: '',
                     confirm_password: '',
                     role: 'sales'

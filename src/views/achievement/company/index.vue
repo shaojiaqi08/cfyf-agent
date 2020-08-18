@@ -293,7 +293,7 @@
     </div>
     <edit-modal :show.sync="belongVisible"
                 :belongData="belongData"
-                @update="getCompanyPolicyList"></edit-modal>
+                @update="searchModelChange"></edit-modal>
   </div>
 </template>
 
