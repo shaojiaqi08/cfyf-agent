@@ -13,7 +13,7 @@
                     <span>{{data.parent ? data.parent.name : '-'}}</span>
                 </div>
             </div>
-            <el-form-item label="团队名称" prop="parent_id">
+            <el-form-item label="挂靠团队" prop="parent_id">
                 <el-select filterable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="formModel.parent_id">
                     <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
                 </el-select>

@@ -61,10 +61,6 @@
           过犹日期
           <span>{{ policyInfo.over_hesitation_at_str || '-'}}</span>
         </div>
-        <div>
-          投保单号
-          <span>{{ policyInfo.proposal_sn || '-' }}</span>
-        </div>
         <!-------------------------------->
         <div>
           保障期限

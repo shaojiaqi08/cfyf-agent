@@ -254,12 +254,7 @@
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px">
-          <template v-slot="{row}">
-            <span v-if="!parseInt(row.company_actually_commission)">0</span>
-            <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
-          </template>
-        </el-table-column>
+        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="180px"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
          <el-table-column label="回访成功日期" prop="visit_at_str" width="150px" align="center"></el-table-column>

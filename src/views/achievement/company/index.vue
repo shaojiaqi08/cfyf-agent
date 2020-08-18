@@ -187,14 +187,12 @@
             <div>
               服务费(元)
               <template>
-                <span v-if="!parseInt(statisticInfo.company_actually_commission)" class="primary">0</span>
-                <span v-else class="primary" v-to-fixed:[2]="statisticInfo.company_actually_commission">{{ statisticInfo.company_actually_commission }}</span>
+                <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
               </template>
             </div>
             <div>
               佣金(元)
-              <span v-if="!parseInt(statisticInfo.sales_position_commission)" class="primary">0</span>
-              <span v-else class="primary" v-to-fixed:[2]="statisticInfo.sales_position_commission">{{ statisticInfo.sales_position_commission }}</span>
+              <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
             </div>
           </div>
           <div class="item-block">
@@ -271,18 +269,8 @@
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px">
-          <template v-slot="{row}">
-            <span v-if="!parseInt(row.company_actually_commission)">0</span>
-            <span v-else v-to-fixed:[2]="row.company_actually_commission"></span>
-          </template>
-        </el-table-column>
-        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px">
-          <template v-slot="{row}">
-            <span v-if="!parseInt(row.sales_position_commission)">0</span>
-            <span v-else v-to-fixed:[2]="row.sales_position_commission"></span>
-          </template>
-        </el-table-column>
+        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px"></el-table-column>
+        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="180px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
         <el-table-column label="回访成功日期" prop="visit_at_str" width="150px" align="center"></el-table-column>

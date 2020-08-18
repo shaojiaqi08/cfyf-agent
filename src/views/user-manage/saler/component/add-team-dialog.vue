@@ -8,12 +8,12 @@
             width="480px">
         <el-form ref="form" :model="formModel" :rules="rules" label-width="100px" label-position="left">
             <el-form-item label="挂靠团队" prop="parent_id">
-                <el-select v-model="formModel.parent_id" style="width: 100%" clearable>
+                <el-select v-model="formModel.parent_id" style="width: 100%" clearable placeholder="请选择在哪个团队下挂靠">
                     <el-option v-for="(item, index) in teamData" :key="index" :label="item.name" :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="团队主管" prop="leader_ids">
-                <el-select multiple v-model="formModel.leader_ids" style="width: 100%">
+                <el-select multiple v-model="formModel.leader_ids" style="width: 100%" placeholder="请选择团队主管">
                     <el-option placeholder="请选择团队主管" v-for="(item, index) in noTeamSalesData" :key="index" :label="item.real_name" :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
