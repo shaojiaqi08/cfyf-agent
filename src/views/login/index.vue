@@ -147,7 +147,7 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   .title {
-    text-align: left;
+    text-align: center;
     color: #1A1A1A;
     font-size: 28px;
     font-weight: bold;
@@ -178,7 +178,7 @@ export default {
         }
         ::v-deep .el-input {
           .el-input__inner {
-            padding-left: 10px;
+            // padding-left: 10px;
           }
           &:after {
             content: '';

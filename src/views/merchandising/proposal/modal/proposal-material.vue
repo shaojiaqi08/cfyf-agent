@@ -23,7 +23,7 @@
                    size="mini"
                    @click="check('view')">在线查看</el-button>
         <el-button type="primary"
-                   size="mini"
+                   size="small"
                    style="margin-left: 6px;"
                    icon="fs12 iconfont iconchaoxiao_xiazai_bai"
                    @click="check('download')"> 下载本地</el-button>

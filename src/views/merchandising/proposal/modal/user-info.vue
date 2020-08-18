@@ -34,8 +34,8 @@
       </el-form-item>
     </el-form>
     <template slot="footer">
-      <el-button @click="modalClose">取消</el-button>
-      <el-button type="primary"
+      <el-button size="small" @click="modalClose">取消</el-button>
+      <el-button size="small" type="primary"
                  @click="updateProposalMasterInfo"
                  :loading="isButtonLoading" :disabled="isButtonLoading">确认</el-button>
     </template>

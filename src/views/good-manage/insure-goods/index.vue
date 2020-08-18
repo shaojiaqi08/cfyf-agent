@@ -18,11 +18,12 @@
                         @change="handleSelProduct"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
-          <filter-shell v-model="searchModel.first_product_category_id" autoFocus autoClose @input="ajaxListData">
+          <filter-shell v-model="searchModel.first_product_category_id" autoFocus @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.first_product_category_id"
                        clearable
                        filterable
+                       multiple
                        @change="ajaxListData"
                        placeholder="请选择">
               <el-option
@@ -34,7 +35,7 @@
             </el-select>
             <template v-slot:label>
               <span>
-                  {{ hasValue(searchModel.first_product_category_id) ? productCategoryData.find(i => i.id === searchModel.first_product_category_id).name : '险种' }}
+                  {{ hasValue(searchModel.first_product_category_id) ? productCategoryData.find(i => i.id === searchModel.first_product_category_id[0]).name : '险种' }}
               </span>
             </template>
             <template v-slot:close>
@@ -43,11 +44,12 @@
                    @click="searchModel.first_product_category_id = ''"></i>
             </template>
           </filter-shell>
-          <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
+          <filter-shell v-model="searchModel.age_id" autoFocus @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.age_id"
                        clearable
                        filterable
+                       multiple
                        @change="ajaxListData"
                        ref="focusRef"
                        placeholder="请选择">
@@ -60,15 +62,16 @@
             </el-select>
             <template v-slot:label>
             <span>
-                {{ hasValue(searchModel.age_id) ? productAgeData.find(i => i.id === searchModel.age_id).title : '投保年龄' }}
+                {{ hasValue(searchModel.age_id) ? productAgeData.find(i => i.id === searchModel.age_id[0]).title : '投保年龄' }}
             </span>
             </template>
           </filter-shell>
-          <filter-shell v-model="searchModel.supplier_id" autoFocus autoClose @input="ajaxListData">
+          <filter-shell v-model="searchModel.supplier_id" autoFocus @input="ajaxListData">
             <el-select class="block"
                        v-model="searchModel.supplier_id"
                        clearable
                        filterable
+                       multiple
                        @change="ajaxListData"
                        ref="focusRef"
                        placeholder="请选择">
@@ -81,7 +84,7 @@
             </el-select>
             <template v-slot:label>
             <span>
-                {{ hasValue(searchModel.supplier_id) ? supplierData.find(i => i.id === searchModel.supplier_id).name : '保险公司' }}
+                {{ hasValue(searchModel.supplier_id) ? supplierData.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}
             </span>
             </template>
             <template v-slot:close>
@@ -175,9 +178,9 @@ export default {
       selProductVal: '',
       searchModel: {
         title: '',
-        first_product_category_id: '',
-        age_id: '',
-        supplier_id: ''
+        first_product_category_id: [],
+        age_id: [],
+        supplier_id: []
       },
       supplierData: [],
       productCategoryData: [],

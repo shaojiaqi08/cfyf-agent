@@ -21,7 +21,7 @@
       </span>
     </div>
     <div class="table-body">
-      <el-tabs v-model="tabIndex" class="small-tabs">
+      <el-tabs v-model="tabIndex" size="small" class="small-tabs">
         <el-tab-pane
           v-for="(item) in tabs"
           :key="item.value"
@@ -84,11 +84,13 @@
         <div v-if="editable">
           <el-button type="ghost"
                      @click="remove"
+                     size="small"
                      v-if="info.effect_status === effectStatusKeys.PENDING">
             <i class="iconfont iconxiao16_lajitong mr4"></i>
             删除
           </el-button>
           <el-button type="plain"
+                     size="small"
                      style="margin: 0 0 0 16px"
                      @click="copyRules">
             <i class="iconfont iconxiao16_fuzhi mr4"></i>

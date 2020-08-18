@@ -5,7 +5,7 @@
                 <el-tab-pane name="server-rate" label="服务费率"></el-tab-pane>
                 <el-tab-pane name="commission-rate" label="佣金费率"></el-tab-pane>
             </el-tabs>
-            <el-button v-if="tabIndex === 'commission-rate'" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置佣金费率</el-button>
+            <el-button v-if="tabIndex === 'commission-rate'" size="small" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置佣金费率</el-button>
         </div>
         <div class="content">
             <Component :is="tabIndex"></Component>

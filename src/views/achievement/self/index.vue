@@ -6,6 +6,7 @@
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
                   size="small"
+                  class="fw400"
                   clearable
                   @input="searchModelChange">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>

@@ -125,6 +125,7 @@
         <div class="add-button-group">
             <el-button class="add-button"
                        type="primary"
+                       size="small"
                        :loading="tableLoading"
                        @click="addRow">
               <i class="iconfont iconxiao16_hang"></i>
@@ -132,6 +133,7 @@
             </el-button>
           <el-button class="add-button"
                      type="primary"
+                     size="small"
                      v-if="tabSelected != 1"
                      :loading="tableLoading"
                      @click="addCol">
@@ -266,8 +268,8 @@
       </div>
     </el-form>
     <span slot="footer" class="footer">
-      <el-button :loading="submitting" @click="closeModal(false)">取消</el-button>
-      <el-button :loading="submitting" type="primary" @click="submit">保存</el-button>
+      <el-button :loading="submitting" size="small" @click="closeModal(false)">取消</el-button>
+      <el-button :loading="submitting" size="small" type="primary" @click="submit">保存</el-button>
     </span>
   </el-dialog>
 </template>

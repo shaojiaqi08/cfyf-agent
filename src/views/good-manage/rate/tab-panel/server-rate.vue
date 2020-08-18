@@ -86,6 +86,7 @@
                       :info="item"
                       tableHeaderLabel="服务费率"
                       :editable="false"></card-table>
+          <div class="empty-list" v-if="!settingList.length">请选择左侧列表查看详情</div>
         </div>
       </el-scrollbar>
     </div>
@@ -376,5 +377,10 @@ export default {
     flex: 0 0 240px;
     border-right: 1px solid #e6e6e6;
   }
+}
+.empty-list {
+  margin-top: 150px;
+  text-align: center;
+  color: rgb(153, 153, 153);
 }
 </style>

@@ -13,7 +13,7 @@
     </div>
     <div class="struct-title mt20">
       客户家庭关系
-      <el-button type="text" @click="addNewMember">
+      <el-button type="text" size="small" @click="addNewMember">
         <i class="el-icon-plus bold"></i>
         添加家庭成员
       </el-button>

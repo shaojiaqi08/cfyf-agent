@@ -93,6 +93,7 @@
         <p>佣金费率记录</p>
         {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <el-button type="primary"
+                   size="small"
                    v-if="selProductVal"
                    @click="openRateDialog">
           <i class="iconfont iconxiao16_shezhi mr4"></i>
@@ -106,6 +107,7 @@
                       :info="item"
                       tableHeaderLabel="佣金费率"
                       :editable="true"></card-table>
+          <div class="empty-list" v-if="!settingList.length">请选择左侧列表查看详情</div>
         </div>
       </el-scrollbar>
     </div>
@@ -483,5 +485,10 @@ export default {
       border-top: 1px solid #e6e6e6;
     }
   }
+}
+.empty-list {
+  margin-top: 150px;
+  text-align: center;
+  color: rgb(153, 153, 153);
 }
 </style>
