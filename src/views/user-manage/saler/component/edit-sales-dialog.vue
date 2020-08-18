@@ -51,7 +51,7 @@
     /**
      *  新增/编辑销售 Dialog
      * */
-    import baseValiObj from './baseValiObj'
+    import baseValiObj from '../../baseValiObj'
     import {createSales, modifySales, getSalesDetail} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import validatorMixin from '../../validatorMixin'

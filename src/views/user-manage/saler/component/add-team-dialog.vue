@@ -32,7 +32,7 @@
     /**
      *  新增团队 Dialog
      * */
-    import baseValiObj from './baseValiObj'
+    import baseValiObj from '../../baseValiObj'
     import {createTeam} from '@/apis/modules/user-manage'
     export default {
         name: 'add-team-dialog',

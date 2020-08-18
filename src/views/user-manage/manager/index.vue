@@ -2,7 +2,9 @@
     <div class="manager-container page-container">
         <div class="header">
             内部管理员
-            <el-button v-if="$checkAuth('/manager')" type="primary" @click="addManager" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
+            <el-button type="primary"
+                       @click="addManager"
+                       size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员</el-button>
         </div>
         <div class="content" ref="content">
             <side-filter-list
@@ -15,7 +17,7 @@
                     style="width: 240px;border-right: 1px solid #e6e6e6;"
                     :listData="roleData"
             >
-                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="addRoleDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
+                <el-button slot="footer" class="mt8 mb16 mr16 ml16" type="primary" @click="editRoleDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增管理员角色</el-button>
             </side-filter-list>
             <div class="right-content" v-loading="rightLoading">
                 <el-button v-if="curTabIdx==='permission' && !curSelRole.is_super_user"
@@ -89,82 +91,23 @@
             </div>
         </div>
         <!--编辑/编辑管理员-->
-        <el-dialog custom-class="manager-dialog"
-                   :title="`${editFormModel.id !== '' ? '编辑' : '新增'}管理员`"
-                   :visible.sync="editDialogVisible"
-                   :close-on-click-modal="false"
-                   @close="resetEditForm"
-                   width="480px">
-            <el-form ref="editForm" :model="editFormModel" :rules="editRules" label-width="100px" label-position="left">
-                <el-form-item label="管理员姓名" prop="real_name">
-                    <el-input placeholder="请输入管理员姓名" v-model="editFormModel.real_name"></el-input>
-                </el-form-item>
-                <el-form-item label="工作邮箱" prop="email">
-                    <el-input placeholder="请输入工作邮箱" v-model="editFormModel.email"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号" prop="mobile">
-                    <el-input placeholder="请输入手机号" v-model="editFormModel.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员账号" prop="username">
-                    <el-input placeholder="请输入管理员登录账号" v-model="editFormModel.username"></el-input>
-                </el-form-item>
-                <el-form-item label="管理员角色" prop="position_id">
-                    <el-select :loading="selRoleLoading" style="width: 100%" placeholder="请选择管理员角色" v-model="editFormModel.position_id">
-                        <el-option v-for="(item, index) in editRoleData" :key="index" :value="item.id" :label="item.name"></el-option>
-                    </el-select>
-                </el-form-item>
-                <template v-if="editFormModel.id === ''">
-                    <el-form-item label="登录密码" prop="password">
-                        <el-input auto-complete="new-password" type="password" placeholder="请输入管理员登录密码" v-model="editFormModel.password"></el-input>
-                    </el-form-item>
-                    <el-form-item label="再次输入密码" prop="confirm_password">
-                        <el-input auto-complete="new-password" type="password" placeholder="请再次输入登录密码" v-model="editFormModel.confirm_password"></el-input>
-                    </el-form-item>
-                </template>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="editDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitEdit" :loading="submitting" :disabled="submitting">确认</el-button>
-            </span>
-        </el-dialog>
-        <!--新增角色-->
-        <el-dialog custom-class="manager-dialog" title="新增角色" :visible.sync="addRoleDialogVisible" width="480px" @close="$refs.addRoleForm.resetFields()">
-            <el-form ref="addRoleForm" :model="addRoleFormModel" :rules="addRoleRules" label-width="100px" label-position="left">
-                <el-form-item label="角色名称" prop="name">
-                    <el-input placeholder="请输入角色名称" v-model="addRoleFormModel.name"></el-input>
-                </el-form-item>
-                <el-form-item label="角色描述" prop="remark">
-                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="addRoleFormModel.remark"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="addRoleDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitAddRole" :loading="submitting" :disabled="submitting">确认</el-button>
-            </span>
-        </el-dialog>
+        <edit-manager-dialog :visible.sync="editDialogVisible"
+                             :form-model="editFormModel"
+                             :curRole="curSelRole"
+                             @close="resetEditForm"
+                             @success="ajaxRoleList"></edit-manager-dialog>
+        <!--新增/编辑角色-->
+        <edit-role-dialog :visible.sync="editRoleDialogVisible"
+                         @success="ajaxRoleList"
+                         :form-model="editRoleFormModel"></edit-role-dialog>
         <!--编辑权限-->
         <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
             <el-scrollbar style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
                 <permission-tree v-model="editTreeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
-                    <el-button @click="treeDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
-            </span>
-        </el-dialog>
-        <!--编辑职位-->
-        <el-dialog custom-class="manager-dialog" title="编辑角色" :visible.sync="editPosDialogVisible" width="480px" :close-on-click-modal="false"  @close="$refs.editPosForm.resetFields()">
-            <el-form ref="editPosForm" :model="editPosFormModel" :rules="editPosRules" label-width="100px" label-position="left">
-                <el-form-item label="角色名称" prop="name">
-                    <el-input placeholder="请输入职位名称" v-model="editPosFormModel.name"></el-input>
-                </el-form-item>
-                <el-form-item label="角色描述" prop="remark">
-                    <el-input type="textarea" placeholder="请输入角色描述"  v-model="editPosFormModel.remark"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer">
-                <el-button @click="editPosDialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="submitEditPos" :loading="submitting" :disabled="submitting">确认</el-button>
+                <el-button @click="treeDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitModifyPermission" :loading="submitting" :disabled="submitting">确认</el-button>
             </span>
         </el-dialog>
         <!--重置密码-->
@@ -181,23 +124,27 @@
             updateManageTree,
             getManageTreeDetail,
             getRoleList,
-            getEditRoleList,
-            createRole,
             delMangePos,
-            updatePassword,
-            updateMangePos} from '@/apis/modules/user-manage'
+            updatePassword} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import {manageAccountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
     import SideFilterList from '@/components/side-filter-list'
     import ModifyPasswordDialog from '../component/modify-password-dialog'
     import validatorMixin from "../validatorMixin";
-    import {debounce} from "../../../utils";
-
+    import EditManagerDialog from './component/edit-mananger-dialog'
+    import EditRoleDialog from './component/edit-role-dialog'
+    import {debounce} from '../../../utils'
     export default {
         name: 'manager',
         mixins: [validatorMixin],
-        components: {PermissionTree, SideFilterList, ModifyPasswordDialog},
+        components: {
+            PermissionTree,
+            SideFilterList,
+            ModifyPasswordDialog,
+            EditManagerDialog,
+            EditRoleDialog
+        },
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
@@ -240,25 +187,12 @@
                     password: [baseValiObj, {validator: this.pwdValidator}],
                     confirm_password:[baseValiObj, {validator: this.pwdValidator}, {validator: this.comparePwdValidator}]
                 }),
-                addRoleDialogVisible: false,
-                addRoleFormModel: {
+                editRoleDialogVisible: false,
+                editRoleFormModel: {
+                    id: '',
                     name: '',
                     remark: ''
                 },
-                addRoleRules: Object.freeze({
-                    name: baseValiObj,
-                    remark: baseValiObj
-                }),
-                // 新增编辑用角色数据
-                editRoleData: [],
-                editPosDialogVisible: false,
-                editPosFormModel: {
-                    name: '',
-                    remark: ''
-                },
-                editPosRules: Object.freeze({
-                    name: baseValiObj
-                }),
                 manageAccountStatusMap: Object.freeze(manageAccountStatusMap),
                 statusColorMap: Object.freeze({
                     disable: 'danger',
@@ -305,7 +239,6 @@
                 })
             },
             addManager() {
-                this.ajaxEditRoleList()
                 this.editDialogVisible = true
             },
             // 初始化tree节点选中和半选状态
@@ -318,21 +251,6 @@
                     const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
                     item.is_checked = checkedCount > 0 && allChild.length === checkedCount
                     item.indeterminate = permission_groups.some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
-                })
-            },
-            submitEditPos() {
-                this.$refs.editPosForm.validate(flag => {
-                    if (flag) {
-                        const id = this.curSelRole.id
-                        this.submitting = true
-                        updateMangePos({...this.editPosFormModel, id}).then(() => {
-                            this.ajaxRoleList(id)
-                            this.$message.success('修改成功!')
-                            this.editPosDialogVisible = false
-                        }).finally(() => {
-                            this.submitting = false
-                        })
-                    }
                 })
             },
             delPosition() {
@@ -370,10 +288,11 @@
                 )
             },
             handleSetPos() {
-                const {editPosFormModel, curSelRole} = this
-                editPosFormModel.name = curSelRole.name
-                editPosFormModel.remark = curSelRole.remark
-                this.editPosDialogVisible = true
+                const {editRoleFormModel, curSelRole} = this
+                editRoleFormModel.id = curSelRole.id
+                editRoleFormModel.name = curSelRole.name
+                editRoleFormModel.remark = curSelRole.remark
+                this.editRoleDialogVisible = true
             },
             handleSelRole(obj) {
                 this.page = 1
@@ -504,29 +423,6 @@
                     }
                 })
             },
-            // 提交新增角色
-            submitAddRole() {
-                this.$refs.addRoleForm.validate(flag => {
-                    if (flag) {
-                        this.submitting = true
-                        createRole(this.addRoleFormModel).then(res => {
-                            this.$message.success('新增角色成功!')
-                            this.addRoleDialogVisible = false
-                            this.ajaxRoleList(+res.id)
-                        }).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
-            ajaxEditRoleList() {
-                this.selRoleLoading = true
-                getEditRoleList().then(res => {
-                    this.editRoleData = res
-                }).finally(() => {
-                    this.selRoleLoading = false
-                })
-            },
             ajaxRoleList(roleId) {
                 this.leftLoading = true
                 this.managerData = []
@@ -579,9 +475,6 @@
             },
             resetEditForm() {
                 this.editFormModel = this.$options.data().editFormModel
-                this.$nextTick(() => {
-                    this.$refs.editForm.clearValidate()
-                })
             },
             setMaxHeight() {
                 const func = debounce(() => {
@@ -596,7 +489,6 @@
         },
         created() {
             this.ajaxRoleList()
-            this.ajaxEditRoleList()
             window.addEventListener('resize', this.setMaxHeight)
         },
         beforeDestroy() {
@@ -681,6 +573,7 @@
                 flex: 1;
                 height: 100%;
                 position: relative;
+                overflow: hidden;
                 ::v-deep .el-tabs{
                     padding: 16px 16px 0 16px;
                     .el-tabs__header{

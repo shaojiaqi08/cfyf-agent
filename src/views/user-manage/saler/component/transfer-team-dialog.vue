@@ -30,7 +30,7 @@
     /**
      *  新增团队 Dialog
      * */
-    import baseValiObj from './baseValiObj'
+    import baseValiObj from '../../baseValiObj'
     import {transferTeam} from '@/apis/modules/user-manage'
     export default {
         name: 'transfer-team-dialog',

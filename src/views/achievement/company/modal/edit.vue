@@ -48,7 +48,7 @@
         <el-form-item label="归属成员">
           <el-select placeholder="请选择此订单归属的成员"
                      v-model="formdata.member">
-            <el-option v-for="item in salesList"
+            <el-option v-for="item in filterSalesList"
                        :key="item.id"
                        :value="item.id"
                        :label="item.real_name">{{ item.real_name }}</el-option>
@@ -64,7 +64,7 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getManagementSalesList, setPolicyTransfer } from '@/apis/modules/achievement'
+import { getManagementSalesList, policyTransfer } from '@/apis/modules/achievement'
 export default {
   props: {
     show: {
@@ -76,6 +76,14 @@ export default {
       default: function() {
         return {}
       }
+    }
+  },
+  computed: {
+    filterSalesList() {
+      return this.salesList.map(i => ({
+        ...i,
+        real_name: i.real_name + (i.position_name ? ' - ' + i.position_name : '')
+      }))
     }
   },
   data() {
@@ -107,7 +115,7 @@ export default {
         company_id: this.formdata.company,
         sales_id: this.formdata.member
       }
-      setPolicyTransfer(data).then(() => {
+      policyTransfer(data).then(() => {
         this.$message({
           type: 'success',
           message: '修改成功'

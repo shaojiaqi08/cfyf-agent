@@ -186,7 +186,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/manager'
+          // permission: '/manager'
         },
         component: getView('user-manage/manager')
       }
