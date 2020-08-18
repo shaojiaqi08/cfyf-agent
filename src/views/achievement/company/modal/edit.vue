@@ -57,7 +57,7 @@
       </el-form>
       <span slot="footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button type="primary" @click="submit" :loading="submitting" :disabled="submitting">确定</el-button>
       </span>
     </el-dialog>
 </template>
@@ -91,6 +91,7 @@ export default {
       formatDate,
       companyList: [],
       salesList: [],
+      submitting: false,
       formdata: {
         company: '',
         member: ''
@@ -115,6 +116,7 @@ export default {
         company_id: this.formdata.company,
         sales_id: this.formdata.member
       }
+      this.submitting = true
       policyTransfer(data).then(() => {
         this.$message({
           type: 'success',
@@ -122,6 +124,8 @@ export default {
         })
         this.$emit('update')
         this.close()
+      }).finally(() => {
+        this.submitting = false
       })
     },
     getManagementSalesList() {

@@ -52,12 +52,10 @@ export default {
       window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/pdf/${type}?proposal_id=${this.proposalInfo.id}`)
     },
     modalClose() {
-      this.$emit('update:show', false)
-      this.$emit('fresh')
-      window.localStorage.setItem('closePage', new Date().getTime())
-      setTimeout(() => {
-        this.$router.replace('/proposal')
-      }, 0)
+      // this.$emit('update:show', false)
+      // this.$emit('fresh')
+      window.localStorage.setItem('refreshPage', new Date().getTime())
+      window.close()
     }
   }
 }

@@ -60,7 +60,7 @@
     </div>
     <template slot="footer">
       <div style="text-align: center;">
-        <el-button type="primary" @click="submit">新建</el-button>
+        <el-button type="primary" @click="submit" :loading="submitting" :disabled="submitting">新建</el-button>
       </div>
     </template>
   </el-dialog>
@@ -91,6 +91,7 @@ export default {
       sexTypes,
       proposalStatus,
       customerName: '',
+      submitting: false,
       members: [
         { relation: 'self',
           sex: '1',
@@ -102,6 +103,7 @@ export default {
   },
   methods: {
     submit() {
+      this.submitting = true
       const data = {
         customer_name: this.customerName,
         members: this.members.map(i => {
@@ -110,9 +112,14 @@ export default {
       }
       addCustomer(data)
       .then(res => {
-        this.$router.push(`/proposal/proposal-operate?customer_id=${res.id}&customer_name=${res.customer_name}`)
+        this.modalClose()
+        const routeUrl = this.$router.resolve(`/proposal/proposal-operate?customer_id=${res.id}&customer_name=${res.customer_name}`)
+        window.open(routeUrl.href, '_blank')
       })
       .catch(err => console.log(err))
+      .finally(() => {
+        this.submitting = false
+      })
     },
     addNewMember() {
       this.members.push({

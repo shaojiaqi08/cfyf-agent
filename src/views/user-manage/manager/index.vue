@@ -99,6 +99,7 @@
         <!--新增/编辑角色-->
         <edit-role-dialog :visible.sync="editRoleDialogVisible"
                          @success="ajaxRoleList"
+                         @close="restEditRoleForm"
                          :form-model="editRoleFormModel"></edit-role-dialog>
         <!--编辑权限-->
         <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
@@ -475,6 +476,9 @@
             },
             resetEditForm() {
                 this.editFormModel = this.$options.data().editFormModel
+            },
+            restEditRoleForm() {
+                this.editRoleFormModel = this.$options.data().editRoleFormModel
             },
             setMaxHeight() {
                 const func = debounce(() => {

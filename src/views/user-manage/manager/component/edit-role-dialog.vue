@@ -68,8 +68,11 @@
                 })
             },
             closeDialog() {
-                this.$refs.form.resetFields()
-                this.$emit('update:visible', false)
+                this.$emit('close')
+                this.$nextTick(() => {
+                    this.$refs.form.clearValidate()
+                    this.$emit('update:visible', false)
+                })
             }
         }
     }
