@@ -247,6 +247,38 @@
               </span>
             </div>
           </div>
+          <div class="item-block">
+            <div>
+              犹退件数
+              <span>
+                  {{ statisticInfo.hesitation_surrender_count }}
+                </span>
+            </div>
+            <div>
+              犹退件均(元)
+              <span>
+                  {{ statisticInfo.average_hesitation_surrender_premium }}
+                </span>
+            </div>
+            <div>
+              非犹退保费(元)
+              <span>
+                  {{ statisticInfo.non_hesitation_surrender_premium }}
+                </span>
+            </div>
+            <div>
+              非犹退件数
+              <span>
+                  {{ statisticInfo.non_hesitation_surrender_count }}
+                </span>
+            </div>
+            <div>
+              非犹退件均(元)
+              <span>
+                  {{ statisticInfo.average_non_hesitation_surrender_premium }}
+                </span>
+            </div>
+          </div>
         </div>
         <el-button
           class="right"

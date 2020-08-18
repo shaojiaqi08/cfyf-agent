@@ -35,6 +35,9 @@
         return this.userInfo.permissions
       }
     },
+    mounted() {
+      this.menuInit()
+    },
     methods: {
       filterRoutes(routes) {
         return routes.filter(i => i.meta.show)
