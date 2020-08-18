@@ -83,13 +83,13 @@
                                 <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" prop="operate" :width="250" align="center">
+                        <el-table-column label="操作" prop="operate" :width="200" align="center">
                             <template v-slot="{row, $index}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
-                                    <el-button v-if="$checkAuth('/manager/admin/close')" type="text" @click="lostEffect(row.id, $index)">使失效</el-button>
-                                    <el-button v-if="$checkAuth('/manager/admin/update_account_status')" type="text" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-button>
-                                    <el-button v-if="$checkAuth('/manager/admin/update_password')" type="text" @click="modifyPwd(row)">重置密码</el-button>
-                                    <el-button v-if="$checkAuth('/manager/admin/update')" type="text" @click="edit(row)">编辑</el-button>
+                                    <el-link v-if="$checkAuth('/manager/admin/close')" type="primary" class="mr8" @click="lostEffect(row.id, $index)">使失效</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>
                                 <template v-else>
                                     <span>-</span>
