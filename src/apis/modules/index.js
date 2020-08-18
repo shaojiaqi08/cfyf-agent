@@ -50,3 +50,6 @@ export const genSimulatedLink = params => get('/agent/proxy/sales/generate_auth_
 
 // 模拟登录
 export const simulatedLogin = params => post('/agent/proxy/sales/simulated_login', params)
+
+// 获取权限
+export const getPermission = params => get('/agent/proxy/rbac/business_permission/my_permission_list', params)

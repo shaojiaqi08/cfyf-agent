@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import {login, getUserDetail, simulatedLogin} from '@/apis/modules/index'
-import {mapActions} from 'vuex'
+import {login, getUserDetail, simulatedLogin, getPermission} from '@/apis/modules/index'
+import {mapActions, mapState} from 'vuex'
 export default {
   data() {
     return {
@@ -50,6 +50,9 @@ export default {
       isPasswordShow: false,
       submitting: false
     }
+  },
+  computed: {
+    ...mapState('users', ['userInfo'])
   },
   methods: {
     ...mapActions('users', ['updateUserInfo']),
@@ -62,14 +65,17 @@ export default {
         // 更新token
         this.updateUserInfo(res)
         const path = this.$route.query.redirect
+        // 获取权限
+        getPermission().then(p => {
+          this.updateUserInfo({...this.userInfo, permissions: p})
+        })
         // 如果不是跳转到个人信息页就获取用户信息
         if (path && !path.includes('user-info')) {
           getUserDetail().then(ud => {
-            this.updateUserInfo({...res, ...ud})
+            this.updateUserInfo({...this.userInfo, ...ud})
             this.$router.replace(path)
           })
         } else {
-          this.updateUserInfo(res)
           this.$router.replace('/user-info')
         }
       }).catch(err => {console.log(err)}).finally(() => {

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header v-if="$route.meta.header"></Header>
-    <Menu v-if="$route.meta.menu"></Menu>
+    <Menu v-if="$route.meta.menu && userInfo.permissions && userInfo.permissions.length"></Menu>
     <div class="cover" :style="coverStyle">
       <transition name="page-fade"
                   mode="out-in">
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { getPermission } from '@/apis/modules'
+import { mapActions, mapState } from 'vuex'
 import Header from '@/components/header'
 import Menu from '@/components/menu'
 export default {
@@ -25,6 +27,7 @@ export default {
     };
   },
   computed: {
+    ...mapState('users', ['userInfo']),
     coverStyle() {
       const hasMenu = this.$route.meta.menu
       const hasHeader = this.$route.meta.header
@@ -34,10 +37,20 @@ export default {
       }
     }
   },
+  methods: {
+    ...mapActions('users', ['updateUserInfo']),
+    getPermission() {
+      getPermission().then(res => {
+        this.updateUserInfo({
+          ...this.userInfo,
+          permissions: res
+        })
+      })
+    }
+  },
   created() {
     // 刷新权限
-  },
-  methods: {
+    this.userInfo.token && this.getPermission()
   }
 };
 </script>
