@@ -14,7 +14,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/achievement-company'
+          // permission: '/achievement-company'
         },
         component: getView('achievement/company')
       },

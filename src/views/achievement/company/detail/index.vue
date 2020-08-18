@@ -6,7 +6,7 @@
       <div class="row">
         <div>
           出单平台
-          <span>{{ policyInfo.actually_sales_platform || '-' }}</span>
+          <span>{{ policyInfo.actually_sales_platform_str || '-' }}</span>
         </div>
         <div>
           公司名
@@ -32,7 +32,7 @@
           <span>{{ policyInfo.payment_period_desc || '-' }}</span>
         </div>
         <div>
-          保障期限
+          保额(元)
           <span>{{ policyInfo.guarantee_quota_str || '-' }}</span>
         </div>
         <!-------------------------------->
@@ -55,7 +55,7 @@
         <!-------------------------------->
         <div>
           回访成功日期
-          <span>-</span>
+          <span>{{ policyInfo.visit_at_str || '-'}}</span>
         </div>
         <div>
           过犹日期
@@ -102,11 +102,11 @@
         </div>
         <div>
           服务费(元)
-          <span>{{ policyInfo.service_fee || '-' }}</span>
+          <span>{{ policyInfo.company_actually_commission || '-' }}</span>
         </div>
         <div>
           佣金(元)
-          <span>{{ policyInfo.commission || '-' }}</span>
+          <span>{{ policyInfo.sales_position_commission || '-' }}</span>
         </div>
       </div>
     </div>
