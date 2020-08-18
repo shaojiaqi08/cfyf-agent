@@ -2,8 +2,8 @@
     <div class="health-notice-container page-container">
         <div class="header">
             <el-tabs v-model="tabIndex">
-                <el-tab-pane name="proposal" label="计划书"></el-tab-pane>
-                <el-tab-pane name="share" label="产品分享"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/interactive-logs/proposal')" name="proposal" label="计划书"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/interactive-logs/product')" name="share" label="产品分享"></el-tab-pane>
             </el-tabs>
         </div>
         <div class="content">
@@ -24,8 +24,16 @@
         },
         data() {
             return {
-                tabIndex: 'proposal',
+                tabIndex: '',
                 productName: ''
+            }
+        },
+        created() {
+            // 初始化tab权限
+            if (this.$checkAuth('/interactive-logs/proposal')) {
+                this.curTabIdx = 'proposal'
+            } else if (this.$checkAuth('/interactive-logs/product')) {
+                this.curTabIdx = 'share'
             }
         }
     }

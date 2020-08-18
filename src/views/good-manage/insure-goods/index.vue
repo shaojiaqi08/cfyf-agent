@@ -102,13 +102,13 @@
             <div class="flex-between">
               <span>{{row.isCpsData ? '' : `${row.min_price} 元起`}}&nbsp;</span>
               <div class="flex">
-                <el-link v-if="row.duty_pic_url"
+                <el-link v-if="$checkAuth('/insure-goods/liability') && row.duty_pic_url"
                          type="primary"
                          :underline="false"
                          @click="handleViewPic(row.duty_pic_url)">
                   <i class="iconfont iconxiao16_baoxianzeren mr4"></i>保险责任
                 </el-link>
-                <el-link v-if="row.inquiry_info"
+                <el-link v-if="$checkAuth('/insure-goods/sale_notify') && row.inquiry_info"
                          type="primary"
                          :underline="false"
                          class="ml20"

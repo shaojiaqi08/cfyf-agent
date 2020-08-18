@@ -2,9 +2,9 @@
     <div class="health-notice-container page-container">
         <div class="header">
             <el-tabs v-model="tabIndex">
-                <el-tab-pane name="underwrite-search" label="核保查询"></el-tab-pane>
-                <el-tab-pane name="health-search" label="健告查询"></el-tab-pane>
-                <el-tab-pane name="underwrite-rules" label="核保规则"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwriting')" name="underwrite-search" label="核保查询"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/health_report_inquiry')" name="health-search" label="健告查询"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_rule')" name="underwrite-rules" label="核保规则"></el-tab-pane>
             </el-tabs>
         </div>
         <div class="content">
@@ -28,8 +28,18 @@
         },
         data() {
             return {
-                tabIndex: 'underwrite-search',
+                tabIndex: '',
                 productName: ''
+            }
+        },
+        created() {
+            // 初始化tab权限
+            if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
+                this.curTabIdx = 'underwrite-search'
+            } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
+                this.curTabIdx = 'health-search'
+            } else if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
+                this.curTabIdx = 'underwrite-rules'
             }
         }
     }

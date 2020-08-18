@@ -75,7 +75,7 @@
     import {accountStatusMap} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
     export default {
-        name: 'positon',
+        name: 'position-pane',
         components: {
             SideFilterList,
             PermissionTree

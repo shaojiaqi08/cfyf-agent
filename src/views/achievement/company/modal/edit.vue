@@ -47,6 +47,7 @@
       <el-form label-width="70px">
         <el-form-item label="归属成员">
           <el-select placeholder="请选择此订单归属的成员"
+                     filterable
                      v-model="formdata.member">
             <el-option v-for="item in filterSalesList"
                        :key="item.id"

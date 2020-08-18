@@ -84,11 +84,12 @@
         <div v-if="editable">
           <el-button type="ghost"
                      @click="remove"
-                     v-if="info.effect_status === effectStatusKeys.PENDING">
+                     v-if="$checkAuth('/rate/commission_management/delete') && info.effect_status === effectStatusKeys.PENDING">
             <i class="iconfont iconxiao16_lajitong mr4"></i>
             删除
           </el-button>
           <el-button type="plain"
+                     v-if="$checkAuth('/rate/commission_management/copy')"
                      style="margin: 0 0 0 16px"
                      @click="copyRules">
             <i class="iconfont iconxiao16_fuzhi mr4"></i>
@@ -96,7 +97,7 @@
           </el-button>
           <el-button type="plain"
                      style="margin-left: 16px"
-                     v-if="info.effect_status === effectStatusKeys.PENDING"
+                     v-if="$checkAuth('/rate/commission_management/update') && info.effect_status === effectStatusKeys.PENDING"
                      @click="editRules">
             <i class="iconfont iconxiao16_bianji mr4"></i>
             编辑

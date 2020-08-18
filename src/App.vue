@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header v-if="$route.meta.header"></Header>
-    <Menu v-if="$route.meta.menu && userInfo.permissions && userInfo.permissions.length"></Menu>
+    <Menu v-if="$route.meta.menu"></Menu>
     <div class="cover" :style="coverStyle">
       <transition name="page-fade"
                   mode="out-in">

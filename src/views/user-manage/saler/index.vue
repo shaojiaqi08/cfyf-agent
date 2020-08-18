@@ -2,8 +2,8 @@
     <div class="sale-container page-container">
         <div class="header">
             <el-tabs v-model="curTabIdx">
-                <el-tab-pane name="sale-pane" label="销售人员"></el-tab-pane>
-                <el-tab-pane name="position-pane" label="职位及权限"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/sale/list')" name="sale-pane" label="销售人员"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/sale/position_and_authority')" name="position-pane" label="职位及权限"></el-tab-pane>
             </el-tabs>
         </div>
         <div class="content">
@@ -33,7 +33,7 @@
                 curSelRole: null,
                 roleData: [],
                 managerData: [],
-                curTabIdx: 'sale-pane',
+                curTabIdx: '',
                 treeDialogVisible: false,
                 editDialogVisible: false,
                 editFormModel: {
@@ -83,8 +83,6 @@
                 })
             }
         },
-        created() {
-        },
         methods: {
             formatDate,
             comparePwdValitator(rule, value, callback) { // eslint-disable-line
@@ -129,6 +127,14 @@
             },
             modPwdDialogVisible(v) {
                 !v && this.$refs.modPwdForm.resetFields()
+            }
+        },
+        created() {
+            // 初始化tab权限
+            if (this.$checkAuth('/sale/list')) {
+                this.curTabIdx = 'sale-pane'
+            } else if (this.$checkAuth('/sale/position_and_authority')) {
+                this.curTabIdx = 'position-pane'
             }
         }
     }

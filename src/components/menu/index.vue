@@ -35,9 +35,6 @@
         return this.userInfo.permissions
       }
     },
-    mounted() {
-      this.menuInit()
-    },
     methods: {
       filterRoutes(routes) {
         return routes.filter(i => i.meta.show)
@@ -58,6 +55,11 @@
       jump(name) {
         if (this.$route.name === name) return
         this.$router.push({ name })
+      }
+    },
+    watch: {
+      permission() {
+        this.menuInit()
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
     <el-dialog custom-class="edit-sales-dialog"
-               :title="`${formModel.id !== '' ? '编辑' : '新增'}销售`"
+               :title="`${id !== '' ? '编辑' : '新增'}销售`"
                :visible="visible"
                :close-on-click-modal="false"
                @close="closeDialog"
@@ -33,7 +33,7 @@
 <!--            </el-form-item>-->
             <template v-if="id === ''">
                 <el-form-item label="登录密码" prop="password">
-                    <el-input autocomplete="off" auto-complete="new_password" type="password" placeholder="请输入管理员登录密码" v-model="formModel.password"></el-input>
+                    <el-input autocomplete="new_password" auto-complete="new_password" type="password" placeholder="请输入管理员登录密码" v-model="formModel.password"></el-input>
                 </el-form-item>
                 <el-form-item label="再次输入密码" prop="confirm_password">
                     <el-input auto-complete="new_password" type="password" placeholder="请再次输入登录密码" v-model="formModel.confirm_password"></el-input>
@@ -137,8 +137,11 @@
                 })
             },
             closeDialog() {
-                this.$refs.form.resetFields()
-                this.$emit('update:visible', false)
+                this.formModel = this.$options.data().formModel
+                this.$nextTick(() => {
+                    this.$refs.form.clearValidate()
+                    this.$emit('update:visible', false)
+                })
             },
             comparePwdValidator(rule, value, callback) { // eslint-disable-line
                 const {password, confirm_password} = this.formModel
