@@ -22,11 +22,17 @@
 
 <script>
   import { routers } from '@/router/routes'
+  import { mapState } from 'vuex'
   export default {
     data() {
       return {
-        routers: [],
-        permission: ['a']
+        routers: []
+      }
+    },
+    computed: {
+      ...mapState('users', ['userInfo']),
+      permission() {
+        return this.userInfo.permissions
       }
     },
     mounted() {

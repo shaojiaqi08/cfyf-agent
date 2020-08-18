@@ -14,7 +14,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/achievement-company'
         },
         component: getView('achievement/company')
       },
@@ -26,7 +26,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: 'a'
+          permission: '/achievement-company/detail/'
         },
         component: getView('achievement/company/detail')
       },
@@ -38,7 +38,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/achievement-team'
         },
         component: getView('achievement/team')
       },
@@ -50,7 +50,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: 'a'
+          permission: '/achievement-team/detail'
         },
         component: getView('achievement/team/detail')
       },
@@ -62,7 +62,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/achievement-self'
         },
         component: getView('achievement/self')
       },
@@ -74,7 +74,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: 'a'
+          permission: '/achievement-self/detail'
         },
         component: getView('achievement/self/detail')
       }
@@ -92,7 +92,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/insure-goods'
         },
         component: getView('good-manage/insure-goods')
       },
@@ -104,7 +104,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/rate'
         },
         component: getView('good-manage/rate')
       }
@@ -122,7 +122,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/proposal'
         },
         component: () => import('views/merchandising/proposal')
       },
@@ -132,7 +132,7 @@ export const routers = [
         meta: {
           title: '计划书编辑',
           show: false,
-          permission: 'a'
+          permission: '/proposal/proposal-operate/update'
         },
         component: () => import('views/merchandising/proposal/proposal-operate')
       },
@@ -144,7 +144,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/underwrite-health-notice'
         },
         component: () => import('views/merchandising/underwrite-health-notice')
       },
@@ -156,7 +156,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/interactive-logs'
         },
         component: () => import('views/merchandising/interactive-logs')
       }
@@ -174,7 +174,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/sale'
         },
         component: () => import('views/user-manage/saler')
       },
@@ -186,7 +186,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'a'
+          permission: '/manager'
         },
         component: getView('user-manage/manager')
       }

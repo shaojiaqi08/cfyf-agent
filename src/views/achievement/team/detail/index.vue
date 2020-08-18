@@ -6,7 +6,7 @@
       <div class="row">
         <div>
           出单平台
-          <span>{{ policyInfo.actually_sales_platform || '-'}}</span>
+          <span>{{ policyInfo.actually_sales_platform_str || '-'}}</span>
         </div>
         <div>
           公司名
@@ -32,7 +32,7 @@
           <span>{{ policyInfo.payment_period_desc || '-' }}</span>
         </div>
         <div>
-          保障期限
+          保额(元)
           <span>{{ policyInfo.guarantee_quota_str || '-' }}</span>
         </div>
         <!-------------------------------->
@@ -64,10 +64,6 @@
         <div>
           投保单号
           <span>{{ policyInfo.proposal_sn || '-' }}</span>
-        </div>
-        <div>
-          缴费期限
-          <span>{{ policyInfo.payment_period_desc || '-' }}</span>
         </div>
         <!-------------------------------->
         <div>

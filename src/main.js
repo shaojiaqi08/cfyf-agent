@@ -17,8 +17,8 @@ Vue.use(Element, {size: 'medium', zIndex: 3000});
 Vue.use(VueClipboard)
 
 // 全局判断权限方法
-Vue.prototype.$checkAuth = (data) => {
-  const permissions = store.state.users.userInfo.permission
+Vue.prototype.$checkAuth = function(data) {
+  const permissions = this.$store.state.users.userInfo.permissions
   if (!permissions) return false
   if (typeof data === 'string') {
     return permissions.includes(data)

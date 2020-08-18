@@ -51,13 +51,12 @@
     /**
      *  新增/编辑销售 Dialog
      * */
-    import baseValiObj from './baseValiObj'
+    import baseValiObj from '../../baseValiObj'
     import {createSales, modifySales, getSalesDetail} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
     import validatorMixin from '../../validatorMixin'
     export default {
         name: 'edit-sales-dialog',
-        inject: ['$parent'],
         mixins: [validatorMixin],
         props: {
             visible: {
@@ -118,7 +117,7 @@
                         const params = {...data, role: 'sales'}
                         params.resignation_at = ~~(new Date(params.resignation_at.replace(/-/g, '/')) / 1000)
                         handler(params).then(() => {
-                            this.$parent.ajaxAllSalesList()
+                            this.$emit('success')
                             this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
                             this.closeDialog()
                         }).catch(() => {}).finally(() => {

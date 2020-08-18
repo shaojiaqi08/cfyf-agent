@@ -34,7 +34,8 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
+    // 刷新权限
   },
   methods: {
   }

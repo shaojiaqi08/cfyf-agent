@@ -48,7 +48,7 @@
         <el-form-item label="归属成员">
           <el-select placeholder="请选择此订单归属的成员"
                      v-model="formdata.member">
-            <el-option v-for="item in salesList"
+            <el-option v-for="item in filterSalesList"
                        :key="item.id"
                        :value="item.id"
                        :label="item.real_name">{{ item.real_name }}</el-option>
@@ -57,14 +57,14 @@
       </el-form>
       <span slot="footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button type="primary" @click="submit" :loading="submitting" :disabled="submitting">确定</el-button>
       </span>
     </el-dialog>
 </template>
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getManagementSalesList, setPolicyTransfer } from '@/apis/modules/achievement'
+import { getManagementSalesList, policyTransfer } from '@/apis/modules/achievement'
 export default {
   props: {
     show: {
@@ -78,11 +78,20 @@ export default {
       }
     }
   },
+  computed: {
+    filterSalesList() {
+      return this.salesList.map(i => ({
+        ...i,
+        real_name: i.real_name + (i.position_name ? ' - ' + i.position_name : '')
+      }))
+    }
+  },
   data() {
     return {
       formatDate,
       companyList: [],
       salesList: [],
+      submitting: false,
       formdata: {
         company: '',
         member: ''
@@ -107,13 +116,16 @@ export default {
         company_id: this.formdata.company,
         sales_id: this.formdata.member
       }
-      setPolicyTransfer(data).then(() => {
+      this.submitting = true
+      policyTransfer(data).then(() => {
         this.$message({
           type: 'success',
           message: '修改成功'
         })
         this.$emit('update')
         this.close()
+      }).finally(() => {
+        this.submitting = false
       })
     },
     getManagementSalesList() {

@@ -38,7 +38,8 @@
   export default {
     data() {
       return {
-        isPopoverShow: false
+        isPopoverShow: false,
+        submitting: false
       }
     },
     computed: {
@@ -50,9 +51,13 @@
         this.isPopoverShow = false
       },
       loginOut() {
+        if (this.submitting) return
+        this.submitting = true
         loginOut().then(() => {
           this.$store.dispatch('users/loginOut')
           this.$router.replace({ path: '/login' })
+        }).finally(() => {
+          this.submitting = false
         })
       }
     }

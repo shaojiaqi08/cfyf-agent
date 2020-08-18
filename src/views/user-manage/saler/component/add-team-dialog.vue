@@ -32,11 +32,10 @@
     /**
      *  新增团队 Dialog
      * */
-    import baseValiObj from './baseValiObj'
+    import baseValiObj from '../../baseValiObj'
     import {createTeam} from '@/apis/modules/user-manage'
     export default {
         name: 'add-team-dialog',
-        inject: ['$parent'],
         props: {
             visible: {
                 type: Boolean,
@@ -76,7 +75,7 @@
                     if (flag) {
                         this.submitting = true
                         createTeam(this.formModel).then(() => {
-                            this.$parent.ajaxTeamData()
+                            this.$emit('success')
                             this.$message.success('新增成功!')
                             this.closeDialog()
                         }).catch(() => {}).finally(() => {
