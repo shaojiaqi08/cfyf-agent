@@ -285,8 +285,8 @@
         <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
-            <el-link v-if="$checkAuth('achievement-company/detail')" type="primary" @click="showInfoDialog(row)" class="mr8">订单详情</el-link>
-            <el-link v-if="$checkAuth('achievement-company/policy/transfer_policy')" type="primary" @click="showBelongDialog(row)">修改归属</el-link>
+            <el-link v-if="$checkAuth('/achievement-company/detail')" type="primary" @click="showInfoDialog(row)" class="mr8">订单详情</el-link>
+            <el-link v-if="$checkAuth('/achievement-company/policy/transfer_policy')" type="primary" @click="showBelongDialog(row)">修改归属</el-link>
           </template>
         </el-table-column>
       </el-table>
