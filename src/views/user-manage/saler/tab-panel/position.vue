@@ -33,7 +33,8 @@
         <div class="right" v-loading="detailLoading">
             <template v-if="selLv && selPos">
                 <el-scrollbar>
-                    <permission-tree v-model="detailData"></permission-tree>
+                    <permission-tree v-if="detailData.length" v-model="detailData"></permission-tree>
+                    <div class="empty-tips" v-else>无配置权限</div>
                 </el-scrollbar>
                 <div class="flex-center">
                     <el-button type="primary" @click="editTree" size="small">编辑权限</el-button>
@@ -313,5 +314,9 @@
         ::v-deep .side-filter-container .list-item:first-of-type {
             border-top: transparent;
         }
+    }
+    .empty-tips {
+        margin: 30vh auto;
+        text-align: center;
     }
 </style>

@@ -100,7 +100,8 @@
                 </div>
                 <div class="content" v-else-if="curSelRole && curTabIdx==='permission'" style="height: calc(100vh - 166px)">
                     <el-scrollbar class="tree-wrap">
-                        <permission-tree :data="treeDetail"></permission-tree>
+                        <permission-tree v-if="treeDetail.length" :data="treeDetail"></permission-tree>
+                        <div class="empty-tips" v-else>无配置权限</div>
                     </el-scrollbar>
                 </div>
             </div>
@@ -654,6 +655,10 @@
         ::v-deep .manager-dialog .el-dialog__body{
             overflow: visible;
         }
+    }
+    .empty-tips {
+        margin: 30vh auto;
+        text-align: center;
     }
 </style>
 <style lang="scss">

@@ -34,11 +34,11 @@
         </el-row>
         <el-divider></el-divider>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24" class="flex-between">
             投保单号
             <span>{{ belongData.proposal_sn }}</span>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="24" class="mt10 flex-between">
             保单号
             <span>{{ belongData.policy_sn }}</span>
           </el-col>

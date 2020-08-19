@@ -839,7 +839,7 @@ export default {
     }
   }
   .rate-input {
-    width: 150px;
+    width: 140px;
   }
   .rate-small-input {
     width: 60px;
