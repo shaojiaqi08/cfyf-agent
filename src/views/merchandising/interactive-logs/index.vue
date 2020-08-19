@@ -31,9 +31,9 @@
         created() {
             // 初始化tab权限
             if (this.$checkAuth('/interactive-logs/proposal')) {
-                this.curTabIdx = 'proposal'
+                this.tabIndex = 'proposal'
             } else if (this.$checkAuth('/interactive-logs/product')) {
-                this.curTabIdx = 'share'
+                this.tabIndex = 'share'
             }
         }
     }
