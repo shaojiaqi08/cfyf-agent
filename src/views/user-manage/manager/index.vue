@@ -183,6 +183,7 @@
                 total: 0,
                 managerData: [],
                 curTabIdx: '',
+                defTabIdx: '',
                 treeDialogVisible: false,
                 editDialogVisible: false,
                 editFormModel: {
@@ -314,7 +315,7 @@
             },
             handleSelRole(obj) {
                 this.page = 1
-                this.curTabIdx = 'people'
+                this.curTabIdx = this.defTabIdx
                 this.treeDetail = []
                 this.managerData = []
                 this.ajaxDetail(obj)
@@ -515,6 +516,7 @@
             } else if (this.$checkAuth('/manager/admin/authority')) {
                 this.curTabIdx = 'permission'
             }
+            this.defTabIdx = this.curTabIdx
             this.ajaxRoleList()
             window.addEventListener('resize', this.setMaxHeight)
         },
