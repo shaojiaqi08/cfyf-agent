@@ -94,7 +94,7 @@
         {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <el-button type="primary"
                    size="small"
-                   v-if="selProductVal"
+                   v-if="$checkAuth('/rate/commission_management/create') && selProductVal"
                    @click="openRateDialog">
           <i class="iconfont iconxiao16_shezhi mr4"></i>
           设置佣金费率
