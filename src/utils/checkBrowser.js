@@ -11,7 +11,7 @@ export default function (self) {
       message: `
         <div class="mt4">
           如需获取最好的体验效果，请下载最新谷歌内核浏览器进行操作
-          <strong style="color: red;">
+          <strong style="color: #339AFF;">
             <a href="https://www.microsoft.com/zh-cn/edge" target="_blank">点击下载</a>
           </strong>
         </div> 
