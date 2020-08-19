@@ -202,7 +202,7 @@
               </el-table-column>
               <el-table-column
                 v-for="(rate, index) in currentTableRateHeader()"
-                :key="`${rate.type}_${index}`"
+                :key="`${rate.type}_${index}_${Math.random()}`"
                 label="佣金费率"
                 :width="rate.type !== 'single' && formModel.calculate_way !== calculateWayKey.SINGLEPOLICY ? 356 : ''"
                 align="center">
