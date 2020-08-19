@@ -78,7 +78,7 @@
 <script>
     import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
     import UserInfoModal from './modal/user-info'
-    import ProposalMaterial from './proposal-operate/modal/proposal-material'
+    import ProposalMaterial from './modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
     import {debounce} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'

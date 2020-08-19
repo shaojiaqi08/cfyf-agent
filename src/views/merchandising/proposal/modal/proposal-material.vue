@@ -18,7 +18,7 @@
       <div>
         <div class="title">PDF版本计划书</div>
       </div>
-      <div>
+      <div class="flex-center">
         <el-button type="text"
                    size="mini"
                    @click="check('view')">在线查看</el-button>

@@ -100,10 +100,15 @@ export default {
   },
   created() {
     const query = this.$route.query
+    // 模拟登陆
     if (query._sign) {
       this.submitting = true
       simulatedLogin(query).then(res => {
         this.updateUserInfo(res)
+        // 获取权限
+        getPermission().then(p => {
+          this.updateUserInfo({...this.userInfo, permissions: p})
+        })
         this.$router.replace('/user-info')
       }).finally(() => {
         this.submitting = false
