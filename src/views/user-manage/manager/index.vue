@@ -315,10 +315,11 @@
             },
             handleSelRole(obj) {
                 this.page = 1
+                this.curSelRole = obj
                 this.curTabIdx = this.defTabIdx
                 this.treeDetail = []
                 this.managerData = []
-                this.ajaxDetail(obj)
+                this[`${this.curTabIdx}TabHandle`]()
             },
             submitModifyPermission() {
                 const permission_ids = []
