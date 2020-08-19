@@ -137,7 +137,7 @@
                    v-clipboard:copy="notifyText"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="下载保存保险责任图片" :visible.sync="picVisible" width="480px" class="pic-dialog">
+    <el-dialog title="保险责任" :visible.sync="picVisible" width="480px" class="pic-dialog">
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
         <el-button type="primary"

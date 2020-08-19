@@ -27,7 +27,7 @@ $--dialog-title-font-size: 18px;
 $--dialog-content-font-size: 16px;
 
 /* 表格(table) */
-$--table-row-hover-background-color: rgba(0, 0, 0, .1);
+$--table-row-hover-background-color: rgba(0, 0, 0, .05);
 $--table-header-background-color: #F5F5F5;
 $--table-header-font-color: $default-font-color;
 $--table-border-color: #E6E6E6;
@@ -95,6 +95,22 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
     &:active{
       background:rgba(31, 120, 255, 0.2);
       color:$color-primary;
+    }
+  }
+  &.el-button--ghost-red {
+    color: $default-font-color;
+    border: transparent;
+    &:hover{
+      background:rgba(255, 76, 76, .4);
+      color: $color-danger;
+    }
+    &:active{
+      background: rgba(255, 76, 76, .4);
+      color: $color-danger;
+    }
+    &:focus{
+      background: rgba(255, 76, 76, .4);
+      color: $color-danger;
     }
   }
 }

@@ -120,7 +120,9 @@
           {{ calculateWayMessage }}
         </span>
       </el-form-item>
-      <h3 style="margin-bottom: 0">佣金费率</h3>
+      <h3 style="margin-bottom: 0;font-size: 16px;font-weight: 500;color: #1a1a1a;">
+        佣金费率
+      </h3>
       <div style="position: relative;">
         <div class="add-button-group">
             <el-button class="add-button"

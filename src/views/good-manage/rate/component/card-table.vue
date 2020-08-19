@@ -82,7 +82,7 @@
           </span> -->
         </div>
         <div v-if="editable">
-          <el-button type="ghost"
+          <el-button type="ghost-red"
                      @click="remove"
                      size="small"
                      v-if="$checkAuth('/rate/commission_management/delete') && info.effect_status === effectStatusKeys.PENDING">
