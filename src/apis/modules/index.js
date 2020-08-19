@@ -53,3 +53,6 @@ export const simulatedLogin = params => post('/agent/proxy/sales/simulated_login
 
 // 获取权限
 export const getPermission = params => get('/agent/proxy/rbac/business_permission/my_permission_list', params)
+
+// 系统版本
+export const checkVersion = params => get('/agent/proxy/common/check_version', params)

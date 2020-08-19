@@ -16,6 +16,7 @@ import { getPermission } from '@/apis/modules'
 import { mapActions, mapState } from 'vuex'
 import Header from '@/components/header'
 import Menu from '@/components/menu'
+import checkVersion from '@/utils/checkVersion'
 export default {
   components: {
     Header,
@@ -23,7 +24,7 @@ export default {
   },
   data() {
     return {
-      a: true
+      delay: 1000 * 60
     };
   },
   computed: {
@@ -39,6 +40,13 @@ export default {
   },
   methods: {
     ...mapActions('users', ['updateUserInfo']),
+    pollCheckVersion() {
+      setTimeout(() => {
+        checkVersion(() => {
+          this.pollCheckVersion()
+        }, this)
+      }, this.delay)
+    },
     getPermission() {
       getPermission().then(res => {
         this.updateUserInfo({
@@ -51,6 +59,9 @@ export default {
   created() {
     // 刷新权限
     this.userInfo.token && this.getPermission()
+    checkVersion(() => {
+      this.pollCheckVersion()
+    }, this)
   }
 };
 </script>
