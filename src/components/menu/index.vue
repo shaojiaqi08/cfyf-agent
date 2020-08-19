@@ -32,7 +32,7 @@
     computed: {
       ...mapState('users', ['userInfo']),
       permission() {
-        return this.userInfo.permissions
+        return this.userInfo.permissions || []
       }
     },
     mounted() {
@@ -48,8 +48,7 @@
             return this.permission.includes(i.meta.permission)
           })
           if (hasPermissionChildren.length) {
-            next.children = hasPermissionChildren
-            return prev.concat(next)
+            return prev.concat({...next, children: hasPermissionChildren})
           } else {
             return prev
           }
