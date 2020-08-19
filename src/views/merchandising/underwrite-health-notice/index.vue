@@ -35,11 +35,11 @@
         created() {
             // 初始化tab权限
             if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
-                this.curTabIdx = 'underwrite-search'
+                this.tabIndex = 'underwrite-search'
             } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
-                this.curTabIdx = 'health-search'
+                this.tabIndex = 'health-search'
             } else if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
-                this.curTabIdx = 'underwrite-rules'
+                this.tabIndex = 'underwrite-rules'
             }
         }
     }

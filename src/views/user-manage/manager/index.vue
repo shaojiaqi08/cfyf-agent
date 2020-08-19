@@ -306,6 +306,7 @@
             },
             handleSetPos() {
                 const {editRoleFormModel, curSelRole} = this
+                debugger
                 editRoleFormModel.id = curSelRole.id
                 editRoleFormModel.name = curSelRole.name
                 editRoleFormModel.remark = curSelRole.remark
