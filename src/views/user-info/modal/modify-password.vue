@@ -96,4 +96,7 @@
   ::v-deep .form .el-form-item__label::before{
     display: none;
   }
+  ::v-deep .el-dialog__body{
+    overflow: visible;
+  }
 </style>
