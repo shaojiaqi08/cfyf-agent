@@ -74,8 +74,14 @@ export default {
   }
 };
 </script>
-
 <style lang="scss" scoped>
+#app {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 .cover {
   position: absolute;
   top: 40px;
