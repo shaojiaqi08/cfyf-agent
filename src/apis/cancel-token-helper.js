@@ -22,7 +22,7 @@ function removeString(string, target = process.env.VUE_APP_API_URL) {
 export function removePending(config, cb) {
   for (let i in pendingRequest) {
     if (pendingRequest[i].key === removeString(keyFactory(config))) {
-      pendingRequest[i].func()
+      cb && pendingRequest[i].func()
       pendingRequest.splice(i, 1)
     }
   }
