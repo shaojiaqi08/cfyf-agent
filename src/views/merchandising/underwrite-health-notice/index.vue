@@ -9,16 +9,16 @@
         </div>
         <div class="content">
             <keep-alive>
-                <Component :is="tabIndex"></Component>
+                <Component :is="tabIndex||'none'"></Component>
             </keep-alive>
         </div>
     </div>
 </template>
-
 <script>
     import UnderwriteSearch from './tab-panel/underwrite-search'
     import HealthSearch from './tab-panel/health-search'
     import UnderwriteRules from './tab-panel/underwrite-rules'
+    import {mapState} from 'vuex'
     export default {
         name: 'underwrite-health-notice',
         components: {
@@ -26,20 +26,28 @@
             HealthSearch,
             UnderwriteRules
         },
+        computed: {
+            ...mapState('users', ['userInfo'])
+        },
         data() {
             return {
                 tabIndex: '',
                 productName: ''
             }
         },
-        created() {
-            // 初始化tab权限
-            if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
-                this.tabIndex = 'underwrite-search'
-            } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
-                this.tabIndex = 'health-search'
-            } else if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
-                this.tabIndex = 'underwrite-rules'
+        watch: {
+            'userInfo.permissions': {
+                handler() {
+                    // 初始化tab权限
+                    if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
+                        this.tabIndex = 'underwrite-search'
+                    } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
+                        this.tabIndex = 'health-search'
+                    } else if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
+                        this.tabIndex = 'underwrite-rules'
+                    }
+                },
+                immediate: true
             }
         }
     }

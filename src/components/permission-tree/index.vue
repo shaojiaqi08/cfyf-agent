@@ -1,6 +1,9 @@
 <template>
-    <div :class="`permission-tree-container ${data.length === 1 ? 'only-one-data' : ''}`" ref="container" v-loading="loading">
-        <tree-node :editable="editable" :key="index" v-for="(item, index) in filterData" v-model="filterData[index]"></tree-node>
+    <div class="permission-tree-container" ref="container" v-loading="loading">
+        <template v-if="filterData.length">
+            <tree-node :editable="editable" :key="index" v-for="(item, index) in filterData" v-model="filterData[index]"></tree-node>
+        </template>
+        <span v-else class="empty-tips">无权限配置</span>
     </div>
 </template>
 
@@ -53,6 +56,7 @@
         position: relative;
         display: flex;
         flex-direction: column;
+        width: auto;
         &>.tree-node-container{
             padding-left: 0;
             &::before{
@@ -76,6 +80,10 @@
             &:last-of-type > ::v-deep .tree-group-container>div:last-of-type::before{
                 height: 13px;
             }
+        }
+        .empty-tips {
+            margin: 30vh auto;
+            text-align: center;
         }
     }
 </style>

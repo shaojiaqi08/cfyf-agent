@@ -7,15 +7,14 @@
             </el-tabs>
         </div>
         <div class="content">
-            <keep-alive>
-                <Component :is="tabIndex"></Component>
-            </keep-alive>
+            <Component :is="tabIndex ||'none'"></Component>
         </div>
     </div>
 </template>
 <script>
     import Proposal from './tab-panel/proposal'
     import Share from './tab-panel/share'
+    import {mapState} from 'vuex'
     export default {
         name: 'underwrite-health-notice',
         components: {
@@ -28,12 +27,20 @@
                 productName: ''
             }
         },
-        created() {
-            // 初始化tab权限
-            if (this.$checkAuth('/interactive-logs/proposal')) {
-                this.tabIndex = 'proposal'
-            } else if (this.$checkAuth('/interactive-logs/product')) {
-                this.tabIndex = 'share'
+        computed: {
+            ...mapState('users', ['userInfo'])
+        },
+        watch: {
+            'userInfo.permissions': {
+                handler() {
+                    // 初始化tab权限
+                    if (this.$checkAuth('/interactive-logs/proposal')) {
+                        this.tabIndex = 'proposal'
+                    } else if (this.$checkAuth('/interactive-logs/product')) {
+                        this.tabIndex = 'share'
+                    }
+                },
+                immediate: true
             }
         }
     }

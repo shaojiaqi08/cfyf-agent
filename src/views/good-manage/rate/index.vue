@@ -17,6 +17,7 @@
     import serverRate from './tab-panel/server-rate'
     import commissionRate from './tab-panel/commission-rate'
     import RateSettingDialog from './component/rate-setting-dialog'
+    import {mapState} from 'vuex'
     export default {
         name: 'rate',
         components: {
@@ -35,12 +36,20 @@
                 this.dialogVisible = true
             }
         },
-        created() {
-            // 初始化tab权限
-            if (this.$checkAuth('/rate/service_rate')) {
-                this.tabIndex = 'server-rate'
-            } else if (this.$checkAuth('/rate/commission_management')) {
-                this.tabIndex = 'commission-rate'
+        computed: {
+            ...mapState('users', ['userInfo'])
+        },
+        watch: {
+            'userInfo.permissions': {
+                handler() {
+                    // 初始化tab权限
+                    if (this.$checkAuth('/rate/service_rate')) {
+                        this.tabIndex = 'server-rate'
+                    } else if (this.$checkAuth('/rate/commission_management')) {
+                        this.tabIndex = 'commission-rate'
+                    }
+                },
+                immediate: true
             }
         }
     }
