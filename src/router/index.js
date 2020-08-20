@@ -12,10 +12,15 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title + '-' + '创富云服' || '创富云服'
+  const { meta } = to
+  document.title = meta.title + '-' + '创富云服' || '创富云服'
   const userInfo = store.state.users.userInfo
   if (!userInfo.token && to.name !== 'login' ) {
     return next('/login')
+  }
+  // 判断页面权限防止手动输入访问
+  if (meta.permission && !userInfo.permissions.includes(meta.permission)) {
+    return next('/user-info')
   }
   Nprogress.start()
   setTimeout(next, 300)

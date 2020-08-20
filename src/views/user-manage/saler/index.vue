@@ -19,6 +19,7 @@
     import {accountStatusMap} from '@/enums/user-manage'
     import SalePane from './tab-panel/sale'
     import PositionPane from './tab-panel/position'
+    import {mapState} from 'vuex'
     export default {
         name: 'sale',
         components: {SalePane, PositionPane},
@@ -113,7 +114,21 @@
                 callback()
             }
         },
+        computed: {
+            ...mapState('users', ['userInfo'])
+        },
         watch: {
+            'userInfo.permissions': {
+                handler() {
+                    // 初始化tab权限
+                    if (this.$checkAuth('/sale/list')) {
+                        this.curTabIdx = 'sale-pane'
+                    } else if (this.$checkAuth('/sale/position_and_authority')) {
+                        this.curTabIdx = 'position-pane'
+                    }
+                },
+                immediate: true
+            },
             editDialogVisible(v) {
                 if (!v) {
                     this.editFormModel = this.$options.data().editFormModel
@@ -127,14 +142,6 @@
             },
             modPwdDialogVisible(v) {
                 !v && this.$refs.modPwdForm.resetFields()
-            }
-        },
-        created() {
-            // 初始化tab权限
-            if (this.$checkAuth('/sale/list')) {
-                this.curTabIdx = 'sale-pane'
-            } else if (this.$checkAuth('/sale/position_and_authority')) {
-                this.curTabIdx = 'position-pane'
             }
         }
     }

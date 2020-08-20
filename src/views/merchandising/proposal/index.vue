@@ -54,7 +54,7 @@
                             <el-link v-if="$checkAuth('/proposal/h5')" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
                         </template>
                         <template v-else>
-                            <el-link type="primary" @click="editProposal(row)">编辑计划书</el-link>
+                            <el-link v-if="$checkAuth('/proposal/proposal-operate/update')" type="primary" @click="editProposal(row)">编辑计划书</el-link>
                         </template>
                     </template>
                 </el-table-column>

@@ -28,13 +28,13 @@
                 </el-button>
             </side-filter-list>
             <div class="right-content" v-loading="rightLoading">
-                <el-button v-if="$checkAuth('/manager/admin/authority') && curTabIdx==='permission' && !curSelRole.is_super_user"
+                <el-button v-if="$checkAuth('/manager/admin/authority/update') && curTabIdx==='permission' && !(curSelRole || {}).is_super_user"
                            type="primary"
                            size="small"
                            style="position: absolute;top:16px;right:16px;z-index: 10"
                            @click="editTree">编辑权限</el-button>
                 <el-tabs v-model="curTabIdx" v-if="curSelRole && !curSelRole.isSupper" @tab-click="handleTabChange" size="small">
-                    <el-tab-pane name="people" label="成员" v-if="$checkAuth('/manager')"></el-tab-pane>
+                    <el-tab-pane name="people" label="成员" v-if="$checkAuth('/manager/members')"></el-tab-pane>
                     <el-tab-pane name="permission" label="权限" v-if="$checkAuth('/manager/admin/authority')"></el-tab-pane>
                 </el-tabs>
                 <div class="content" v-if="curSelRole && curTabIdx==='people'">
@@ -49,14 +49,14 @@
                                         :disabled="managerData.length <= 0"
                                         placement="top">
                                 <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"
-                                         :disabled="managerData.length > 0 || curSelRole.is_super_user"
+                                         :disabled="managerData.length > 0 || (curSelRole || {}).is_super_user"
                                          :underline="false"
                                          type="minor"
                                          class="mr30 del-link"
                                          @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
                             </el-tooltip>
                             <el-button type="primary"
-                                       :disabled="curSelRole.is_super_user"
+                                       :disabled="curSelRole && curSelRole.is_super_user"
                                        @click="handleSetPos"
                                        v-if="$checkAuth('/manager/admin_position/update')"
                                        size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
@@ -152,6 +152,7 @@
     import EditManagerDialog from './component/edit-mananger-dialog'
     import EditRoleDialog from './component/edit-role-dialog'
     import {debounce} from '../../../utils'
+    import {mapState} from 'vuex'
     export default {
         name: 'manager',
         mixins: [validatorMixin],
@@ -183,6 +184,7 @@
                 total: 0,
                 managerData: [],
                 curTabIdx: '',
+                defTabIdx: '',
                 treeDialogVisible: false,
                 editDialogVisible: false,
                 editFormModel: {
@@ -218,6 +220,9 @@
                 }),
                 maxHeight: null
             }
+        },
+        computed: {
+            ...mapState('users', ['userInfo'])
         },
         methods: {
             formatDate,
@@ -314,10 +319,11 @@
             },
             handleSelRole(obj) {
                 this.page = 1
-                this.curTabIdx = 'people'
+                this.curSelRole = obj
+                this.curTabIdx = this.defTabIdx
                 this.treeDetail = []
                 this.managerData = []
-                this.ajaxDetail(obj)
+                this[`${this.curTabIdx}TabHandle`]()
             },
             submitModifyPermission() {
                 const permission_ids = []
@@ -402,11 +408,10 @@
                     }
                 ).then(() => {
                     const account_status = isDisabled ? 'disable' : 'enable'
-                    const account_status_str = isDisabled ? '禁用' : '启用'
                     updateStatus({id, account_status}).then(() => {
-                        this.$message.success(`${account_status_str}成功!`)
+                        this.$message.success(`${isDisabled ? '禁用' : '启用'}成功!`)
                         row.account_status = account_status
-                        row.account_status_str = account_status_str
+                        row.account_status_str = isDisabled ? '禁用' : '在职'
                     })
                 }).catch(() => {})
             },
@@ -509,17 +514,25 @@
             this.setMaxHeight()
         },
         created() {
-            // 初始化tab权限
-            if (this.$checkAuth('/manager')) {
-                this.curTabIdx = 'people'
-            } else if (this.$checkAuth('/manager/admin/authority')) {
-                this.curTabIdx = 'permission'
-            }
             this.ajaxRoleList()
             window.addEventListener('resize', this.setMaxHeight)
         },
         beforeDestroy() {
             window.removeEventListener('resize', this.setMaxHeight)
+        },
+        watch: {
+            'userInfo.permissions': {
+                handler() {
+                    // 初始化tab权限
+                    if (this.$checkAuth('/manager/members')) {
+                        this.curTabIdx = 'people'
+                    } else if (this.$checkAuth('/manager/admin/authority')) {
+                        this.curTabIdx = 'permission'
+                    }
+                    this.defTabIdx = this.curTabIdx
+                },
+                immediate: true
+            }
         }
     }
 </script>

@@ -54,6 +54,11 @@ export default {
           ...this.userInfo,
           permissions: res
         })
+        // 没权限跳到个人信息页
+        const {permission} = this.$route.meta
+        if (res.length <= 0 || (permission && !res.includes(permission))) {
+          this.$router.replace('/user-info')
+        }
       })
     }
   },
