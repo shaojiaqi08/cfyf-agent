@@ -1,6 +1,6 @@
 <template>
     <div class="position-pane-container">
-        <el-button v-if="$checkAuth('/sale/position_and_authority')" class="add-button" type="primary" @click="posDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
+        <el-button v-if="$checkAuth('/sale/position_and_authority/sales_position/store')" class="add-button" type="primary" @click="posDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
         <side-filter-list
                 custom-class="pos-side-filter"
                 v-loading="lvLoading"
@@ -37,7 +37,7 @@
                     <div class="empty-tips" v-else>无配置权限</div>
                 </el-scrollbar>
                 <div class="flex-center">
-                    <el-button type="primary" @click="editTree" size="small">编辑权限</el-button>
+                    <el-button v-if="$checkAuth('/sale/position_and_authority/update')" type="primary" @click="editTree" size="small">编辑权限</el-button>
                 </div>
             </template>
         </div>
