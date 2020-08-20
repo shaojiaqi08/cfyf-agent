@@ -57,7 +57,7 @@
                     </div>
                 </div>
                 <el-scrollbar style="height: 100%;">
-                    <div ref="imageDom" class="p20">
+                    <div ref="imageDom">
                         <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}">
                             <el-table-column class-name="p16">
                                 <template slot="header">
@@ -202,6 +202,9 @@
             }
             ::v-deep .el-scrollbar {
                 flex: 1;
+                .el-scrollbar__wrap{
+                    overflow-x: hidden;
+                }
             }
         }
         .side-filter-container{
