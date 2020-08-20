@@ -265,17 +265,17 @@ import { formatDate } from '@/utils/formatTime'
 import { debounce } from '@/utils'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
+import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
 // 个人业绩
 export default {
   name: 'achievement-self',
+  mixins: [scrollMixin],
   components: {
     FilterShell
   },
   data() {
     return {
       formatDate,
-      filterValue: false,
-      belongVisible: false,
       belongData: {},
       list: [],
       page: 1,
@@ -335,46 +335,6 @@ export default {
       this.searchModelChange = func
     },
     hasValue,
-    // hasValue1,
-    // dir 0: 左 1: 右
-    scrollTo(dir) {
-      const { scrollTranslateX: oldTranX } = this;
-      const el = this.$refs.dataRow;
-      const { offsetWidth } = el;
-      const { offsetWidth: warpWidth } = el.querySelector(".scroll-wrap");
-      let newTranX = oldTranX + (dir ? -100 : 100);
-      if (dir) {
-        const limitX = offsetWidth - warpWidth;
-        newTranX = Math.max(newTranX, limitX);
-        this.scrol2Rvisible = newTranX !== limitX;
-        this.scrol2Lvisible = true;
-      } else {
-        newTranX = Math.min(0, newTranX);
-        this.scrol2Lvisible = !!newTranX;
-        this.scrol2Rvisible = true;
-      }
-      this.scrollTranslateX = newTranX;
-    },
-    // 检测数据栏是否需要滚动
-    checkNeedScroll() {
-      const { offsetWidth } = this.$refs.dataRow;
-      const { offsetWidth: warpWidth } = this.$refs.dataRow.querySelector(
-        '.scroll-wrap'
-      );
-      if (warpWidth - 16 > offsetWidth) {
-        this.scrol2Lvisible = false;
-        this.scrol2Rvisible = true;
-        this.scrollTranslateX = 0;
-      } else {
-        this.scrol2Lvisible = false;
-        this.scrol2Rvisible = false;
-        this.scrollTranslateX = 0;
-      }
-    },
-    showBelongDialog(row) {
-      this.belongData = row;
-      this.belongVisible = true;
-    },
     searchModelFormat() {
       const model = {...this.searchModel}
       Object.keys(model).forEach(key => {
@@ -428,13 +388,6 @@ export default {
       getSalesData().then(res => {
         this.salesList = res
       }).catch(err => console.log(err))
-    }
-  },
-  watch: {
-    belongVisible(v) {
-      if (!v) {
-        this.belongData = {};
-      }
     }
   },
   created() {
