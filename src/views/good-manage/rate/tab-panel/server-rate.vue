@@ -86,7 +86,9 @@
                       :info="item"
                       tableHeaderLabel="服务费率"
                       :editable="false"></card-table>
-          <div class="empty-list" v-if="!settingList.length">请选择左侧列表查看详情</div>
+          <div class="empty-tips" v-if="!settingList.length">
+              请选择左侧列表查看详情
+          </div>
         </div>
       </el-scrollbar>
     </div>
@@ -285,7 +287,7 @@ export default {
   }
   .detail-wrap {
     flex: auto;
-    padding: 16px;
+    padding: 16px 16px 0;
     width: 100px;
     box-sizing: border-box;
     display: flex;
@@ -311,7 +313,7 @@ export default {
       }
     }
     .body {
-      height: 700px;
+      height: 100%;
     }
     ::v-deep .el-tabs {
       flex: auto;

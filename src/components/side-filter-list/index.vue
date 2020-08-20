@@ -23,7 +23,7 @@
                         </list-item>
                     </slot>
                 </div>
-                <div v-if="!filterList.length" style="text-align: center; line-height: 44px; color:#999">暂无数据</div>
+                <div v-if="!filterList.length" class="empty-tips">暂无数据</div>
             </div>
         </el-scrollbar>
         <slot name="footer"></slot>

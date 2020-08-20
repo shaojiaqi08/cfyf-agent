@@ -107,7 +107,7 @@
                       :info="item"
                       tableHeaderLabel="佣金费率"
                       :editable="true"></card-table>
-          <div class="empty-list" v-if="!settingList.length">请选择左侧列表查看详情</div>
+          <div class="empty-tips" v-if="!settingList.length">请选择左侧列表查看详情</div>
         </div>
       </el-scrollbar>
     </div>

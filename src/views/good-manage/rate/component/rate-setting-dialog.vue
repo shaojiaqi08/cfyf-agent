@@ -143,7 +143,7 @@
             添加列
           </el-button>
         </div>
-        <el-tabs class="mt10" v-model="tabSelected">
+        <el-tabs class="mt10" size="small" v-model="tabSelected">
           <el-tab-pane v-for="(item, index) in tabs"
                       :key="index"
                       :name="item.value"

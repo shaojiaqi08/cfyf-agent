@@ -12,13 +12,13 @@
              :model="formModel"
              :rules="rules">
       <el-form-item label="旧密码" prop="password">
-        <el-input auto-complete="off" type="password" v-model="formModel.password"></el-input>
+        <el-input auto-complete="off" placeholder="请输入旧密码" type="password" v-model="formModel.password"></el-input>
       </el-form-item>
       <el-form-item label="新密码" prop="new_password">
-        <el-input auto-complete="off" type="password" v-model="formModel.new_password"></el-input>
+        <el-input auto-complete="off" type="password" placeholder="请输入新密码" v-model="formModel.new_password"></el-input>
       </el-form-item>
       <el-form-item label="确认新密码" prop="confirm_new_password">
-        <el-input auto-complete="off" type="password" v-model="formModel.confirm_new_password"></el-input>
+        <el-input auto-complete="off" type="password" placeholder="请再次输入新密码" v-model="formModel.confirm_new_password"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

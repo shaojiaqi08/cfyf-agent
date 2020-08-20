@@ -684,7 +684,13 @@ img {
   padding: 20px 20px 0 20px;
   height: calc(100vh - 40px);
   .scroll-container {
-    padding: 16px 6px 16px 16px;
+    padding: 16px 6px 0 16px;
     background-color: #fff;
   }
+}
+
+.empty-tips {
+  margin-top: 35vh;
+  text-align: center;
+  color: #999999;
 }

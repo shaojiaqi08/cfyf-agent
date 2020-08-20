@@ -86,7 +86,9 @@
                     </template>
                 </el-table>
             </template>
-
+            <div class="empty-tips" v-else>
+                请选择左侧列表
+            </div>
         </div>
     </div>
 </template>
