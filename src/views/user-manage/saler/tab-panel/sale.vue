@@ -661,7 +661,9 @@
             // 表格最大高度
             setMaxHeight() {
                 const func = debounce(() => {
-                    this.maxHeight = this.$refs.container.offsetHeight - 80
+                    if (this.selTeam === -1) {
+                        this.maxHeight = this.$refs.container.offsetHeight - 64
+                    }
                 }, 300)
                 func()
                 this.setMaxHeight = func

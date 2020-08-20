@@ -209,7 +209,7 @@
             },
             setTableMaxHeight() {
                 const func = debounce(() => {
-                    this.maxHeight = this.$refs.content.offsetHeight - 80
+                    this.maxHeight = this.$refs.content.offsetHeight - 64
                 }, 300)
                 func()
                 this.setTableMaxHeight = func

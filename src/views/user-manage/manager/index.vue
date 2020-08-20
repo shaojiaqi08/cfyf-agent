@@ -504,7 +504,7 @@
             },
             setMaxHeight() {
                 const func = debounce(() => {
-                    this.maxHeight = this.$refs.content.offsetHeight - 145
+                    this.maxHeight = this.$refs.content.offsetHeight - 129
                 }, 300)
                 func()
                 this.setMaxHeight = func
