@@ -45,11 +45,13 @@ export function createObjectURL(object) {
     return (window.URL) ? window.URL.createObjectURL(object) : window.webkitURL.createObjectURL(object)
 }
 
-export const downloadFrameA = (url, filename, method = 'get', authorizationField = 'Agent-Authorization') => {
+export const downloadFrameA = (url, filename, method = 'get') => {
     return new Promise((resolve, reject) => {
         let xhr = new XMLHttpRequest()
         xhr.open(method, url)
-        authorizationField && xhr.setRequestHeader(authorizationField, store.state.users.userInfo.token)
+        const userInfo = store.state.users.userInfo
+        xhr.setRequestHeader('Cfyf-Authorization', userInfo.token)
+        xhr.setRequestHeader('Agent-Authorization', userInfo.agent_token)
         xhr.responseType = 'blob'
         xhr.onload = function (e) {
             if (this.status === 200) {
