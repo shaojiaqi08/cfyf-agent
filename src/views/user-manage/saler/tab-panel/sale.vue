@@ -13,6 +13,7 @@
                 :showFilter="false"
                 v-model="selTeam"
                 @change="handleSelTeam"
+                :disabled="detailLoading"
                 style="width: 240px"
                 :listData="computedTeamData"
             >

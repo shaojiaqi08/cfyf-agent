@@ -12,6 +12,7 @@
                 value-key="level"
                 :showFilter="false"
                 v-model="selLv"
+                :disabled="positionLoading"
                 @change="handleSelLv"
                 style="width: 240px; border-right: 1px solid #e6e6e6"
                 :listData="lvData"
@@ -30,6 +31,7 @@
                 :showFilter="false"
                 v-model="selPos"
                 @change="handleSelPos"
+                :disabled="detailLoading"
                 style="width: 240px"
                 :listData="positionData"
         >
@@ -63,7 +65,7 @@
             </span>
         </el-dialog>
         <!--编辑权限-->
-        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="0" :close-on-click-modal="false">
             <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
                 <permission-tree v-model="treeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
@@ -172,10 +174,14 @@
             },
             handleSelLv(obj) {
                 this.selLv = obj.level
+                this.positionData = []
+                this.selPos = ''
+                this.detailData = []
                 this.ajaxPositionData(obj.level)
             },
             handleSelPos(obj) {
                 this.selPos = obj.id
+                this.detailData = []
                 this.ajaxDetail(obj.id)
             },
             submitCreatePos() {
@@ -184,6 +190,11 @@
                         this.submitting = true
                         const params = this.posFormModel
                         createPosLv(params).then(res => {
+                            this.lvData = []
+                            this.selLv = ''
+                            this.positionData = []
+                            this.selPos = ''
+                            this.detailData = []
                             this.ajaxLvData(params.level, res.id)
                             this.$message.success('职位添加成功!')
                             this.posDialogVisible = false
@@ -195,7 +206,6 @@
             },
             ajaxDetail(position_id) {
                 this.detailLoading = true
-                this.detailData = []
                 getPosDetail({position_id}).then(res => {
                     this.dealTreeData(res)
                     this.detailData = res
@@ -205,9 +215,6 @@
             },
             ajaxPositionData(level, id) {
                 this.positionLoading = true
-                this.detailData = []
-                this.positionData = []
-                this.selPos = ''
                 getPositionList({level, role: 'sales'}).then(res => {
                     this.positionData = res
                     if (id) {

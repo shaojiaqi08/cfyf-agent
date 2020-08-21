@@ -341,8 +341,8 @@ export default {
         const cur = model[key]
         if (key === 'date_range') {
           const [start, end] = model.date_range
-          model.proposal_at_start = start ? +start / 1000 : ''
-          model.proposal_at_end = end ? +start / 1000 : ''
+          model.proposal_at_start = start ? formatDate(start, 'yyyyMMdd') : ''
+          model.proposal_at_end = end ? formatDate(end, 'yyyyMMdd') : ''
         } else if(Array.isArray(cur)) {
           model[key] = model[key].join(',')
         }

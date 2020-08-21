@@ -12,6 +12,7 @@
                 :showFilter="false"
                 v-model="selVal"
                 @change="handleSelProduct"
+                :disabled="detailLoading"
                 style="width: 280px"
                 :listData="productData"
         >

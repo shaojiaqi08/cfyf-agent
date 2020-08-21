@@ -13,6 +13,7 @@
                 :showFilter="false"
                 v-model="selVal"
                 @change="handleSelProduct"
+                :disabled="detailLoading"
                 style="width: 280px"
                 :listData="productData"
         >
@@ -148,6 +149,7 @@
         methods: {
             handleSelProduct(obj) {
                 this.selName = obj.product_name
+                this.detailData = null
                 this.ajaxDetail(obj.id)
             },
             ajaxProductData() {

@@ -15,6 +15,7 @@
                     :showFilter="false"
                     v-model="selRole"
                     @change="handleSelRole"
+                    :disabled="rightLoading"
                     style="width: 240px;border-right: 1px solid #e6e6e6;"
                     :listData="roleData"
             >

@@ -1,10 +1,11 @@
 <template>
-    <div :class="`side-filter-container ${customClass}`">
+    <div :class="`side-filter-container ${customClass} ${disabled ? 'side-filter-disabled' : ''}`">
         <div class="search-bar" v-if="showFilter">
             <el-input size="small"
                       prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                       :placeholder="placeholder"
                       v-model.trim="keyword"
+                      :disabled="disabled"
                       @input="updateFilter"
                       clearable></el-input>
         </div>
@@ -16,7 +17,7 @@
                      v-for="(item, index) in filterList"
                      :key="index"
                      :class="{active: item[valueKey] === activeValue}"
-                     @click="handleSelected(item)">
+                     @click="!disabled && handleSelected(item)">
                     <slot name="list" v-bind:row="item">
                         <list-item :tips-content="item[labelKey]">
                             <template>{{item[labelKey]}}</template>
@@ -66,6 +67,11 @@
             listData: {
                 type: Array,
                 default: () => []
+            },
+            // 是否禁用
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -134,6 +140,9 @@
                     background: #e6e6e6;
                 }
             }
+        }
+        &.side-filter-disabled{
+            opacity: .7;
         }
     }
 </style>
