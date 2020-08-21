@@ -141,8 +141,6 @@
                 }
             }
         }
-        &.side-filter-disabled{
-            opacity: .7;
-        }
+        &.side-filter-disabled{}
     }
 </style>
