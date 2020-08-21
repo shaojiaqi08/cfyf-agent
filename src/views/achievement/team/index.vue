@@ -337,20 +337,16 @@ export default {
         this.getTeamPolicyStatistics()
       }
     },
-    searchModelChange() {
-      const func = debounce(() => {
-        this.tableLoading = true
-        this.statisticLoading = true
-        this.page = 1
-        this.list = []
-        this.total = 0
-        this.statisticInfo = {}
-        this.getTeamPolicyList()
-        this.getTeamPolicyStatistics()
-      }, 300)
-      func()
-      this.searchModelChange = func
-    },
+    searchModelChange: debounce(function() {
+      this.tableLoading = true
+      this.statisticLoading = true
+      this.page = 1
+      this.list = []
+      this.total = 0
+      this.statisticInfo = {}
+      this.getTeamPolicyList()
+      this.getTeamPolicyStatistics()
+    }, 300),
     hasValue,
     showInfoDialog(row) {
       let routeUrl = this.$router.resolve(`/achievement-team/detail/${row.id}`)

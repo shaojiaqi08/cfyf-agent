@@ -138,13 +138,9 @@
                     this.loading = false
                 })
             },
-            debounceAjaxProductData() {
-                const func = debounce(() => {
-                    this.ajaxProductData()
-                }, 400)
-                func()
-                this.debounceAjaxProductData = func
-            },
+            debounceAjaxProductData: debounce(function() {
+                this.ajaxProductData()
+            }, 300),
             // 生成图片
             createImg() {
                 this.$nextTick(() => {

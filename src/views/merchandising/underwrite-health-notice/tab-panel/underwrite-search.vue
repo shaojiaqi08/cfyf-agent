@@ -155,13 +155,9 @@
                     this.loading = false
                 })
             },
-            debounceAjaxProductData() {
-                const func = debounce(() => {
-                    this.ajaxProductData()
-                }, 300)
-                func()
-                this.debounceAjaxProductData = func
-            }
+            debounceAjaxProductData: debounce(function() {
+                this.ajaxProductData()
+            }, 300)
         },
         created() {
             this.ajaxProductData()

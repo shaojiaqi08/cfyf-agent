@@ -275,14 +275,10 @@
                     this.getInteractiveLogOther()
                 }
             },
-            debounceGetLogOther() {
-                const func = debounce(() => {
-                    this.otherModel.page = 1
-                    this.getInteractiveLogOther()
-                }, 400)
-                func()
-                this.debounceGetLogOther = func
-            },
+            debounceGetLogOther: debounce(function() {
+                this.otherModel.page = 1
+                this.getInteractiveLogOther()
+            }, 300),
             handleOtherCurrentChange(v) {
                 this.otherModel.page = v
                 this.getInteractiveLogOther()

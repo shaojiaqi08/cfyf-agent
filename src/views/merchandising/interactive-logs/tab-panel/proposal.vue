@@ -203,14 +203,10 @@
                     this.getInteractiveLogProposal()
                 }
             },
-            debounceGetProposal() {
-                const func = debounce(() => {
-                    this.searchModel.page = 1
-                    this.getInteractiveLogProposal()
-                }, 300)
-                func()
-                this.debounceGetProposal = func
-            },
+            debounceGetProposal: debounce(function() {
+                this.searchModel.page = 1
+                this.getInteractiveLogProposal()
+            }, 300),
             // 滚动监听
             initScrollProspectus() {
                 let scrollBarPro = document.querySelector('.scroll-bar-wap-pro')

@@ -118,7 +118,11 @@
                          @close="restEditRoleForm"
                          :form-model="editRoleFormModel"></edit-role-dialog>
         <!--编辑权限-->
-        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="4vh" :close-on-click-modal="false">
+        <el-dialog custom-class="permission-dialog"
+                   title="编辑权限"
+                   :visible.sync="treeDialogVisible"
+                   width="1000px" top="4vh"
+                   :close-on-click-modal="false">
             <el-scrollbar style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
                 <permission-tree v-model="editTreeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
@@ -133,9 +137,7 @@
 </template>
 
 <script>
-    import {createManager,
-            editManager,
-            getManagerList,
+    import {getManagerList,
             removeEffect,
             updateStatus,
             updateManageTree,
@@ -311,7 +313,6 @@
             },
             handleSetPos() {
                 const {editRoleFormModel, curSelRole} = this
-                debugger
                 editRoleFormModel.id = curSelRole.id
                 editRoleFormModel.name = curSelRole.name
                 editRoleFormModel.remark = curSelRole.remark
@@ -343,7 +344,6 @@
                         this.loopTree(item.permission_groups, arr)
                     }
                     if (item.permissions && item.permissions.length) {
-                        console.log(item)
                         arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
                     }
                 })
@@ -421,31 +421,6 @@
                 }
                 this.editDialogVisible = true
             },
-            // 提交编辑
-            submitEdit() {
-                this.$refs.editForm.validate(flag => {
-                    if (flag) {
-                        this.submitting = true
-                        const {editFormModel, curSelRole} = this
-                        const data = {...editFormModel}
-                        let handle = createManager
-                        const isEdit =  data.id !== ''
-                        if (isEdit) { // 编辑移除多余参数
-                            data.role_id = curSelRole.id
-                            delete data.password
-                            delete data.confirm_password
-                            handle = editManager
-                        }
-                        handle({...data}).then(res => {
-                            this.ajaxRoleList(isEdit ? data.position_id : +res.position_id)
-                            this.$message.success(`${isEdit ? '修改' : '新增'}成功!`)
-                            this.editDialogVisible = false
-                        }).catch(() => {}).finally(() => {
-                            this.submitting = false
-                        })
-                    }
-                })
-            },
             ajaxRoleList(roleId) {
                 this.leftLoading = true
                 this.managerData = []
@@ -502,13 +477,9 @@
             restEditRoleForm() {
                 this.editRoleFormModel = this.$options.data().editRoleFormModel
             },
-            setMaxHeight() {
-                const func = debounce(() => {
-                    this.maxHeight = this.$refs.content.offsetHeight - 129
-                }, 300)
-                func()
-                this.setMaxHeight = func
-            }
+            setMaxHeight: debounce(function() {
+                this.maxHeight = this.$refs.content.offsetHeight - 129
+            }, 300)
         },
         mounted() {
             this.setMaxHeight()

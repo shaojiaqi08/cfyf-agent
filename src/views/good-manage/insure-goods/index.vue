@@ -237,13 +237,9 @@ export default {
         })
       })
     },
-    debounceAjaxListData() {
-      const func = debounce(() => {
-        this.ajaxListData()
-      }, 300);
-      func()
-      this.debounceAjaxListData = func;
-    },
+    debounceAjaxListData: debounce(function() {
+      this.ajaxListData()
+    }, 300),
     hasValue,
     clearValue,
     showInfoDialog(row) {
