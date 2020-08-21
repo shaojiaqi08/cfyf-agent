@@ -1,7 +1,7 @@
 <template>
     <div class="share-container">
         <el-input v-model="otherModel.keyword"
-                  prefix-icon="el-icon-search"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   class="search-input"
                   placeholder="搜索产品名称"
                   @input="debounceGetLogOther"
@@ -275,14 +275,10 @@
                     this.getInteractiveLogOther()
                 }
             },
-            debounceGetLogOther() {
-                const func = debounce(() => {
-                    this.otherModel.page = 1
-                    this.getInteractiveLogOther()
-                }, 400)
-                func()
-                this.debounceGetLogOther = func
-            },
+            debounceGetLogOther: debounce(function() {
+                this.otherModel.page = 1
+                this.getInteractiveLogOther()
+            }, 300),
             handleOtherCurrentChange(v) {
                 this.otherModel.page = v
                 this.getInteractiveLogOther()

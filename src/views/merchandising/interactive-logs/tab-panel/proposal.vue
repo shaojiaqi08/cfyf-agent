@@ -1,7 +1,7 @@
 <template>
     <div class="proposal-container">
         <el-input v-model="searchModel.keyword"
-                  prefix-icon="el-icon-search"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   class="search-input"
                   placeholder="搜索产品名称"
                   @input="debounceGetProposal"
@@ -203,14 +203,10 @@
                     this.getInteractiveLogProposal()
                 }
             },
-            debounceGetProposal() {
-                const func = debounce(() => {
-                    this.searchModel.page = 1
-                    this.getInteractiveLogProposal()
-                }, 300)
-                func()
-                this.debounceGetProposal = func
-            },
+            debounceGetProposal: debounce(function() {
+                this.searchModel.page = 1
+                this.getInteractiveLogProposal()
+            }, 300),
             // 滚动监听
             initScrollProspectus() {
                 let scrollBarPro = document.querySelector('.scroll-bar-wap-pro')

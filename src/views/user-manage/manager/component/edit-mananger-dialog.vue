@@ -1,7 +1,7 @@
 <template>
     <el-dialog custom-class="manager-dialog"
                :title="`${formModel.id !== '' ? '编辑' : '新增'}管理员`"
-               :visible.sync="visible"
+               :visible="visible"
                :close-on-click-modal="false"
                @close="closeDialog"
                width="480px">

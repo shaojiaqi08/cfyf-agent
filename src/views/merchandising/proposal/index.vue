@@ -93,6 +93,7 @@
         },
         data() {
             return {
+                fetchIndex: 0,
                 proposal_status: Object.freeze(proposal_status),
                 proposalStatusMap: Object.freeze(proposalStatusMap),
                 isUserInfoModalShow: false,
@@ -175,13 +176,14 @@
                 })
             },
             ajaxData() {
-                if (this.loading) {
-                    return this.paramsChanged = true
-                }
+                // 计划书接口较慢, 处理多次请求并发情况
+                const idx = this.fetchIndex += 1
                 this.loading = true
                 const {searchForm, keywordType, keyword, type} = this
                 const key = keywordType.find(item => item.value === type).value
                 getProposalList({...searchForm, [key]: keyword}).then(res => {
+                    // 当前不是最后一次请求或者最后一次请求结束
+                    if (idx < this.fetchIndex || !this.fetchIndex) return
                     if (searchForm.page <= 1) {
                         this.data = res.data
                     } else {
@@ -189,31 +191,23 @@
                     }
                     this.total = res.total
                 }).catch(()=> {}).finally(() => {
-                    this.loading = false
-                    if (this.paramsChanged) {
-                        this.paramsChanged = false
-                        this.search()
+                    // 最后一次请求结束后重置参数
+                    if (idx === this.fetchIndex) {
+                        this.loading = false
+                        this.fetchIndex = 0
                     }
                 })
             },
-            search() {
-                const func = debounce(() => {
-                    this.searchForm.page = 1
-                    this.ajaxData()
-                }, 300)
-                func()
-                this.search = func
-            },
+            search: debounce(function() {
+                this.searchForm.page = 1
+                this.ajaxData()
+            }, 300),
             onStorage(e) {
                 e.key === 'refreshPage' && this.search()
             },
-            setTableMaxHeight() {
-                const func = debounce(() => {
-                    this.maxHeight = this.$refs.content.offsetHeight - 64
-                }, 300)
-                func()
-                this.setTableMaxHeight = func
-            }
+            setTableMaxHeight: debounce(function() {
+                this.maxHeight = this.$refs.content.offsetHeight - 64
+            }, 300)
         },
         created() {
             this.ajaxUserInfo()

@@ -1,5 +1,5 @@
 <template>
-    <el-dialog custom-class="manager-dialog" :title="`${formModel.id !== '' ? '编辑' : '新增'}角色`" :visible.sync="visible" width="480px" @close="closeDialog">
+    <el-dialog custom-class="manager-dialog" :title="`${formModel.id !== '' ? '编辑' : '新增'}角色`" :visible="visible" width="480px" @close="closeDialog">
         <el-form ref="form" :model="formModel" :rules="rules" label-width="100px" label-position="left">
             <el-form-item label="角色名称" prop="name">
                 <el-input placeholder="请输入角色名称" v-model="formModel.name"></el-input>

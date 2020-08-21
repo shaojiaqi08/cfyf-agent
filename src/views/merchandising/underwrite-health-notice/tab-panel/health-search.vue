@@ -3,7 +3,7 @@
         <el-input clearable placeholder="搜索产品名称"
                   class="search-input"
                   v-model="searchModel.product_name"
-                  prefix-icon="el-icon-search"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   @input="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
@@ -138,13 +138,9 @@
                     this.loading = false
                 })
             },
-            debounceAjaxProductData() {
-                const func = debounce(() => {
-                    this.ajaxProductData()
-                }, 400)
-                func()
-                this.debounceAjaxProductData = func
-            },
+            debounceAjaxProductData: debounce(function() {
+                this.ajaxProductData()
+            }, 300),
             // 生成图片
             createImg() {
                 this.$nextTick(() => {

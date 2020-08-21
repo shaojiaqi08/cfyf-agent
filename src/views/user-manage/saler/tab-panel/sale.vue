@@ -126,7 +126,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
                 </div>
                 <el-table :data="allSalesData"
                           border
@@ -173,7 +173,7 @@
                         <div class="flex-column">
                             <div class="name-wrap">
                                 <template v-if="!editting">
-                                    {{detailData.name}}
+                                    {{detailData && detailData.name}}
                                     <el-link v-if="$checkAuth('/sale/team/modify_name')" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
                                 </template>
                                 <div v-else class="flex">
@@ -627,13 +627,9 @@
                     this.ajaxDetail(selTeam)
                 }
             },
-            debounceSearch() {
-                const func = debounce(() => {
-                    this.search()
-                }, 300)
-                func()
-                this.debounceSearch = func
-            },
+            debounceSearch: debounce(function() {
+                this.search()
+            }, 300),
             confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
                 const h = this.$createElement
                 return this.$confirm(
@@ -659,16 +655,12 @@
                 )
             },
             // 表格最大高度
-            setMaxHeight() {
-                const func = debounce(() => {
-                    const container = this.$refs.container
-                    if (container) {
-                        this.maxHeight = this.$refs.container.offsetHeight - 64
-                    }
-                }, 300)
-                func()
-                this.setMaxHeight = func
-            }
+            setMaxHeight: debounce(function() {
+                const container = this.$refs.container
+                if (container) {
+                    this.maxHeight = this.$refs.container.offsetHeight - 64
+                }
+            }, 300)
         },
         created() {
             this.ajaxTeamData()

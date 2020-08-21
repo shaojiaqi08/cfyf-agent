@@ -3,7 +3,7 @@
         <el-input placeholder="搜索产品名称"
                   class="search-input"
                   v-model="product_name_like"
-                  prefix-icon="el-icon-search"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   clearable
                   @input="ajaxProductData"></el-input>
         <side-filter-list
