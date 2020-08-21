@@ -270,8 +270,8 @@
       </div>
     </el-form>
     <span slot="footer" class="footer">
-      <el-button :loading="submitting" size="small" @click="closeModal(false)">取消</el-button>
-      <el-button :loading="submitting" size="small" type="primary" @click="submit">保存</el-button>
+      <el-button :loading="submitting || tableLoading" size="small" @click="closeModal(false)">取消</el-button>
+      <el-button :loading="submitting || tableLoading" size="small" type="primary" @click="submit">保存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -319,7 +319,7 @@ export default {
       search: '',
       input: '',
       loading: false,
-      tableLoading: false,
+      tableLoading: true,
       tableEmpty: false,
       submitting: false,
       isGetProductAttribute: false,
