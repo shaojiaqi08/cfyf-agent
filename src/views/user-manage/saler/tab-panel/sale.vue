@@ -126,7 +126,7 @@
                             </template>
                         </filter-shell>
                     </div>
-                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="el-icon-search" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
+                    <el-input type="primary" placeholder="搜索成员姓名或账号" prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" v-model="searchModel.keyword" clearable @input="debounceSearch"></el-input>
                 </div>
                 <el-table :data="allSalesData"
                           border

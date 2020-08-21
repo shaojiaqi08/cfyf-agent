@@ -1,6 +1,10 @@
 <template>
     <div class="position-pane-container">
-        <el-button v-if="$checkAuth('/sale/position_and_authority/sales_position/store')" class="add-button" type="primary" @click="posDialogVisible = true" size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
+        <el-button v-if="$checkAuth('/sale/position_and_authority/sales_position/store')"
+                   class="add-button"
+                   type="primary"
+                   @click="posDialogVisible=true"
+                   size="small"><i class="iconfont iconxiao16_jiahao"></i> 新增职位</el-button>
         <side-filter-list
                 custom-class="pos-side-filter"
                 v-loading="lvLoading"
@@ -162,7 +166,6 @@
                         this.loopTree(item.permission_groups, arr)
                     }
                     if (item.permissions && item.permissions.length) {
-                        console.log(item)
                         arr.push(...item.permissions.filter(item => item.is_checked).map(item => item.id))
                     }
                 })

@@ -1,7 +1,7 @@
 <template>
     <div class="proposal-container">
         <el-input v-model="searchModel.keyword"
-                  prefix-icon="el-icon-search"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   class="search-input"
                   placeholder="搜索产品名称"
                   @input="debounceGetProposal"
