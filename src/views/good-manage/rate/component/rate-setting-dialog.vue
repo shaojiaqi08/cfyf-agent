@@ -319,7 +319,7 @@ export default {
       search: '',
       input: '',
       loading: false,
-      tableLoading: true,
+      tableLoading: false,
       tableEmpty: false,
       submitting: false,
       isGetProductAttribute: false,

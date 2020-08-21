@@ -188,7 +188,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 .el-dialog{
   border-radius: 4px;
   max-height: 89.9vh;
-  margin-top: 5vh;
+  margin-top: 0 !important;
+  top: 50%;
+  transform: translateY(-50%);
   .el-dialog__header{
     border-radius: 4px 4px 0 0;
     height: 68px;
