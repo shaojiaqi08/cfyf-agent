@@ -65,8 +65,14 @@
             </span>
         </el-dialog>
         <!--编辑权限-->
-        <el-dialog custom-class="permission-dialog" title="编辑权限" :visible.sync="treeDialogVisible" width="1000px" top="0" :close-on-click-modal="false">
-            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);">
+        <el-dialog custom-class="permission-dialog"
+                   title="编辑权限"
+                   :visible.sync="treeDialogVisible"
+                   width="1000px"
+                   top="0"
+                   @close="resetScrollbar"
+                   :close-on-click-modal="false">
+            <el-scrollbar ref="permissionScrollWrap" wrap-class="permission-scroll-wrap" style="width: 100%;height: calc(89vh - 150px);">
                 <permission-tree v-model="treeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
@@ -133,6 +139,10 @@
             }
         },
         methods: {
+            // 重置编辑权限滚动条
+            resetScrollbar() {
+                this.$refs.permissionScrollWrap.$el.querySelector('.permission-scroll-wrap').scrollTo(0, 0)
+            },
             // 初始化tree节点选中和半选状态
             dealTreeData(arr) {
                 arr.forEach(item => {
@@ -323,6 +333,9 @@
         }
         ::v-deep .side-filter-container .list-item:first-of-type {
             border-top: transparent;
+        }
+        ::v-deep .el-dialog__body{
+            overflow: visible;
         }
     }
     .empty-tips {

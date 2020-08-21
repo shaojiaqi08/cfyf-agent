@@ -123,8 +123,9 @@
                    title="编辑权限"
                    :visible.sync="treeDialogVisible"
                    width="1000px" top="4vh"
+                   @close="resetScrollbar"
                    :close-on-click-modal="false">
-            <el-scrollbar style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
+            <el-scrollbar ref="permissionScrollWrap" wrap-class="permission-scroll-wrap" style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
                 <permission-tree v-model="editTreeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
@@ -229,6 +230,10 @@
         },
         methods: {
             formatDate,
+            // 重置编辑权限滚动条
+            resetScrollbar() {
+                this.$refs.permissionScrollWrap.$el.querySelector('.permission-scroll-wrap').scrollTo(0, 0)
+            },
             scroll2Bottom() {
                 const {page, total, page_size} = this
                 if (page * page_size < total) {

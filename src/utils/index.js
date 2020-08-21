@@ -73,6 +73,9 @@ export const downloadFrameA = (url, filename, method = 'get') => {
                 reject(e)
             }
         }
+        xhr.onerror = function(e) {
+            reject(e)
+        }
         xhr.send()
     })
 }
