@@ -220,13 +220,13 @@
             <div>
               净收保费(元)
               <span class="primary">
-                {{ statisticInfo.hesitation_surrender_premium }}
+                {{ statisticInfo.actual_premium }}
               </span>
             </div>
             <div>
               投保保费总计(元)
               <span class="primary">
-                {{ statisticInfo.actual_premium }}
+                {{ statisticInfo.total_premium }}
               </span>
             </div>
             <div>
