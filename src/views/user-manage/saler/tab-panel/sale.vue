@@ -150,7 +150,7 @@
                             <span v-else>-</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="状态" prop="join_date" align="center" width="100px">
+                    <el-table-column label="状态" prop="join_date" align="center">
                         <template v-slot="{row}">
                             <el-tag :type="statusTagType[row.account_status]">{{row.account_status_str}}</el-tag>
                         </template>
@@ -197,7 +197,7 @@
                             <span>当前团队主管人数：{{detailData.leader ? detailData.leader.length : 0}} 人</span>
                             <el-button v-if="$checkAuth('/sale/team/set_team_leader')" type="primary" @click="handleSetLeader" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>更换团队主管</el-button>
                         </div>
-                        <el-table :data="detailData.leader || []" border width="100%" class="mb16" max-height="768px">
+                        <el-table :data="detailData.leader || []" border width="100%" class="mb16" :max-height="maxHeight / 2">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -226,7 +226,7 @@
                             <span>当前团队成员人数：{{detailData.member ? detailData.member.length : 0}} 人</span>
                             <el-button v-if="$checkAuth('/sale/team/set_member')" type="primary" @click="handleSetMember" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>调整团队成员</el-button>
                         </div>
-                        <el-table :data="detailData.member || []" border width="100%" max-height="768px">
+                        <el-table :data="detailData.member || []" border width="100%" :max-height="maxHeight / 2">
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -661,7 +661,8 @@
             // 表格最大高度
             setMaxHeight() {
                 const func = debounce(() => {
-                    if (this.selTeam === -1) {
+                    const container = this.$refs.container
+                    if (container) {
                         this.maxHeight = this.$refs.container.offsetHeight - 64
                     }
                 }, 300)
@@ -711,7 +712,6 @@
             &>.el-scrollbar{
                 flex: 1;
                 overflow: hidden;
-                margin-bottom: 16px;
             }
             .sale-filter-bar{
                 display: flex;
