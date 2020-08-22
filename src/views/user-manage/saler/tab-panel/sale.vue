@@ -476,6 +476,8 @@
                 this.detailData = {}
                 // 重置筛选项
                 this.searchModel = this.$options.data().searchModel
+                this.resignationDateRange = []
+                this.closeDateRange = []
                 if (obj.id === -1) {
                     this.ajaxAllSalesList()
                 } else {

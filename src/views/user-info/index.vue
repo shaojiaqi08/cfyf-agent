@@ -20,23 +20,23 @@
         </div>
         <div class="item">
           <div class="label">姓名</div>
-          <div class="value">{{userInfo.real_name}}</div>
+          <div class="value">{{userInfo.real_name || '-'}}</div>
         </div>
         <div class="item">
           <div class="label">邮箱</div>
-          <div class="value">{{userInfo.email}}</div>
+          <div class="value">{{userInfo.email || '-'}}</div>
         </div>
         <div class="item">
           <div class="label">账号</div>
-          <div class="value">{{userInfo.username}}</div>
+          <div class="value">{{userInfo.username  || '-'}}</div>
         </div>
         <div class="item">
           <div class="label">手机号</div>
-          <div class="value">{{userInfo.mobile}}</div>
+          <div class="value">{{userInfo.mobile || '-'}}</div>
         </div>
         <div class="item">
           <div class="label">角色</div>
-          <div class="value">{{userInfo.sales_position && userInfo.sales_position.name}}</div>
+          <div class="value">{{userInfo.sales_position && userInfo.sales_position.name || '-'}}</div>
         </div>
         <div class="item">
           <div class="label">密码</div>
