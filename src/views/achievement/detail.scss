@@ -31,10 +31,14 @@
         color: #4d4d4d;
         margin-bottom: 12px;
         line-height: 20px;
+        display: flex;
+        align-items: baseline;
         & > span {
           color: #1a1a1a;
-          margin-left: 8px;
+          margin: 0 8px;
           font-weight: bold;
+          flex: 1;
+          overflow: hidden;
         }
       }
     }

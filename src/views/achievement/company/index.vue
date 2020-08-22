@@ -298,16 +298,16 @@
                 v-loading="tableLoading">
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="所属销售" prop="sales_real_name" align="center"></el-table-column>
+        <el-table-column label="所属销售" prop="sales_real_name" align="center" width="150px"></el-table-column>
         <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
         <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px"></el-table-column>
         <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px"></el-table-column>
-        <el-table-column label="投保时间" prop="proposal_at_str" width="180px" align="center"></el-table-column>
-        <el-table-column label="承保时间" prop="policy_at_str" width="180px" align="center"></el-table-column>
-        <el-table-column label="回访成功日期" prop="visit_at_str" width="150px" align="center"></el-table-column>
-        <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="150px" align="center"></el-table-column>
+        <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
+        <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
+        <el-table-column label="回访成功日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
+        <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy_recognizee_name" align="center"></el-table-column>
