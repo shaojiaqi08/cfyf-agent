@@ -474,6 +474,8 @@
                 this.selTeam = obj.id
                 this.editting = false
                 this.detailData = {}
+                // 重置筛选项
+                this.searchModel = this.$options.data().searchModel
                 if (obj.id === -1) {
                     this.ajaxAllSalesList()
                 } else {

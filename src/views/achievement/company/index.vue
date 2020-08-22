@@ -291,7 +291,7 @@
         ></el-button>
       </div>
       <el-table :data="list"
-                height="calc(100vh - 254px)"
+                height="calc(100% - 122px)"
                 v-table-infinite-scroll="scroll2Bottom"
                 border
                 stripe

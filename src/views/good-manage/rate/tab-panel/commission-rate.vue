@@ -378,6 +378,9 @@ export default {
         background: #e6e6e6;
       }
     }
+    ::v-deep .el-scrollbar__wrap{
+      overflow-x: hidden;
+    }
   }
   .product-list-item {
     width: 100%;
