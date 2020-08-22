@@ -76,7 +76,8 @@ export const accountTypeMap = {
 export const account_status = {
     enable: '在职',
     disable: '禁用',
-    dimission: '离职'
+    dimission: '离职',
+    invalidation: '失效'
 }
 
 export const accountStatusMap = {
@@ -91,6 +92,10 @@ export const accountStatusMap = {
     dimission: {
         label: '离职',
         value: 'dimission'
+    },
+    invalidation: {
+        label: '失效',
+        value: 'invalidation'
     }
 }
 
