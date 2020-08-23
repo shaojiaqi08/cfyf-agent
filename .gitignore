@@ -171,6 +171,5 @@ $RECYCLE.BIN/
 .env
 composer.lock
 node_modules
-www/client.proxy.cfb.com/build.bak/
-www/client.proxy.cfb.com/config.bak/
 .vscode/
+yarn-error.log
