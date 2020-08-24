@@ -503,6 +503,7 @@ export default {
       getProductAttributeList(data).then(res => {
         // 这里el-table有个小坑点，当外部数据更新是，table内部数据只会通过tableData进行更新渲染
         // 所以需要改变tableData去触发table里面数据绑定的变化
+        this.calculateWayChange()
         this.tableData.push([1])
         this.$nextTick(() => {
           this.guaranteeList = res.guarantee
