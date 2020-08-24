@@ -16,7 +16,6 @@ import { mapActions, mapState } from 'vuex'
 import Header from '@/components/header'
 import Menu from '@/components/menu'
 import checkVersion from '@/utils/checkVersion'
-import checkBrowser from '@/utils/checkBrowser'
 export default {
   components: {
     Header,
@@ -53,8 +52,6 @@ export default {
     checkVersion(() => {
       this.pollCheckVersion()
     }, this)
-    // 浏览器检查
-    checkBrowser(this)
   }
 };
 </script>
