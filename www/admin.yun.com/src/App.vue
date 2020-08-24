@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import { getPermission } from '@/apis/modules'
 import { mapActions, mapState } from 'vuex'
 import Header from '@/components/header'
 import Menu from '@/components/menu'
@@ -47,25 +46,9 @@ export default {
           this.pollCheckVersion()
         }, this)
       }, this.delay)
-    },
-    getPermission() {
-      getPermission().then(res => {
-        this.updateUserInfo({
-          ...this.userInfo,
-          permissions: res
-        })
-        // 没权限跳到个人信息页
-        const {permission} = this.$route.meta
-        if (res.length <= 0 || (permission && !res.includes(permission))) {
-          this.$router.replace('/user-info')
-        }
-      })
     }
   },
   created() {
-    // 刷新权限
-    !location.hash.includes('login') && this.userInfo.token && this.getPermission()
-
     // 版本检查
     checkVersion(() => {
       this.pollCheckVersion()
