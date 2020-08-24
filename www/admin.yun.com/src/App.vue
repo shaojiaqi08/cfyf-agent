@@ -64,7 +64,7 @@ export default {
   },
   created() {
     // 刷新权限
-    this.$route.name !== 'login' && this.userInfo.token && this.getPermission()
+    !location.hash.includes('login') && this.userInfo.token && this.getPermission()
 
     // 版本检查
     checkVersion(() => {
