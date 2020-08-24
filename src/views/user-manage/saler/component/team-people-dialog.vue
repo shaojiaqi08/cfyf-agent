@@ -13,7 +13,7 @@
                 </div>
                 <div class="body">
                     <div class="search-wrap pr16">
-                        <el-input prefix-icon="el-icon-search" placeholder="搜索姓名或者账号" v-model.trim="curKeyword" clearable></el-input>
+                        <el-input prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" placeholder="搜索姓名或者账号" v-model.trim="curKeyword" clearable></el-input>
                     </div>
                     <el-scrollbar>
                         <el-checkbox-group v-model="curSelected">
@@ -36,9 +36,9 @@
                 </div>
                 <div class="footer">
                     <div class="flex-center">
-                        <el-checkbox :disabled="!curDataCount" :value="curIsCheckAll" @change="curCheckAll">全选<span class="ml8" style="color:#999">{{curSelected.length}}</span></el-checkbox>
+                        <el-checkbox :disabled="!curDataCount" :value="curIsCheckAll" @change="curCheckAll">全选<span class="ml8" style="color:#999">{{curDataSelCount}}</span></el-checkbox>
                     </div>
-                    <el-link :disabled="!curDataCount || curSelected <= 0" type="danger" :underline="false" @click="batchDel">批量删除</el-link>
+                    <el-link :disabled="!curDataSelCount" type="danger" :underline="false" @click="batchDel">批量删除</el-link>
                 </div>
             </div>
             <div class="right">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="body">
                     <div class="search-wrap pr16">
-                        <el-input prefix-icon="el-icon-search" placeholder="搜索姓名或者账号" v-model.trim="allKeyword" clearable></el-input>
+                        <el-input prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" placeholder="搜索姓名或者账号" v-model.trim="allKeyword" clearable></el-input>
                     </div>
                     <el-scrollbar>
                         <el-checkbox-group v-model="allSelected">
@@ -71,9 +71,9 @@
                 </div>
                 <div class="footer">
                     <div class="flex-center">
-                        <el-checkbox :disabled="!allDataCount" :value="allIsCheckAll" @change="allCheckAll">全选<span class="ml8" style="color:#999">{{allSelected.length}}</span></el-checkbox>
+                        <el-checkbox :disabled="!allDataCount" :value="allIsCheckAll" @change="allCheckAll">全选<span class="ml8" style="color:#999">{{allDataSelCount}}</span></el-checkbox>
                     </div>
-                    <el-link :disabled="!allDataCount || allSelected.length <= 0" type="primary" :underline="false" @click="batchJoin">批量加入</el-link>
+                    <el-link :disabled="!allDataSelCount" type="primary" :underline="false" @click="batchJoin">批量加入</el-link>
                 </div>
             </div>
         </div>
@@ -131,13 +131,23 @@
                 return this.filterData(this.allKeyword, true)
             },
             curIsCheckAll() {
-                const {curDataCount, curSelected} = this
-                return curDataCount > 0 && curDataCount === curSelected.length
+                const {filterCurData, curSelected} = this
+                const smooth = []
+                Object.keys(filterCurData).forEach(key => {
+                    smooth.push(...filterCurData[key].sales.map(item => item.id))
+                })
+                return curSelected.length > 0 && smooth.length === curSelected.filter(i => smooth.includes(i)).length
             },
             curDataCount() {
                 const d = this.filterCurData
                 return Object.keys(d).reduce((prev, key) => {
                     return prev + d[key].sales.length
+                }, 0)
+            },
+            curDataSelCount() {
+                const {filterCurData, curSelected} = this
+                return Object.keys(filterCurData).reduce((prev, key) => {
+                    return prev + filterCurData[key].sales.filter(i => curSelected.includes(i.id)).length
                 }, 0)
             },
             // 所有已选择数据id, 用于过滤全部数据
@@ -150,13 +160,23 @@
                 return res
             },
             allIsCheckAll() {
-                const {allDataCount, allSelected} = this
-                return allDataCount > 0 && allDataCount === allSelected.length
+                const {filterAllData, allSelected} = this
+                const smooth = []
+                Object.keys(filterAllData).forEach(key => {
+                    smooth.push(...filterAllData[key].sales.map(item => item.id))
+                })
+                return allSelected.length > 0 && smooth.length === allSelected.filter(i => smooth.includes(i)).length
             },
             allDataCount() {
                 const d = this.filterAllData
                 return Object.keys(d).reduce((prev, key) => {
                     return prev + d[key].sales.length
+                }, 0)
+            },
+            allDataSelCount() {
+                const {filterAllData, allSelected} = this
+                return Object.keys(filterAllData).reduce((prev, key) => {
+                    return prev + filterAllData[key].sales.filter(i => allSelected.includes(i.id)).length
                 }, 0)
             }
         },
@@ -176,7 +196,7 @@
             curCheckAll(v) {
                 if (v) {
                     const allIds = []
-                    const d = this.curData
+                    const d = this.filterCurData
                     Object.keys(d).forEach(key => {
                         allIds.push(...d[key].sales.map(item => item.id))
                     })
@@ -188,7 +208,7 @@
             allCheckAll(v) {
                 if (v) {
                     const allIds = []
-                    const d = this.allData
+                    const d = this.filterAllData
                     Object.keys(d).forEach(key => {
                         allIds.push(...d[key].sales.map(item => item.id))
                     })
@@ -207,14 +227,21 @@
             },
             // 批量删除
             batchDel() {
-                const {curData: data, curSelected: selected} = this
+                const {filterCurData: data, curSelected: selected, curData} = this
                 Object.keys(data).forEach(key => {
-                    const cur = data[key]
-                    this.$set(cur, 'sales', cur.sales.filter(item => !selected.includes(item.id)))
+                    const cur = curData[key]
+                    this.$set(cur, 'sales', cur.sales.filter(item => {
+                        const idx = selected.findIndex(i => i === item.id)
+                        if (~idx) {
+                            selected.splice(idx, 1)
+                        }
+                        return !(~idx)
+                    }))
                 })
             },
             join(parent, obj, key) {
-                const cur = this.curData[key]
+                const {curData: data, allSelected: selected} = this
+                const cur = data[key]
                 if (cur) {
                     cur.sales.push(obj)
                 } else {
@@ -223,13 +250,23 @@
                         sales: [obj]
                     })
                 }
+                const idx = selected.findIndex(i => i === obj.id)
+                if (~idx) {
+                    selected.splice(idx, 1)
+                }
             },
             // 批量加入
             batchJoin() {
-                const {allData: data, allSelected: selected, curData} = this
+                const {filterAllData: data, allSelected: selected, curData} = this
                 Object.keys(data).forEach(key => {
                     const cur = data[key]
-                    const filter = cur.sales.filter(item => selected.includes(item.id))
+                    const filter = cur.sales.filter(item => {
+                        const idx = selected.findIndex(i => i === item.id)
+                        if (~idx) {
+                            selected.splice(idx, 1)
+                        }
+                        return ~idx
+                    })
                     if (filter.length) {
                         if (curData[key]) {
                             curData[key].sales.push(...filter)

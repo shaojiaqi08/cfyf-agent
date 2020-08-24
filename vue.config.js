@@ -13,8 +13,7 @@ module.exports = {
     port: 8080,
     proxy: {
       '/api': {
-        target: 'http://cfyf.beta.2239.com',   //代理接口
-        // target: 'http://cfyf_service.test:8000',   //代理接口
+        target: 'http://proxy.yun.beta.2239.com',   //代理接口
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''    //代理的路径
@@ -34,9 +33,10 @@ module.exports = {
     }
   }()),
   chainWebpack: (config) => {
-    // config.plugin("html").tap(arg => {
-    //   return arg
-    // })
+    config.plugin("html").tap(arg => {
+      arg[0].title = '创富云服'
+      return arg
+    })
     config.resolve.alias
         .set('@',resolve('./src'))
         .set('components',resolve('./src/components'))
