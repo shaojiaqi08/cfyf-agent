@@ -53,12 +53,8 @@
       loginOut() {
         if (this.submitting) return
         this.submitting = true
-        loginOut().then(() => {
-          this.$store.dispatch('users/loginOut')
-          this.$router.replace({ path: '/login' })
-        }).catch(() => {
-          this.submitting = false
-        })
+        loginOut().finally(() => this.$store.dispatch('users/loginOut'))
+        this.$router.replace({ path: '/login' })
       }
     }
   }

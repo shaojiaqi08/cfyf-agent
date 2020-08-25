@@ -74,7 +74,8 @@ export default {
         } else {
           this.$router.replace('/user-info')
         }
-      }).catch(err => {console.log(err)}).finally(() => {
+      }).catch(err => {
+        console.log(err)
         this.submitting = false
       })
     },
