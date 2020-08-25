@@ -21,7 +21,7 @@ router.beforeEach((to, from, next) => {
   }
   new Promise(resolve => {
     // 刷新和登录跳转时获取权限
-    if ((to.name !== 'login' && from.fullPath === '/') || from.name === 'login') {
+    if ((to.name !== 'login' && from.path === '/') || from.name === 'login') {
       getPermission().then(res => {
         store.dispatch('users/updateUserInfo', {
           ...userInfo,
@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
       resolve(userInfo.permissions)
     }
   }).then((permissions) => {
-    // 判断页面权限防止手动输入访问
+    // 判断当前页面权限
     if (meta.permission && !permissions.includes(meta.permission)) {
       return next('/user-info')
     } else {
