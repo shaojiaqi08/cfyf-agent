@@ -75,7 +75,7 @@
     </side-filter-list>
     <div class="detail-wrap">
       <div class="head">
-        <p>佣金费率记录</p>
+        <p>有效服务费率</p>
         {{ productList.find(i => i.id_type === selProductVal) && productList.find(i => i.id_type === selProductVal).product_name }}
         <!-- 某某某保险产品名称过长换行超过两行就换行展示产品 -->
       </div>
