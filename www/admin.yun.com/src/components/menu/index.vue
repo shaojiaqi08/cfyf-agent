@@ -87,6 +87,7 @@
       width: 140px;
       color: #4D4D4D;
       font-size: 16px;
+      font-weight: 600;
       display: flex;
       align-items: center;
       &:first-child {
@@ -94,6 +95,7 @@
       }
       .iconfont{
         font-size: 20px;
+        font-weight: normal;
       }
     }
     .menu-item {
@@ -102,6 +104,7 @@
       height: 40px;
       color: #4d4d4d;
       font-size: 14px;
+      font-weight: 500;
       line-height: 22px;
       border-radius: 4px;
       overflow: hidden;

@@ -300,7 +300,7 @@ export default {
     margin-top: 0;
   }
   .add-time {
-    color: #ccc;
+    color: #999;
   }
   .table-body {
     margin-top: 20px;
