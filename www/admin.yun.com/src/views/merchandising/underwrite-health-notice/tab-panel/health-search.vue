@@ -29,20 +29,11 @@
                                @click.stop="searchModel.notice = ''"></i>
                         </template>
                     </filter-shell>
-                    <filter-shell v-model="searchModel.is_reverse" class="is-reverse-filter" autoFocus autoClose :clearable="false">
-                        <el-select v-model="searchModel.is_reverse"
-                                   filterable
-                                   @change="ajaxProductData"
-                                   style="width: 100%"
-                                   placeholder="请选择">
-                            <el-option v-for="(item, index) in isReverseData" :key="index" :label="item.label" :value="item.value"></el-option>
-                        </el-select>
-                        <template v-slot:label>
-                            <span>
-                                {{isReverseData.find(i => i.value === searchModel.is_reverse).label}}
-                            </span>
-                        </template>
-                    </filter-shell>
+                </div>
+                <div class="pl16" style="padding-bottom: 8px">
+                    <el-radio-group size="mini" v-model="searchModel.is_reverse" @change="ajaxProductData" class="radio-group-wrap">
+                        <el-radio-button style="height: 28px" v-for="(item, index) in isReverseData" :key="index" :label="item.value">{{item.label}}</el-radio-button>
+                    </el-radio-group>
                 </div>
             </div>
         </side-filter-list>
@@ -217,6 +208,19 @@
                 width: initial;
                 border: none;
                 background: #fff;
+            }
+        }
+        ::v-deep .radio-group-wrap{
+            .el-radio-button {
+                .el-radio-button__inner {
+                    background: #f5f5f5;
+                    border-color: #e6e6e6;
+                }
+                &.is-active .el-radio-button__inner{
+                    background: #fff;
+                    color: #1F78FF;
+                    box-shadow: none;
+                }
             }
         }
     }

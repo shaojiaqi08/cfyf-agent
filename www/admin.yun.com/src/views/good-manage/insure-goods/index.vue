@@ -308,7 +308,7 @@ export default {
           font-size: 16px;
           color: #1A1A1A;
           font-weight: bold;
-          margin-bottom: 8px;
+          /*margin-bottom: 8px;*/
         }
         &>div:nth-of-type(2){
           line-height: 20px;
@@ -324,7 +324,6 @@ export default {
         }
       }
     }
-
     .right{
       flex: 1;
       height: 100%;
@@ -343,12 +342,21 @@ export default {
   .left-filter-list {
     width: 884px;
     ::v-deep .el-scrollbar {
+      .list-item-wrap{
+        padding: 0;
+      }
       .list-item{
         border-bottom: 1px solid #e6e6e6;
         padding: 16px;
-      }
-      .list-item:first-of-type{
-        border-top: transparent;
+        border-radius: 0;
+        box-sizing: border-box;
+        &:hover{
+          background: #e6e6e6;
+        }
+        &.active{
+          background: #f5f5f5;
+          font-weight: bold;
+        }
       }
     }
 

@@ -12,7 +12,7 @@
         <!-- 自定义搜索条件 -->
         <slot name="extraFilter"></slot>
         <el-scrollbar>
-            <div v-infinite-scroll="scroll2Bottom">
+            <div v-infinite-scroll="scroll2Bottom" class="list-item-wrap">
                 <div class="list-item"
                      v-for="(item, index) in filterList"
                      :key="index"
@@ -115,29 +115,32 @@
             .el-scrollbar__wrap{
                 overflow-x: hidden;
             }
+
+            .list-item-wrap{
+                padding: 8px;
+            }
+
             .list-item{
                 position: relative;
                 min-height: 44px;
-                padding: 8px 16px;
+                padding: 8px;
                 overflow: hidden;
                 cursor: pointer;
                 background: #fff;
                 display: flex;
                 align-items: center;
                 box-sizing: border-box;
-                border-top: 1px solid #fff;
-                border-bottom: 1px solid #fff;
-                transition: all .5s ease-in-out;
-                &.active, &:hover{
-                    border-top: 1px solid #e6e6e6;
-                    border-bottom: 1px solid #e6e6e6;
-                }
-                &.active{
-                    background: #f5f5f5;
-                    font-weight: bold;
-                }
+                transition: all .2s ease-in-out;
+                border-radius: 4px;
                 &:hover{
                     background: #e6e6e6;
+                    color: #1A1A1A;
+                    font-weight: 400;
+                }
+                &.active{
+                    background:rgba(31,120,255,0.1);
+                    font-weight: bold;
+                    color: #1F78FF;
                 }
             }
         }

@@ -1,7 +1,7 @@
 <template>
   <div class="commission-rate-container">
     <el-scrollbar class="pos-filter-list" v-loading="positionLoading">
-      <div v-for="(item, index) in positionList" :key="index">
+      <div v-for="(item, index) in positionList" :key="index" class="list-item-wrap">
         <div class="group-item">
           <el-divider v-if="index !== 0" />
           {{item.label}}
@@ -345,37 +345,40 @@ export default {
   .pos-filter-list {
     flex: 0 0 240px;
     border-right: 1px solid #e6e6e6;
-    .group-item,
-    .list-item {
-      height: 44px;
-      line-height: 44px;
-      background: #fff;
-      padding: 0 16px;
-      color: #999;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-    .group-item {
-      .el-divider {
-        margin: 0;
+    .list-item-wrap{
+      padding:0 8px 8px 8px;
+      .group-item,
+      .list-item {
+        height: 44px;
+        line-height: 44px;
+        background: #fff;
+        padding: 0 8px;
+        color: #999;
+        box-sizing: border-box;
+        font-size: 14px;
+        border-radius: 4px;
       }
-    }
-    .list-item {
-      color: #4d4d4d;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      &.active,
-      &:hover {
-        border-top: 1px solid #e6e6e6;
-        border-bottom: 1px solid #e6e6e6;
+      .group-item {
+        .el-divider {
+          margin: 0;
+        }
       }
-      &.active {
-        background: #f5f5f5;
-      }
-      &:hover {
-        background: #e6e6e6;
+      .list-item {
+        color: #4d4d4d;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+          background: #e6e6e6;
+          color: #1A1A1A;
+          font-weight: 400;
+        }
+        &.active {
+          background:rgba(31,120,255,0.1);
+          font-weight: bold;
+          color: #1F78FF;
+        }
       }
     }
     ::v-deep .el-scrollbar__wrap{

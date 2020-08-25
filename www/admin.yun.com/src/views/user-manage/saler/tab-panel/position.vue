@@ -292,17 +292,19 @@
                 &>span{
                     font-size: 14px;
                 }
-                &>span:nth-of-type(1){
-                    color: #4d4d4d;
-                }
+                /*&>span:nth-of-type(1){*/
+                /*    color: #4d4d4d;*/
+                /*}*/
                 &>span:nth-of-type(2){
                     font-size: 14px;
                     color: #999999;
+                    font-weight: normal;
                 }
             }
-            .list-item.active .pos-list-item>span:nth-of-type(1){
-                font-weight: bold;
-                color:#1a1a1a;
+            .list-item.active .pos-list-item>span:nth-of-type(2){
+
+                /*font-weight: bold;*/
+                /*color:#1a1a1a;*/
             }
         }
         .add-button{
