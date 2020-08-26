@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
         ...userInfo,
         permissions: res
       }).then(() => {
-        if (res.length <= 0 || (meta.permission && !res.includes(meta.permission))) {
+        if (meta.permission && !res.includes(meta.permission)) {
           next('/user-info')
         }
       })
