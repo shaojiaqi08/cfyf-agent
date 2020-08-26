@@ -27,10 +27,11 @@ router.beforeEach((to, from, next) => {
       store.dispatch('users/updateUserInfo', {
         ...userInfo,
         permissions: res
+      }).then(() => {
+        if (res.length <= 0 || (meta.permission && !res.includes(meta.permission))) {
+          next('/user-info')
+        }
       })
-      if (res.length <= 0 || !res.includes(meta.permission)) {
-        next('/user-info')
-      }
     })
   }
   // 判断当前页面权限
