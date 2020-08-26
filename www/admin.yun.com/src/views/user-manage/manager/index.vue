@@ -278,7 +278,7 @@
                     // 递归处理权限组
                     permission_groups.length && this.dealTreeData(permission_groups)
                     const allChild = [...permission_groups, ...permissions]
-                    const checkedCount = allChild.reduce((prev, next) => prev += next.is_checked ? 1 : 0, 0)
+                    const checkedCount = allChild.reduce((prev, next) => prev + (next.is_checked ? 1 : 0), 0)
                     item.is_checked = checkedCount > 0 && allChild.length === checkedCount
                     item.indeterminate = permission_groups.some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
                 })

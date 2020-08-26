@@ -1,7 +1,7 @@
 <template>
     <div class="permission-tree-container" ref="container" v-loading="loading">
         <template v-if="filterData.length">
-            <tree-node :editable="editable" :key="index" v-for="(item, index) in filterData" v-model="filterData[index]"></tree-node>
+            <tree-node :key="index" v-for="(item, index) in filterData" v-model="filterData[index]"></tree-node>
         </template>
         <span v-else class="empty-tips">无权限配置</span>
     </div>

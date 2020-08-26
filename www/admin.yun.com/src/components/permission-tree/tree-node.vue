@@ -15,7 +15,6 @@
              v-show="expanded"
              v-if="showPermission">
             <tree-node @checked="handleSubChecked"
-                       :isGroup="false"
                        :key="index"
                        v-for="(item, index) in filterPermissionData"
                        v-model="filterPermissionData[index]"></tree-node>
@@ -24,7 +23,6 @@
              v-if="showPermissionGroup"
              class="tree-group-container">
             <tree-node @checked="handleSubChecked"
-                       :isGroup="true"
                        :key="index"
                        v-for="(item, index) in filterPermissionGroup"
                        v-model="filterPermissionGroup[index]"></tree-node>
@@ -43,9 +41,8 @@
         props: {
             data: {
                 type: Object,
-                default: () => {}
-            },
-            isGroup: Boolean
+                default: () => ({})
+            }
         },
         data() {
             return {
@@ -113,9 +110,7 @@
                 while (parent && parent !== this.$top) {
                     const d = parent.data
                     const allChild = [...(d['permission_groups'] || []), ...(d['permissions'] || [])]
-                    const checkedCount = allChild.reduce((prev, next) => {
-                        return prev += next.is_checked ? 1 : 0
-                    }, 0)
+                    const checkedCount = allChild.reduce((prev, next) => prev + (next.is_checked ? 1 : 0), 0)
                     parent.data.is_checked = checkedCount > 0 && allChild.length === checkedCount
                     // 半选
                     parent.data.indeterminate = d['permission_groups'].some(item => item.indeterminate) || (checkedCount > 0 && checkedCount < allChild.length)
