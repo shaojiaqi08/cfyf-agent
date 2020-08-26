@@ -201,10 +201,12 @@
                     if (v) {
                         allIds.push(...salesIds)
                     } else {
-                        const idx = allIds.findIndex(i => salesIds.includes(i))
-                        if (~idx) {
-                            allIds.splice(idx, 1)
-                        }
+                        salesIds.forEach(id => {
+                            const idx = allIds.findIndex(i => id === i)
+                            if (~idx) {
+                                allIds.splice(idx, 1)
+                            }
+                        })
                     }
                 })
                 this.curSelected = allIds
@@ -217,10 +219,12 @@
                     if (v) {
                         allIds.push(...salesIds)
                     } else {
-                        const idx = allIds.findIndex(i => salesIds.includes(i))
-                        if (~idx) {
-                            allIds.splice(idx, 1)
-                        }
+                        salesIds.forEach(id => {
+                            const idx = allIds.findIndex(i => id === i)
+                            if (~idx) {
+                                allIds.splice(idx, 1)
+                            }
+                        })
                     }
                 })
                 this.allSelected = allIds
