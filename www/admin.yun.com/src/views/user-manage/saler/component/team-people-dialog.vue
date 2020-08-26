@@ -194,28 +194,36 @@
                 this.$emit('update:visible', false)
             },
             curCheckAll(v) {
-                if (v) {
-                    const allIds = []
-                    const d = this.filterCurData
-                    Object.keys(d).forEach(key => {
-                        allIds.push(...d[key].sales.map(item => item.id))
-                    })
-                    this.curSelected = allIds
-                } else {
-                    this.curSelected = []
-                }
+                const allIds = v ? [] : [...this.curSelected]
+                const d = this.filterCurData
+                Object.keys(d).forEach(key => {
+                    const salesIds = d[key].sales.map(i => i.id)
+                    if (v) {
+                        allIds.push(...salesIds)
+                    } else {
+                        const idx = allIds.findIndex(i => salesIds.includes(i))
+                        if (~idx) {
+                            allIds.splice(idx, 1)
+                        }
+                    }
+                })
+                this.curSelected = allIds
             },
             allCheckAll(v) {
-                if (v) {
-                    const allIds = []
-                    const d = this.filterAllData
-                    Object.keys(d).forEach(key => {
-                        allIds.push(...d[key].sales.map(item => item.id))
-                    })
-                    this.allSelected = allIds
-                } else {
-                    this.allSelected = []
-                }
+                const allIds = v ? [] : [...this.allSelected]
+                const d = this.filterAllData
+                Object.keys(d).forEach(key => {
+                    const salesIds = d[key].sales.map(i => i.id)
+                    if (v) {
+                        allIds.push(...salesIds)
+                    } else {
+                        const idx = allIds.findIndex(i => salesIds.includes(i))
+                        if (~idx) {
+                            allIds.splice(idx, 1)
+                        }
+                    }
+                })
+                this.allSelected = allIds
             },
             del(obj, key, idx) {
                 const {curData: data, curSelected: selected} = this
