@@ -42,7 +42,7 @@ service.interceptors.response.use(response => {
           notification('OVERDUE')
           setTimeout(() => {
             const path = router.currentRoute.fullPath
-            store.dispatch('users/loginOut').then(() => {
+            store.dispatch('users/logout').then(() => {
               router.replace({
                 path: '/login',
                 query: {

@@ -62,7 +62,7 @@
             this.submitting = true
             updatePassword(this.formModel).then(() => {
               this.$message.success('密码修改成功!')
-              this.$store.dispatch('users/loginOut')
+              this.$store.dispatch('users/logout')
               this.$router.replace('/login')
             }).finally(() => {
               this.submitting = false

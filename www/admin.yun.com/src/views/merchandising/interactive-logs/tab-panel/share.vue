@@ -241,6 +241,7 @@
                 },
                 otherTotal: 0,
                 otherDateArr: [],
+                originData: [],
                 otherData: {},
                 fixedIndex: null,
                 otherFixedIndex: null,
@@ -277,6 +278,7 @@
             },
             debounceGetLogOther: debounce(function() {
                 this.otherModel.page = 1
+                this.total = 0
                 this.getInteractiveLogOther()
             }, 300),
             handleOtherCurrentChange(v) {
@@ -402,8 +404,8 @@
                 this.loading = true
                 const {page} = this.otherModel
                 interactiveLogOther(this.otherModel).then(res => {
-                    console.log('互动记录-其他', res)
-                    let formatData = res.data.reduce((prev, next) => {
+                    this.originData = page <= 1 ? res.data : [...this.originData, ...res.data]
+                    let formatData = this.originData.reduce((prev, next) => {
                         const date = next['share_date_time_text']
                         if (prev[date]) {
                             prev[date].push(next)
@@ -412,13 +414,8 @@
                         }
                         return prev
                     }, {})
-                    console.log(formatData)
+                    this.otherData = formatData
                     this.otherTotal = res.total
-                    if (page <= 1) {
-                        this.otherData = formatData
-                    } else {
-                        this.otherData = {...this.otherData, ...formatData}
-                    }
                     this.otherDateArr = Object.keys(formatData)
                     this.loading = false
                     if (this.otherDateArr.length > 0) {

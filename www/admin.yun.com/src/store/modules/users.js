@@ -17,7 +17,7 @@ export default {
     updateUserInfo({ commit }, userInfo) {
       commit(UPDATE_USER_INFO, userInfo)
     },
-    loginOut({ commit }) {
+    logout({ commit }) {
       commit(LOGIN_OUT)
     }
   }

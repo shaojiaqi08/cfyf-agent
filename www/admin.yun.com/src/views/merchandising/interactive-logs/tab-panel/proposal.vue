@@ -124,6 +124,7 @@
                 total: 0,
                 proposalDateArr: [],
                 proposalData: {},
+                originData: [],
                 searchModel: {
                     proposal_name: '',
                     page: 1,
@@ -165,8 +166,8 @@
                 this.loading = true
                 const {page} = this.searchModel
                 interactiveLogProposal(this.searchModel).then(res => {
-                    console.log('互动记录-计划书', res)
-                    let formatData = res.data.reduce((prev, next) => {
+                    this.originData = page <= 1 ? res.data : [...this.originData, ...res.data]
+                    let formatData = this.originData.reduce((prev, next) => {
                         const date = next['share_date_time_text']
                         if (prev[date]) {
                             prev[date].push(next)
@@ -175,12 +176,8 @@
                         }
                         return prev
                     }, {})
+                    this.proposalData = formatData
                     this.total = res.total
-                    if (page <= 1) {
-                        this.proposalData = {...formatData}
-                    } else {
-                        this.proposalData = {...this.proposalData, ...formatData}
-                    }
                     this.proposalDateArr = Object.keys(formatData)
                     this.loading = false
                     if (this.proposalDateArr.length > 0) {
@@ -200,6 +197,7 @@
                 const {page, page_size} = searchModel
                 if (page_size * page  < total) {
                     this.searchModel.page += 1
+                    this.total = 0
                     this.getInteractiveLogProposal()
                 }
             },
