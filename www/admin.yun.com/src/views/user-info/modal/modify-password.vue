@@ -71,6 +71,7 @@
         })
       },
       handleClose() {
+        this.$refs.form.resetFields()
         this.$emit('update:show', false)
       },
       pwdValidator(rule, value, callback) {
