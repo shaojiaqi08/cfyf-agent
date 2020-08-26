@@ -63,17 +63,19 @@ export default {
         username, password
       }).then(res => {
         // 更新token
-        this.updateUserInfo(res)
-        const path = this.$route.query.redirect
-        // 如果不是跳转到个人信息页就获取用户信息
-        if (path && !path.includes('user-info')) {
-          getUserDetail().then(ud => {
-            this.updateUserInfo({...this.userInfo, ...ud})
-            this.$router.replace(path)
-          })
-        } else {
-          this.$router.replace('/user-info')
-        }
+        this.updateUserInfo(res).then(() => {
+          const path = this.$route.query.redirect
+          // 如果不是跳转到个人信息页就获取用户信息
+          if (path && !path.includes('user-info')) {
+            getUserDetail().then(ud => {
+              this.updateUserInfo({...this.userInfo, ...ud}).then(() => {
+                this.$router.replace(path)
+              })
+            })
+          } else {
+            this.$router.replace('/user-info')
+          }
+        })
       }).catch(err => {
         console.log(err)
         this.submitting = false
