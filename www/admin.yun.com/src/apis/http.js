@@ -80,7 +80,8 @@ service.interceptors.response.use(response => {
   error => {
   if (!error.response) {
     if (error.message === REPEATSYMBOL) {
-      return console.log('取消重复请求')
+      console.log('取消重复请求')
+      return Promise.reject(error)
     }
     if (error.message.includes('timeout')) {
       notification('TIMEOUT')
