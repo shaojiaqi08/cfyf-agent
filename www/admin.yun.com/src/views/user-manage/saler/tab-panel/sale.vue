@@ -625,8 +625,9 @@
             },
             search() {
                 const {selTeam} = this
-                this.page = 1
                 if (selTeam === -1) {
+                    this.page = 1
+                    this.total = 0
                     this.ajaxAllSalesList()
                 } else {
                     this.ajaxDetail(selTeam)

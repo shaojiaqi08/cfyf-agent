@@ -200,6 +200,7 @@
             },
             search: debounce(function() {
                 this.searchForm.page = 1
+                this.total = 0
                 this.ajaxData()
             }, 300),
             onStorage(e) {
