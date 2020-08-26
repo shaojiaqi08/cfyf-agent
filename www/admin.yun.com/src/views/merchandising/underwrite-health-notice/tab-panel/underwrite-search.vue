@@ -60,7 +60,7 @@
                         <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
                     </div>
                 </div>
-                <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}">
+                <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}" :max-height="maxHeight">
                     <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
                     <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
                     <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
@@ -113,7 +113,8 @@
                 isReverseData: [
                     {label: '正向条件', value: '0'},
                     {label: '反向条件', value: '1'}
-                ]
+                ],
+                maxHeight: null
             }
         },
         methods: {
@@ -147,10 +148,23 @@
             },
             debounceAjaxProductData: debounce(function() {
                 this.ajaxProductData()
+            }, 300),
+            setMaxHeight: debounce(function() {
+                const wrap =  this.$refs.detailWrap
+                if (wrap) {
+                    this.maxHeight = wrap.offsetHeight - 64
+                }
             }, 300)
         },
         created() {
             this.ajaxProductData()
+            window.addEventListener('resize', this.setMaxHeight)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.setMaxHeight)
+        },
+        mounted() {
+            this.setMaxHeight()
         }
     }
 </script>
