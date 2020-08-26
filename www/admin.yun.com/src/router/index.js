@@ -21,28 +21,25 @@ router.beforeEach((to, from, next) => {
   if (!userInfo.token && to.name !== 'login' ) {
     return next('/login')
   }
-  new Promise(resolve => {
-    // 刷新和登录跳转时获取权限
-    if (userInfo.token && (from.path === '/' || from.name === 'login')) {
-      getPermission().then(res => {
-        store.dispatch('users/updateUserInfo', {
-          ...userInfo,
-          permissions: res
-        })
-        resolve(res)
+  // 刷新和登录跳转时获取权限
+  if (userInfo.token && (from.path === '/' || from.name === 'login')) {
+    getPermission().then(res => {
+      store.dispatch('users/updateUserInfo', {
+        ...userInfo,
+        permissions: res
       })
-    } else {
-      resolve(userInfo.permissions)
-    }
-  }).then((permissions) => {
-    // 判断当前页面权限
-    if (meta.permission && !permissions.includes(meta.permission)) {
-      return next('/user-info')
-    } else {
-      Nprogress.start()
-      setTimeout(next, 300)
-    }
-  })
+      if (res.length <= 0 || !res.includes(meta.permission)) {
+        next('/user-info')
+      }
+    })
+  }
+  // 判断当前页面权限
+  if (meta.permission && userInfo.permissions && !userInfo.permissions.includes(meta.permission)) {
+    return next('/user-info')
+  } else {
+    Nprogress.start()
+    setTimeout(next, 300)
+  }
 })
 
 router.afterEach(() => {
