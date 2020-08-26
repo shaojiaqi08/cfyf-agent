@@ -35,3 +35,7 @@ export function addPending(config) {
     pendingRequest.push({ key: removeString(keyFactory(config)), func: resolve.bind(null, REPEATSYMBOL) })
   })
 }
+
+export function cancelAllPending() {
+  pendingRequest.forEach(i => i.func())
+}

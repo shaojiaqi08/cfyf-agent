@@ -5,6 +5,7 @@ import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '../store'
 import { getPermission } from '@/apis/modules'
+import { cancelAllPending } from '../apis/cancel-token-helper'
 
 Vue.use(VueRouter);
 
@@ -16,12 +17,13 @@ router.beforeEach((to, from, next) => {
   const { meta } = to
   document.title = meta.title + '-' + '创富云服' || '创富云服'
   const userInfo = store.state.users.userInfo
+  cancelAllPending()
   if (!userInfo.token && to.name !== 'login' ) {
     return next('/login')
   }
   new Promise(resolve => {
     // 刷新和登录跳转时获取权限
-    if ((to.name !== 'login' && from.path === '/') || from.name === 'login') {
+    if (userInfo.token && (from.path === '/' || from.name === 'login')) {
       getPermission().then(res => {
         store.dispatch('users/updateUserInfo', {
           ...userInfo,
