@@ -319,7 +319,7 @@ export default {
       search: '',
       input: '',
       loading: false,
-      tableLoading: false,
+      tableLoading: true,
       tableEmpty: false,
       submitting: false,
       isGetProductAttribute: false,
@@ -488,7 +488,7 @@ export default {
           company_id: Array.isArray(res.company_id) ? res.company_id : [res.company_id],
           position_id: Array.isArray(res.position_id) ? res.position_id : [res.position_id],
         })
-        this.getCalculateWay(this.formModel.product_id)
+        // this.getCalculateWay(this.formModel.product_id)
         this.getProductAttributeList()
         this.loading = false
       })
@@ -525,6 +525,8 @@ export default {
         if (this.singleCompany) {
           this.formModel.product_id = this.productId
           this.getProductAttributeList()
+        } else {
+          this.tableLoading = false
         }
         this.productList = res
       })
