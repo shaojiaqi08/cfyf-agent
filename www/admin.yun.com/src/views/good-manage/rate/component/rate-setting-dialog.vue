@@ -319,7 +319,7 @@ export default {
       search: '',
       input: '',
       loading: false,
-      tableLoading: false,
+      tableLoading: true,
       tableEmpty: false,
       submitting: false,
       isGetProductAttribute: false,
@@ -488,7 +488,7 @@ export default {
           company_id: Array.isArray(res.company_id) ? res.company_id : [res.company_id],
           position_id: Array.isArray(res.position_id) ? res.position_id : [res.position_id],
         })
-        this.getCalculateWay(this.formModel.product_id)
+        // this.getCalculateWay(this.formModel.product_id)
         this.getProductAttributeList()
         this.loading = false
       })
@@ -503,7 +503,7 @@ export default {
       getProductAttributeList(data).then(res => {
         // 这里el-table有个小坑点，当外部数据更新是，table内部数据只会通过tableData进行更新渲染
         // 所以需要改变tableData去触发table里面数据绑定的变化
-        this.calculateWayChange()
+        // this.calculateWayChange()
         this.tableData.push([1])
         this.$nextTick(() => {
           this.guaranteeList = res.guarantee
@@ -525,6 +525,8 @@ export default {
         if (this.singleCompany) {
           this.formModel.product_id = this.productId
           this.getProductAttributeList()
+        } else {
+          this.tableLoading = false
         }
         this.productList = res
       })
