@@ -144,16 +144,43 @@
           </el-button>
         </div>
         <el-tabs class="mt10" size="small" v-model="tabSelected">
-          <el-tab-pane v-for="(item, index) in tabs"
-                      :key="index"
+          <el-tab-pane v-for="(item, index) in formatTabs"
+                      :key="`${index}_${item.value}`"
                       :name="item.value"
-                      :label="item.label">
+                      :label="item.value">
+            <span slot="label">
+              {{ item.label }}
+              <el-tooltip content="新增一年，最多可增加至五年"
+                          placement="top"
+                          v-if="item.value == formatTabs.length && formatTabs.length !== 5">
+                <span class="add-scheme" @click="addScheme">
+                  <i class="iconfont iconxiao16_jiahao"></i>
+                </span>
+              </el-tooltip>
+              <template v-if="tabSelected == item.value">
+                <el-tooltip content="复制"
+                            placement="top"
+                            v-if="formatTabs.length !== 5 && tabSelected != 1">
+                  <i class="iconfont iconxiao16_fuzhi ml4"
+                     style="vertical-align: bottom;"
+                     @click.prevent="copyScheme(item.value)"></i>
+                </el-tooltip>
+                <el-tooltip content="删除"
+                            placement="top"
+                            v-if="tabSelected != 1">
+                  <i class="iconfont iconxiao16_yuanxingkongxinchahao ml8"
+                   style="color: #FF4C4C;vertical-align: bottom;"
+                   @click.prevent="removeScheme(item.value)"></i>
+                </el-tooltip>
+              </template>
+            </span>
             <el-table
               :data="currentTableData()"
               border
               stripe
               v-loading="tableLoading"
               max-height="300"
+              min-height="170"
               v-if="!loading && !tableEmpty">
               <el-table-column
                 label="缴费期限"
@@ -355,6 +382,10 @@ export default {
   computed: {
     targetRules() {
       return this.formModel.schemes.find(i => i.stage == this.tabSelected).rules
+    },
+    formatTabs() {
+      const length = this.formModel.schemes.length
+      return this.tabs.slice(0, length)
     }
   },
   watch: {
@@ -381,7 +412,7 @@ export default {
     tabSelected() {
       this.tableEmpty = false
       this.tableLoading = true
-      this.judgeScheme()
+      // this.judgeScheme()
       setTimeout(() => {
         this.tableHeaderTopHack()
         this.tableLoading = false
@@ -389,6 +420,27 @@ export default {
     }
   },
   methods: {
+    removeScheme(value) {
+      this.forceRenderTable(() => {
+        this.formModel.schemes.splice(+value - 1, 1)
+        this.formModel.schemes.map((i, index) => {
+          Object.assign(i, { stage: String(index + 1) })
+        })
+        setTimeout(() => this.tabSelected = `${this.formModel.schemes.length}`)
+      })
+    },
+    copyScheme() {
+      const data = JSON.parse(JSON.stringify(this.targetRules))
+      this.formModel.schemes.push({
+        rules: data,
+        stage: `${this.formModel.schemes.length + 1}`
+      })
+      setTimeout(() => this.tabSelected = `${this.formModel.schemes.length}`)
+    },
+    addScheme() {
+      this.judgeScheme()
+      setTimeout(() => this.tabSelected = `${this.formModel.schemes.length}`, 50)
+    },
     tableHeaderTopHack() {
       const array = this.$refs.headerTop
       array.map(i => {
@@ -426,21 +478,27 @@ export default {
         })
     },
     calculateWayChange() {
-      const schemes = this.formModel.schemes
-      schemes.map(i => {
+      this.formModel.schemes.splice(1, this.formModel.schemes.length)
+      this.formModel.schemes.map(i => {
         i.rules = []
         i.rules.push(this.getRuleModel('new'))
       })
       this.tabSelected = '1'
     },
     judgeScheme() {
-      const rules = this.formModel.schemes.find(i => i.stage == this.tabSelected)
-      if (!rules) {
+      // const rules = this.formModel.schemes.find(i => i.stage == this.tabSelected)
+      // if (!rules) {
+      //   this.formModel.schemes.push({
+      //     rules: [this.getRuleModel('new')],
+      //     stage: this.tabSelected
+      //   })
+      // }
+      this.forceRenderTable(() => {
         this.formModel.schemes.push({
           rules: [this.getRuleModel('new')],
-          stage: this.tabSelected
+          stage: String(this.formModel.schemes.length + 1)
         })
-      }
+      })
     },
     currentTableRateHeader() {
       if (this.tabSelected == 1) {
@@ -726,6 +784,21 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.add-scheme {
+  position: absolute;
+  right: -40px;
+  width: 24px;
+  top: 0px;
+  height: 24px;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #1F78FF;
+  text-align: center;
+  line-height: 24px;
+  &:hover {
+    background-color: rgba(31, 120, 255, 0.4);
+  }
+}
 ::v-deep .rate-setting-dialog {
   .header-top {
     padding-top: 2px;
