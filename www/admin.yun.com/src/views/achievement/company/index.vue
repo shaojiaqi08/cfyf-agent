@@ -171,6 +171,17 @@
         <template v-slot:label>
           {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '全部出单日期' }}
         </template>
+        <template v-slot:link>
+          <div class="link-content">
+            <span v-for="(date, index) in dateRange"
+                  :key="index"
+                  class="date-item"
+                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                  @click.stop="dateSelect(date)">
+              {{ date.name }}
+            </span>
+          </div>
+        </template>
       </filter-shell>
       <div class="data-row" ref="dataRow">
         <el-button
@@ -295,7 +306,8 @@
                 v-table-infinite-scroll="scroll2Bottom"
                 border
                 stripe
-                v-loading="tableLoading">
+                v-loading="tableLoading"
+                :row-style="rowStyleFormat">
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="所属销售" prop="sales_real_name" align="center" width="150px"></el-table-column>
@@ -332,17 +344,19 @@
 
 <script>
 import EditModal from './modal/edit';
-import { getCompanyPolicyList, getCompanyPolicyStatistics, getSalesData, getSalesTeamData } from '@/apis/modules/achievement'
+import { getCompanyPolicyList, getCompanyPolicyStatistics, getSalesData, getSalesTeamData, getDateRange } from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
-import { formatDate } from '@/utils/formatTime'
+import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce } from '@/utils'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
+import orderListMixin from '@/mixins/order-list-mixin'
+
 // 业绩-订单
 export default {
   name: 'order',
-  mixins: [scrollMixin],
+  mixins: [scrollMixin, orderListMixin],
   components: {
     EditModal,
     FilterShell
@@ -364,6 +378,7 @@ export default {
       salesTeamList: [],
       supplierList: [],
       companyList: [],
+      dateRange: [],
       statisticInfo: {
       },
       tableLoading: true,
@@ -377,7 +392,7 @@ export default {
         products: [],
         supplier_id: [],
         product_insurance_class: [],
-        date_range: [],
+        date_range: [+new Date(), +new Date()],
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0',
@@ -385,6 +400,16 @@ export default {
     };
   },
   methods: {
+    dateSelect(date) {
+      const start = dateStr2Timestamp(date.start)
+      const end = dateStr2Timestamp(date.end)
+      if (!start && !end) {
+        this.searchModel.date_range = ''
+      } else {
+        this.searchModel.date_range = [dateStr2Timestamp(date.start), dateStr2Timestamp(date.end)]
+      }
+      this.searchModelChange()
+    },
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
@@ -483,6 +508,11 @@ export default {
         this.supplierList = res
       })
       .catch(err => console.log(err))
+    },
+    getDateRange() {
+      getDateRange().then(res => {
+        this.dateRange = res
+      })
     }
   },
   watch: {
@@ -501,6 +531,7 @@ export default {
     this.getCompanyPolicyList()
     this.getCompanyPolicyStatistics()
     this.getSalesData()
+    this.getDateRange()
     this.getSalesTeamData()
     this.getAllProducts()
     this.getSupplierList()

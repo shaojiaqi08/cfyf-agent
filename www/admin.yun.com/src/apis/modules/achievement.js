@@ -27,3 +27,5 @@ export const getSalesData = params => get('/agent/proxy/sales/list', params)
 export const getSalesTeamData = params => get('/agent/proxy/sales/get_all_teams_list', params)
 // b端公司
 export const getManagementCompanyList = (params) => get('/management/proxy/company/list', params)
+// 投退保时间选项
+export const getDateRange = (params) => get('/common/date_ranges', params)

@@ -154,3 +154,18 @@
     }
   }
 }
+.link-content {
+  .date-item {
+    display: inline-block;
+    padding: 2px 8px;
+    text-align: center;
+    &:hover, 
+    &.active {
+      background-color: #fff;
+      border-radius: 4px;
+      color: #1F78FF;
+      font-weight: bold;
+      box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
+    }
+  }
+}

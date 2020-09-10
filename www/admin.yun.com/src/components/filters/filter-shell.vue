@@ -11,20 +11,28 @@
         <slot></slot>
       </div>
       <div class="filter-item" :class="{ actived: popoverShow || isHasValue }" slot="reference">
-        <span>{{filterValue}}</span>
-        <el-badge
-          type="primary"
-          class="ml4"
-          style="margin-bottom: -10px;"
-          v-if="collapse && Array.isArray(value) && value.length > 1"
-          :value="value.length"
-        ></el-badge>
-        <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-        <i
+        <div class="content">
+          <span class="filter-label">{{filterValue}}</span>
+          <el-badge
+            type="primary"
+            class="ml4"
+            style="margin-bottom: -10px;"
+            v-if="collapse && Array.isArray(value) && value.length > 1"
+            :value="value.length"
+          ></el-badge>
+          <i class="iconfont iconxiao16_xiajiantou ml4"></i>
+          <i
+            class="filter-clear iconfont iconxiao16_yuanxingchahao"
+            v-if="clearable && hasValue(value)"
+            @click.prevent.stop="clearValue($event, value)"
+          ></i>
+        </div>
+        <!-- <i
           class="filter-clear iconfont iconxiao16_yuanxingchahao"
           v-if="clearable && hasValue(value)"
           @click.prevent.stop="clearValue($event, value)"
-        ></i>
+        ></i> -->
+        <slot name="link"></slot>
       </div>
     </el-popover>
   </div>
@@ -150,13 +158,22 @@ export default {
   align-items: center;
   position: relative;
   margin-right: 16px;
-  padding: 4px 12px;
+  height: 24px;
+  // padding: 0 12px;
   color: #1a1a1a;
   font-size: 14px;
   background-color: #f5f5f5;
   border: 1px solid rgba(230, 230, 230, 1);
   border-radius: 4px;
   cursor: pointer;
+  .content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 2px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0);
+  }
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
     .filter-clear {
@@ -164,9 +181,11 @@ export default {
     }
   }
   &.actived {
-    color: #1f78ff;
-    background-color: rgba(31, 120, 255, 0.1);
-    border-color: #1f78ff;
+    .content {
+      color: #1f78ff;
+      background-color: rgba(31, 120, 255, 0.1);
+      border: 1px solid #1f78ff;
+    }
   }
   .filter-clear {
     display: none;

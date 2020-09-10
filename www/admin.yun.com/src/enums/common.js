@@ -4,7 +4,7 @@ export const policyStatus = {
   UNPAID: 'unpaid',
   // 已支付
   PAID: 'paid',
-  // 无效的
+  // 无效单
   INVALID: 'invalid',
   // 已撤单
   CANCELED: 'canceled',
@@ -26,7 +26,7 @@ export const policyStatusArray = [
     value: policyStatus.PAID
   },
   {
-    label: '无效的',
+    label: '无效单',
     value: policyStatus.INVALID
   },
   {

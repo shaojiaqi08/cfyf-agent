@@ -123,6 +123,17 @@
         <template v-slot:label>
           {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '全部出单日期' }}
         </template>
+        <template v-slot:link>
+          <div class="link-content">
+            <span v-for="(date, index) in dateRange"
+                  :key="index"
+                  class="date-item"
+                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                  @click.stop="dateSelect(date)">
+              {{ date.name }}
+            </span>
+          </div>
+        </template>
       </filter-shell>
       <div class="data-row" ref="dataRow">
         <el-button
@@ -231,7 +242,8 @@
                 border
                 stripe
                 v-table-infinite-scroll="scroll2Bottom"
-                v-loading="tableLoading">
+                v-loading="tableLoading"
+                :row-style="rowStyleFormat">
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
@@ -259,17 +271,18 @@
   </div>
 </template>
 <script>
-import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData} from '@/apis/modules/achievement'
+import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
-import { formatDate } from '@/utils/formatTime'
+import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce } from '@/utils'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
+import orderListMixin from '@/mixins/order-list-mixin'
 // 个人业绩
 export default {
   name: 'achievement-self',
-  mixins: [scrollMixin],
+  mixins: [scrollMixin, orderListMixin],
   components: {
     FilterShell
   },
@@ -286,6 +299,7 @@ export default {
       productList: [],
       supplierList: [],
       companyList: [],
+      dateRange: [],
       statisticInfo: {
         actual_underwrite_total_premium: 0
       },
@@ -300,12 +314,22 @@ export default {
         products: '',
         supplier_id: '',
         product_insurance_class: '',
-        date_range: '',
+        date_range: [+new Date(), +new Date()],
         sales_company_id: ''
       }
     };
   },
   methods: {
+    dateSelect(date) {
+      const start = dateStr2Timestamp(date.start)
+      const end = dateStr2Timestamp(date.end)
+      if (!start && !end) {
+        this.searchModel.date_range = ''
+      } else {
+        this.searchModel.date_range = [dateStr2Timestamp(date.start), dateStr2Timestamp(date.end)]
+      }
+      this.searchModelChange()
+    },
     showInfoDialog(row) {
       let routeUrl = this.$router.resolve(`/achievement-self/detail/${row.id}`)
       window.open(routeUrl.href, '_blank')
@@ -388,12 +412,18 @@ export default {
       getSalesData().then(res => {
         this.salesList = res
       }).catch(err => console.log(err))
+    },
+    getDateRange() {
+      getDateRange().then(res => {
+        this.dateRange = res
+      })
     }
   },
   created() {
     this.getSelfPolicyList()
     this.getSelfPolicyStatistics()
     this.getSalesData()
+    this.getDateRange()
     this.getAllProducts()
     this.getSupplierList()
   }

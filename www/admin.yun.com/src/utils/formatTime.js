@@ -368,6 +368,12 @@ function formatDate (d, format) {
   })
   return format
 }
+// 20200202 -> timestamp
+function dateStr2Timestamp(string) {
+  const reg = /(\d{4})(\d{2})(\d{2})/
+  const formatString = string.replace(reg, `$1/$2/$3`)
+  return formatString ? +new Date(formatString) : ''
+}
 
 export {
   formatDate,
@@ -391,5 +397,6 @@ export {
   formatTimeTwo,
   formatMonthDay,
   formatYYMMDD,
-  getMonthStartAndEnd
+  getMonthStartAndEnd,
+  dateStr2Timestamp
 }
