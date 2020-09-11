@@ -16,31 +16,6 @@
       size="small"
       v-loading="loading"
       label-position="left">
-      <!-- <el-form-item label="B端公司">
-        <el-select placeholder="请选择B端公司"
-                   class="w300"
-                   multiple
-                   filterable
-                   :disabled="singleCompany"
-                   v-model="formModel.company_id"
-                   v-if="type === 'add' || type === 'copy'">
-          <el-option v-for="item in companyList"
-                     :key="item.id"
-                     :value="item.id"
-                     :label="item.name">
-            {{ item.name }}
-          </el-option>
-        </el-select>
-        <span v-else>
-          {{ formModel.company_id.length && formModel.company_id.map(i => {
-            if (companyList.length) {
-              return companyList.find(y => y.id === i).name
-            } else {
-              return '-'
-            }
-          }).join(',') }}
-        </span>
-      </el-form-item> -->
       <el-form-item label="保险产品">
         <el-select placeholder="请选择保险产品"
                    class="w300"
@@ -89,18 +64,6 @@
             </el-option>
           </el-option-group>
         </el-select>
-        <!-- <el-select placeholder="请选择销售职位"
-                   class="w300"
-                   filterable
-                   v-model="formModel.product_id"
-                   @change="getProductAttributeList">
-          <el-option v-for="item in productList"
-                     :key="item.id_type"
-                     :value="item.id_type"
-                     :label="item.name">
-            {{ item.name }}
-          </el-option>
-        </el-select> -->
       </el-form-item>
       <el-form-item label="费率计算方法">
         <el-radio-group v-model="formModel.calculate_way"
@@ -186,9 +149,6 @@
                 label="缴费期限"
                 width="120"
                 align="center">
-                <!-- <template slot-scope="scope">
-                  {{ scope.row.guarantee_period.guarantee_period_id }}
-                </template> -->
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.payment_period.payment_period_id"
                              v-if="formModel.calculate_way === calculateWayKey.GUARANTEEPERIOD || formModel.calculate_way === calculateWayKey.AGEANDGUARANTEEPERIOD">
@@ -349,7 +309,6 @@ export default {
       tableLoading: true,
       tableEmpty: false,
       submitting: false,
-      isGetProductAttribute: false,
       hasCalculateWay: false,
       guaranteePeriodUnitArray,
       paymentPeriodUnitArray,
@@ -394,7 +353,6 @@ export default {
         this.hasCalculateWay = false
         this.tabSelected = '1'
         this.getProductList()
-        // this.getCompanyList()
         this.getSalesPositionList()
         if (this.type === 'edit' || this.type === 'copy') {
           this.getCompanyCommissionDetail()
@@ -406,13 +364,11 @@ export default {
         this.formModel = this.$options.data().formModel
         this.guaranteeList = []
         this.paymentList = []
-        // this.isGetProductAttribute = false
       }
     },
     tabSelected() {
       this.tableEmpty = false
       this.tableLoading = true
-      // this.judgeScheme()
       setTimeout(() => {
         this.tableHeaderTopHack()
         this.tableLoading = false
@@ -486,13 +442,6 @@ export default {
       this.tabSelected = '1'
     },
     judgeScheme() {
-      // const rules = this.formModel.schemes.find(i => i.stage == this.tabSelected)
-      // if (!rules) {
-      //   this.formModel.schemes.push({
-      //     rules: [this.getRuleModel('new')],
-      //     stage: this.tabSelected
-      //   })
-      // }
       this.forceRenderTable(() => {
         this.formModel.schemes.push({
           rules: [this.getRuleModel('new')],
@@ -552,9 +501,7 @@ export default {
       })
     },
     getProductAttributeList() {
-      // if (this.isGetProductAttribute) return
       this.tableLoading = true
-      // this.isGetProductAttribute = true
       const productId = this.formModel.product_id
       const [product_id, type] = productId.split('_')
       const data = { type, product_id }
