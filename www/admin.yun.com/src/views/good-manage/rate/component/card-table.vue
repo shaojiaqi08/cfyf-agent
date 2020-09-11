@@ -23,7 +23,7 @@
     <div class="table-body">
       <el-tabs v-model="tabIndex" size="small" class="small-tabs">
         <el-tab-pane
-          v-for="(item) in tabs"
+          v-for="(item) in formatTabs"
           :key="item.value"
           :name="item.value"
           :label="item.label"
@@ -154,6 +154,14 @@ export default {
       tableHeader: [],
       hasTabData: true
     };
+  },
+  computed: {
+    formatTabs() {
+      const tabNumber = this.info.schemes.reduce((prev, curr) => {
+        return Math.max(prev, +curr.stage)
+      }, 0)
+      return this.tabs.slice(0, tabNumber)
+    }
   },
   watch: {
     tabIndex() {
