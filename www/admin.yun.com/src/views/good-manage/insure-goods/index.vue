@@ -21,6 +21,8 @@
           <filter-shell v-model="searchModel.first_product_category_id"
                         autoFocus
                         autoClose
+                        :collapse="false"
+                        :textOverflow="false"
                         :width="240"
                         @input="ajaxListData">
             <el-cascader
@@ -32,8 +34,7 @@
               :props="{
                 value: 'id',
                 label: 'name',
-                children: 'child_categories',
-                emitPath: false
+                children: 'child_categories'
               }"
               :options="productCategoryData"
               v-model="searchModel.first_product_category_id"
@@ -211,11 +212,11 @@ export default {
   },
   methods: {
     getChildName(id) {
-      const flatChildrens = this.productCategoryData.reduce((prev, next) => {
-        return prev.concat(next.child_categories)
-      }, [])
-      console.log(flatChildrens, id)
-      return flatChildrens.find(i => i.id === id).name
+      const [firstId, secondId] = id
+      const firstName = this.productCategoryData.find(i => i.id === firstId).name
+      const secondName = this.productCategoryData.find(i => i.id === firstId).child_categories
+                                            .find(i => i.id === secondId).name
+      return `${firstName}/${secondName}`
     },
     download() {
       const url = `${process.env.VUE_APP_API_URL}/common/get_file_stream?file_url=${this.picUrl}`
@@ -243,6 +244,10 @@ export default {
         this.productAgeData = res
       })
       getProductCategory().then(res => {
+        res.map(i => {
+          const addItem = { id: '', name: '全部' }
+          i.child_categories.unshift(addItem)
+        })
         this.productCategoryData = res
       })
     },
@@ -250,7 +255,16 @@ export default {
       this.loading = true
       this.productUrl = ''
       this.selProductVal = ''
-      const params = this.searchModel
+      const params = JSON.parse(JSON.stringify(this.searchModel))
+      if (params.first_product_category_id.length) {
+        const [first, second] = params.first_product_category_id
+        params.first_product_category_id = first
+        params.second_product_category_id = second
+      }
+      if (!params.first_product_category_id) {
+        params.first_product_category_id = ''
+        params.second_product_category_id = ''
+      }
       getInsureApiList(params).then(apiData => {
         getInsureCpsList(params).then(cpsData => {
           this.list = [...apiData, ...cpsData.map(i => ({
