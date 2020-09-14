@@ -29,7 +29,7 @@
                 </el-button>
             </side-filter-list>
             <div class="right-content" v-loading="rightLoading">
-                <el-button v-if="$checkAuth('/manager/admin/authority/update') && curTabIdx==='permission' && ((curSelRole || {}).is_super_user === superUserKey.NO)"
+                <el-button v-if="$checkAuth('/manager/admin/authority/update') && curTabIdx==='permission' && ((curSelRole || {}).is_super_user === superUserKey.YES)"
                            type="primary"
                            size="small"
                            style="position: absolute;top:16px;right:16px;z-index: 10"
