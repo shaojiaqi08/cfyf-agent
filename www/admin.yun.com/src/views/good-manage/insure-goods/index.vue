@@ -18,8 +18,30 @@
                         @change="handleSelProduct"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
-          <filter-shell v-model="searchModel.first_product_category_id" autoFocus @input="ajaxListData">
-            <el-select class="block"
+          <filter-shell v-model="searchModel.first_product_category_id"
+                        autoFocus
+                        autoClose
+                        :width="240"
+                        @input="ajaxListData">
+            <el-cascader
+              ref="focusRef"
+              popper-class="address-picker"
+              placeholder="请选择"
+              filterable
+              collapse-tags
+              :props="{
+                value: 'id',
+                label: 'name',
+                children: 'child_categories',
+                emitPath: false
+              }"
+              :options="productCategoryData"
+              v-model="searchModel.first_product_category_id"
+              emitPath
+              @change="ajaxListData"
+              clearable
+            ></el-cascader>
+            <!-- <el-select class="block"
                        v-model="searchModel.first_product_category_id"
                        clearable
                        filterable
@@ -32,10 +54,10 @@
                       :label="item.name"
                       :value="item.id"
               ></el-option>
-            </el-select>
+            </el-select> -->
             <template v-slot:label>
               <span>
-                  {{ hasValue(searchModel.first_product_category_id) ? productCategoryData.find(i => i.id === searchModel.first_product_category_id[0]).name : '险种' }}
+                  {{ hasValue(searchModel.first_product_category_id) ? getChildName(searchModel.first_product_category_id) : '险种' }}
               </span>
             </template>
             <template v-slot:close>
@@ -188,6 +210,13 @@ export default {
     };
   },
   methods: {
+    getChildName(id) {
+      const flatChildrens = this.productCategoryData.reduce((prev, next) => {
+        return prev.concat(next.child_categories)
+      }, [])
+      console.log(flatChildrens, id)
+      return flatChildrens.find(i => i.id === id).name
+    },
     download() {
       const url = `${process.env.VUE_APP_API_URL}/common/get_file_stream?file_url=${this.picUrl}`
       downloadFrameA(url, '责任图片.jpg')

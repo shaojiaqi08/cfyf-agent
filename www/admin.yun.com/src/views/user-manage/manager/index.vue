@@ -93,7 +93,8 @@
                                     <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>
                                 <template v-else>
-                                    <span>-</span>
+                                    <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>
                             </template>
                         </el-table-column>
