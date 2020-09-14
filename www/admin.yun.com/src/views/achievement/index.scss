@@ -26,7 +26,7 @@
   }
 
   .data-row {
-    padding: 16px 0;
+    padding: 0 0 16px;
     width: 100%;
     overflow: hidden;
     white-space: nowrap;
@@ -155,6 +155,9 @@
   }
 }
 .link-content {
+  position: relative;
+  border-left: 1px solid #e6e6e6;
+  padding-left: 4px;
   .date-item {
     display: inline-block;
     padding: 2px 8px;

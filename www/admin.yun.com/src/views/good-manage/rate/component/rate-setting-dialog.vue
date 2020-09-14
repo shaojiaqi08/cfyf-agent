@@ -115,6 +115,7 @@
               {{ item.label }}
               <el-tooltip content="新增一年，最多可增加至五年"
                           placement="top"
+                          :open-delay="500"
                           v-if="item.value == formatTabs.length && formatTabs.length !== 5">
                 <span class="add-scheme" @click="addScheme">
                   <i class="iconfont iconxiao16_jiahao"></i>
@@ -123,6 +124,7 @@
               <template v-if="tabSelected == item.value">
                 <el-tooltip content="复制"
                             placement="top"
+                            :open-delay="500"
                             v-if="formatTabs.length !== 5 && tabSelected != 1">
                   <i class="iconfont iconxiao16_fuzhi ml4"
                      style="vertical-align: bottom;"
@@ -130,6 +132,7 @@
                 </el-tooltip>
                 <el-tooltip content="删除"
                             placement="top"
+                            :open-delay="500"
                             v-if="tabSelected != 1">
                   <i class="iconfont iconxiao16_yuanxingkongxinchahao ml8"
                    style="color: #FF4C4C;vertical-align: bottom;"
@@ -743,7 +746,7 @@ export default {
   text-align: center;
   line-height: 24px;
   &:hover {
-    background-color: rgba(31, 120, 255, 0.4);
+    background-color: #4c93ff;
   }
 }
 ::v-deep .rate-setting-dialog {

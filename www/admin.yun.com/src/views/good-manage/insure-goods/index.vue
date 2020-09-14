@@ -121,7 +121,7 @@
             <div>{{row.title}}</div>
             <div class="flex mb16">
               <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1">
-                <text-hidden-ellipsis :width="230" :popoverTip="item">{{item}}</text-hidden-ellipsis>
+                <text-hidden-ellipsis :width="180" :popoverTip="item">{{item}}</text-hidden-ellipsis>
               </div>
             </div>
             <div class="flex-between">
@@ -383,7 +383,7 @@ export default {
     }
   }
   .left-filter-list {
-    width: 884px;
+    width: 620px;
     ::v-deep .el-scrollbar {
       .list-item-wrap{
         padding: 0;

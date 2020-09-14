@@ -151,6 +151,7 @@ export default {
 <style lang="scss">
 .filter-bar {
   display: inline-block;
+  padding-bottom: 16px;
 }
 .filter-item {
   // display: inline-block;
