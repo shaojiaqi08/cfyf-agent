@@ -29,7 +29,7 @@
                 </el-button>
             </side-filter-list>
             <div class="right-content" v-loading="rightLoading">
-                <el-button v-if="$checkAuth('/manager/admin/authority/update') && curTabIdx==='permission' && !(curSelRole || {}).is_super_user"
+                <el-button v-if="$checkAuth('/manager/admin/authority/update') && curTabIdx==='permission' && ((curSelRole || {}).is_super_user === superUserKey.NO)"
                            type="primary"
                            size="small"
                            style="position: absolute;top:16px;right:16px;z-index: 10"
@@ -50,14 +50,14 @@
                                         :disabled="managerData.length <= 0"
                                         placement="top">
                                 <el-link :style="{lineHeight: '20px', color: managerData.length > 0 ? '#999': null}"
-                                         :disabled="managerData.length > 0 || (curSelRole || {}).is_super_user"
+                                         :disabled="managerData.length > 0 || ((curSelRole || {}).is_super_user === superUserKey.YES)"
                                          :underline="false"
                                          type="minor"
                                          class="mr30 del-link"
                                          @click="delPosition"><i class="iconfont iconxiao16_lajitong mr4"></i>删除</el-link>
                             </el-tooltip>
                             <el-button type="primary"
-                                       :disabled="curSelRole && curSelRole.is_super_user"
+                                       :disabled="curSelRole && (curSelRole.is_super_user === superUserKey.YES)"
                                        @click="handleSetPos"
                                        v-if="$checkAuth('/manager/admin_position/update')"
                                        size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
@@ -86,7 +86,7 @@
                         </el-table-column>
                         <el-table-column label="操作" prop="operate" :width="200" align="center">
                             <template v-slot="{row, $index}">
-                                <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && !row.is_super_user">
+                                <template v-if="row.account_status !== manageAccountStatusMap.invalidation.value && row.is_super_user === superUserKey.NO">
                                     <el-link v-if="$checkAuth('/manager/admin/close')" type="primary" class="mr8" @click="lostEffect(row.id, $index)">使失效</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
@@ -149,7 +149,7 @@
             delMangePos,
             updatePassword} from '@/apis/modules/user-manage'
     import {formatDate} from '@/utils/formatTime'
-    import {manageAccountStatusMap} from '@/enums/user-manage'
+    import {manageAccountStatusMap, superUserKey} from '@/enums/user-manage'
     import PermissionTree from '@/components/permission-tree'
     import SideFilterList from '@/components/side-filter-list'
     import ModifyPasswordDialog from '../component/modify-password-dialog'
@@ -171,6 +171,7 @@
         data() {
             const baseValiObj = {required: true, message: '此项不可为空', trigger: 'blur'}
             return {
+                superUserKey,
                 modifyPwdVisible: false,
                 selRoleLoading: false,
                 leftLoading: false,

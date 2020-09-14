@@ -18,7 +18,7 @@
             <el-form-item label="管理员账号" prop="username">
                 <el-input placeholder="请输入管理员登录账号" v-model="formModel.username"></el-input>
             </el-form-item>
-            <el-form-item label="管理员角色" prop="position_id" v-if="!formModel.is_super_user">
+            <el-form-item label="管理员角色" prop="position_id" v-if="formModel.is_super_user === superUserKey.NO">
                 <el-select :loading="selRoleLoading" style="width: 100%" placeholder="请选择管理员角色" v-model="formModel.position_id">
                     <el-option v-for="(item, index) in editRoleData" :key="index" :value="item.id" :label="item.name"></el-option>
                 </el-select>
@@ -46,6 +46,7 @@
     import baseValiObj from '../../baseValiObj'
     import {createManager, editManager, getEditRoleList } from '@/apis/modules/user-manage'
     import validatorMixin from '../../validatorMixin'
+    import { superUserKey } from '@/enums/user-manage'
     export default {
         name: 'edit-manager-dialog',
         mixins: [validatorMixin],
@@ -65,6 +66,7 @@
         },
         data() {
             return {
+                superUserKey,
                 loading: false,
                 submitting: false,
                 selRoleLoading: false,

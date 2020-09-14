@@ -14,6 +14,12 @@ export const subjectMap = {
     }
 }
 
+// 是否管理员
+export const superUserKey = {
+    YES: 'yes',
+    NO: 'no'
+}
+
 // 销售渠道
 export const sale_channel = {
     online: '线上',
