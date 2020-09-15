@@ -2,7 +2,7 @@
     <div class="prospectus-container page-container">
         <div class="header">
             计划书
-            <el-input type="primary" v-model="keyword" placeholder="搜索计划书名称" clearable @input="search" size="small">
+            <el-input type="primary" v-model="keyword" placeholder="请输入" clearable @input="search" size="small">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
                         <el-option :label="item.label" :value="item.value" :key="index" v-for="(item, index) in keywordType"></el-option>
