@@ -1,0 +1,146 @@
+<template>
+  <div class="header">
+    <div class="logo normal-transition"></div>
+    <el-popover
+            placement="bottom"
+            width="120"
+            v-model="isPopoverShow"
+            popper-class="popper-box"
+            trigger="click">
+      <div class="menu-list">
+        <div class="menu-list-item"
+             @click="jump2UserInfo">
+          <i class="mr4 iconfont iconxiao16_gerenxinxi"></i>
+          个人信息
+        </div>
+        <div class="menu-list-item" @click="loginOut">
+          <i class="mr4 iconfont iconxiao16_tuichudenglu"></i>
+          退出登录
+        </div>
+      </div>
+      <div class="user-info normal-transition" slot="reference">
+        <div class="user">
+          <div class="avatar" :style="{backgroundImage: `url('${userInfo.avatar_url || require('../../assets/images/avatar.png')}')`}"></div>
+          <div class="name">{{userInfo.real_name}}</div>
+        </div>
+        <div class="permission">
+          {{userInfo.sales_position && userInfo.sales_position.name}}
+          <i class="iconfont iconxiao16_xiajiantou ml4"></i>
+        </div>
+      </div>
+    </el-popover>
+  </div>
+</template>
+
+<script>
+  import {loginOut} from '@/apis/modules'
+  import {mapState} from 'vuex'
+  export default {
+    data() {
+      return {
+        isPopoverShow: false,
+        submitting: false
+      }
+    },
+    computed: {
+      ...mapState('users', ['userInfo'])
+    },
+    methods: {
+      jump2UserInfo() {
+        this.$router.push({ path: '/user-info' })
+        this.isPopoverShow = false
+      },
+      loginOut() {
+        if (this.submitting) return
+        this.submitting = true
+        loginOut().finally(() => this.$store.dispatch('users/logout'))
+        this.$router.replace({ path: '/login' })
+      }
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+.header {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid #E6E6E6;
+  background-color: #e1e3e6;
+  z-index: 2;
+  .logo {
+    width: 200px;
+    height: 24px;
+    background: url(../../assets/images/navbar-logo.png) no-repeat;
+    background-size: contain;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    opacity: 0.6;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+    .user {
+      display: flex;
+      align-items: center;
+      margin-right: 8px;
+      .avatar {
+        display: inline-block;
+        margin-right: 8px;
+        width: 24px;
+        height: 24px;
+        border-radius: 12px;
+        overflow: hidden;
+        background-size: cover;
+      }
+      .name {
+        display: inline-block;
+        font-weight: bold;
+      }
+    }
+    .permission {
+      display: flex;
+      align-items: center;
+      color: #999;
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.popper-box {
+  padding: 0 !important;
+  min-width: 120px !important;
+  .menu-list {
+    margin-top: 8px;
+    .menu-list-item {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 0 auto;
+      align-items: center;
+      white-space: nowrap;
+      padding: 18px;
+      color: #4D4D4D;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        color: #1F78FF;
+        background-color: rgba(31, 120, 255, 0.1);
+      }
+    }
+  }
+}
+</style>
