@@ -139,9 +139,7 @@ export default {
       const params = { id: this.$route.params.id }
       getPolicyFile(params).then(res => {
         if (res.policy_file_url) {
-          downloadFrameA(res.policy_file_url, `电子保单`, 'get', true).finally(() => {
-            this.downloading = false
-          })
+          window.open(res.policy_file_url)
         }
       })
     },
