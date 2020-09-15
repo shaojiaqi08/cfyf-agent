@@ -119,7 +119,6 @@
 <script>
 import { getPolicyDetail, getPolicyFile } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
-import {downloadFrameA} from '@/utils'
 export default {
   name: 'order-detail',
   data() {
