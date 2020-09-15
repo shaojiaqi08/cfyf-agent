@@ -29,3 +29,5 @@ export const getSalesTeamData = params => get('/agent/proxy/sales/get_all_teams_
 export const getManagementCompanyList = (params) => get('/management/proxy/company/list', params)
 // 投退保时间选项
 export const getDateRange = (params) => get('/common/date_ranges', params)
+// 获取电子保单
+export const getPolicyFile = (params) => get('/agent/proxy/policy/policy_file_url', params)

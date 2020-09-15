@@ -1,6 +1,14 @@
 <template>
   <div class="order-detail-container" v-loading="loading">
-    <div class="header">订单详情</div>
+    <div class="header">订单详情
+      <el-button type="primary"
+                 :loading="downloading"
+                 v-if="policyInfo.is_have_policy_file && $checkAuth('/achievement-team/policy_file_url')"
+                 icon="iconfont iconxiao16_shouqiangaozhi"
+                 @click="download">
+        <span class="ml4">下载电子保单</span>
+      </el-button>
+    </div>
     <div class="content">
       <h4>产品信息</h4>
       <div class="row">
@@ -105,14 +113,16 @@
 </template>
 
 <script>
-import { getPolicyDetail } from '@/apis/modules/achievement'
+import { getPolicyDetail, getPolicyFile } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
+import {downloadFrameA} from '@/utils'
 export default {
   name: "order-detail",
   data() {
     return {
       loading: false,
-      policyInfo: {}
+      policyInfo: {},
+      downloading: false
     }
   },
   mounted() {
@@ -120,6 +130,17 @@ export default {
   },
   methods: {
     formatDate,
+    download() {
+      this.downloading = true
+      const params = { id: this.$route.params.id }
+      getPolicyFile(params).then(res => {
+        if (res.policy_file_url) {
+          downloadFrameA(res.policy_file_url, `电子保单`, 'get', true).finally(() => {
+            this.downloading = false
+          })
+        }
+      })
+    },
     init() {
       const { id } = this.$route.params
       this.loading = true
