@@ -141,7 +141,7 @@ export default {
         if (res.policy_file_url) {
           window.open(res.policy_file_url)
         }
-      })
+      }).finally(() => this.downloading = false)
     },
     init() {
       const { id } = this.$route.params
