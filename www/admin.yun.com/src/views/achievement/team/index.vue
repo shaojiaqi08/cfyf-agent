@@ -14,6 +14,39 @@
       </div>
     </div>
     <div class="scroll-box" ref="content">
+      <!--全部出单日期-->
+      <filter-shell v-model="searchModel.date_range"
+                    :width="300"
+                    :textOverflow="false"
+                    :collapse="false"
+                    autoClose
+                    autoFocus
+                    @input="searchModelChange">
+        <el-date-picker
+                v-model="searchModel.date_range"
+                type="daterange"
+                style="width: 265px;"
+                value-format="timestamp"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :clearable="false"
+                @change="searchModelChange">
+        </el-date-picker>
+        <template v-slot:label>
+          {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}
+        </template>
+        <template v-slot:link>
+          <div class="link-content">
+            <span v-for="(date, index) in dateRange"
+                  :key="index"
+                  class="date-item"
+                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                  @click.stop="dateSelect(date)">
+              {{ date.name }}
+            </span>
+          </div>
+        </template>
+      </filter-shell>
       <!--全部销售-->
       <filter-shell v-model="searchModel.sales_id"
                     autoFocus
@@ -123,39 +156,6 @@
         </el-select>
         <template v-slot:label>
           {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
-        </template>
-      </filter-shell>
-      <!--全部出单日期-->
-      <filter-shell v-model="searchModel.date_range"
-                    :width="300"
-                    :textOverflow="false"
-                    :collapse="false"
-                    autoClose
-                    autoFocus
-                    @input="searchModelChange">
-        <el-date-picker
-                v-model="searchModel.date_range"
-                type="daterange"
-                style="width: 265px;"
-                value-format="timestamp"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :clearable="false"
-                @change="searchModelChange">
-        </el-date-picker>
-        <template v-slot:label>
-          {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}
-        </template>
-        <template v-slot:link>
-          <div class="link-content">
-            <span v-for="(date, index) in dateRange"
-                  :key="index"
-                  class="date-item"
-                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
-                  @click.stop="dateSelect(date)">
-              {{ date.name }}
-            </span>
-          </div>
         </template>
       </filter-shell>
       <div class="data-row" ref="dataRow">
@@ -414,7 +414,7 @@ export default {
         this.statisticLoading = false
       })
     },
-    getAllProducts() {
+    getAllProducts() {  
       getAllProducts().then(res => {
         this.productList = res
       })
