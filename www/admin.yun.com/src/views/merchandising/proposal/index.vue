@@ -14,7 +14,7 @@
             </el-input>
         </div>
         <div class="content" ref="content">
-            <div class="filter-bar flex-between flex">
+            <div class="flex-between flex">
                 <filter-shell v-model="dateRange" :width="385" class="date-range-filter" @input="handleDateChange" autoFocus autoClose :textOverflow="false" :collapse="false">
                     <el-date-picker type="daterange" v-model="dateRange" @change="handleDateChange" clearable value-format="yyyy-MM-dd" start-placeholder="开始日期" end-placeholder="结束日期">
                     </el-date-picker>
@@ -267,21 +267,22 @@
                 }
             }
             ::v-deep .keyword-type-filter{
-                .filter-item{
-                    margin: 0;
-                    height: 24px;
-                    line-height: 21px;
-                    width: 106px;
-                    font-weight: normal;
-                    display: flex !important;
-                    align-items: center;
-                    justify-content: center;
-                    &.actived{
-                        color:#1A1A1A;
-                        background: #f5f5f5;
-                        border-color: #e6e6e6;
-                    }
-                }
+                padding-bottom: 0 !important;
+                // .filter-item{
+                //     margin: 0;
+                //     height: 24px;
+                //     line-height: 21px;
+                //     width: 106px;
+                //     font-weight: normal;
+                //     display: flex !important;
+                //     align-items: center;
+                //     justify-content: center;
+                //     &.actived{
+                //         color:#1A1A1A;
+                //         background: #f5f5f5;
+                //         border-color: #e6e6e6;
+                //     }
+                // }
             }
 
         }
@@ -294,6 +295,7 @@
                 display: flex;
                 justify-content: space-between;
                 height: 64px;
+                padding-bottom: 0;
                 align-items: center;
             }
             ::v-deep .el-scrollbar{
