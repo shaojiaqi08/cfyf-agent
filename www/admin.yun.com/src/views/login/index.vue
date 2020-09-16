@@ -100,7 +100,7 @@ export default {
   created() {
     const query = this.$route.query
     // 模拟登陆
-    if (query._sign) {
+    if (query.login_token) {
       this.submitting = true
       simulatedLogin(query).then(res => {
         this.updateUserInfo(res)
