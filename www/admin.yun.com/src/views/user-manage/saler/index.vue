@@ -2,7 +2,7 @@
     <div class="sale-container page-container">
         <div class="header">
             <el-tabs v-model="curTabIdx">
-                <el-tab-pane v-if="$checkAuth('/sale/list')" name="sale-pane" label="销售人员"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/sale/list')" name="sale-pane" label="团队"></el-tab-pane>
                 <el-tab-pane v-if="$checkAuth('/sale/position_and_authority')" name="position-pane" label="职位及权限"></el-tab-pane>
             </el-tabs>
         </div>

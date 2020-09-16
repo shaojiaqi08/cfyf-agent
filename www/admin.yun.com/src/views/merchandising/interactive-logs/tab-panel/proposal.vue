@@ -1,12 +1,19 @@
 <template>
     <div class="proposal-container">
-        <el-input v-model="searchModel.keyword"
+        <!-- <el-input v-model="searchModel.keyword"
                   prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                   class="search-input"
                   placeholder="搜索产品名称"
                   @input="debounceGetProposal"
-                  clearable></el-input>
+                  clearable></el-input> -->
         <div class="list" v-loading="loading">
+            <div class="search-input-container">
+                <el-input v-model="searchModel.keyword"
+                        prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+                        placeholder="搜索计划书名称"
+                        @input="debounceGetProposal"
+                        clearable></el-input>
+            </div>
             <template v-if="proposalDateArr.length > 0">
                 <div class="list-content">
                     <el-scrollbar
@@ -47,7 +54,7 @@
         <div class="detail" v-loading="detailLoading">
             <!--<div class="title border-bottom">互动记录详情</div>-->
             <div v-if="proposalDetail.id" class="detail-warp">
-                <div class="time border-bottom flex-between">
+                <div class="time flex-between">
                     <span>分享时间</span>
                     <span>{{proposalDetail.share_date_time_text}}</span>
                 </div>
@@ -273,6 +280,9 @@
         & > .list {
             width: 320px;
             border-right: 1px solid #e6e6e6;
+            .search-input-container {
+                padding: 16px;
+            }
             ::v-deep .scroll-bar-wap-other{
                 overflow-x: hidden;
             }

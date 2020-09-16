@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-            title="转移团队"
+            title="修改上级团队"
             :visible="visible"
             custom-class="set-leader-dialog"
             :close-on-click-modal="false"

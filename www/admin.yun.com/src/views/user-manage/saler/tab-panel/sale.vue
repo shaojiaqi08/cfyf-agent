@@ -179,6 +179,7 @@
                                 </template>
                                 <div v-else class="flex">
                                     <el-input size="small" v-model.trim="editName" class="mr8" @keyup.native.enter="submitTeamName"></el-input>
+                                    <el-button size="mini" @click="editting = false" :loading="submittingEditName" :disabled="submittingEditName">取消</el-button>
                                     <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
                             </div>
@@ -188,9 +189,9 @@
                             <el-link :underline="false"
                                      v-if="$checkAuth('/sale/team/disband_team')"
                                      type="minor"
-                                     class="flex-center mr30"
+                                     class="flex-center dismiss-button mr30"
                                      @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button v-if="$checkAuth('/sale/team/change_team_parent')" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                            <el-button v-if="$checkAuth('/sale/team/change_team_parent')" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>修改上级团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
@@ -260,7 +261,7 @@
         <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->
         <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="ajaxDetail"></set-leader-dialog>
-        <!--转移团队-->
+        <!--修改上级团队-->
         <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="ajaxDetail"></transfer-team-dialog>
         <!--调整团队成员-->
         <team-people-dialog :loading="groupSalesLoading"
@@ -388,7 +389,7 @@
             clearValue,
             hasValue,
             formatDate,
-            // 转移团队团队下拉数据
+            // 上级团队团队下拉数据
             ajaxTransferTeamSelData() {
                 this.dialogLoading = true
                 getTransferTeamSelData({id: this.selTeam}).then(res => {
@@ -698,6 +699,9 @@
             z-index: 3;
             top: 72.5px;
             right: 36px;
+        }
+        .dismiss-button:hover {
+            color: #FF4C4C;
         }
         .right {
             flex: 1;

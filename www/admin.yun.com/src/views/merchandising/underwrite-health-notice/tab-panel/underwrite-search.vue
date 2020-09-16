@@ -57,7 +57,7 @@
                     <p>{{selVal}}</p>
                     <div>
                         调整字号
-                        <el-input-number class="ml16" :min="14" :max="24" v-model="fontSize" size="small"></el-input-number>
+                        <el-input-number class="ml16" :min="12" :max="24" v-model="fontSize" size="small"></el-input-number>
                     </div>
                 </div>
                 <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}" :max-height="maxHeight">

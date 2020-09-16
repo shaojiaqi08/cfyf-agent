@@ -322,6 +322,7 @@ export default {
       supplierList: [],
       companyList: [],
       salesList: [],
+      dateRange: [],
       statisticInfo: {
         actual_underwrite_total_premium: 0
       },

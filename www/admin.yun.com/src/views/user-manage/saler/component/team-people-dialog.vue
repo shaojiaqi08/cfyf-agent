@@ -24,10 +24,8 @@
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
                                         <div class="fs14 flex-center">
                                             {{parent.name}}
-                                            <i class="iconfont iconzhong20x36_fangxingjiahao" @click="del(item, lv, index)"></i>
-                                            <!-- <el-link type="danger" class="ml8 remove-button" :underline="false">
-                                                <i class="iconfont iconzhong20x36_fangxingjiahao" @click="del(item, lv, index)"></i>
-                                            </el-link> -->
+                                            <i class="iconfont iconzhong20x36_fangxingjianhao remove-button"
+                                               @click="del(item, lv, index)"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -60,10 +58,8 @@
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
-                                            <div class="add-button" @click="join(parent, item, lv)"></div>
-                                            <!-- <el-link type="primary" class="ml8" :underline="false">
-                                                <i class="iconfont iconxiao16_yuanxingjiahao" @click="join(parent, item, lv)"></i>
-                                            </el-link> -->
+                                            <i class="iconfont iconzhong20x36_fangxingjiahao add-button"
+                                               @click="join(parent, item, lv)"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -392,19 +388,13 @@
     }
     .remove-button {
         margin-left: 8px;
-        width: 36px;
-        height: 20px;
-        // background-color: #FF4C4C;
         color: #FF4C4C;
         border-radius: 4px;
         cursor: pointer;
     }
     .add-button {
         margin-left: 8px;
-        width: 36px;
-        height: 20px;
-        background-color: #1F78FF;
-        color: #fff;
+        color: #1F78FF;
         border-radius: 4px;
         cursor: pointer;
     }
