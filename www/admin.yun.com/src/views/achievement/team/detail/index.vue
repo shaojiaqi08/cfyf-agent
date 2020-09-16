@@ -12,10 +12,10 @@
     <div class="content">
       <h4>产品信息</h4>
       <div class="row">
-        <div>
+        <!-- <div>
           出单平台
           <span>{{ policyInfo.actually_sales_platform_str || '-'}}</span>
-        </div>
+        </div> -->
         <div>
           公司名
           <span>{{ policyInfo.supplier_name || '-' }}</span>
