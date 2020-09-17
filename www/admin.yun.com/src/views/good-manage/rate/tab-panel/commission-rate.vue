@@ -11,7 +11,10 @@
           :key="index"
           @click="handleSelPosition(item)"
           :class="{'list-item': true, active: selPosVal === item.value}"
-        >{{item.label}}</div>
+        >
+          <div class="list-label">{{item.label}}</div>
+          <div>123人</div>
+        </div>
       </div>
       <div class="tc mt30" v-if="!positionList.length">暂无数据</div>
     </el-scrollbar>
@@ -364,11 +367,19 @@ export default {
         }
       }
       .list-item {
+        display: flex;
+        justify-content: space-between;
         color: #4d4d4d;
         box-sizing: border-box;
         display: flex;
         align-items: center;
         cursor: pointer;
+        .list-label {
+          width: 162px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         &:hover {
           background: #e6e6e6;
           color: #1A1A1A;

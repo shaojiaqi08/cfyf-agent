@@ -183,7 +183,7 @@
                                     <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
                             </div>
-                            <span>当前团队挂靠：{{detailData.parent ? detailData.parent.name : '-'}}</span>
+                            <span>当前上级团队：{{detailData.parent ? detailData.parent.name : '-'}}</span>
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false"

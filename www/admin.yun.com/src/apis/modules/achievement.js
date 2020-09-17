@@ -31,3 +31,5 @@ export const getManagementCompanyList = (params) => get('/management/proxy/compa
 export const getDateRange = (params) => get('/common/date_ranges', params)
 // 获取电子保单
 export const getPolicyFile = (params) => get('/agent/proxy/policy/policy_file_url', params)
+// 导出订单数据
+export const policyExport = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export` 

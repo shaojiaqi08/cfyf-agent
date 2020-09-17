@@ -3,6 +3,13 @@
     <div class="header">
       我的业绩
       <div class="flex-between">
+        <el-button size="small"
+                   type="primary"
+                   class="mr10"
+                   :loading="exporting"
+                   icon="iconfont iconxiao16_xiazai mr4"
+                   v-if="$checkAuth('/achievement-self/detail')"
+                   @click="policyExport">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
                   size="small"
@@ -21,6 +28,7 @@
                     :collapse="false"
                     autoClose
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-date-picker
                 v-model="searchModel.date_range"
@@ -50,6 +58,7 @@
       <!--全部保单状态-->
       <filter-shell v-model="searchModel.policy_status"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.policy_status"
@@ -72,6 +81,7 @@
       <!--全部保险产品-->
       <filter-shell v-model="searchModel.products"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.products"
@@ -94,6 +104,7 @@
       <!--全部保险公司-->
       <filter-shell v-model="searchModel.supplier_id"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.supplier_id"
@@ -116,6 +127,7 @@
       <!--全部险种分类-->
       <filter-shell v-model="searchModel.product_insurance_class"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.product_insurance_class"
@@ -271,10 +283,11 @@
   </div>
 </template>
 <script>
-import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange} from '@/apis/modules/achievement'
+import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange, policyExport} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
-import { debounce } from '@/utils'
+import { debounce, downloadFrameA } from '@/utils'
+import qs from 'qs'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
@@ -307,6 +320,7 @@ export default {
       statisticLoading: true,
       scrol2Lvisible: false,
       scrol2Rvisible: false,
+      exporting: false,
       scrollTranslateX: 0,
       searchModel: {
         keyword: '',
@@ -320,6 +334,15 @@ export default {
     };
   },
   methods: {
+    policyExport() {
+      const url = `${policyExport}?${qs.stringify({...this.searchModelFormat(true)})}`
+      this.exporting = true
+      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+        // this.$message.success('导出成功')
+      }).finally(() => {
+        this.exporting = false
+      })
+    },
     dateSelect(date) {
       const start = dateStr2Timestamp(date.start)
       const end = dateStr2Timestamp(date.end)

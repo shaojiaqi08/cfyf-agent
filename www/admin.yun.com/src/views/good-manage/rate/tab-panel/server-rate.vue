@@ -263,7 +263,6 @@ export default {
   justify-content: stretch;
   .extra-filter-bar {
     justify-content: space-around;
-    margin-bottom: 16px;
     ::v-deep .filter-bar .filter-item {
       // width: 96px;
       text-align: center;

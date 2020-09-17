@@ -222,6 +222,18 @@ const necessaryRoutes = [
     component: getView('login')
   },
   {
+    path: '/company',
+    name: 'Company',
+    meta: {
+      title: '公司信息',
+      header: true,
+      menu: true,
+      show: true,
+      permission: '/manager'
+    },
+    component: getView('company')
+  },
+  {
     path: "/404",
     name: "404",
     meta: {

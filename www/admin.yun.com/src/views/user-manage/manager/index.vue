@@ -19,6 +19,12 @@
                     style="width: 240px;border-right: 1px solid #e6e6e6;"
                     :listData="roleData"
             >
+                <template v-slot:list="{row}">
+                    <div class="list-label">
+                        {{ row.name }}
+                    </div>
+                    <div>123人</div>
+                </template>
                 <el-button slot="footer"
                            class="mt8 mb16 mr16 ml16"
                            type="primary"
@@ -652,6 +658,12 @@
     .empty-tips {
         margin: 30vh auto;
         text-align: center;
+    }
+    .list-label {
+        width: 162px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 </style>
 <style lang="scss">

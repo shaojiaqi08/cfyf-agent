@@ -1,10 +1,5 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input clearable placeholder="搜索产品名称"
-                  class="search-input"
-                  v-model="searchModel.product_name"
-                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-                  @input="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
                 label-key="product_name"
@@ -17,7 +12,13 @@
                 :listData="productData"
         >
             <div slot="extraFilter">
-                <div class="flex-between pt16 pb16 pl16 pr16">
+                <div class="search-input-container">
+                    <el-input clearable placeholder="搜索产品名称"
+                            v-model="searchModel.product_name"
+                            prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+                            @input="ajaxProductData"></el-input>
+                </div>
+                <div class="flex-between pb16 pl16 pr16">
                     <filter-shell v-model.trim="searchModel.notice" autoFocus @input="ajaxProductData">
                         <el-input v-model.trim="searchModel.notice" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
@@ -166,6 +167,9 @@
         display: flex;
         align-items: stretch;
         justify-content: stretch;
+        .search-input-container {
+            padding: 16px;
+        }
         .detail-wrap{
             flex: 1;
             padding: 16px;
