@@ -437,7 +437,7 @@
                 this.editTreeDetail = []
                 getRoleList().then(res => {
                     this.roleData = res
-                    if (this.roleData.length > 0 && roleId) {
+                    if ((this.roleData.length > 0 && roleId) || roleId === 0) {
                         const role = this.roleData.find(item => item.id === roleId)
                         this.curSelRole = role
                         this.selRole = roleId
