@@ -9,11 +9,11 @@
         <el-form ref="form" :model="formModel" label-width="100px" label-position="left">
             <div class="info-block mb20" style="height: 60px">
                 <div class="flex-between mb16" >
-                    当前团队挂靠
+                    当前上级团队
                     <span>{{data.parent ? data.parent.name : '-'}}</span>
                 </div>
             </div>
-            <el-form-item label="挂靠团队" prop="parent_id">
+            <el-form-item label="团队名称" prop="parent_id">
                 <el-select filterable clearable style="width: 100%" placeholder="请选择在哪个团队下挂靠" v-model="formModel.parent_id">
                     <el-option v-for="(item, index) in transferTeamSelData" :key="index" :value="item.id" :label="item.name"></el-option>
                 </el-select>

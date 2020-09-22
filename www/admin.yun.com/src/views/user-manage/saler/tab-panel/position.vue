@@ -308,9 +308,9 @@
             }
         }
         .add-button{
-            position: fixed;
+            position: absolute;
             z-index: 3;
-            top: 72.5px;
+            top: 34px;
             right: 36px;
         }
         .right {

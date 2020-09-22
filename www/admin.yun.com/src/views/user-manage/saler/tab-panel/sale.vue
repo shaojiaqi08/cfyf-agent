@@ -17,9 +17,17 @@
                 style="width: 240px"
                 :listData="computedTeamData"
             >
+                <template v-slot:list="{row}">
+                    <div class="flex-between" style="width: 100%">
+                        <list-item class="list-label" :tips-content="row.name">
+                            <div>{{row.name}}</div>
+                        </list-item>
+                        <div v-if="row.sales_count">{{ row.sales_count }}人</div>
+                    </div>
+                </template>
                 <el-button slot="footer"
                            type="primary"
-                           v-if="$checkAuth('/sale/team/create')"
+                           v-if="$checkAuth('/sale/team/create') && (selTeam && selTeam > 0)"
                            class="mt8 mb16 ml16 mr16"
                            @click="handleAddTeam"
                            size="small">
@@ -301,11 +309,13 @@
     import EditSalesDialog  from '../component/edit-sales-dialog'
     import AddTeamDialog  from '../component/add-team-dialog'
     import SetLeaderDialog  from '../component/set-leader-dialog'
+    import ListItem from '@/components/side-filter-list/side-filter-list-item'
     import TransferTeamDialog  from '../component/transfer-team-dialog'
     export default {
         name: 'sale-pane',
         mixins: [validatorMixin],
         components: {
+            ListItem,
             FilterShell,
             SideFilterList,
             TeamPeopleDialog,
@@ -453,7 +463,7 @@
             },
             handleAddTeam() {
                 this.addTeamDialogVisible = true
-                this.ajaxNoTeamSalesData()
+                this.ajaxNoTeamSalesData(this.selTeam)
             },
             // 新增/编辑销售
             editSales(id) {
@@ -685,113 +695,116 @@
 </script>
 
 <style scoped lang="scss">
-    .sale-people-container{
-        display: flex;
-        height: 100%;
-        width: 100%;
-        flex-direction: row;
-        align-items: stretch;
-        ::v-deep .side-filter-container .list-item:first-of-type{
-            border-top: transparent;
-        }
-        .add-button{
-            position: fixed;
-            z-index: 3;
-            top: 72.5px;
-            right: 36px;
-        }
-        .dismiss-button:hover {
-            color: #FF4C4C;
-        }
-        .right {
-            flex: 1;
-            overflow: hidden;
-            border: 1px solid #f5f5f5;
-            border-top: transparent;
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
-            &>.el-scrollbar{
-                flex: 1;
-                overflow: hidden;
-            }
-            .sale-filter-bar{
-                display: flex;
-                justify-content: space-between;
-                height: 64px;
-                align-items: center;
-                &>.el-input{
-                    width: 240px;
-                }
-            }
-            & > ::v-deep .el-table{
-                flex: none;
-            }
-            .team-info{
-                height: 84px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 16px;
-                background: #f5f5f5;
-                border: 1px solid #e6e6e6;
-                border-radius: 4px;
-                margin-bottom: 16px;
-                .name-wrap{
-                    font-size: 18px;
-                    color:#1a1a1a;
-                    font-weight: bold;
-                    line-height: 28px;
-                    line-height: 28px;
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 4px;
-                    .el-link{
-                        font-weight: normal;
-                        font-size: 24px;
-                        margin-left: 4px;
-                    }
-                    &+span{
-                        color: #999;
-                        line-height: 20px;
-                    }
-                }
-
-            }
-            .table-wrap .table-header{
-                height: 64px;
-                padding: 0 16px 0 20px;
-                background: #f5f5f5;
-                color: #1a1a1a;
-                font-weight: bold;
-                border: 1px solid #e6e6e6;
-                border-bottom: transparent;
-            }
-        }
-    }
-    ::v-deep .set-leader-dialog {
-        .el-dialog__body{
-            overflow: visible;
-        }
-        .info-block{
-            height:96px;
-            background:rgba(245,245,245,1);
-            border-radius:4px;
-            border:1px solid rgba(230,230,230,1);
-            padding: 20px;
-            &>div{
-                line-height: 20px;
-                color:#4d4d4d;
-                font-size: 14px;
-                &>span{
-                    color: #1a1a1a;
-                    font-weight: bold;
-                }
-            }
-        }
-    }
-
-    ::v-deep .side-filter-container .list-item:first-of-type {
+.list-label {
+    width: 170px;
+}
+.sale-people-container{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+    ::v-deep .side-filter-container .list-item:first-of-type{
         border-top: transparent;
     }
+    .add-button{
+        position: absolute;
+        z-index: 3;
+        top: 34px;
+        right: 36px;
+    }
+    .dismiss-button:hover {
+        color: #FF4C4C;
+    }
+    .right {
+        flex: 1;
+        overflow: hidden;
+        border: 1px solid #f5f5f5;
+        border-top: transparent;
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        &>.el-scrollbar{
+            flex: 1;
+            overflow: hidden;
+        }
+        .sale-filter-bar{
+            display: flex;
+            justify-content: space-between;
+            height: 64px;
+            align-items: center;
+            &>.el-input{
+                width: 240px;
+            }
+        }
+        & > ::v-deep .el-table{
+            flex: none;
+        }
+        .team-info{
+            height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background: #f5f5f5;
+            border: 1px solid #e6e6e6;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            .name-wrap{
+                font-size: 18px;
+                color:#1a1a1a;
+                font-weight: bold;
+                line-height: 28px;
+                line-height: 28px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 4px;
+                .el-link{
+                    font-weight: normal;
+                    font-size: 24px;
+                    margin-left: 4px;
+                }
+                &+span{
+                    color: #999;
+                    line-height: 20px;
+                }
+            }
+
+        }
+        .table-wrap .table-header{
+            height: 64px;
+            padding: 0 16px 0 20px;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            font-weight: bold;
+            border: 1px solid #e6e6e6;
+            border-bottom: transparent;
+        }
+    }
+}
+::v-deep .set-leader-dialog {
+    .el-dialog__body{
+        overflow: visible;
+    }
+    .info-block{
+        height:96px;
+        background:rgba(245,245,245,1);
+        border-radius:4px;
+        border:1px solid rgba(230,230,230,1);
+        padding: 20px;
+        &>div{
+            line-height: 20px;
+            color:#4d4d4d;
+            font-size: 14px;
+            &>span{
+                color: #1a1a1a;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+::v-deep .side-filter-container .list-item:first-of-type {
+    border-top: transparent;
+}
 </style>

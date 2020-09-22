@@ -1,11 +1,5 @@
 <template>
     <div class="underwrite-search-container">
-        <el-input placeholder="搜索产品名称"
-                  class="search-input"
-                  v-model="product_name_like"
-                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-                  clearable
-                  @input="ajaxProductData"></el-input>
         <side-filter-list
                 v-loading="loading"
                 label-key="product_name"
@@ -17,6 +11,15 @@
                 style="width: 280px"
                 :listData="productData"
         >
+            <div slot="extraFilter">
+                <div class="search-input-container">
+                    <el-input placeholder="搜索产品名称"
+                                v-model="product_name_like"
+                                prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+                                clearable
+                                @input="ajaxProductData"></el-input>
+                </div>
+            </div>
         </side-filter-list>
         <div class="detail-wrap"
              v-loading="detailLoading">
@@ -187,6 +190,9 @@
         align-items: stretch;
         justify-content: stretch;
         position: relative;
+        .search-input-container {
+            padding: 16px 16px 0;
+        }
         .detail-wrap{
             flex: 1;
             padding: 16px;

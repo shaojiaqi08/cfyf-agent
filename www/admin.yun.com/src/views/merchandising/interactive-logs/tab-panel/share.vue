@@ -24,10 +24,8 @@
                         <div v-infinite-scroll="nextPage" :infinite-scroll-delay="400">
                             <div v-for="(item,index) in otherDateArr"
                                  :key="index"
-                                 class="scroll-bar-other-item"
-                                 :class="{'border-top':index !== 0}">
-                                <div class="time border-bottom flex-between" :class="{'fixed':otherFixedIndex === index }">
-                                    <span>分享时间</span>
+                                 class="scroll-bar-other-item">
+                                <div class="time" :class="{'fixed':otherFixedIndex === index }">
                                     <span>{{item}}</span>
                                 </div>
                                 <div class="auto-fixed" v-if="otherFixedIndex === index"></div>
@@ -36,9 +34,9 @@
                                      @click="getOtherDetail(it)"
                                      :class="{'active': fixedIndex ===  it.original_id}">
                                     <div class="flex-between gray mb12 active-vague">
-                                        <div v-if="it.type === 'product'|| it.type === 'cps'"><i class="icon-product"></i>分享了产品</div>
-                                        <div v-if="it.type === 'article'"><i class="icon-article"></i>分享了文章</div>
-                                        <div v-if="it.type === 'drop_game' || it.type === 'evaluating'"><i class="icon-promote"></i>分享了展业工具
+                                        <div v-if="it.type === 'product'|| it.type === 'cps'">分享了产品</div>
+                                        <div v-if="it.type === 'article'">分享了文章</div>
+                                        <div v-if="it.type === 'drop_game' || it.type === 'evaluating'">分享了展业工具
                                         </div>
                                         <div>{{it.share_minute_time_text}}</div>
                                     </div>
@@ -64,7 +62,7 @@
         <div class="detail" v-loading="detailLoading">
             <!--<div class="title border-bottom">互动记录详情</div>-->
             <div v-if="otherDetail.caption" class="detail-warp">
-                <div class="time flex-between">
+                <div class="time main-time flex-between">
                     <span>分享时间</span>
                     <span>{{otherDetail.caption['share_date_time_text']}}</span>
                 </div>
@@ -526,11 +524,16 @@
                 height: 100%;
             }
             .item{
+                margin: 0 8px;
                 transition: all .2s ease-out;
                 padding: 16px;
                 &.active{
-                    background: #f5f5f5;
-                    border-left: 3px solid #1F78FF;
+                    color: #1F78FF !important;
+                    background: rgba(31, 120, 255, 0.1);
+                    border-radius: 4px;
+                    .active-vague {
+                        color: #1F78FF !important;
+                    }
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
@@ -617,11 +620,19 @@
             z-index: 2;
         }
         .time{
-            height: 44px;
+            margin: 8px 16px;
+            // height: 44px;
             // border-bottom: 1px solid #e6e6e6;
-            padding: 0 16px;
+            padding: 6px;
             color:#1a1a1a;
             font-weight: 500;
+            background-color: #F5F5F5;
+            text-align: center;
+            border-radius: 4px;
+            &.main-time {
+                background-color: #fff;
+                margin: 16px 12px 0;
+            }
         }
         .no-content{
             height: 100%;

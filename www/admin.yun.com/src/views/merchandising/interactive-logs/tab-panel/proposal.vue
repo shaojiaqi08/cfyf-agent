@@ -23,10 +23,8 @@
                             style="height: 100%; overflow: hidden">
                         <div v-infinite-scroll="nextPage" :infinite-scroll-delay="400">
                             <div v-for="(item,index) in proposalDateArr" :key="index"
-                                 class="scroll-bar-pro-item"
-                                 :class="{'border-top':index !== 0 }">
-                                <div class="time flex-between" :class="{'fixed': proFixedIndex === index}">
-                                    <span>分享时间</span>
+                                 class="scroll-bar-pro-item">
+                                <div class="time" :class="{'fixed': proFixedIndex === index}">
                                     <span>{{item}}</span>
                                 </div>
                                 <div class="auto-fixed" v-if="proFixedIndex === index"></div>
@@ -54,7 +52,7 @@
         <div class="detail" v-loading="detailLoading">
             <!--<div class="title border-bottom">互动记录详情</div>-->
             <div v-if="proposalDetail.id" class="detail-warp">
-                <div class="time flex-between">
+                <div class="time main-time flex-between">
                     <span>分享时间</span>
                     <span>{{proposalDetail.share_date_time_text}}</span>
                 </div>
@@ -290,11 +288,16 @@
                 height: 100%;
             }
             .item{
+                margin: 0 8px;
                 transition: all .2s ease-out;
                 padding: 16px;
                 &.active{
-                    background: #f5f5f5;
-                    border-left: 3px solid #1F78FF;
+                    color: #1F78FF !important;
+                    background: rgba(31, 120, 255, 0.1);
+                    border-radius: 4px;
+                    .active-vague {
+                        color: #1F78FF !important;
+                    }
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
@@ -392,10 +395,19 @@
             z-index: 2;
         }
         .time{
-            height: 44px;
-            border-bottom: 1px solid #e6e6e6;
-            padding: 0 16px;
+            margin: 8px 16px;
+            // height: 44px;
+            // border-bottom: 1px solid #e6e6e6;
+            padding: 6px;
+            font-weight: 500;
             color:#1a1a1a;
+            background-color: #F5F5F5;
+            text-align: center;
+            border-radius: 4px;
+            &.main-time {
+                background-color: #fff;
+                margin: 16px 12px 0;
+            }
         }
         .no-content{
             height: 100%;

@@ -2,9 +2,16 @@
   <div class="header">
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
-      <div class="function-botton" @click="$router.push('/company')">
-        <i class="iconfont iconda24_gongsiziliao fs22"></i>
-      </div>
+      <el-tooltip class="item" effect="dark" content="公司资料" placement="bottom">
+        <div class="function-botton" @click="$router.push('/company')">
+          <i class="iconfont iconda24_gongsiziliao fs22"></i>
+        </div>
+      </el-tooltip>
+      <el-tooltip class="item" effect="dark" content="团队成员" placement="bottom">
+        <div class="function-botton" @click="$router.push('/group')">
+          <i class="iconfont iconda24_tuanduichengyuan fs22"></i>
+        </div>
+      </el-tooltip>
       <el-popover
               placement="bottom"
               width="120"
@@ -30,7 +37,7 @@
                 {{userInfo.real_name}}
                 <span style="color: #C2C2C2;">|</span>
                 {{userInfo.sales_position && userInfo.sales_position.name}}</div>
-              <div class="departmant">某某保险股份有限公司</div>
+              <div class="departmant">{{ userInfo.company.name }}</div>
             </div>
             <i class="iconfont iconxiao16_xiajiantou ml4"></i>
           </div>

@@ -16,7 +16,7 @@
 
 <script>
     import SalePane from './tab-panel/sale'
-    import PositionPane from './tab-panel/position'
+    import PositionPane from './tab-panel/_position'
     import {mapState} from 'vuex'
     export default {
         name: 'sale',

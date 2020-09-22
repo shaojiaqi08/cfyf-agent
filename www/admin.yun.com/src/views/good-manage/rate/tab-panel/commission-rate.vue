@@ -13,7 +13,7 @@
           :class="{'list-item': true, active: selPosVal === item.value}"
         >
           <div class="list-label">{{item.label}}</div>
-          <div>123人</div>
+          <div v-if="item.sales_count">{{ item.sales_count }}人</div>
         </div>
       </div>
       <div class="tc mt30" v-if="!positionList.length">暂无数据</div>
@@ -274,7 +274,8 @@ export default {
               children: i.items.map(y => {
                 return {
                   label: y.name,
-                  value: y.id
+                  value: y.id,
+                  sales_count: y.sales_count
                 };
               })
             };

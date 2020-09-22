@@ -20,10 +20,12 @@
                     :listData="roleData"
             >
                 <template v-slot:list="{row}">
-                    <div class="list-label">
-                        {{ row.name }}
+                    <div class="flex-between" style="width: 100%">
+                        <div class="list-label">
+                            {{ row.name }}
+                        </div>
+                        <div v-if="row.sales_count">{{ row.sales_count }}人</div>
                     </div>
-                    <div>123人</div>
                 </template>
                 <el-button slot="footer"
                            class="mt8 mb16 mr16 ml16"

@@ -18,7 +18,26 @@
                             prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
                             @input="ajaxProductData"></el-input>
                 </div>
-                <div class="flex-between pb16 pl16 pr16">
+                <div class="filter-container flex-between">
+                    <el-radio-group size="mini" v-model="searchModel.is_reverse" @change="ajaxProductData" class="radio-group-wrap">
+                        <el-radio-button style="height: 28px" v-for="(item, index) in isReverseData" :key="index" :label="item.value">{{item.label}}</el-radio-button>
+                    </el-radio-group>
+                    <filter-shell v-model.trim="searchModel.notice"
+                                  :width="340"
+                                  @input="ajaxProductData">
+                        <div>
+                            <span class="mr10">健康告知</span>
+                            <el-input v-model.trim="searchModel.notice"
+                                      class="inline-block"
+                                      style="width: 240px;"
+                                      placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
+                        </div>
+                        <template v-slot:label>
+                            筛选
+                        </template>
+                    </filter-shell>
+                </div>
+                <!-- <div class="pb16 pl16 pr16">
                     <filter-shell v-model.trim="searchModel.notice" autoFocus @input="ajaxProductData">
                         <el-input v-model.trim="searchModel.notice" placeholder="多个条件以逗号分隔，最多5个" clearable @input="debounceAjaxProductData"></el-input>
                         <template v-slot:label>
@@ -35,7 +54,7 @@
                     <el-radio-group size="mini" v-model="searchModel.is_reverse" @change="ajaxProductData" class="radio-group-wrap">
                         <el-radio-button style="height: 28px" v-for="(item, index) in isReverseData" :key="index" :label="item.value">{{item.label}}</el-radio-button>
                     </el-radio-group>
-                </div>
+                </div> -->
             </div>
         </side-filter-list>
         <div class="detail-wrap"
@@ -170,6 +189,9 @@
         .search-input-container {
             padding: 16px;
         }
+        .filter-container {
+            padding: 0 16px 8px;
+        }
         .detail-wrap{
             flex: 1;
             padding: 16px;
@@ -205,6 +227,25 @@
         .side-filter-container{
             border-right: 1px solid #e6e6e6;
         }
+        ::v-deep .filter-bar{
+            // width: 72px;
+            .filter-item{
+                // width: 100%;
+                margin-right: 0;
+                text-align: center;
+                display: flex;
+                height: 28px;
+                align-items: center;
+                justify-content: center;
+            }
+            .filter-badge {
+                width: 20px;
+                height: 20px;
+                border-radius: 10px;
+                background-color: #1F78FF;
+                color: #fff;
+            }
+        }
         ::v-deep .is-reverse-filter{
             width: 100px;
             .filter-item{
@@ -217,6 +258,7 @@
         ::v-deep .radio-group-wrap{
             .el-radio-button {
                 .el-radio-button__inner {
+                    padding: 6px 8px;
                     background: #f5f5f5;
                     border-color: #e6e6e6;
                 }
