@@ -62,7 +62,7 @@
       <div class="company-info-header">
         财务信息
       </div>
-      <div class="company-info-body">
+      <div class="company-info-body" v-if="companyInfo.company_finance">
         <el-row>
           <el-col class="mb12" :span="6">
             <span class="item-label">账户类型</span>
@@ -93,7 +93,10 @@
       <div class="company-info-header">
         <span>品牌信息</span>
         <span class="tips">
-          请完善品牌信息，获得更好的分享体验
+          <span v-if="need2hint">
+            <i class="el-icon-warning fs16 mr8" style="color: red;"></i>
+            <span style="color: #1A1A1A;">请完善品牌信息，获得更好的分享体验</span>
+          </span>
           <el-button icon="iconfont iconxiao16_bianji"
                      type="primary"
                      size="small"
@@ -101,27 +104,37 @@
                      @click="edit"> 编辑</el-button>
         </span>
       </div>
-      <div class="company-info-body">
+      <div class="company-info-body" v-if="companyInfo.company_details">
         <div class="preview-card mb16">
           <div class="preview-images">
             <div class="image">
               <div class="title">计划书PDF左上角LOGO</div>
-              <div class="content logo">
-                <img width="100%"
+              <div class="content logo"
+                   :class="{ active: companyInfo.company_details.proposal_log_pic_url }">
+                <el-image
+                  style="width: 280px; height: 100px"
+                  :src="companyInfo.company_details.proposal_log_pic_url"
+                  fit="contain"></el-image>
+                <!-- <img width="100%"
                      height="100%"
                      :style="{ opacity: `${!companyInfo.company_details.proposal_log_pic_url ? 0 : 1}` }"
                      :src="companyInfo.company_details.proposal_log_pic_url"
-                     alt="">
+                     alt=""> -->
               </div>
             </div>
             <div class="image">
               <div class="title">计划书PDF左下角角标</div>
-              <div class="content small-logo">
-                <img width="100%"
+              <div class="content small-logo"
+                   :class="{ active: companyInfo.company_details.proposal_corner_pic_url }">
+                <el-image
+                  style="width: 280px; height: 100px"
+                  :src="companyInfo.company_details.proposal_corner_pic_url"
+                  fit="contain"></el-image>
+                <!-- <img width="100%"
                      height="100%"
                      :style="{ opacity: `${!companyInfo.company_details.proposal_corner_pic_url ? 0 : 1}` }"
                      :src="companyInfo.company_details.proposal_corner_pic_url"
-                     alt="">
+                     alt=""> -->
               </div>
             </div>
           </div>
@@ -130,17 +143,25 @@
             <div class="content">
               <div class="preview-logo"
                    :style="{ opacity: `${!companyInfo.company_details.proposal_log_pic_url ? 0 : 1}` }">
-                <img width="100%"
+                <!-- <img width="100%"
                      height="100%"
                      :src="companyInfo.company_details.proposal_log_pic_url"
-                     alt="">
+                     alt=""> -->
+                <el-image
+                  style="width: 96px; height: 24px;background-color: #fff;"
+                  :src="companyInfo.company_details.proposal_log_pic_url"
+                  fit="contain"></el-image>
               </div>
               <div class="preview-small-logo"
                    :style="{ opacity: `${!companyInfo.company_details.proposal_corner_pic_url ? 0 : 1}` }">
-                <img width="100%"
+                <!-- <img width="100%"
                      height="100%"
                      :src="companyInfo.company_details.proposal_corner_pic_url"
-                     alt="">
+                     alt=""> -->
+                <el-image
+                  style="width: 90px; height: 10px;background-color: #fff;"
+                  :src="companyInfo.company_details.proposal_corner_pic_url"
+                  fit="contain"></el-image>
               </div>
             </div>
           </div>
@@ -149,12 +170,17 @@
           <div class="preview-images">
             <div class="image">
               <div class="title">计划书微信分享缩略图</div>
-              <div class="content wechat">
-                <img width="100%"
+              <div class="content wechat"
+                   :class="{ active: companyInfo.company_details.proposal_share_pic_url }">
+                <el-image
+                  style="width: 280px; height: 104px"
+                  :src="companyInfo.company_details.proposal_share_pic_url"
+                  fit="contain"></el-image>
+                <!-- <img width="100%"
                      height="100%"
                      :style="{ opacity: `${!companyInfo.company_details.proposal_share_pic_url ? 0 : 1}` }" 
                      :src="companyInfo.company_details.proposal_share_pic_url"
-                     alt="">
+                     alt=""> -->
               </div>
             </div>
             <div class="image">
@@ -169,10 +195,14 @@
             <div class="content share-card">
               <div class="share-image"
                    :style="{ opacity: `${!companyInfo.company_details.proposal_share_pic_url ? 0 : 1}` }" >
-                <img width="100%"
+                <!-- <img width="100%"
                      height="100%"
                      :src="companyInfo.company_details.proposal_share_pic_url"
-                     alt="">
+                     alt=""> -->
+                <el-image
+                  style="width: 52px; height: 52px;background-color: #fff;"
+                  :src="companyInfo.company_details.proposal_share_pic_url"
+                  fit="contain"></el-image> 
               </div>
               <div class="share-title">计划书微信分享标题</div>
               <div class="share-desc">
@@ -201,6 +231,16 @@ export default {
       visible: false,
       loading: false,
       companyInfo: {}
+    }
+  },
+  computed: {
+    need2hint() {
+      if (!this.companyInfo.company_details) return false
+      const { proposal_log_pic_url,
+              proposal_corner_pic_url,
+              proposal_share_pic_url,
+              proposal_share_description } = this.companyInfo.company_details
+      return !(proposal_log_pic_url && proposal_corner_pic_url && proposal_share_pic_url && proposal_share_description)
     }
   },
   methods: {
@@ -294,6 +334,9 @@ export default {
             &.wechat {
               background-image: url(../../assets/images/proposal-share-placeholder.png);
             }
+            &.active {
+              background-image: none;
+            }
           }
         }
       }
@@ -317,6 +360,9 @@ export default {
           background-repeat: no-repeat;
           background-size: 45%, 85%, 45%;
           background-position: 16px 20px, 16px 58px, 16px 274px;
+          &.active {
+            background-image: none;
+          }
           .preview-logo {
             position: absolute;
             top: 16px;

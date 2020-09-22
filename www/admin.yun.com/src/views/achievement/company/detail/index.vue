@@ -66,7 +66,7 @@
         </div>
         <!-------------------------------->
         <div>
-          回访成功日期
+          回访日期
           <span>{{ policyInfo.visit_at_str || '-'}}</span>
         </div>
         <div>

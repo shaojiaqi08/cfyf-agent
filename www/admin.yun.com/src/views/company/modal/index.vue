@@ -14,9 +14,15 @@
             :show-file-list="false"
             :on-success="(...a) => handleAvatarSuccess('proposal_log_pic', ...a)"
             :before-upload="beforeAvatarUpload">
-            <img v-if="formModel.proposal_log_pic_url"
+            <!-- <img v-if="formModel.proposal_log_pic_url"
                  :src="formModel.proposal_log_pic_url"
-                 class="avatar">
+                 class="avatar"> -->
+            <el-image
+                  v-if="formModel.proposal_log_pic_url"
+                  style="width: 262px; height: 120px"
+                  :src="formModel.proposal_log_pic_url"
+                  fit="contain"
+                  class="avatar"></el-image>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div class="tips">
@@ -31,9 +37,15 @@
             :show-file-list="false"
             :on-success="(...a) => handleAvatarSuccess('proposal_corner_pic', ...a)"
             :before-upload="beforeAvatarUpload">
-            <img v-if="formModel.proposal_corner_pic_url"
+            <!-- <img v-if="formModel.proposal_corner_pic_url"
                  :src="formModel.proposal_corner_pic_url"
-                 class="avatar">
+                 class="avatar"> -->
+            <el-image
+                  v-if="formModel.proposal_corner_pic_url"
+                  style="width: 262px; height: 120px"
+                  :src="formModel.proposal_corner_pic_url"
+                  fit="contain"
+                  class="avatar"></el-image>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div class="tips">
@@ -46,17 +58,25 @@
         <div class="content">
           <div class="preview-logo"
                :style="{ opacity: `${!formModel.proposal_log_pic_url ? 0 : 1}` }">
-            <img width="100%"
+            <!-- <img width="100%"
                      height="100%"
                      :src="formModel.proposal_log_pic_url"
-                     alt="">
+                     alt=""> -->
+            <el-image
+                  style="width: 96px; height: 20px;background-color: #fff;"
+                  :src="formModel.proposal_log_pic_url"
+                  fit="contain"></el-image>
           </div>
           <div class="preview-small-logo"
                :style="{ opacity: `${!formModel.proposal_corner_pic_url ? 0 : 1}` }">
-            <img width="100%"
+            <!-- <img width="100%"
                   height="100%"
                   :src="formModel.proposal_corner_pic_url"
-                  alt="">
+                  alt=""> -->
+            <el-image
+                  style="width: 90px; height: 10px;background-color: #fff;"
+                  :src="formModel.proposal_corner_pic_url"
+                  fit="contain"></el-image>
           </div>
         </div>
       </div>
@@ -71,9 +91,15 @@
             :show-file-list="false"
             :on-success="(...a) => handleAvatarSuccess('proposal_share_pic', ...a)"
             :before-upload="beforeAvatarUpload">
-            <img v-if="formModel.proposal_share_pic_url"
+            <!-- <img v-if="formModel.proposal_share_pic_url"
                  :src="formModel.proposal_share_pic_url"
-                 class="avatar">
+                 class="avatar"> -->
+            <el-image
+                  v-if="formModel.proposal_share_pic_url"
+                  style="width: 262px; height: 120px"
+                  :src="formModel.proposal_share_pic_url"
+                  fit="contain"
+                  class="avatar"></el-image>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div class="tips">
@@ -93,10 +119,14 @@
         <div class="content share-card">
           <div class="share-image"
                :style="{ opacity: `${!formModel.proposal_share_pic_url ? 0 : 1}` }">
-            <img width="100%"
+            <!-- <img width="100%"
                   height="100%"
                   :src="formModel.proposal_share_pic_url"
-                  alt="">
+                  alt=""> -->
+            <el-image
+                  style="width: 52px; height: 52px;background-color: #fff;"
+                  :src="formModel.proposal_share_pic_url"
+                  fit="contain"></el-image>
           </div>
           <div class="share-title">计划书微信分享标题</div>
           <div class="share-desc">

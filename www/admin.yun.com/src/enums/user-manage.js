@@ -83,7 +83,7 @@ export const account_status = {
     enable: '在职',
     disable: '禁用',
     dimission: '离职',
-    invalidation: '失效'
+    cancel: '已注销'
 }
 
 export const accountStatusMap = {
@@ -99,9 +99,9 @@ export const accountStatusMap = {
         label: '离职',
         value: 'dimission'
     },
-    invalidation: {
-        label: '失效',
-        value: 'invalidation'
+    cancel: {
+        label: '已注销',
+        value: 'cancel'
     }
 }
 
@@ -109,7 +109,7 @@ export const accountStatusMap = {
 export const manage_account_status = {
     disable: '禁用',
     enable: '有效',
-    invalidation: '失效'
+    cancel: '已注销'
 }
 
 export const manageAccountStatusMap = {
@@ -121,9 +121,9 @@ export const manageAccountStatusMap = {
         label: '有效',
         value: 'disable'
     },
-    invalidation: {
-        label: '失效',
-        value: 'invalidation'
+    cancel: {
+        label: '已注销',
+        value: 'cancel'
     }
 }
 

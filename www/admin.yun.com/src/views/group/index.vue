@@ -105,7 +105,7 @@ export default {
         case account_status.disable:
           return 'danger'
         case account_status.dimission:
-        case account_status.invalidation:
+        case account_status.cancel:
           return 'info'
         default:
           return 'info'
