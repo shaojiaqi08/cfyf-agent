@@ -183,7 +183,7 @@
                             <div class="name-wrap">
                                 <template v-if="!editting">
                                     {{detailData && detailData.name}}
-                                    <el-link v-if="$checkAuth('/sale/team/modify_name')" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
+                                    <el-link v-if="$checkAuth('/sale/team/modify_name') && detailData.parent_id" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
                                 </template>
                                 <div v-else class="flex">
                                     <el-input size="small" v-model.trim="editName" class="mr8" @keyup.native.enter="submitTeamName"></el-input>
@@ -195,11 +195,11 @@
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false"
-                                     v-if="$checkAuth('/sale/team/disband_team')"
+                                     v-if="$checkAuth('/sale/team/disband_team') && detailData.parent_id"
                                      type="minor"
                                      class="flex-center dismiss-button mr30"
                                      @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button v-if="$checkAuth('/sale/team/change_team_parent')" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>修改上级团队</el-button>
+                            <el-button v-if="$checkAuth('/sale/team/change_team_parent') && detailData.parent_id" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>修改上级团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
