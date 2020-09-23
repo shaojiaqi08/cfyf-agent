@@ -113,6 +113,7 @@
                    :class="{ active: companyInfo.company_details.proposal_log_pic_url }">
                 <el-image
                   style="width: 280px; height: 100px"
+                  v-if="companyInfo.company_details.proposal_log_pic_url"
                   :src="companyInfo.company_details.proposal_log_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
@@ -128,6 +129,7 @@
                    :class="{ active: companyInfo.company_details.proposal_corner_pic_url }">
                 <el-image
                   style="width: 280px; height: 100px"
+                  v-if="companyInfo.company_details.proposal_corner_pic_url"
                   :src="companyInfo.company_details.proposal_corner_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
@@ -174,6 +176,7 @@
                    :class="{ active: companyInfo.company_details.proposal_share_pic_url }">
                 <el-image
                   style="width: 280px; height: 104px"
+                  v-if="companyInfo.company_details.proposal_share_pic_url"
                   :src="companyInfo.company_details.proposal_share_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
