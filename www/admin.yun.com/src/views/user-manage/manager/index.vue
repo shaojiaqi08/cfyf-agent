@@ -75,18 +75,18 @@
                         <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                         <el-table-column label="账号" prop="username" align="center"></el-table-column>
                         <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                        <el-table-column label="开通日期" prop="open_at" align="center">
+                        <el-table-column label="新增时间" prop="open_at" align="center">
                             <template v-slot="{row}">
                                 <span v-if="!row.open_at">-</span>
                                 <span v-else>{{formatDate(new Date(row.open_at * 1000), 'yyyy-MM-dd')}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column label="当前状态" prop="account_status_str" align="center" width="120">
+                        <el-table-column label="状态" prop="account_status_str" align="center" width="120">
                             <template v-slot="{row}">
                                 <el-tag :type="statusColorMap[row.account_status]">{{row.account_status_str}}</el-tag>
                             </template>
                         </el-table-column>
-                        <el-table-column label="失效日期" prop="close_at" align="center">
+                        <el-table-column label="注销日期" prop="close_at" align="center">
                             <template v-slot="{row}">
                                 <span v-if="!row.close_at">-</span>
                                 <span v-else>{{formatDate(new Date(row.close_at * 1000), 'yyyy-MM-dd')}}</span>
@@ -95,12 +95,12 @@
                         <el-table-column label="操作" prop="operate" :width="200" align="center">
                             <template v-slot="{row, $index}">
                                 <template v-if="row.account_status !== manageAccountStatusMap.cancel.value && row.is_super_user === superUserKey.NO">
-                                    <el-link v-if="$checkAuth('/manager/admin/close')" type="primary" class="mr8" @click="lostEffect(row.id, $index)">使失效</el-link>
+                                    <el-link v-if="$checkAuth('/manager/admin/close')" type="primary" class="mr8" @click="lostEffect(row.id, $index)">注销</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === 'disable' ? '启用' : '禁用'}}</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>
-                                <template v-else>
+                                <template v-else-if="row.account_status !== manageAccountStatusMap.cancel.value && row.is_super_user === superUserKey.YES">
                                     <el-link v-if="$checkAuth('/manager/admin/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                     <el-link v-if="$checkAuth('/manager/admin/update')" type="primary" @click="edit(row)">编辑</el-link>
                                 </template>

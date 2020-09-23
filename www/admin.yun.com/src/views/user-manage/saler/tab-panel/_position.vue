@@ -20,7 +20,7 @@
                     <list-item class="list-label" :tips-content="item.label">
                         <div>{{item.label}}</div>
                     </list-item>
-                    <div v-if="item.sales_count">{{ item.sales_count }}人</div>
+                    <div>{{ item.sales_count || 0 }}人</div>
                 </div>
             </div>
             <div class="tc mt30" v-if="!lvData.length">暂无数据</div>
@@ -36,12 +36,11 @@
                         {{selPosName}}
                     </div>
                     <div class="flex-center">
-                        <el-tooltip content="角色内无成员才可以删除"
+                        <el-tooltip content="职位内无成员才可以删除"
                                     v-if="$checkAuth('/manager/admin_position/delete')"
-                                    :disabled="tableList.length <= 0"
                                     placement="top">
                             <el-link :style="{lineHeight: '20px', color: tableList.length > 0 ? '#999': null}"
-                                        :disabled="tableList.length > 0"
+                                        :disabled="tableList.length <= 0"
                                         :underline="false"
                                         type="minor"
                                         class="mr30 del-link"
@@ -53,18 +52,18 @@
                                     size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                     </div>
                 </div>
-                <el-table :data="tableList" v-loading="tableLoading" border :max-height="maxHeight">
+                <el-table :data="tableList" v-loading="tableLoading" border :max-height="maxHeight - 70">
                     <el-table-column label="姓名" prop="real_name" width="150px" align="center"></el-table-column>
                     <el-table-column label="账号" prop="username" width="150px" align="center"></el-table-column>
                     <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
                     <el-table-column label="职位" prop="sales_position.name" width="150px" align="center"></el-table-column>
                     <el-table-column label="所属团队" prop="team.name" width="150px" align="center"></el-table-column>
-                    <el-table-column label="入职时间" width="150px" prop="join_date" align="center">
+                    <el-table-column label="新增时间" width="150px" prop="join_date" align="center">
                         <template v-slot="{row}">
                             <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="离职时间" width="150px" prop="close_at" align="center">
+                    <el-table-column label="注销时间" width="150px" prop="close_at" align="center">
                         <template v-slot="{row}">
                             <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                             <span v-else>-</span>
@@ -82,7 +81,7 @@
                                 <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">离职</el-link>
+                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">注销</el-link>
                             </template>
                             <span v-else>-</span>
                         </template>
@@ -319,9 +318,9 @@
             closeDialog() {
                 this.editRoleDialogVisible = false
             },
-            // 离职
+            // 注销
             dimission(id, index) {
-                this.confirm('账号离职后不可恢复，是否确认离职？', '离职').then(() => {
+                this.confirm('账号注销后不可恢复，是否确认注销？', '注销').then(() => {
                     dimission({id}).then(res => {
                         this.$set(this.tableList, index, res)
                         this.$message.success('操作成功!')

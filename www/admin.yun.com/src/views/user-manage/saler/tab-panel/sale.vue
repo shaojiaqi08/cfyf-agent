@@ -22,7 +22,7 @@
                         <list-item class="list-label" :tips-content="row.name">
                             <div>{{row.name}}</div>
                         </list-item>
-                        <div v-if="row.sales_count">{{ row.sales_count }}人</div>
+                        <div>{{ row.sales_count || 0 }}人</div>
                     </div>
                 </template>
                 <el-button slot="footer"
@@ -101,7 +101,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} ~ ${resignationDateRange[1]}` : '入职时间'}}</span>
+                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} ~ ${resignationDateRange[1]}` : '新增时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -126,7 +126,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} ~ ${closeDateRange[1]}` : '离职时间'}}</span>
+                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} ~ ${closeDateRange[1]}` : '注销时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -148,12 +148,12 @@
                     <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
                     <el-table-column label="职位" prop="sales_position.name" width="150px" align="center"></el-table-column>
                     <el-table-column label="所属团队" prop="team.name" width="150px" align="center"></el-table-column>
-                    <el-table-column label="入职时间" width="150px" prop="join_date" align="center">
+                    <el-table-column label="新增时间" width="150px" prop="join_date" align="center">
                         <template v-slot="{row}">
                             <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="离职时间" width="150px" prop="close_at" align="center">
+                    <el-table-column label="注销时间" width="150px" prop="close_at" align="center">
                         <template v-slot="{row}">
                             <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                             <span v-else>-</span>
@@ -171,7 +171,7 @@
                                 <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">离职</el-link>
+                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">注销</el-link>
                             </template>
                             <span v-else>-</span>
                         </template>
@@ -213,12 +213,12 @@
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                             <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
-                            <el-table-column label="入职时间" prop="join_date" align="center">
+                            <el-table-column label="新增时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="离职时间" prop="close_at" align="center">
+                            <el-table-column label="注销时间" prop="close_at" align="center">
                                 <template v-slot="{row}">
                                     <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                                     <span v-else>-</span>
@@ -242,12 +242,12 @@
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                             <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
-                            <el-table-column label="入职时间" prop="join_date" align="center">
+                            <el-table-column label="新增时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="离职时间" prop="close_at" align="center">
+                            <el-table-column label="注销时间" prop="close_at" align="center">
                                 <template v-slot="{row}">
                                     <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                                     <span v-else>-</span>
@@ -472,9 +472,9 @@
                 this.editDialogId = id
                 this.editDialogVisible = true
             },
-            // 离职
+            // 注销
             dimission(id, index) {
-                this.confirm('账号离职后不可恢复，是否确认离职？', '离职').then(() => {
+                this.confirm('账号注销后不可恢复，是否确认注销？', '注销').then(() => {
                     dimission({id}).then(res => {
                         this.$set(this.allSalesData, index, res)
                         this.$message.success('操作成功!')

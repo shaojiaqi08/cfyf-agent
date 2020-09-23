@@ -39,7 +39,7 @@
           </el-col>
           <el-col class="mb12" :span="6">
             <span class="item-label">所属城市</span>
-            <span class="item-value">{{ companyInfo.province_name }}{{ companyInfo.city_name }}</span>
+            <span class="item-value">{{ companyInfo.province_name }}{{ companyInfo.city_name }}{{ companyInfo.district_name }}</span>
           </el-col>
           <el-col class="mb12" :span="6">
             <span class="item-label">详细地址</span>
@@ -62,29 +62,29 @@
       <div class="company-info-header">
         财务信息
       </div>
-      <div class="company-info-body" v-if="companyInfo.company_finance">
+      <div class="company-info-body" v-if="companyFinanceInfo.id">
         <el-row>
           <el-col class="mb12" :span="6">
             <span class="item-label">账户类型</span>
-            <span class="item-value">{{ companyInfo.company_finance.account_type_str }}</span>
+            <span class="item-value">{{ companyFinanceInfo.account_type_str }}</span>
           </el-col>
           <el-col class="mb12" :span="6">
             <span class="item-label">户名</span>
-            <span class="item-value">{{ companyInfo.company_finance.account_name }}%</span>
+            <span class="item-value">{{ companyFinanceInfo.account_name }}</span>
           </el-col>
           <el-col class="mb12" :span="6">
             <span class="item-label">开户地址</span>
-            <span class="item-value">{{ companyInfo.company_finance.account_addr }}</span>
+            <span class="item-value">{{ companyFinanceInfo.account_addr }}</span>
           </el-col>
           <el-col class="mb12" :span="6">
             <span class="item-label">开户银行</span>
-            <span class="item-value">{{ companyInfo.company_finance.bank_name }}</span>
+            <span class="item-value">{{ companyFinanceInfo.bank_name }}</span>
           </el-col>
         </el-row>
         <el-row>
           <el-col class="mb12" :span="6">
             <span class="item-label">银行卡号</span>
-            <span class="item-value">{{ companyInfo.company_finance.account_number }}</span>
+            <span class="item-value">{{ companyFinanceInfo.account_number }}</span>
           </el-col>
         </el-row>
       </div>
@@ -104,38 +104,38 @@
                      @click="edit"> 编辑</el-button>
         </span>
       </div>
-      <div class="company-info-body" v-if="companyInfo.company_details">
+      <div class="company-info-body" v-if="companyGetBrandInfo.id">
         <div class="preview-card mb16">
           <div class="preview-images">
             <div class="image">
               <div class="title">计划书PDF左上角LOGO</div>
               <div class="content logo"
-                   :class="{ active: companyInfo.company_details.proposal_log_pic_url }">
+                   :class="{ active: companyGetBrandInfo.proposal_log_pic_url }">
                 <el-image
                   style="width: 280px; height: 100px"
-                  v-if="companyInfo.company_details.proposal_log_pic_url"
-                  :src="companyInfo.company_details.proposal_log_pic_url"
+                  v-if="companyGetBrandInfo.proposal_log_pic_url"
+                  :src="companyGetBrandInfo.proposal_log_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
                      height="100%"
-                     :style="{ opacity: `${!companyInfo.company_details.proposal_log_pic_url ? 0 : 1}` }"
-                     :src="companyInfo.company_details.proposal_log_pic_url"
+                     :style="{ opacity: `${!companyGetBrandInfo.proposal_log_pic_url ? 0 : 1}` }"
+                     :src="companyGetBrandInfo.proposal_log_pic_url"
                      alt=""> -->
               </div>
             </div>
             <div class="image">
               <div class="title">计划书PDF左下角角标</div>
               <div class="content small-logo"
-                   :class="{ active: companyInfo.company_details.proposal_corner_pic_url }">
+                   :class="{ active: companyGetBrandInfo.proposal_corner_pic_url }">
                 <el-image
                   style="width: 280px; height: 100px"
-                  v-if="companyInfo.company_details.proposal_corner_pic_url"
-                  :src="companyInfo.company_details.proposal_corner_pic_url"
+                  v-if="companyGetBrandInfo.proposal_corner_pic_url"
+                  :src="companyGetBrandInfo.proposal_corner_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
                      height="100%"
-                     :style="{ opacity: `${!companyInfo.company_details.proposal_corner_pic_url ? 0 : 1}` }"
-                     :src="companyInfo.company_details.proposal_corner_pic_url"
+                     :style="{ opacity: `${!companyGetBrandInfo.proposal_corner_pic_url ? 0 : 1}` }"
+                     :src="companyGetBrandInfo.proposal_corner_pic_url"
                      alt=""> -->
               </div>
             </div>
@@ -144,25 +144,25 @@
             <div class="title">效果预览</div>
             <div class="content">
               <div class="preview-logo"
-                   :style="{ opacity: `${!companyInfo.company_details.proposal_log_pic_url ? 0 : 1}` }">
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_log_pic_url ? 0 : 1}` }">
                 <!-- <img width="100%"
                      height="100%"
-                     :src="companyInfo.company_details.proposal_log_pic_url"
+                     :src="companyGetBrandInfo.proposal_log_pic_url"
                      alt=""> -->
                 <el-image
                   style="width: 96px; height: 24px;background-color: #fff;"
-                  :src="companyInfo.company_details.proposal_log_pic_url"
+                  :src="companyGetBrandInfo.proposal_log_pic_url"
                   fit="contain"></el-image>
               </div>
               <div class="preview-small-logo"
-                   :style="{ opacity: `${!companyInfo.company_details.proposal_corner_pic_url ? 0 : 1}` }">
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_corner_pic_url ? 0 : 1}` }">
                 <!-- <img width="100%"
                      height="100%"
-                     :src="companyInfo.company_details.proposal_corner_pic_url"
+                     :src="companyGetBrandInfo.proposal_corner_pic_url"
                      alt=""> -->
                 <el-image
                   style="width: 90px; height: 10px;background-color: #fff;"
-                  :src="companyInfo.company_details.proposal_corner_pic_url"
+                  :src="companyGetBrandInfo.proposal_corner_pic_url"
                   fit="contain"></el-image>
               </div>
             </div>
@@ -173,23 +173,23 @@
             <div class="image">
               <div class="title">计划书微信分享缩略图</div>
               <div class="content wechat"
-                   :class="{ active: companyInfo.company_details.proposal_share_pic_url }">
+                   :class="{ active: companyGetBrandInfo.proposal_share_pic_url }">
                 <el-image
                   style="width: 280px; height: 104px"
-                  v-if="companyInfo.company_details.proposal_share_pic_url"
-                  :src="companyInfo.company_details.proposal_share_pic_url"
+                  v-if="companyGetBrandInfo.proposal_share_pic_url"
+                  :src="companyGetBrandInfo.proposal_share_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
                      height="100%"
-                     :style="{ opacity: `${!companyInfo.company_details.proposal_share_pic_url ? 0 : 1}` }" 
-                     :src="companyInfo.company_details.proposal_share_pic_url"
+                     :style="{ opacity: `${!companyGetBrandInfo.proposal_share_pic_url ? 0 : 1}` }" 
+                     :src="companyGetBrandInfo.proposal_share_pic_url"
                      alt=""> -->
               </div>
             </div>
             <div class="image">
               <div class="title">计划书微信分享描述</div>
               <div class="content">
-                {{ companyInfo.company_details.proposal_share_description }}
+                {{ companyGetBrandInfo.proposal_share_description }}
               </div>
             </div>
           </div>
@@ -197,32 +197,34 @@
             <div class="title">效果预览</div>
             <div class="content share-card">
               <div class="share-image"
-                   :style="{ opacity: `${!companyInfo.company_details.proposal_share_pic_url ? 0 : 1}` }" >
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_share_pic_url ? 0 : 1}` }" >
                 <!-- <img width="100%"
                      height="100%"
-                     :src="companyInfo.company_details.proposal_share_pic_url"
+                     :src="companyGetBrandInfo.proposal_share_pic_url"
                      alt=""> -->
                 <el-image
                   style="width: 52px; height: 52px;background-color: #fff;"
-                  :src="companyInfo.company_details.proposal_share_pic_url"
+                  :src="companyGetBrandInfo.proposal_share_pic_url"
                   fit="contain"></el-image> 
               </div>
               <div class="share-title">计划书微信分享标题</div>
               <div class="share-desc">
-                {{ companyInfo.company_details.proposal_share_description }}
+                {{ companyGetBrandInfo.proposal_share_description }}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <edit-company-info :visible.sync="visible" :info="companyInfo" @fresh="getCompanyDetail"></edit-company-info>
+    <edit-company-info :visible.sync="visible" :info="companyGetBrandInfo" @fresh="getCompanyGetBrandInfo"></edit-company-info>
   </el-scrollbar>
 </template>
 
 <script>
 import editCompanyInfo from './modal/index'
-import { getCompanyDetail } from '@/apis/modules/company'
+import { getCompanyInfo,
+         getCompanyFinanceInfo,
+         getCompanyGetBrandInfo } from '@/apis/modules/company'
 import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
 export default {
   components: { 
@@ -233,7 +235,9 @@ export default {
     return {
       visible: false,
       loading: false,
-      companyInfo: {}
+      companyInfo: {},
+      companyFinanceInfo: {},
+      companyGetBrandInfo: {}
     }
   },
   computed: {
@@ -250,15 +254,29 @@ export default {
     edit() {
       this.visible = true
     },
-    getCompanyDetail() {
+    getCompanyInfo() {
       this.loading = true
-      getCompanyDetail().then(res => {
+      getCompanyInfo().then(res => {
         this.companyInfo = res
       }).finally(() => this.loading = false)
-    }
+    },
+    getCompanyFinanceInfo() {
+      this.loading = true
+      getCompanyFinanceInfo().then(res => {
+        this.companyFinanceInfo = res
+      }).finally(() => this.loading = false)
+    },
+    getCompanyGetBrandInfo() {
+      this.loading = true
+      getCompanyGetBrandInfo().then(res => {
+        this.companyGetBrandInfo = res
+      }).finally(() => this.loading = false)
+    },
   },
   mounted() {
-    this.getCompanyDetail()
+    this.getCompanyInfo()
+    this.getCompanyFinanceInfo()
+    this.getCompanyGetBrandInfo()
   }
 }
 </script>
@@ -328,6 +346,10 @@ export default {
             background-size: contain;
             background-position: 50%;
             background-repeat: no-repeat;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 5;
+            overflow: hidden;
             &.logo {
               background-image: url(../../assets/images/proposal-logo-placeholder.png);
             }
@@ -408,6 +430,10 @@ export default {
               width: 168px;
               font-size: 13px;
               line-height: 18px;
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 3;
+              overflow: hidden;
             }
           }
         }

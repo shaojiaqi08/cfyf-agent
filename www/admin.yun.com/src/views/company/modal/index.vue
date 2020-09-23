@@ -110,6 +110,7 @@
           <div class="title mb14">计划书微信分享描述</div>
           <el-input type="textarea"
                     rows="6"
+                    :maxlength="100"
                     placeholder="请输入计划书微信分享描述"
                     v-model="formModel.proposal_share_description"></el-input>
         </div>
@@ -137,7 +138,7 @@
     </div>
     <span slot="footer">
         <el-button @click="closeDialog" :loading="submitting">取消</el-button>
-        <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submit">确认</el-button>
+        <el-button type="primary" :loading="submitting" :disabled="submitting" @click="submit">保存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -162,7 +163,7 @@ export default {
               proposal_corner_pic_url,
               proposal_share_pic_id,
               proposal_share_pic_url,
-              proposal_share_description } = this.info.company_details
+              proposal_share_description } = this.info
       if (v) {
         Object.assign(this.formModel, {
           proposal_log_pic_id,
@@ -194,10 +195,11 @@ export default {
   methods: {
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
+      const isPNG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
 
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+      if (!isJPG || !isPNG) {
+        this.$message.error('上传的图片只能是 JPG / PNG 格式!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
@@ -314,6 +316,10 @@ export default {
           width: 168px;
           font-size: 13px;
           line-height: 18px;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
         }
       }
     }
