@@ -463,7 +463,7 @@
             },
             handleAddTeam() {
                 this.addTeamDialogVisible = true
-                this.ajaxNoTeamSalesData(this.selTeam)
+                this.ajaxNoTeamSalesData()
             },
             // 新增/编辑销售
             editSales(id) {
