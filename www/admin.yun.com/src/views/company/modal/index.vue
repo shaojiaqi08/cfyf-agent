@@ -197,14 +197,14 @@ export default {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isJPG || !isPNG) {
+      console.log(!isJPG, !isPNG)
+      if (!isJPG && !isPNG) {
         this.$message.error('上传的图片只能是 JPG / PNG 格式!')
       }
       if (!isLt2M) {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M
+      return (isJPG || isPNG) && isLt2M
     },
     handleAvatarSuccess(type, res) {
       this.formModel[`${type}_url`] = res.data.url
