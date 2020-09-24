@@ -15,8 +15,8 @@
             <el-form-item label="身份证号" prop="identity_card">
                 <el-input placeholder="请输入身份证号" v-model="formModel.identity_card"></el-input>
             </el-form-item>
-            <el-form-item label="入职日期" prop="resignation_at">
-                <el-date-picker placeholder="请选择入职日期" style="width: 100%" type="date" v-model="formModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>
+            <el-form-item label="新增时间" prop="resignation_at">
+                <el-date-picker placeholder="请选择新增时间" style="width: 100%" type="date" v-model="formModel.resignation_at" value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
             <el-form-item label="手机号" prop="mobile">
                 <el-input placeholder="请输入手机号" v-model="formModel.mobile"></el-input>

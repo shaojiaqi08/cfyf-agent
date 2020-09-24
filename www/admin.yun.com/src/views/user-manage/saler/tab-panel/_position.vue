@@ -40,7 +40,7 @@
                                     v-if="$checkAuth('/manager/admin_position/delete')"
                                     placement="top">
                             <el-link :style="{lineHeight: '20px', color: tableList.length > 0 ? '#999': null}"
-                                        :disabled="tableList.length <= 0"
+                                        :disabled="tableList.length > 0"
                                         :underline="false"
                                         type="minor"
                                         class="mr30 del-link"
@@ -329,6 +329,7 @@
             },
             triggerStatus(row) {
                 const {id, account_status: curStatus} = row // eslint-disable-line
+                console.log(curStatus, 'kkk')
                 const willDisable = curStatus !== 'disable'
                 const content = willDisable ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
                 const btnTxt = willDisable ? '禁用' : '启用'

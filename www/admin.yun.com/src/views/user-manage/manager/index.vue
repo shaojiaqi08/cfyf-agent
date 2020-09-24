@@ -24,7 +24,7 @@
                         <div class="list-label">
                             {{ row.name }}
                         </div>
-                        <div v-if="row.sales_count">{{ row.sales_count }}人</div>
+                        <div>{{ row.sales_count || 0 }}人</div>
                     </div>
                 </template>
                 <el-button slot="footer"
@@ -427,7 +427,7 @@
                     updateStatus({id, account_status}).then(() => {
                         this.$message.success(`${isDisabled ? '禁用' : '启用'}成功!`)
                         row.account_status = account_status
-                        row.account_status_str = isDisabled ? '禁用' : '在职'
+                        row.account_status_str = isDisabled ? '禁用' : '正常'
                     })
                 }).catch(() => {})
             },

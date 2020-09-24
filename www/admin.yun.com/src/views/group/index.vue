@@ -21,7 +21,7 @@
           <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
           <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
           <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="入职日期" prop="resignation_at_str" width="162px" align="center"></el-table-column>
+          <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
           <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
             <template slot-scope="{row}">
               <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
@@ -41,7 +41,7 @@
           <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
           <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
           <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="入职日期" prop="resignation_at_str" width="162px" align="center"></el-table-column>
+          <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
           <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
             <template slot-scope="{row}">
               <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
@@ -66,7 +66,7 @@
             <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
             <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
             <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
-            <el-table-column label="入职日期" prop="resignation_at_str" width="162px" align="center"></el-table-column>
+            <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
             <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
               <template slot-scope="{row}">
                 <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>

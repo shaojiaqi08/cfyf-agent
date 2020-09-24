@@ -27,7 +27,7 @@
                 </template>
                 <el-button slot="footer"
                            type="primary"
-                           v-if="$checkAuth('/sale/team/create') && (selTeam && selTeam > 0)"
+                           v-if="$checkAuth('/sale/team/create')"
                            class="mt8 mb16 ml16 mr16"
                            @click="handleAddTeam"
                            size="small">
@@ -389,10 +389,7 @@
                 return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
             },
             computedTeamData() {
-                return [{
-                    name: '全部销售',
-                    id: -1
-                }, ...this.teamData]
+                return [...this.teamData]
             }
         },
         methods: {

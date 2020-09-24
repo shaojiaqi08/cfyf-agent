@@ -101,10 +101,10 @@
                      type="primary"
                      size="small"
                      class="ml16"
-                     @click="edit"> 编辑</el-button>
+                     @click="edit">编辑</el-button>
         </span>
       </div>
-      <div class="company-info-body" v-if="companyGetBrandInfo.id">
+      <div class="company-info-body">
         <div class="preview-card mb16">
           <div class="preview-images">
             <div class="image">
@@ -242,11 +242,11 @@ export default {
   },
   computed: {
     need2hint() {
-      if (!this.companyInfo.company_details) return false
+      if (!this.companyGetBrandInfo.company_id) return false
       const { proposal_log_pic_url,
               proposal_corner_pic_url,
               proposal_share_pic_url,
-              proposal_share_description } = this.companyInfo.company_details
+              proposal_share_description } = this.companyGetBrandInfo
       return !(proposal_log_pic_url && proposal_corner_pic_url && proposal_share_pic_url && proposal_share_description)
     }
   },
