@@ -338,7 +338,7 @@
                     const account_status = willDisable ? 'disable' : 'enable'
                     updateSalesStatus({id, account_status}).then(() => {
                         row.account_status = willDisable ? 'disable' : 'enable'
-                        row.account_status_str = willDisable ? '禁用' : '在职'
+                        row.account_status_str = willDisable ? '已禁用' : '正常'
                         this.$message.success('操作成功!')
                     }).catch(() => {})
                 })
