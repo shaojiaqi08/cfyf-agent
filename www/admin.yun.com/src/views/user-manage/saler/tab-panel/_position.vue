@@ -546,7 +546,7 @@
                     this.positionLoading = false
                 })
             },
-            confirm(content, btnTxt, btnColor='#FF4C4C') {
+            confirm(content, btnTxt, btnColor='#FF4C4C', btnClass='el-button--danger') {
                 const h = this.$createElement
                 return this.$confirm(
                     h('div', [
@@ -565,7 +565,7 @@
                     '提示',
                     {
                         confirmButtonText: btnTxt,
-                        confirmButtonClass: 'disable-button',
+                        confirmButtonClass: btnClass,
                         customClass: 'manager-msg-box'
                     }
                 )
