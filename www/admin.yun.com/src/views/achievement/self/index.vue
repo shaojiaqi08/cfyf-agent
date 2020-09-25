@@ -260,7 +260,7 @@
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px"></el-table-column>
+        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px" v-if="$checkAuth('/my_performance/sales_commission')"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
