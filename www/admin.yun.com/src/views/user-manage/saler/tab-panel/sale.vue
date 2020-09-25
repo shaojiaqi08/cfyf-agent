@@ -166,7 +166,7 @@
                     </el-table-column>
                     <el-table-column label="操作" fixed="right" prop="operate" min-width="260px" align="center">
                         <template v-slot="{row, $index}">
-                            <template v-if="row.account_status!==accountStatusMap.dimission.value && row.account_status!==accountStatusMap.cancel.value">
+                            <template v-if="row.account_status!==accountStatusMap.cancel.value">
                                 <el-link v-if="$checkAuth('/sale/update')" type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
@@ -268,9 +268,9 @@
         <!--新增团队-->
         <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamDataWithoutAll" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->
-        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="ajaxDetail"></set-leader-dialog>
+        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="refresh"></set-leader-dialog>
         <!--修改上级团队-->
-        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="ajaxDetail"></transfer-team-dialog>
+        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="refresh"></transfer-team-dialog>
         <!--调整团队成员-->
         <team-people-dialog :loading="groupSalesLoading"
                             :visible.sync="teamPeopleVisible"
@@ -399,6 +399,10 @@
             clearValue,
             hasValue,
             formatDate,
+            refresh(id) {
+                this.ajaxDetail(id)
+                this.ajaxTeamData()
+            },
             // 上级团队团队下拉数据
             ajaxTransferTeamSelData() {
                 this.dialogLoading = true
@@ -555,6 +559,7 @@
                 setMember(params).then(() => {
                     this.$message.success('操作成功!')
                     this.ajaxDetail(team_id)
+                    this.ajaxTeamData()
                     this.teamPeopleVisible = false
                 }).catch(() => {}).finally(() => {
                     this.groupSelected = []

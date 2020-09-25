@@ -76,7 +76,7 @@
                     </el-table-column>
                     <el-table-column label="操作" fixed="right" prop="operate" min-width="260px" align="center">
                         <template v-slot="{row, $index}">
-                            <template v-if="row.account_status!==accountStatusMap.dimission.value && row.account_status!==accountStatusMap.cancel.value">
+                            <template v-if="row.account_status!==accountStatusMap.cancel.value">
                                 <el-link v-if="$checkAuth('/sale/update')" type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
