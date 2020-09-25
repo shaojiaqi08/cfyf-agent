@@ -358,7 +358,7 @@
 
 <script>
 import EditModal from './modal/edit';
-import { getCompanyPolicyList, getCompanyPolicyStatistics, getSalesData, getSalesTeamData, getDateRange, policyExport } from '@/apis/modules/achievement'
+import { getCompanyPolicyList, getCompanyPolicyStatistics, getSalesData, getSalesTeamData, getDateRange, exportCompanyPolicy } from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -417,7 +417,7 @@ export default {
   },
   methods: {
     policyExport() {
-      const url = `${policyExport}?${qs.stringify({...this.searchModelFormat(true)})}`
+      const url = `${exportCompanyPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
       this.exporting = true
       downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
         // this.$message.success('导出成功')

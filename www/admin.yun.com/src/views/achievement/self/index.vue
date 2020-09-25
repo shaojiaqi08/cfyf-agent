@@ -283,7 +283,7 @@
   </div>
 </template>
 <script>
-import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange, policyExport} from '@/apis/modules/achievement'
+import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange, exportSelfPolicy} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -335,7 +335,7 @@ export default {
   },
   methods: {
     policyExport() {
-      const url = `${policyExport}?${qs.stringify({...this.searchModelFormat(true)})}`
+      const url = `${exportSelfPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
       this.exporting = true
       downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
         // this.$message.success('导出成功')
