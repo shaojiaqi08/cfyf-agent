@@ -1,10 +1,10 @@
 <template>
-  <el-scrollbar class="scrollbar" style="height: 94vh;">
+  <!-- <el-scrollbar class="scrollbar" style="height: 94vh;"> -->
     <div class="company-info-card">
       <div class="company-info-header">
         <span>团队成员</span>
       </div>
-      <div class="company-info-body">
+      <el-scrollbar class="scrollbar company-info-body" style="height: 94vh;">
         <div class="block-header">
           <div class="main-title">
             {{ detailInfo.name }}
@@ -16,52 +16,8 @@
         <div class="table-header">
           在职团队主管人数：{{ detailInfo.leader_count }} 人
         </div>
-        <el-table class="mb16" :data="detailInfo.leader" border v-loading="loading">
-          <el-table-column label="姓名" prop="real_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
-          <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
-          <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
-          <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
-            <template slot-scope="{row}">
-              <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
-            <template slot-scope="{row}">
-              {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="table-header">
-          在职团队成员人数：{{ detailInfo.member_count }} 人
-        </div>
-        <el-table class="mb16" :data="detailInfo.member" border v-loading="loading">
-          <el-table-column label="姓名" prop="real_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
-          <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
-          <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
-          <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
-          <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
-            <template slot-scope="{row}">
-              <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
-            <template slot-scope="{row}">
-              {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
-            </template>
-          </el-table-column>
-        </el-table>
-        <div v-for="(item, index) in detailInfo.child_teams"
-             :key="index">
-          <div class="block-header mb16">
-            <div class="main-title">
-              {{ item.name }}
-              <el-tag type="info">子团队</el-tag>
-            </div>
-          </div>
-          <el-table class="mb16" :data="item.member" border v-loading="loading">
+        <div class="ml16 mr16 mb16">
+          <el-table :data="detailInfo.leader" border v-loading="loading">
             <el-table-column label="姓名" prop="real_name" width="162px" align="center"></el-table-column>
             <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
             <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
@@ -79,9 +35,59 @@
             </el-table-column>
           </el-table>
         </div>
-      </div>
+        <div class="table-header">
+          在职团队成员人数：{{ detailInfo.member_count }} 人
+        </div>
+        <div class="ml16 mr16 mb16">
+          <el-table :data="detailInfo.member" border v-loading="loading">
+            <el-table-column label="姓名" prop="real_name" width="162px" align="center"></el-table-column>
+            <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
+            <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
+            <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
+            <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
+            <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
+              <template slot-scope="{row}">
+                <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
+              <template slot-scope="{row}">
+                {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <div v-for="(item, index) in detailInfo.child_teams"
+             :key="index">
+          <div class="block-header mb16">
+            <div class="main-title">
+              {{ item.name }}
+              <el-tag type="info">子团队</el-tag>
+            </div>
+          </div>
+          <div class="ml16 mr16 mb16">
+            <el-table :data="item.member" border v-loading="loading">
+              <el-table-column label="姓名" prop="real_name" width="162px" align="center"></el-table-column>
+              <el-table-column label="账号" prop="username" width="162px" align="center"></el-table-column>
+              <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
+              <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
+              <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
+              <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
+                <template slot-scope="{row}">
+                  <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
+                <template slot-scope="{row}">
+                  {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </el-scrollbar>
     </div>
-  </el-scrollbar>
+  <!-- </el-scrollbar> -->
 </template>
 
 <script>
@@ -151,10 +157,11 @@ export default {
     }
   }
   .company-info-body {
-    padding: 16px;
+    padding: 16px 0;
+    padding-bottom: 60px;
     // color: #999;
     .block-header {
-      margin-bottom: 16px;
+      margin: 0 16px 16px;
       padding: 16px;
       background-color: #F5F5F5;
       border-radius: 4px;
@@ -170,6 +177,7 @@ export default {
       }
     }
     .table-header {
+      margin: 0 16px;
       padding: 20px;
       color: #1A1A1A;
       font-weight: 500;
