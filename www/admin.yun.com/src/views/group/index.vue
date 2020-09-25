@@ -110,7 +110,6 @@ export default {
           return 'success'
         case accountStatusMap.disable.value:
           return 'danger'
-        case accountStatusMap.dimission.value:
         case accountStatusMap.cancel.value:
           return 'info'
         default:
