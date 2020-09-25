@@ -184,6 +184,18 @@
              :style="{transform: `translateX(${scrollTranslateX}px)`}"
              v-loading="statisticLoading">
           <div class="item-block">
+            <div v-if="$checkAuth('/team_performance/company_commission')">
+              服务费(元)
+              <template>
+                <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
+              </template>
+            </div>
+            <div v-if="$checkAuth('/team_performance/sales_commission')">
+              佣金(元)
+              <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+            </div>
+          </div>
+          <div class="item-block">
             <div>
               承保保费总计(元)
               <span class="primary">
@@ -281,6 +293,7 @@
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center"></el-table-column>
         <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px" v-if="$checkAuth('/team_performance/company_commission')"></el-table-column>
+        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px" v-if="$checkAuth('/team_performance/sales_commission')"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="170px"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
          <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>

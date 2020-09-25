@@ -103,11 +103,11 @@
           销售团队
           <span>{{ policyInfo.sales_team_name || '-' }}</span>
         </div>
-        <div>
+        <div v-if="$checkAuth('/company_performance/company_commission')">
           服务费(元)
           <span>{{ policyInfo.company_actually_commission || '-' }}</span>
         </div>
-        <div>
+        <div v-if="$checkAuth('/company_performance/sales_commission')">
           佣金(元)
           <span>{{ policyInfo.sales_position_commission || '-' }}</span>
         </div>
