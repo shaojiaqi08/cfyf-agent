@@ -266,7 +266,7 @@
         <!--编辑/新增销售-->
         <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
-        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
+        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamDataWithoutAll" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->
         <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="ajaxDetail"></set-leader-dialog>
         <!--修改上级团队-->
@@ -390,6 +390,9 @@
             },
             computedTeamData() {
                 return [...this.teamData]
+            },
+            teamDataWithoutAll() {
+                return this.teamData.filter(i => i.id !== -1)
             }
         },
         methods: {
@@ -619,7 +622,7 @@
                 const {id, account_status: curStatus} = row // eslint-disable-line
                 const willDisable = curStatus !== 'disable'
                 const content = willDisable ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
-                    const btnTxt = willDisable ? '禁用' : '启用'
+                const btnTxt = willDisable ? '禁用' : '启用'
                 const btnColor = willDisable ? '#FF4C4C' : '#FF9000'
                 const btnClass = willDisable ? undefined : '#FF9000'
                 this.confirm(content, btnTxt, btnColor, btnClass).then(() => {

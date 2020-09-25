@@ -23,12 +23,12 @@
             <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
             <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
             <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
-            <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
+            <el-table-column label="状态" prop="account_status_str" width="180px" align="center">
               <template slot-scope="{row}">
                 <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
+            <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
               <template slot-scope="{row}">
                 {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
               </template>
@@ -45,12 +45,12 @@
             <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
             <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
             <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
-            <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
+            <el-table-column label="状态" prop="account_status_str" width="180px" align="center">
               <template slot-scope="{row}">
                 <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
+            <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
               <template slot-scope="{row}">
                 {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
               </template>
@@ -72,12 +72,12 @@
               <el-table-column label="手机号" prop="mobile" width="162px" align="center"></el-table-column>
               <el-table-column label="职位" prop="position_name" width="162px" align="center"></el-table-column>
               <el-table-column label="新增时间" prop="resignation_at_str" width="162px" align="center"></el-table-column>
-              <el-table-column label="当前状态" prop="account_status_str" width="180px" align="center">
+              <el-table-column label="状态" prop="account_status_str" width="180px" align="center">
                 <template slot-scope="{row}">
                   <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="注销日期" prop="close_at" width="180px" align="center">
+              <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
                 <template slot-scope="{row}">
                   {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
                 </template>

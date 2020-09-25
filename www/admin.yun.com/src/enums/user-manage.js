@@ -82,7 +82,7 @@ export const accountTypeMap = {
 export const account_status = {
     enable: '正常',
     disable: '已禁用',
-    dimission: '离职',
+    // dimission: '离职',
     cancel: '已注销'
 }
 
@@ -95,10 +95,10 @@ export const accountStatusMap = {
         label: '已禁用',
         value: 'disable'
     },
-    dimission: {
-        label: '离职',
-        value: 'dimission'
-    },
+    // dimission: {
+    //     label: '离职',
+    //     value: 'dimission'
+    // },
     cancel: {
         label: '已注销',
         value: 'cancel'

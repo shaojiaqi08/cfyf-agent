@@ -364,7 +364,7 @@
                     }
                 })
             },
-            // 使失效
+            // 使注销
             lostEffect(id, index) {
                 const h = this.$createElement
                 this.$confirm(
@@ -379,11 +379,11 @@
                                 marginRight: '10px'
                             }
                         }),
-                        h('span', '账号失效后无法登录系统，且不可恢复，是否确认失效？')
+                        h('span', '账号注销后无法登录系统，且不可恢复，是否确认注销？')
                     ]),
                     '提示',
                     {
-                        confirmButtonText: '失效',
+                        confirmButtonText: '注销',
                         confirmButtonClass: 'el-button--danger',
                         customClass: 'manager-msg-box'
                     }
