@@ -229,7 +229,7 @@ const necessaryRoutes = [
       header: true,
       menu: true,
       show: true,
-      permission: '/manager'
+      permission: '/company_info'
     },
     component: getView('company')
   },
@@ -241,7 +241,7 @@ const necessaryRoutes = [
       header: true,
       menu: true,
       show: true,
-      permission: '/manager'
+      permission: '/self_and_child_teams'
     },
     component: getView('group')
   },

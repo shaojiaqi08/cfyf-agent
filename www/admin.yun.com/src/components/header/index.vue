@@ -2,12 +2,12 @@
   <div class="header">
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
-      <el-tooltip class="item" effect="dark" content="公司资料" placement="bottom">
+      <el-tooltip v-if="$checkAuth('/company_info')" class="item" effect="dark" content="公司资料" placement="bottom">
         <div class="function-botton" @click="$router.push('/company')">
           <i class="iconfont iconda24_gongsiziliao fs22"></i>
         </div>
       </el-tooltip>
-      <el-tooltip class="item" effect="dark" content="团队成员" placement="bottom">
+      <el-tooltip v-if="$checkAuth('/self_and_child_teams')" class="item" effect="dark" content="团队成员" placement="bottom">
         <div class="function-botton" @click="$router.push('/group')">
           <i class="iconfont iconda24_tuanduichengyuan fs22"></i>
         </div>

@@ -8,7 +8,7 @@
                    class="mr10"
                    :loading="exporting"
                    icon="iconfont iconxiao16_xiazai mr4"
-                   v-if="$checkAuth('/achievement-self/detail')"
+                   v-if="$checkAuth('/company_performance/export')"
                    @click="policyExport">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
@@ -210,13 +210,13 @@
              :style="{transform: `translateX(${scrollTranslateX}px)`}"
              v-loading="statisticLoading">
           <div class="item-block">
-            <div>
+            <div v-if="$checkAuth('/company_performance/company_commission')">
               服务费(元)
               <template>
                 <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
               </template>
             </div>
-            <div>
+            <div v-if="$checkAuth('/company_performance/sales_commission')">
               佣金(元)
               <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
             </div>

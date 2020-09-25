@@ -8,7 +8,7 @@
                    class="mr10"
                    :loading="exporting"
                    icon="iconfont iconxiao16_xiazai mr4"
-                   v-if="$checkAuth('/achievement-self/detail')"
+                   v-if="$checkAuth('/team_performance/export')"
                    @click="policyExport">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"

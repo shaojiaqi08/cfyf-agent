@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar class="scrollbar" style="height: 94vh;" v-loading="loading">
-    <div class="company-info-card">
+    <div class="company-info-card" v-if="$checkAuth('/company_info')">
       <div class="company-info-header">
         <span>企业信息</span>
         <span class="tips">如公司资料有误，请联系创富云服管理员</span>
@@ -58,7 +58,7 @@
         </el-row>
       </div>
     </div>
-    <div class="company-info-card">
+    <div class="company-info-card" v-if="$checkAuth('/company_finance_info')">
       <div class="company-info-header">
         财务信息
       </div>
@@ -89,7 +89,7 @@
         </el-row>
       </div>
     </div>
-    <div class="company-info-card">
+    <div class="company-info-card" v-if="$checkAuth('/company_brand_info')">
       <div class="company-info-header">
         <span>品牌信息</span>
         <span class="tips">
@@ -101,6 +101,7 @@
                      type="primary"
                      size="small"
                      class="ml16"
+                     v-if="$checkAuth('/edit_brand_info')"
                      @click="edit">编辑</el-button>
         </span>
       </div>
