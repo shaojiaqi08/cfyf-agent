@@ -3,9 +3,11 @@
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
       <el-tooltip v-if="$checkAuth('/company_info')" class="item" effect="dark" content="公司资料" placement="bottom">
-        <div class="function-botton" @click="$router.push('/company')">
-          <i class="iconfont iconda24_gongsiziliao fs22"></i>
-        </div>
+        <el-badge is-dot :hidden="true">
+          <div class="function-botton" @click="$router.push('/company')">
+            <i class="iconfont iconda24_gongsiziliao fs22"></i>
+          </div>
+        </el-badge>
       </el-tooltip>
       <el-tooltip v-if="$checkAuth('/self_and_child_teams')" class="item" effect="dark" content="团队成员" placement="bottom">
         <div class="function-botton" @click="$router.push('/group')">
@@ -95,7 +97,7 @@
     display: flex;
     align-items: center;
     .function-botton {
-      margin-right: 16px;
+      margin-left: 16px;
       width: 32px;
       height: 32px;
       line-height: 32px;
@@ -134,6 +136,7 @@
       display: flex;
       align-items: center;
       margin-right: 8px;
+      margin-left: 16px;
       .avatar {
         display: inline-block;
         margin-right: 8px;

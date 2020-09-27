@@ -12,15 +12,15 @@
             class="image-content"
             :action="imageUrl"
             :show-file-list="false"
-            :on-success="(...a) => handleAvatarSuccess('proposal_log_pic', ...a)"
+            :on-success="(...a) => handleAvatarSuccess('proposal_logo_pic', ...a)"
             :before-upload="beforeAvatarUpload">
-            <!-- <img v-if="formModel.proposal_log_pic_url"
-                 :src="formModel.proposal_log_pic_url"
+            <!-- <img v-if="formModel.proposal_logo_pic_url"
+                 :src="formModel.proposal_logo_pic_url"
                  class="avatar"> -->
             <el-image
-                  v-if="formModel.proposal_log_pic_url"
+                  v-if="formModel.proposal_logo_pic_url"
                   style="width: 262px; height: 120px"
-                  :src="formModel.proposal_log_pic_url"
+                  :src="formModel.proposal_logo_pic_url"
                   fit="contain"
                   class="avatar"></el-image>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -57,14 +57,14 @@
         <div class="title">效果预览</div>
         <div class="content">
           <div class="preview-logo"
-               :style="{ opacity: `${!formModel.proposal_log_pic_url ? 0 : 1}` }">
+               :style="{ opacity: `${!formModel.proposal_logo_pic_url ? 0 : 1}` }">
             <!-- <img width="100%"
                      height="100%"
-                     :src="formModel.proposal_log_pic_url"
+                     :src="formModel.proposal_logo_pic_url"
                      alt=""> -->
             <el-image
                   style="width: 96px; height: 20px;background-color: #fff;"
-                  :src="formModel.proposal_log_pic_url"
+                  :src="formModel.proposal_logo_pic_url"
                   fit="contain"></el-image>
           </div>
           <div class="preview-small-logo"
@@ -157,8 +157,8 @@ export default {
   },
   watch: {
     visible(v) {
-      const { proposal_log_pic_id,
-              proposal_log_pic_url,
+      const { proposal_logo_pic_id,
+              proposal_logo_pic_url,
               proposal_corner_pic_id,
               proposal_corner_pic_url,
               proposal_share_pic_id,
@@ -166,8 +166,8 @@ export default {
               proposal_share_description } = this.info
       if (v) {
         Object.assign(this.formModel, {
-          proposal_log_pic_id,
-          proposal_log_pic_url,
+          proposal_logo_pic_id,
+          proposal_logo_pic_url,
           proposal_corner_pic_id,
           proposal_corner_pic_url,
           proposal_share_pic_id,
@@ -180,8 +180,8 @@ export default {
   data() {
     return {
       formModel: {
-        proposal_log_pic_id: null,
-        proposal_log_pic_url: '',
+        proposal_logo_pic_id: null,
+        proposal_logo_pic_url: '',
         proposal_corner_pic_id: null,
         proposal_corner_pic_url: '',
         proposal_share_pic_id: null,

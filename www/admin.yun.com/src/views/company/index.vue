@@ -111,16 +111,16 @@
             <div class="image">
               <div class="title">计划书PDF左上角LOGO</div>
               <div class="content logo"
-                   :class="{ active: companyGetBrandInfo.proposal_log_pic_url }">
+                   :class="{ active: companyGetBrandInfo.proposal_logo_pic_url }">
                 <el-image
                   style="width: 280px; height: 100px"
-                  v-if="companyGetBrandInfo.proposal_log_pic_url"
-                  :src="companyGetBrandInfo.proposal_log_pic_url"
+                  v-if="companyGetBrandInfo.proposal_logo_pic_url"
+                  :src="companyGetBrandInfo.proposal_logo_pic_url"
                   fit="contain"></el-image>
                 <!-- <img width="100%"
                      height="100%"
-                     :style="{ opacity: `${!companyGetBrandInfo.proposal_log_pic_url ? 0 : 1}` }"
-                     :src="companyGetBrandInfo.proposal_log_pic_url"
+                     :style="{ opacity: `${!companyGetBrandInfo.proposal_logo_pic_url ? 0 : 1}` }"
+                     :src="companyGetBrandInfo.proposal_logo_pic_url"
                      alt=""> -->
               </div>
             </div>
@@ -145,14 +145,14 @@
             <div class="title">效果预览</div>
             <div class="content">
               <div class="preview-logo"
-                   :style="{ opacity: `${!companyGetBrandInfo.proposal_log_pic_url ? 0 : 1}` }">
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_logo_pic_url ? 0 : 1}` }">
                 <!-- <img width="100%"
                      height="100%"
-                     :src="companyGetBrandInfo.proposal_log_pic_url"
+                     :src="companyGetBrandInfo.proposal_logo_pic_url"
                      alt=""> -->
                 <el-image
                   style="width: 96px; height: 24px;background-color: #fff;"
-                  :src="companyGetBrandInfo.proposal_log_pic_url"
+                  :src="companyGetBrandInfo.proposal_logo_pic_url"
                   fit="contain"></el-image>
               </div>
               <div class="preview-small-logo"
@@ -244,11 +244,11 @@ export default {
   computed: {
     need2hint() {
       if (!this.companyGetBrandInfo.company_id) return false
-      const { proposal_log_pic_url,
+      const { proposal_logo_pic_url,
               proposal_corner_pic_url,
               proposal_share_pic_url,
               proposal_share_description } = this.companyGetBrandInfo
-      return !(proposal_log_pic_url && proposal_corner_pic_url && proposal_share_pic_url && proposal_share_description)
+      return !(proposal_logo_pic_url && proposal_corner_pic_url && proposal_share_pic_url && proposal_share_description)
     }
   },
   methods: {
