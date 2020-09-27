@@ -23,9 +23,9 @@
                             <div>{{row.name}}</div>
                         </list-item>
                         <el-tooltip effect="dark"
-                                    :content="`当前在职 ${row.sales_count || 0}人` "
+                                    :content="`当前在职 ${row.sales_count || 0} 人` "
                                     placement="top">
-                            <div>{{ row.sales_count || 0 }}人</div>
+                            <div style="color: #999">{{ row.sales_count || 0 }}人</div>
                         </el-tooltip>
                     </div>
                 </template>

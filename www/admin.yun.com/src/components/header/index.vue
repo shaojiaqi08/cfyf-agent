@@ -2,16 +2,16 @@
   <div class="header">
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
-      <el-tooltip v-if="$checkAuth('/company_info')" class="item" effect="dark" content="公司资料" placement="bottom">
+      <el-tooltip v-if="$checkAuth('/company_info')" effect="dark" content="公司资料" placement="bottom">
         <el-badge is-dot :hidden="true">
           <div class="function-botton" @click="$router.push('/company')">
-            <i class="iconfont iconda24_gongsiziliao fs22"></i>
+            <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
           </div>
         </el-badge>
       </el-tooltip>
-      <el-tooltip v-if="$checkAuth('/self_and_child_teams')" class="item" effect="dark" content="团队成员" placement="bottom">
+      <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="团队成员" placement="bottom">
         <div class="function-botton" @click="$router.push('/group')">
-          <i class="iconfont iconda24_tuanduichengyuan fs22"></i>
+          <i class="iconfont iconda24_tuanduichengyuan1 fs24"></i>
         </div>
       </el-tooltip>
       <el-popover
@@ -106,6 +106,9 @@
       color: #4d4d4d;
       opacity: .6;
       cursor: pointer;
+      &:first-child {
+        margin-left: 0;
+      }
       &:hover {
         color: #1a1a1a;
         opacity: 1;
@@ -114,10 +117,10 @@
     }
   }
   .logo {
-    width: 200px;
-    height: 24px;
+    width: 280px;
+    height: 32px;
     background: url(../../assets/images/navbar-logo.png) no-repeat;
-    background-size: contain;
+    background-size: cover;
     cursor: pointer;
     &:hover {
       opacity: 1;

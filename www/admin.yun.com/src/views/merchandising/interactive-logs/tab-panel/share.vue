@@ -527,16 +527,19 @@
                 margin: 0 8px;
                 transition: all .2s ease-out;
                 padding: 16px;
+                border-bottom: 1px solid #e6e6e6;
                 &.active{
                     color: #1F78FF !important;
                     background: rgba(31, 120, 255, 0.1);
                     border-radius: 4px;
+                    border-bottom: none;
                     .active-vague {
                         color: #1F78FF !important;
                     }
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
+                    border-radius: 4px;
                 }
                 .icon-product {
                     display: inline-block;
@@ -576,7 +579,8 @@
                 flex-direction: column;
             }
             .detail-content{
-                padding: 16px;
+                padding: 16px 0;
+                margin: 0 16px;
             }
             .list-personnel{
                 padding: 16px;
