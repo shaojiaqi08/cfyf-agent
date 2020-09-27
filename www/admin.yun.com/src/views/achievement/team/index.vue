@@ -3,6 +3,13 @@
     <div class="header">
       团队业绩
       <div class="flex-between">
+        <el-button size="small"
+                   type="primary"
+                   class="mr10"
+                   :loading="exporting"
+                   icon="iconfont iconxiao16_xiazai mr4"
+                   v-if="$checkAuth('/team_performance/export')"
+                   @click="policyExport">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   placeholder="搜索单号或投被保人信息"
                   size="small"
@@ -21,6 +28,7 @@
                     :collapse="false"
                     autoClose
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-date-picker
                 v-model="searchModel.date_range"
@@ -50,6 +58,7 @@
       <!--全部销售-->
       <filter-shell v-model="searchModel.sales_id"
                     autoFocus
+                    class="mb16"
                     placeholder="全部销售"
                     @input="searchModelChange">
         <el-select class="block"
@@ -73,6 +82,7 @@
       <!--全部保单状态-->
       <filter-shell v-model="searchModel.policy_status"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.policy_status"
@@ -95,6 +105,7 @@
       <!--全部保险产品-->
       <filter-shell v-model="searchModel.products"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.products"
@@ -117,6 +128,7 @@
       <!--全部保险公司-->
       <filter-shell v-model="searchModel.supplier_id"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.supplier_id"
@@ -139,6 +151,7 @@
       <!--全部险种分类-->
       <filter-shell v-model="searchModel.product_insurance_class"
                     autoFocus
+                    class="mb16"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.product_insurance_class"
@@ -170,6 +183,18 @@
         <div class="scroll-wrap"
              :style="{transform: `translateX(${scrollTranslateX}px)`}"
              v-loading="statisticLoading">
+          <div class="item-block">
+            <div v-if="$checkAuth('/team_performance/company_commission')">
+              服务费(元)
+              <template>
+                <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
+              </template>
+            </div>
+            <div v-if="$checkAuth('/team_performance/sales_commission')">
+              佣金(元)
+              <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+            </div>
+          </div>
           <div class="item-block">
             <div>
               承保保费总计(元)
@@ -267,10 +292,11 @@
         <el-table-column label="销售团队" prop="sales_team_name" align="center" width="150px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center"></el-table-column>
-        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px"></el-table-column>
+        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px" v-if="$checkAuth('/team_performance/company_commission')"></el-table-column>
+        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px" v-if="$checkAuth('/team_performance/sales_commission')"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="170px"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
-         <el-table-column label="回访成功日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
+         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" align="center"></el-table-column>
@@ -291,10 +317,11 @@
 </template>
 
 <script>
-import { getTeamPolicyList, getTeamPolicyStatistics, getSalesData, getDateRange } from '@/apis/modules/achievement'
+import { getTeamPolicyList, getTeamPolicyStatistics, getSalesData, getDateRange, exportTeamPolicy } from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
-import { debounce } from '@/utils'
+import { debounce, downloadFrameA } from '@/utils'
+import qs from 'qs'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
@@ -330,6 +357,7 @@ export default {
       statisticLoading: true,
       scrol2Lvisible: false,
       scrol2Rvisible: false,
+      exporting: false,
       scrollTranslateX: 0,
       searchModel: {
         keyword: '',
@@ -343,6 +371,15 @@ export default {
     };
   },
   methods: {
+    policyExport() {
+      const url = `${exportTeamPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
+      this.exporting = true
+      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+        // this.$message.success('导出成功')
+      }).finally(() => {
+        this.exporting = false
+      })
+    },
     dateSelect(date) {
       const start = dateStr2Timestamp(date.start)
       const end = dateStr2Timestamp(date.end)

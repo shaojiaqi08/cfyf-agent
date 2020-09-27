@@ -70,13 +70,13 @@
 <style lang="scss" scoped>
 .menu {
   position: fixed;
-  top: 40px;
+  top: 60px;
   left: 0;
   width: 160px;
   bottom: 15px;
   background-color: #e1e3e6;
   .menu-list {
-    padding: 20px 0 20px 20px;
+    padding: 0 0 20px 20px;
     height: 96vh;
     .mb24 {
       margin-bottom: 24px;

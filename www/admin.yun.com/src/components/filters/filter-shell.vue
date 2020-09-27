@@ -10,7 +10,7 @@
       <div class="inner-box" :class="{ noPadding }">
         <slot></slot>
       </div>
-      <div class="filter-item" :class="{ actived: popoverShow || isHasValue }" slot="reference">
+      <div class="filter-item" :class="{ actived: popoverShow || isHasValue || isActive }" slot="reference">
         <div class="content">
           <span class="filter-label">{{filterValue}}</span>
           <el-badge
@@ -21,11 +21,16 @@
             :value="value.length"
           ></el-badge>
           <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-          <i
-            class="filter-clear iconfont iconxiao16_yuanxingchahao"
-            v-if="clearable && hasValue(value)"
-            @click.prevent.stop="clearValue($event, value)"
-          ></i>
+          <template v-if="!customClose">
+            <i
+              class="filter-clear iconfont iconxiao16_yuanxingchahao"
+              v-if="clearable && hasValue(value)"
+              @click.prevent.stop="clearValue($event, value)"
+            ></i>
+          </template>
+          <template v-else>
+            <slot name="close"></slot>
+          </template>
         </div>
         <!-- <i
           class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -73,6 +78,16 @@ export default {
     width: {
       type: Number,
       default: 272
+    },
+    // 用户自定义关闭
+    customClose: {
+      type: Boolean,
+      default: false
+    },
+    // 是否active状态,有时需要外部提供状态
+    isActive: {
+      type: Boolean,
+      default: false
     },
     // 筛选项选择后是否自动关闭
     autoClose: {
@@ -151,7 +166,7 @@ export default {
 <style lang="scss">
 .filter-bar {
   display: inline-block;
-  padding-bottom: 16px;
+  // padding-bottom: 16px;
 }
 .filter-item {
   // display: inline-block;

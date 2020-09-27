@@ -22,11 +22,10 @@
                                     <span class="fs14 lh20 mb16">{{lv}}</span>
                                     <div class="flex-between mb16 pr16" v-for="(item, index) in parent.sales" :key="index">
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
-                                        <div class="fs14  flex-center">
+                                        <div class="fs14 flex-center">
                                             {{parent.name}}
-                                            <el-link type="danger" class="ml8" :underline="false">
-                                                <i class="iconfont iconxiao16_yuanxingjianhao" @click="del(item, lv, index)"></i>
-                                            </el-link>
+                                            <i class="iconfont iconzhong20x36_fangxingjianhao remove-button"
+                                               @click="del(item, lv, index)"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -59,9 +58,8 @@
                                         <el-checkbox :label="item.id">{{item.real_name}}</el-checkbox>
                                         <div class="fs14  flex-center">
                                             {{parent.name}}
-                                            <el-link type="primary" class="ml8" :underline="false">
-                                                <i class="iconfont iconxiao16_yuanxingjiahao" @click="join(parent, item, lv)"></i>
-                                            </el-link>
+                                            <i class="iconfont iconzhong20x36_fangxingjiahao add-button"
+                                               @click="join(parent, item, lv)"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -387,5 +385,17 @@
                 }
             }
         }
+    }
+    .remove-button {
+        margin-left: 8px;
+        color: #FF4C4C;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .add-button {
+        margin-left: 8px;
+        color: #1F78FF;
+        border-radius: 4px;
+        cursor: pointer;
     }
 </style>

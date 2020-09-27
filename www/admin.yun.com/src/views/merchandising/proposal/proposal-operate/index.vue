@@ -619,8 +619,16 @@
                 class="ml8"
                 :loading="isButtonLoading"
                 plain
-                @click="previewPdf(saveProposalTypes.preview.value)"
+                @click="previewPdf(saveProposalTypes.preview.value, 'pdf')"
               >预览PDF</el-button>
+              <el-button
+                type="info"
+                size="small"
+                class="ml8"
+                :loading="isButtonLoading"
+                plain
+                @click="previewPdf(saveProposalTypes.preview.value, 'image')"
+              >预览图片</el-button>
               <el-button
                 type="primary"
                 size="small"
@@ -1268,11 +1276,11 @@ export default {
           }`
         })
     },
-    previewPdf(type) {
+    previewPdf(type, mode) {
       this.submit(type, res => {
-        const id = res.id
+        const id = res.pcode
         window.open(
-          `${process.env.VUE_APP_API_URL}/agent/proxy/proposal/pdf/view?proposal_id=${id}`
+          `${process.env.VUE_APP_API_URL}/agent/proxy/proposal/file/view/${mode}?pcode=${id}`
         )
       })
     },

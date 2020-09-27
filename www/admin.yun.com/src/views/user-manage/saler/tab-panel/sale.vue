@@ -17,6 +17,18 @@
                 style="width: 240px"
                 :listData="computedTeamData"
             >
+                <template v-slot:list="{row}">
+                    <div class="flex-between" style="width: 100%">
+                        <list-item class="list-label" :tips-content="row.name">
+                            <div>{{row.name}}</div>
+                        </list-item>
+                        <el-tooltip effect="dark"
+                                    :content="`当前在职 ${row.sales_count || 0} 人` "
+                                    placement="top">
+                            <div class="list-people-count">{{ row.sales_count || 0 }} 人</div>
+                        </el-tooltip>
+                    </div>
+                </template>
                 <el-button slot="footer"
                            type="primary"
                            v-if="$checkAuth('/sale/team/create')"
@@ -93,7 +105,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} ~ ${resignationDateRange[1]}` : '入职时间'}}</span>
+                                <span>{{hasValue(resignationDateRange) ? `${resignationDateRange[0]} ~ ${resignationDateRange[1]}` : '新增时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -118,7 +130,7 @@
                                             value-format="yyyy-MM-dd">
                             </el-date-picker>
                             <template v-slot:label>
-                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} ~ ${closeDateRange[1]}` : '离职时间'}}</span>
+                                <span>{{hasValue(closeDateRange) ? `${closeDateRange[0]} ~ ${closeDateRange[1]}` : '注销时间'}}</span>
                             </template>
                             <template v-slot:close>
                                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
@@ -140,12 +152,12 @@
                     <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
                     <el-table-column label="职位" prop="sales_position.name" width="150px" align="center"></el-table-column>
                     <el-table-column label="所属团队" prop="team.name" width="150px" align="center"></el-table-column>
-                    <el-table-column label="入职时间" width="150px" prop="join_date" align="center">
+                    <el-table-column label="新增时间" width="150px" prop="join_date" align="center">
                         <template v-slot="{row}">
                             <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="离职时间" width="150px" prop="close_at" align="center">
+                    <el-table-column label="注销时间" width="150px" prop="close_at" align="center">
                         <template v-slot="{row}">
                             <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                             <span v-else>-</span>
@@ -158,12 +170,12 @@
                     </el-table-column>
                     <el-table-column label="操作" fixed="right" prop="operate" min-width="260px" align="center">
                         <template v-slot="{row, $index}">
-                            <template v-if="row.account_status!==accountStatusMap.dimission.value && row.account_status!==accountStatusMap.invalidation.value">
+                            <template v-if="row.account_status!==accountStatusMap.cancel.value">
                                 <el-link v-if="$checkAuth('/sale/update')" type="primary" class="mr8" @click="editSales(row.id)">编辑</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_password')" type="primary" class="mr8" @click="modifyPwd(row)">重置密码</el-link>
                                 <el-link v-if="$checkAuth('/sale/simulated_login')" type="primary" class="mr8" @click="genSimulatedLink(row.id)">模拟登录</el-link>
                                 <el-link v-if="$checkAuth('/sale/update_account_status')" type="primary" class="mr8" @click="triggerStatus(row)">{{row.account_status === accountStatusMap.disable.value ? '启用' : '禁用'}}</el-link>
-                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">离职</el-link>
+                                <el-link v-if="$checkAuth('/sale/dimission')" type="primary" class="mr8" @click="dimission(row.id, $index)">注销</el-link>
                             </template>
                             <span v-else>-</span>
                         </template>
@@ -175,22 +187,23 @@
                             <div class="name-wrap">
                                 <template v-if="!editting">
                                     {{detailData && detailData.name}}
-                                    <el-link v-if="$checkAuth('/sale/team/modify_name')" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
+                                    <el-link v-if="$checkAuth('/sale/team/modify_name') && detailData.parent_id" @click="modifyTeamName" :underline="false" type="primary" class="iconfont iconda24_bianji"></el-link>
                                 </template>
                                 <div v-else class="flex">
                                     <el-input size="small" v-model.trim="editName" class="mr8" @keyup.native.enter="submitTeamName"></el-input>
+                                    <el-button size="mini" @click="editting = false" :loading="submittingEditName" :disabled="submittingEditName">取消</el-button>
                                     <el-button size="mini" type="primary" @click="submitTeamName" :loading="submittingEditName" :disabled="submittingEditName">确定</el-button>
                                 </div>
                             </div>
-                            <span>当前团队挂靠：{{detailData.parent ? detailData.parent.name : '-'}}</span>
+                            <span>当前上级团队：{{detailData.parent ? detailData.parent.name : '-'}}</span>
                         </div>
                         <div class="flex-center">
                             <el-link :underline="false"
-                                     v-if="$checkAuth('/sale/team/disband_team')"
+                                     v-if="$checkAuth('/sale/team/disband_team') && detailData.parent_id"
                                      type="minor"
-                                     class="flex-center mr30"
+                                     class="flex-center dismiss-button mr30"
                                      @click="dismissTeam"><i class="iconfont iconxiao16_lajitong mr4"></i>解散团队</el-link>
-                            <el-button v-if="$checkAuth('/sale/team/change_team_parent')" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>转移团队</el-button>
+                            <el-button v-if="$checkAuth('/sale/team/change_team_parent') && detailData.parent_id" type="primary" @click="handleSetTeam" size="small"><i class="iconfont iconxiao16_tihuan mr4"></i>修改上级团队</el-button>
                         </div>
                     </div>
                     <div class="table-wrap">
@@ -204,12 +217,12 @@
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                             <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
-                            <el-table-column label="入职时间" prop="join_date" align="center">
+                            <el-table-column label="新增时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="离职时间" prop="close_at" align="center">
+                            <el-table-column label="注销时间" prop="close_at" align="center">
                                 <template v-slot="{row}">
                                     <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                                     <span v-else>-</span>
@@ -233,12 +246,12 @@
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
                             <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
-                            <el-table-column label="入职时间" prop="join_date" align="center">
+                            <el-table-column label="新增时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
                                     <span>{{formatDate(row.resignation_at * 1000, 'yyyy-MM-dd')}}</span>
                                 </template>
                             </el-table-column>
-                            <el-table-column label="离职时间" prop="close_at" align="center">
+                            <el-table-column label="注销时间" prop="close_at" align="center">
                                 <template v-slot="{row}">
                                     <span v-if="row.close_at">{{formatDate(row.close_at * 1000, 'yyyy-MM-dd')}}</span>
                                     <span v-else>-</span>
@@ -257,11 +270,11 @@
         <!--编辑/新增销售-->
         <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
-        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamData" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
+        <add-team-dialog :visible.sync="addTeamDialogVisible" :team-data="teamDataWithoutAll" :no-team-sales-data="noTeamSalesData" @success="ajaxTeamData"></add-team-dialog>
         <!--更换团队主管-->
-        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="ajaxDetail"></set-leader-dialog>
-        <!--转移团队-->
-        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="ajaxDetail"></transfer-team-dialog>
+        <set-leader-dialog :visible.sync="setLeaderDialogVisible" :data="detailData" :no-team-sales-data="noTeamSalesData" :team-id="selTeam" @success="refresh"></set-leader-dialog>
+        <!--修改上级团队-->
+        <transfer-team-dialog :visible.sync="transferTeamDialogVisible" :data="detailData" :transfer-team-sel-data="transferTeamSelData" :team-id="selTeam" @success="refresh"></transfer-team-dialog>
         <!--调整团队成员-->
         <team-people-dialog :loading="groupSalesLoading"
                             :visible.sync="teamPeopleVisible"
@@ -300,11 +313,13 @@
     import EditSalesDialog  from '../component/edit-sales-dialog'
     import AddTeamDialog  from '../component/add-team-dialog'
     import SetLeaderDialog  from '../component/set-leader-dialog'
+    import ListItem from '@/components/side-filter-list/side-filter-list-item'
     import TransferTeamDialog  from '../component/transfer-team-dialog'
     export default {
         name: 'sale-pane',
         mixins: [validatorMixin],
         components: {
+            ListItem,
             FilterShell,
             SideFilterList,
             TeamPeopleDialog,
@@ -365,9 +380,9 @@
                 accountStatusMap: Object.freeze(accountStatusMap),
                 statusTagType: Object.freeze({
                     disable: 'danger',
-                    enable: 'success',
+                    enable: '',
                     dimission: 'minor',
-                    invalidation: 'minor'
+                    cancel: 'minor'
                 }),
                 maxHeight: null
             }
@@ -378,17 +393,21 @@
                 return this.tableData.filter(item => item.real_name.includes(name) || item.username.includes(name))
             },
             computedTeamData() {
-                return [{
-                    name: '全部销售',
-                    id: -1
-                }, ...this.teamData]
+                return [...this.teamData]
+            },
+            teamDataWithoutAll() {
+                return this.teamData.filter(i => i.id !== -1)
             }
         },
         methods: {
             clearValue,
             hasValue,
             formatDate,
-            // 转移团队团队下拉数据
+            refresh(id) {
+                this.ajaxDetail(id)
+                this.ajaxTeamData()
+            },
+            // 上级团队团队下拉数据
             ajaxTransferTeamSelData() {
                 this.dialogLoading = true
                 getTransferTeamSelData({id: this.selTeam}).then(res => {
@@ -461,9 +480,9 @@
                 this.editDialogId = id
                 this.editDialogVisible = true
             },
-            // 离职
+            // 注销
             dimission(id, index) {
-                this.confirm('账号离职后不可恢复，是否确认离职？', '离职').then(() => {
+                this.confirm('账号注销后不可恢复，是否确认注销？', '注销').then(() => {
                     dimission({id}).then(res => {
                         this.$set(this.allSalesData, index, res)
                         this.$message.success('操作成功!')
@@ -544,6 +563,7 @@
                 setMember(params).then(() => {
                     this.$message.success('操作成功!')
                     this.ajaxDetail(team_id)
+                    this.ajaxTeamData()
                     this.teamPeopleVisible = false
                 }).catch(() => {}).finally(() => {
                     this.groupSelected = []
@@ -611,14 +631,14 @@
                 const {id, account_status: curStatus} = row // eslint-disable-line
                 const willDisable = curStatus !== 'disable'
                 const content = willDisable ? '账号禁用期间不可登录系统，是否确认禁用？' : '账号启用后，可正常登录系统，是否确认启用？'
-                    const btnTxt = willDisable ? '禁用' : '启用'
+                const btnTxt = willDisable ? '禁用' : '启用'
                 const btnColor = willDisable ? '#FF4C4C' : '#FF9000'
                 const btnClass = willDisable ? undefined : '#FF9000'
                 this.confirm(content, btnTxt, btnColor, btnClass).then(() => {
                     const account_status = willDisable ? 'disable' : 'enable'
                     updateSalesStatus({id, account_status}).then(() => {
                         row.account_status = willDisable ? 'disable' : 'enable'
-                        row.account_status_str = willDisable ? '禁用' : '在职'
+                        row.account_status_str = willDisable ? '已禁用' : '正常'
                         this.$message.success('操作成功!')
                     }).catch(() => {})
                 })
@@ -684,110 +704,124 @@
 </script>
 
 <style scoped lang="scss">
-    .sale-people-container{
-        display: flex;
-        height: 100%;
-        width: 100%;
-        flex-direction: row;
-        align-items: stretch;
-        ::v-deep .side-filter-container .list-item:first-of-type{
-            border-top: transparent;
-        }
-        .add-button{
-            position: fixed;
-            z-index: 3;
-            top: 72.5px;
-            right: 36px;
-        }
-        .right {
-            flex: 1;
-            overflow: hidden;
-            border: 1px solid #f5f5f5;
-            border-top: transparent;
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
-            &>.el-scrollbar{
-                flex: 1;
-                overflow: hidden;
-            }
-            .sale-filter-bar{
-                display: flex;
-                justify-content: space-between;
-                height: 64px;
-                align-items: center;
-                &>.el-input{
-                    width: 240px;
-                }
-            }
-            & > ::v-deep .el-table{
-                flex: none;
-            }
-            .team-info{
-                height: 84px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 16px;
-                background: #f5f5f5;
-                border: 1px solid #e6e6e6;
-                border-radius: 4px;
-                margin-bottom: 16px;
-                .name-wrap{
-                    font-size: 18px;
-                    color:#1a1a1a;
-                    font-weight: bold;
-                    line-height: 28px;
-                    line-height: 28px;
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 4px;
-                    .el-link{
-                        font-weight: normal;
-                        font-size: 24px;
-                        margin-left: 4px;
-                    }
-                    &+span{
-                        color: #999;
-                        line-height: 20px;
-                    }
-                }
-
-            }
-            .table-wrap .table-header{
-                height: 64px;
-                padding: 0 16px 0 20px;
-                background: #f5f5f5;
-                color: #1a1a1a;
-                font-weight: bold;
-                border: 1px solid #e6e6e6;
-                border-bottom: transparent;
-            }
-        }
-    }
-    ::v-deep .set-leader-dialog {
-        .el-dialog__body{
-            overflow: visible;
-        }
-        .info-block{
-            height:96px;
-            background:rgba(245,245,245,1);
-            border-radius:4px;
-            border:1px solid rgba(230,230,230,1);
-            padding: 20px;
-            &>div{
-                line-height: 20px;
-                color:#4d4d4d;
-                font-size: 14px;
-                &>span{
-                    color: #1a1a1a;
-                    font-weight: bold;
-                }
-            }
-        }
-    }
-
-    ::v-deep .side-filter-container .list-item:first-of-type {
+.list-label {
+    width: 170px;
+}
+.sale-people-container{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-direction: row;
+    align-items: stretch;
+    ::v-deep .side-filter-container .list-item:first-of-type{
         border-top: transparent;
     }
+    .add-button{
+        position: absolute;
+        z-index: 3;
+        top: 12px;
+        right: 36px;
+    }
+    .dismiss-button:hover {
+        color: #FF4C4C;
+    }
+    .right {
+        flex: 1;
+        overflow: hidden;
+        border: 1px solid #f5f5f5;
+        border-top: transparent;
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        &>.el-scrollbar{
+            flex: 1;
+            overflow: hidden;
+        }
+        .sale-filter-bar{
+            display: flex;
+            justify-content: space-between;
+            height: 64px;
+            align-items: center;
+            &>.el-input{
+                width: 240px;
+            }
+        }
+        & > ::v-deep .el-table{
+            flex: none;
+        }
+        .team-info{
+            height: 84px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            background: #f5f5f5;
+            border: 1px solid #e6e6e6;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            .name-wrap{
+                font-size: 18px;
+                color:#1a1a1a;
+                font-weight: bold;
+                line-height: 28px;
+                line-height: 28px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 4px;
+                .el-link{
+                    font-weight: normal;
+                    font-size: 24px;
+                    margin-left: 4px;
+                }
+                &+span{
+                    color: #999;
+                    line-height: 20px;
+                }
+            }
+
+        }
+        .table-wrap .table-header{
+            height: 64px;
+            padding: 0 16px 0 20px;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            font-weight: bold;
+            border: 1px solid #e6e6e6;
+            border-bottom: transparent;
+        }
+    }
+}
+.list-people-count {
+    color: #999;
+}
+.active {
+    .list-people-count {
+        color: #1F78FF !important;
+    }
+}
+::v-deep .set-leader-dialog {
+    .el-dialog__body{
+        overflow: visible;
+    }
+    .info-block{
+        height:96px;
+        background:rgba(245,245,245,1);
+        border-radius:4px;
+        border:1px solid rgba(230,230,230,1);
+        padding: 20px;
+        &>div{
+            line-height: 20px;
+            color:#4d4d4d;
+            font-size: 14px;
+            &>span{
+                color: #1a1a1a;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+::v-deep .side-filter-container .list-item:first-of-type {
+    border-top: transparent;
+}
 </style>

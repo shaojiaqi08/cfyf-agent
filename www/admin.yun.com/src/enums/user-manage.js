@@ -80,50 +80,50 @@ export const accountTypeMap = {
 
 // 账号状态
 export const account_status = {
-    enable: '在职',
-    disable: '禁用',
-    dimission: '离职',
-    invalidation: '失效'
+    enable: '正常',
+    disable: '已禁用',
+    // dimission: '离职',
+    cancel: '已注销'
 }
 
 export const accountStatusMap = {
     enable: {
-        label: '在职',
+        label: '正常',
         value: 'enable'
     },
     disable: {
-        label: '禁用',
+        label: '已禁用',
         value: 'disable'
     },
-    dimission: {
-        label: '离职',
-        value: 'dimission'
-    },
-    invalidation: {
-        label: '失效',
-        value: 'invalidation'
+    // dimission: {
+    //     label: '离职',
+    //     value: 'dimission'
+    // },
+    cancel: {
+        label: '已注销',
+        value: 'cancel'
     }
 }
 
 // 账号状态
 export const manage_account_status = {
-    disable: '禁用',
-    enable: '有效',
-    invalidation: '失效'
+    disable: '已禁用',
+    enable: '正常',
+    cancel: '已注销'
 }
 
 export const manageAccountStatusMap = {
     disable: {
-        label: '禁用',
-        value: 'disabled'
-    },
-    enable: {
-        label: '有效',
+        label: '已禁用',
         value: 'disable'
     },
-    invalidation: {
-        label: '失效',
-        value: 'invalidation'
+    enable: {
+        label: '正常',
+        value: 'enable'
+    },
+    cancel: {
+        label: '已注销',
+        value: 'cancel'
     }
 }
 

@@ -32,7 +32,7 @@ export default {
       const hasMenu = this.$route.meta.menu
       const hasHeader = this.$route.meta.header
       return {
-        top: hasHeader ? `40px` : `0`,
+        top: hasHeader ? `60px` : `0`,
         left: hasMenu ? `160px` : `0`
       }
     }
@@ -65,7 +65,7 @@ export default {
 }
 .cover {
   position: absolute;
-  top: 40px;
+  top: 60px;
   left: 180px;
   right: 0;
   bottom: 0;

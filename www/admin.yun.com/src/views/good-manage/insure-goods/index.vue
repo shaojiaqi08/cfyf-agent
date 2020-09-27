@@ -2,11 +2,6 @@
   <div class="insure-goods-container page-container">
     <div class="header">
       保险商品
-      <div class="flex-between">
-        <el-input placeholder="搜索保险商品" size="small" v-model="searchModel.title" clearable @input="debounceAjaxListData">
-          <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>
-        </el-input>
-      </div>
     </div>
     <div class="content">
       <side-filter-list v-model="selProductVal"
@@ -18,109 +13,121 @@
                         @change="handleSelProduct"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
-          <filter-shell v-model="searchModel.first_product_category_id"
-                        autoFocus
-                        autoClose
-                        :collapse="false"
-                        :textOverflow="false"
-                        :width="240"
-                        @input="ajaxListData">
-            <el-cascader
-              ref="focusRef"
-              popper-class="address-picker"
-              placeholder="请选择"
-              filterable
-              collapse-tags
-              :props="{
-                value: 'id',
-                label: 'name',
-                children: 'child_categories'
-              }"
-              :options="productCategoryData"
-              v-model="searchModel.first_product_category_id"
-              emitPath
-              @change="ajaxListData"
-              clearable
-            ></el-cascader>
-            <!-- <el-select class="block"
-                       v-model="searchModel.first_product_category_id"
-                       clearable
-                       filterable
-                       multiple
-                       @change="ajaxListData"
-                       placeholder="请选择">
-              <el-option
-                      v-for="item in productCategoryData"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-              ></el-option>
-            </el-select> -->
-            <template v-slot:label>
+          <div class="flex-between pb16">
+            <el-input style="width: 100%;"
+                      placeholder="搜索保险商品"
+                      size="small"
+                      v-model="searchModel.title"
+                      clearable
+                      @input="debounceAjaxListData">
+              <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>
+            </el-input>
+          </div>
+          <div>
+            <filter-shell v-model="searchModel.first_product_category_id"
+                          autoFocus
+                          autoClose
+                          :collapse="false"
+                          :textOverflow="false"
+                          :width="240"
+                          @input="ajaxListData">
+              <el-cascader
+                ref="focusRef"
+                popper-class="address-picker"
+                placeholder="请选择"
+                filterable
+                collapse-tags
+                :props="{
+                  value: 'id',
+                  label: 'name',
+                  children: 'child_categories'
+                }"
+                :options="productCategoryData"
+                v-model="searchModel.first_product_category_id"
+                emitPath
+                @change="ajaxListData"
+                clearable
+              ></el-cascader>
+              <!-- <el-select class="block"
+                        v-model="searchModel.first_product_category_id"
+                        clearable
+                        filterable
+                        multiple
+                        @change="ajaxListData"
+                        placeholder="请选择">
+                <el-option
+                        v-for="item in productCategoryData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                ></el-option>
+              </el-select> -->
+              <template v-slot:label>
+                <span>
+                    {{ hasValue(searchModel.first_product_category_id) ? getChildName(searchModel.first_product_category_id) : '险种' }}
+                </span>
+              </template>
+              <template v-slot:close>
+                  <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                    v-if="hasValue(searchModel.first_product_category_id)"
+                    @click="searchModel.first_product_category_id = ''"></i>
+              </template>
+            </filter-shell>
+            <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
+              <el-select class="block"
+                        v-model="searchModel.age_id"
+                        clearable
+                        filterable
+                        @change="ajaxListData"
+                        ref="focusRef"
+                        placeholder="请选择">
+                <el-option
+                        v-for="item in productAgeData"
+                        :key="item.id"
+                        :label="item.title"
+                        :value="item.id"
+                ></el-option>
+              </el-select>
+              <template v-slot:label>
               <span>
-                  {{ hasValue(searchModel.first_product_category_id) ? getChildName(searchModel.first_product_category_id) : '险种' }}
+                  {{ hasValue(searchModel.age_id) ? productAgeData.find(i => i.id === searchModel.age_id).title : '投保年龄' }}
               </span>
-            </template>
-            <template v-slot:close>
-                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                   v-if="hasValue(searchModel.first_product_category_id)"
-                   @click="searchModel.first_product_category_id = ''"></i>
-            </template>
-          </filter-shell>
-          <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
-            <el-select class="block"
-                       v-model="searchModel.age_id"
-                       clearable
-                       filterable
-                       @change="ajaxListData"
-                       ref="focusRef"
-                       placeholder="请选择">
-              <el-option
-                      v-for="item in productAgeData"
-                      :key="item.id"
-                      :label="item.title"
-                      :value="item.id"
-              ></el-option>
-            </el-select>
-            <template v-slot:label>
-            <span>
-                {{ hasValue(searchModel.age_id) ? productAgeData.find(i => i.id === searchModel.age_id).title : '投保年龄' }}
-            </span>
-            </template>
-          </filter-shell>
-          <filter-shell v-model="searchModel.supplier_id" autoFocus @input="ajaxListData">
-            <el-select class="block"
-                       v-model="searchModel.supplier_id"
-                       clearable
-                       filterable
-                       multiple
-                       @change="ajaxListData"
-                       ref="focusRef"
-                       placeholder="请选择">
-              <el-option
-                      v-for="item in supplierData"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-              ></el-option>
-            </el-select>
-            <template v-slot:label>
-            <span>
-                {{ hasValue(searchModel.supplier_id) ? supplierData.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}
-            </span>
-            </template>
-            <template v-slot:close>
-                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                   v-if="hasValue(searchModel.supplier_id)"
-                   @click="searchModel.supplier_id=''"></i>
-            </template>
-          </filter-shell>
+              </template>
+            </filter-shell>
+            <filter-shell v-model="searchModel.supplier_id" autoFocus @input="ajaxListData">
+              <el-select class="block"
+                        v-model="searchModel.supplier_id"
+                        clearable
+                        filterable
+                        multiple
+                        @change="ajaxListData"
+                        ref="focusRef"
+                        placeholder="请选择">
+                <el-option
+                        v-for="item in supplierData"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                ></el-option>
+              </el-select>
+              <template v-slot:label>
+              <span>
+                  {{ hasValue(searchModel.supplier_id) ? supplierData.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}
+              </span>
+              </template>
+              <template v-slot:close>
+                  <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                    v-if="hasValue(searchModel.supplier_id)"
+                    @click="searchModel.supplier_id=''"></i>
+              </template>
+            </filter-shell>
+          </div>
         </div>
         <template v-slot:list="{row}">
           <div class="list-item-wrap">
             <div>{{row.title}}</div>
-            <div class="flex mb16">
-              <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1">
+            <div class="flex mb16 mt8">
+              <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1; font-weight: 400;">
                 <text-hidden-ellipsis :width="180" :popoverTip="item">{{item}}</text-hidden-ellipsis>
               </div>
             </div>
@@ -377,7 +384,7 @@ export default {
   }
 }
 .insure-goods-container {
-  padding: 20px 20px 0 20px;
+  padding: 0 20px 0 20px;
   .header {
     font-size: 16px;
     font-weight: bold;
@@ -399,10 +406,10 @@ export default {
     background: #fff;
     ::v-deep .side-filter-container {
       .filter-wrap{
-        height: 60px;
-        padding: 0 16px;
-        display: flex;
-        align-items: center;
+        padding: 16px;
+        // display: flex;
+        // justify-content: space-between;
+        // align-items: center;
         border-bottom: 1px solid #e6e6e6;
       }
       .el-scrollbar{

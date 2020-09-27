@@ -164,7 +164,7 @@ export const routers = [
   },
   {
     label: '用户管理',
-    icon: 'iconcebiandaohang20_yonghuguanli',
+    icon: 'iconcebiandaohang20_yonghuguanli1',
     children: [
       {
         path: '/sale',
@@ -220,6 +220,30 @@ const necessaryRoutes = [
       menu: false
     },
     component: getView('login')
+  },
+  {
+    path: '/company',
+    name: 'Company',
+    meta: {
+      title: '公司信息',
+      header: true,
+      menu: true,
+      show: true,
+      permission: '/company_info'
+    },
+    component: getView('company')
+  },
+  {
+    path: '/group',
+    name: 'Group',
+    meta: {
+      title: '团队成员',
+      header: true,
+      menu: true,
+      show: true,
+      permission: '/self_and_child_teams'
+    },
+    component: getView('group')
   },
   {
     path: "/404",

@@ -21,12 +21,27 @@
       <div class="flex-center">
         <el-button type="text"
                    size="mini"
-                   @click="check('view')">在线查看</el-button>
+                   @click="check('view', 'pdf')">在线查看</el-button>
         <el-button type="primary"
                    size="small"
                    style="margin-left: 6px;"
                    icon="fs12 iconfont iconchaoxiao_xiazai_bai"
-                   @click="check('download')"> 下载本地</el-button>
+                   @click="check('download', 'pdf')">下载本地</el-button>
+      </div>
+    </div>
+    <div class="p16 flex-between material-item">
+      <div>
+        <div class="title">图片版本计划书</div>
+      </div>
+      <div class="flex-center">
+        <el-button type="text"
+                  size="mini"
+                  @click="check('view', 'image')">在线查看</el-button>
+        <el-button type="primary"
+                  size="small"
+                  style="margin-left: 6px;"
+                  icon="fs12 iconfont iconchaoxiao_xiazai_bai"
+                  @click="check('download', 'image')">下载本地</el-button>
       </div>
     </div>
   </el-dialog>
@@ -48,8 +63,8 @@ export default {
     return {}
   },
   methods: {
-    check(type) {
-      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/pdf/${type}?proposal_id=${this.proposalInfo.id}`)
+    check(type, mode) {
+      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/file/${type}/${mode}?pcode=${this.proposalInfo.pcode}`)
     },
     modalClose() {
       this.$emit('update:show', false)
