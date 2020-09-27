@@ -27,7 +27,7 @@
                         <el-tooltip effect="dark"
                                     :content="`当前在职 ${row.sales_count || 0} 人` "
                                     placement="top">
-                            <div style="color: #999">{{ row.sales_count || 0 }}人</div>
+                            <div class="list-people-count">{{ row.sales_count || 0 }}人</div>
                         </el-tooltip>
                     </div>
                 </template>
@@ -565,6 +565,9 @@
                 position: relative;
                 box-sizing: border-box;
                 border-right: 1px solid #e6e6e6;
+                .list-people-count {
+                    color: #999;
+                }
                 &>.el-button{
                     position: absolute;
                     bottom: 14px;
@@ -661,6 +664,11 @@
         }
         ::v-deep .manager-dialog .el-dialog__body{
             overflow: visible;
+        }
+    }
+    .active {
+        .list-people-count {
+            color: #1F78FF !important;
         }
     }
     .empty-tips {
