@@ -527,15 +527,15 @@
                 position: relative;
                 margin: 0 8px;
                 transition: all .2s ease-out;
-                padding: 16px;
+                padding: 8px;
                 // border-bottom: 1px solid #e6e6e6;
                 &::after {
                     content: "";
                     position: absolute;
                     bottom: 0;
-                    left: 16px;
+                    left: 8px;
                     height: 1px;
-                    width: 274px;
+                    width: 286px;
                     background-color: #e6e6e6;
                 }
                 &.active{
