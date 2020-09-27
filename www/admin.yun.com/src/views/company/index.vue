@@ -145,26 +145,28 @@
             <div class="title">效果预览</div>
             <div class="content">
               <div class="preview-logo"
-                   :style="{ opacity: `${!companyGetBrandInfo.proposal_logo_pic_url ? 0 : 1}` }">
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_logo_pic_url ? 0 : 1}`, backgroundColor: '#fff' }">
                 <!-- <img width="100%"
                      height="100%"
                      :src="companyGetBrandInfo.proposal_logo_pic_url"
                      alt=""> -->
-                <el-image
+                <div class="preview-img" :style="{ width: '96px', height: '24px', background: `url(${companyGetBrandInfo.proposal_logo_pic_url}) no-repeat` }"></div>
+                <!-- <el-image
                   style="width: 96px; height: 24px;background-color: #fff;"
                   :src="companyGetBrandInfo.proposal_logo_pic_url"
-                  fit="contain"></el-image>
+                  fit="contain"></el-image> -->
               </div>
               <div class="preview-small-logo"
-                   :style="{ opacity: `${!companyGetBrandInfo.proposal_corner_pic_url ? 0 : 1}` }">
+                   :style="{ opacity: `${!companyGetBrandInfo.proposal_corner_pic_url ? 0 : 1}`, backgroundColor: '#fff' }">
                 <!-- <img width="100%"
                      height="100%"
                      :src="companyGetBrandInfo.proposal_corner_pic_url"
                      alt=""> -->
-                <el-image
+                <div class="preview-img" :style="{ width: '90px', height: '10px', background: `url(${companyGetBrandInfo.proposal_corner_pic_url}) no-repeat` }"></div>
+                <!-- <el-image
                   style="width: 90px; height: 10px;background-color: #fff;"
                   :src="companyGetBrandInfo.proposal_corner_pic_url"
-                  fit="contain"></el-image>
+                  fit="contain"></el-image> -->
               </div>
             </div>
           </div>
@@ -370,6 +372,9 @@ export default {
           }
         }
       }
+      .preview-img {
+        background-size: contain !important;
+      }
       .preview-total {
         width: 848px;
         .title {
@@ -402,7 +407,7 @@ export default {
           }
           .preview-small-logo {
             position: absolute;
-            bottom: 18px;
+            bottom: 16px;
             left: 16px;
             width: 90px;
             height: 10px;

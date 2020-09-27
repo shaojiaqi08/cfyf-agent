@@ -524,15 +524,28 @@
                 height: 100%;
             }
             .item{
+                position: relative;
                 margin: 0 8px;
                 transition: all .2s ease-out;
                 padding: 16px;
-                border-bottom: 1px solid #e6e6e6;
+                // border-bottom: 1px solid #e6e6e6;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    bottom: 0;
+                    left: 16px;
+                    height: 1px;
+                    width: 274px;
+                    background-color: #e6e6e6;
+                }
                 &.active{
                     color: #1F78FF !important;
                     background: rgba(31, 120, 255, 0.1);
                     border-radius: 4px;
-                    border-bottom: none;
+                    // border-bottom: none;
+                    &::after {
+                        height: 0;
+                    }
                     .active-vague {
                         color: #1F78FF !important;
                     }

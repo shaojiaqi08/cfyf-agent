@@ -57,26 +57,28 @@
         <div class="title">效果预览</div>
         <div class="content">
           <div class="preview-logo"
-               :style="{ opacity: `${!formModel.proposal_logo_pic_url ? 0 : 1}` }">
+               :style="{ opacity: `${!formModel.proposal_logo_pic_url ? 0 : 1}`, backgroundColor: '#fff' }">
             <!-- <img width="100%"
                      height="100%"
                      :src="formModel.proposal_logo_pic_url"
                      alt=""> -->
-            <el-image
+            <div class="preview-img" :style="{ width: '96px', height: '20px', background: `url(${formModel.proposal_logo_pic_url}) no-repeat` }"></div>
+            <!-- <el-image
                   style="width: 96px; height: 20px;background-color: #fff;"
                   :src="formModel.proposal_logo_pic_url"
-                  fit="contain"></el-image>
+                  fit="contain"></el-image> -->
           </div>
           <div class="preview-small-logo"
-               :style="{ opacity: `${!formModel.proposal_corner_pic_url ? 0 : 1}` }">
+               :style="{ opacity: `${!formModel.proposal_corner_pic_url ? 0 : 1}`, backgroundColor: '#fff' }">
             <!-- <img width="100%"
                   height="100%"
                   :src="formModel.proposal_corner_pic_url"
                   alt=""> -->
-            <el-image
+            <div class="preview-img" :style="{ width: '90px', height: '10px', background: `url(${formModel.proposal_corner_pic_url}) no-repeat` }"></div>
+            <!-- <el-image
                   style="width: 90px; height: 10px;background-color: #fff;"
                   :src="formModel.proposal_corner_pic_url"
-                  fit="contain"></el-image>
+                  fit="contain"></el-image> -->
           </div>
         </div>
       </div>
@@ -282,7 +284,7 @@ export default {
       }
       .preview-small-logo {
         position: absolute;
-        bottom: 20px;
+        bottom: 16px;
         left: 16px;
         width: 90px;
         height: 10px;
@@ -323,6 +325,9 @@ export default {
       }
     }
   }
+}
+.preview-img {
+  background-size: contain !important;
 }
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
