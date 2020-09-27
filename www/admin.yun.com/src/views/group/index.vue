@@ -107,7 +107,7 @@ export default {
     tagType(type) {
       switch (type) {
         case accountStatusMap.enable.value:
-          return 'success'
+          return ''
         case accountStatusMap.disable.value:
           return 'danger'
         case accountStatusMap.cancel.value:
