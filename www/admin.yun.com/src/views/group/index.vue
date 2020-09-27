@@ -28,7 +28,7 @@
                 <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
+            <el-table-column label="注销时间" prop="close_at" align="center">
               <template slot-scope="{row}">
                 {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
               </template>
@@ -50,7 +50,7 @@
                 <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
+            <el-table-column label="注销时间" prop="close_at" align="center">
               <template slot-scope="{row}">
                 {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
               </template>
@@ -77,7 +77,7 @@
                   <el-tag :type="tagType(row.account_status)">{{ row.account_status_str }}</el-tag>
                 </template>
               </el-table-column>
-              <el-table-column label="注销时间" prop="close_at" width="180px" align="center">
+              <el-table-column label="注销时间" prop="close_at" align="center">
                 <template slot-scope="{row}">
                   {{ row.close_at ? formatDate(row.close_at * 1000, 'yyyy-MM-dd') : '-' }}
                 </template>
