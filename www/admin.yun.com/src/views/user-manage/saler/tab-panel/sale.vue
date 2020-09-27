@@ -719,7 +719,7 @@
     .add-button{
         position: absolute;
         z-index: 3;
-        top: 34px;
+        top: 12px;
         right: 36px;
     }
     .dismiss-button:hover {
