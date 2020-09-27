@@ -153,7 +153,19 @@
         </template>
       </side-filter-list>
       <div class="right">
-        <iframe v-if="productUrl" :src="`${productUrl}&user_token=${$store.state.users.userInfo.agent_token}&platform=crm_web`"></iframe>
+        <div class="product-button-group" v-if="productObj.product_type === 'cps'">
+          <el-button type="primary"
+                     size="small"
+                     v-clipboard:success="onCopy"
+                     v-clipboard:error="onError"
+                     v-clipboard:copy="productObj.share_link"
+                     plain
+                     round>复制链接</el-button>
+          <el-button @click="share" type="primary" size="small" round>转发客户</el-button>
+        </div>
+        <iframe v-if="productUrl"
+                :style="{ height: productObj.product_type === 'cps' ? `94%` : `100%` }"
+                :src="`${productUrl}&user_token=${$store.state.users.userInfo.agent_token}&platform=crm_web`"></iframe>
       </div>
     </div>
     <el-dialog title="售前告知" :visible.sync="notifyVisible" width="480px">
@@ -173,6 +185,23 @@
              @click="download"><i class="iconfont iconxiao16_xiazai mr4"></i>下载保险责任图片</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+        title="正在分享"
+        :visible.sync="dialogVisible"
+        width="30%"
+        class="dark-dialog"
+        style="text-align: center;">
+          <div class="share-title-tips">正在分享</div>
+          <div style="margin-bottom: 20px !important;
+      color: #333 !important;
+      font-size: 18px !important;
+      font-weight: 500 !important;">{{ productObj.title }}</div>
+          <img v-if="productObj.share_link"
+              :src="qrcodeUrl"
+              width="200"
+              height="200">
+          <p style="color: #999;">请使用微信扫描上方二维码后分享给客户</p>
+      </el-dialog>
   </div>
 </template>
 
@@ -184,6 +213,7 @@ import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-s
 import SideFilterList from '@/components/side-filter-list'
 import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA} from "@/utils";
+import QRCode from 'qrcode'
 export default {
   name: 'insure-goods',
   components: {
@@ -193,9 +223,12 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
       picVisible: false,
+      qrcodeUrl: '',
       picUrl: '',
       productUrl: '',
+      productObj: {},
       notifyVisible: false, // 售前告知visible
       notifyText: '',
       loading: false,
@@ -240,8 +273,18 @@ export default {
     copy() {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
+    copyProductLink() {
+
+    },
+    share() {
+      this.dialogVisible = true
+    },
     handleSelProduct(obj) {
-      this.productUrl = obj.web_url
+      this.productUrl = ''
+      setTimeout(() => {
+        this.productUrl = obj.web_url
+      }, 500)
+      this.productObj = obj
     },
     ajaxBaseData() {
       getSupplierList().then(res => {
@@ -297,12 +340,32 @@ export default {
     showBelongDialog(row) {
       this.belongData = row;
       this.belongVisible = true;
+    },
+    onCopy() {
+      this.$message.success('链接已经复制到剪贴板')
+    },
+    onError() {
+      console.log('复制失败')
     }
   },
   watch: {
     belongVisible(v) {
       if (!v) {
         this.belongData = {};
+      }
+    },
+    dialogVisible(v) {
+      if (v) {
+        const { target_share_link, agent_id, share_at, cps_product_id } = this.productObj
+        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}`
+        // const code = this.product.share_link.replace(/target_url=[\w%.-]*&/, '').replace(/product_name=[^&]*&/, '')
+        QRCode.toDataURL(url)
+        .then(result => {
+          this.qrcodeUrl = result
+        })
+        .catch(err => {
+          console.error(err)
+        })
       }
     }
   },
@@ -313,6 +376,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.dark-dialog {
+  .share-title-tips {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #999;
+  }
+}
 .insure-goods-container {
   padding: 0 20px 0 20px;
   .header {
@@ -375,10 +445,21 @@ export default {
       }
     }
     .right{
+      position: relative;
       flex: 1;
       height: 100%;
       border-left: 1px solid #E6E6E6;
       padding: 16px 0;
+      .product-button-group {
+        position: absolute;
+        padding: 8px 0;
+        bottom: 15px;
+        left: calc(50% - 180px);
+        width: 360px;
+        height: 48px;
+        text-align: center;
+        background-color: #fff;
+      }
       &>iframe{
         height: 100%;
         width: 360px;
