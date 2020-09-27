@@ -13,8 +13,8 @@
                         @change="handleSelProduct"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
-          <div class="flex-between">
-            <el-input style="width: 240px;"
+          <div class="flex-between pb16">
+            <el-input style="width: 100%;"
                       placeholder="搜索保险商品"
                       size="small"
                       v-model="searchModel.title"
@@ -126,8 +126,8 @@
         <template v-slot:list="{row}">
           <div class="list-item-wrap">
             <div>{{row.title}}</div>
-            <div class="flex mb16">
-              <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1">
+            <div class="flex mb16 mt8">
+              <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1; font-weight: 400;">
                 <text-hidden-ellipsis :width="180" :popoverTip="item">{{item}}</text-hidden-ellipsis>
               </div>
             </div>
@@ -314,7 +314,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .insure-goods-container {
-  padding: 20px 20px 0 20px;
+  padding: 0 20px 0 20px;
   .header {
     font-size: 16px;
     font-weight: bold;
@@ -336,11 +336,10 @@ export default {
     background: #fff;
     ::v-deep .side-filter-container {
       .filter-wrap{
-        height: 60px;
-        padding: 0 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        padding: 16px;
+        // display: flex;
+        // justify-content: space-between;
+        // align-items: center;
         border-bottom: 1px solid #e6e6e6;
       }
       .el-scrollbar{

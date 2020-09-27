@@ -16,7 +16,7 @@
 
 <script>
     import SalePane from './tab-panel/sale'
-    import PositionPane from './tab-panel/_position'
+    import PositionPane from './tab-panel/position'
     import {mapState} from 'vuex'
     export default {
         name: 'sale',
@@ -47,7 +47,7 @@
 
 <style scoped lang="scss">
     .sale-container {
-        padding: 20px 20px 0 20px;
+        padding: 0 20px 0 20px;
         display: flex;
         flex-direction: column;
         & >.header {

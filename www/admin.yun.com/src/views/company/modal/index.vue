@@ -49,7 +49,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div class="tips">
-            建议分辨率：560*120，jpg或png格式
+            建议分辨率：560*60，jpg或png格式
           </div>
         </div>
       </div>
@@ -103,7 +103,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
           <div class="tips">
-            建议分辨率：560*120，jpg或png格式
+            建议分辨率：120*120，jpg或png格式
           </div>
         </div>
         <div class="image">

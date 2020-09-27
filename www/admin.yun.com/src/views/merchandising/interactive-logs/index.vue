@@ -48,7 +48,7 @@
 
 <style scoped lang="scss">
     .health-notice-container{
-        padding: 16px 16px 0 16px;
+        padding: 0 16px 0 16px;
         display: flex;
         flex-direction: column;
         box-sizing: border-box;

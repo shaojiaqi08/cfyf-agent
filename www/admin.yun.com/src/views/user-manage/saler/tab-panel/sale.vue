@@ -22,7 +22,11 @@
                         <list-item class="list-label" :tips-content="row.name">
                             <div>{{row.name}}</div>
                         </list-item>
-                        <div>{{ row.sales_count || 0 }}人</div>
+                        <el-tooltip effect="dark"
+                                    :content="`当前在职 ${row.sales_count || 0}人` "
+                                    placement="top">
+                            <div>{{ row.sales_count || 0 }}人</div>
+                        </el-tooltip>
                     </div>
                 </template>
                 <el-button slot="footer"
@@ -376,7 +380,7 @@
                 accountStatusMap: Object.freeze(accountStatusMap),
                 statusTagType: Object.freeze({
                     disable: 'danger',
-                    enable: 'success',
+                    enable: '',
                     dimission: 'minor',
                     cancel: 'minor'
                 }),

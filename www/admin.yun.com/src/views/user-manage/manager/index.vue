@@ -21,10 +21,14 @@
             >
                 <template v-slot:list="{row}">
                     <div class="flex-between" style="width: 100%">
-                        <div class="list-label">
-                            {{ row.name }}
-                        </div>
-                        <div>{{ row.sales_count || 0 }}人</div>
+                        <list-item class="list-label" :tips-content="row.name">
+                            <div>{{row.name}}</div>
+                        </list-item>
+                        <el-tooltip effect="dark"
+                                    :content="`当前在职 ${row.sales_count || 0}人` "
+                                    placement="top">
+                            <div>{{ row.sales_count || 0 }}人</div>
+                        </el-tooltip>
                     </div>
                 </template>
                 <el-button slot="footer"
@@ -164,12 +168,14 @@
     import validatorMixin from "../validatorMixin";
     import EditManagerDialog from './component/edit-mananger-dialog'
     import EditRoleDialog from './component/edit-role-dialog'
+    import ListItem from '@/components/side-filter-list/side-filter-list-item'
     import {debounce} from '../../../utils'
     import {mapState} from 'vuex'
     export default {
         name: 'manager',
         mixins: [validatorMixin],
         components: {
+            ListItem,
             PermissionTree,
             SideFilterList,
             ModifyPasswordDialog,
@@ -229,7 +235,7 @@
                 manageAccountStatusMap: Object.freeze(manageAccountStatusMap),
                 statusColorMap: Object.freeze({
                     disable: 'danger',
-                    enable: 'success',
+                    enable: '',
                     cancel: 'minor'
                 }),
                 maxHeight: null
@@ -526,7 +532,7 @@
 
 <style scoped lang="scss">
     .manager-container {
-        padding: 20px 20px 0 20px;
+        padding: 0 20px 0 20px;
         display: flex;
         flex-direction: column;
         & >.header {

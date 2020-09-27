@@ -35,7 +35,7 @@
             <div>
               <div class="name">
                 {{userInfo.real_name}}
-                <span style="color: #C2C2C2;">|</span>
+                <span style="color: #C2C2C2;"> | </span>
                 {{userInfo.sales_position && userInfo.sales_position.name}}</div>
               <div class="departmant">{{ userInfo.company.name }}</div>
             </div>
@@ -85,7 +85,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 20px 0 30px;
   width: 100%;
   height: 60px;
   border-bottom: 1px solid #E6E6E6;
@@ -101,8 +101,12 @@
       line-height: 32px;
       text-align: center;
       border-radius: 4px;
+      color: #4d4d4d;
+      opacity: .6;
       cursor: pointer;
       &:hover {
+        color: #1a1a1a;
+        opacity: 1;
         background-color: rgba(0, 0, 0, .1);
       }
     }
@@ -112,7 +116,6 @@
     height: 24px;
     background: url(../../assets/images/navbar-logo.png) no-repeat;
     background-size: contain;
-    opacity: 0.6;
     cursor: pointer;
     &:hover {
       opacity: 1;
@@ -122,7 +125,7 @@
     display: flex;
     align-items: center;
     height: 24px;
-    opacity: 0.6;
+    // opacity: 0.6;
     cursor: pointer;
     &:hover {
       opacity: 1;

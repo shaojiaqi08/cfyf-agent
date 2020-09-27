@@ -332,8 +332,12 @@ export default {
           width: 100%;
           height: 188px;
           border-right: 1px solid #E6E6E6;
+          border-bottom: 1px solid #E6E6E6;
           background-color: #fff;
           overflow: hidden;
+          &:last-child {
+            border-bottom: 0;
+          }
           .title {
             margin: 20px auto;
             color: #1A1A1A;

@@ -236,7 +236,7 @@
 <style scoped lang="scss">
     .prospectus-container{
         display: flex;
-        padding: 20px 20px 0 20px;
+        padding: 0 20px 0 20px;
         flex-direction: column;
 
         & >.header {

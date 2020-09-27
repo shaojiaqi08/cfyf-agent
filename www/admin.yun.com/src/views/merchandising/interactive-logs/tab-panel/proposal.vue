@@ -301,6 +301,7 @@
                 }
                 &:hover{
                     background: rgba(0, 0, 0, .1);
+                    border-radius: 4px;
                 }
                 .icon-product {
                     display: inline-block;
@@ -343,7 +344,8 @@
                 padding: 16px;
             }
             .list-personnel{
-                padding: 16px;
+                padding: 16px 0;
+                margin: 0 16px;
                 color: #1A1A1A;
                 border-bottom: 1px solid #e6e6e6;
                 .item{
@@ -359,6 +361,7 @@
                 display: flex;
                 flex-direction: column;
                 flex: 1;
+                padding-bottom: 40px;
                 .scroll-bar{
                     flex: 1;
                 }
@@ -407,6 +410,13 @@
             &.main-time {
                 background-color: #fff;
                 margin: 16px 12px 0;
+            }
+        }
+        .scroll-bar-pro-item {
+            .item {
+                &:last-child {
+                    border-bottom: 1px solid #ededed;
+                }
             }
         }
         .no-content{
