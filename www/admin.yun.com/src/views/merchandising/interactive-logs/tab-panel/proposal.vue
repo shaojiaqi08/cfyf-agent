@@ -291,7 +291,7 @@
                 position: relative;
                 margin: 0 8px;
                 transition: all .2s ease-out;
-                padding: 8px;
+                padding: 16px 8px;
                 // border-bottom: 1px solid #e6e6e6;
                 &::after {
                     content: "";
