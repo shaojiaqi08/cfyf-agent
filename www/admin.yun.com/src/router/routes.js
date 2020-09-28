@@ -225,11 +225,10 @@ const necessaryRoutes = [
     path: '/company',
     name: 'Company',
     meta: {
-      title: '公司信息',
+      title: '公司资料',
       header: true,
       menu: true,
-      show: true,
-      permission: '/company_info'
+      show: true
     },
     component: getView('company')
   },
