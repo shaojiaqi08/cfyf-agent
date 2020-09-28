@@ -45,7 +45,7 @@
                 placeholder="请输入姓名"
                 v-model="item.member_name"></el-input>
       <el-date-picker
-        style="width: 140px;"
+        style="width: 150px;"
         v-model="item.birthday"
         type="date"
         value-format="yyyy-MM-dd"

@@ -81,7 +81,7 @@
                         <div class="product-detail-table-column">{{detailData.risk_management}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">微信实名制（校验）：</div>
+                        <div class="product-detail-table-column">实名认证（校验）：</div>
                         <div class="product-detail-table-column">{{detailData.check_wechat_real_name}}</div>
                     </div>
                     <div class="product-detail-table-row">
