@@ -56,3 +56,6 @@ export const getPermission = params => get('/agent/proxy/rbac/business_permissio
 
 // 系统版本
 export const checkVersion = params => get('/agent/proxy/common/check_version', params)
+
+// 全局消息状态
+export const getNotification = params => get('/agent/proxy/common/notification_red_points', params)
