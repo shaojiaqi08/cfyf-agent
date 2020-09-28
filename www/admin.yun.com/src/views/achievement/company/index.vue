@@ -328,8 +328,15 @@
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="投保人" prop="policy_holder_detail" align="center"></el-table-column>
-        <el-table-column label="被保人" prop="policy_recognizee_detail" align="center"></el-table-column>
+        <el-table-column label="投保人" prop="policy_holder_basic_info_str" width="180px" align="center"></el-table-column>
+        <el-table-column label="被保人" prop="recognizee_basic_info" width="180px" align="center">
+          <template slot-scope="{row}">
+            <div v-for="(item, index) in row.recognizee_basic_info"
+                  :key="index">
+              {{ item.basic_info }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
         <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
