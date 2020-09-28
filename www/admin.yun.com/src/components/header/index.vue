@@ -3,11 +3,11 @@
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
-        <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
           <div class="function-botton" @click="$router.push('/company')">
-            <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
+            <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
+              <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
+            </el-badge>
           </div>
-        </el-badge>
       </el-tooltip>
       <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="团队成员" placement="bottom">
         <div class="function-botton" @click="$router.push('/group')">
@@ -166,6 +166,9 @@
       color: #999;
     }
   }
+}
+::v-deep .el-badge__content.is-fixed.is-dot {
+  top: 5px;
 }
 </style>
 

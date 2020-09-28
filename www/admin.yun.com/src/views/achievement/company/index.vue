@@ -59,7 +59,7 @@
       <filter-shell v-model="searchModel.sales_id"
                     autoFocus
                     class="mb16"
-                    placeholder="全部销售"
+                    placeholder="全部出单人"
                     @input="searchModelChange">
         <el-select class="block"
                    v-model="searchModel.sales_id"
@@ -76,7 +76,7 @@
             ></el-option>
         </el-select>
         <template v-slot:label>
-          {{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部销售'}}
+          {{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}
         </template>
       </filter-shell>
       <!--全部团队-->
@@ -322,8 +322,8 @@
                 stripe
                 v-loading="tableLoading"
                 :row-style="rowStyleFormat">
-        <el-table-column label="所属销售" prop="sales_real_name" align="center" width="150px"></el-table-column>
-        <el-table-column label="销售团队" prop="sales_team_name" align="center"></el-table-column>
+        <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px"></el-table-column>
+        <el-table-column label="团队" prop="sales_team_name" align="center"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
