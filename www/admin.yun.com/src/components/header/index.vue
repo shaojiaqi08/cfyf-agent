@@ -4,7 +4,7 @@
     <div class="right-function-button-group">
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
           <div class="function-botton" @click="$router.push('/company')">
-            <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
+            <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && notificationInfo.company_profile.is_show">
               <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
             </el-badge>
           </div>
@@ -104,7 +104,7 @@
       text-align: center;
       border-radius: 4px;
       color: #4d4d4d;
-      opacity: .6;
+      // opacity: .6;
       cursor: pointer;
       &:first-child {
         margin-left: 0;
@@ -168,7 +168,10 @@
   }
 }
 ::v-deep .el-badge__content.is-fixed.is-dot {
-  top: 5px;
+  top: 6px;
+  right: 6px;
+  width: 10px;
+  height: 10px;
 }
 </style>
 
