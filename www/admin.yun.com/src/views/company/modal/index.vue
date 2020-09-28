@@ -146,6 +146,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import { updateCompanyDetail } from '@/apis/modules/company'
 export default {
   props: {
@@ -195,6 +196,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('users', ['getNotification']),
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
       const isPNG = file.type === 'image/png'
@@ -218,6 +220,7 @@ export default {
       this.submitting = true
       updateCompanyDetail(this.formModel).then(() => {
         this.$message.success('修改成功')
+        this.getNotification()
         this.closeDialog()
         this.$emit('fresh')
       }).finally(() => this.submitting = false)

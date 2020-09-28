@@ -1,9 +1,11 @@
-import { UPDATE_USER_INFO, LOGIN_OUT } from '../mutation-types'
+import { UPDATE_USER_INFO, LOGIN_OUT, GETNOTIFICATION } from '../mutation-types'
+import { getNotification } from '@/apis/modules/index'
 
 export default {
   namespaced: true,
   state: {
-    userInfo: {}
+    userInfo: {},
+    notificationInfo: {}
   },
   mutations: {
     [UPDATE_USER_INFO](state, userInfo) {
@@ -11,11 +13,19 @@ export default {
     },
     [LOGIN_OUT](state) {
       state.userInfo = {}
+    },
+    [GETNOTIFICATION](state, data) {
+      state.notificationInfo = data
     }
   },
   actions: {
     updateUserInfo({ commit }, userInfo) {
       commit(UPDATE_USER_INFO, userInfo)
+    },
+    getNotification({ commit }) {
+      getNotification().then(res => {
+        commit(GETNOTIFICATION, res)
+      })
     },
     logout({ commit }) {
       commit(LOGIN_OUT)

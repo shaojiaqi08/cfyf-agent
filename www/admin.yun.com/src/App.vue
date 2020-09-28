@@ -38,7 +38,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('users', ['updateUserInfo']),
+    ...mapActions('users', ['updateUserInfo', 'getNotification']),
     pollCheckVersion() {
       setTimeout(() => {
         checkVersion(() => {
@@ -52,6 +52,7 @@ export default {
     checkVersion(() => {
       this.pollCheckVersion()
     }, this)
+    this.getNotification()
   }
 };
 </script>

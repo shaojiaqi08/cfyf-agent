@@ -3,7 +3,7 @@
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
-        <el-badge is-dot :hidden="true">
+        <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
           <div class="function-botton" @click="$router.push('/company')">
             <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
           </div>
@@ -64,7 +64,7 @@
       }
     },
     computed: {
-      ...mapState('users', ['userInfo'])
+      ...mapState('users', ['userInfo', 'notificationInfo'])
     },
     methods: {
       jump2UserInfo() {
