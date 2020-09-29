@@ -653,7 +653,7 @@
                     }
                 }
                 .tree-wrap{
-                    height: 100%;
+                    height: 99%;
                     border-radius: 4px;
                 }
                 .el-table .el-button{
@@ -664,6 +664,9 @@
         }
         ::v-deep .manager-dialog .el-dialog__body{
             overflow: visible;
+        }
+        ::v-deep .el-scrollbar__bar.is-horizontal {
+            height: 8px;
         }
     }
     .active {
