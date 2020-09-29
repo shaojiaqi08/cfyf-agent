@@ -55,7 +55,7 @@
 
 <script>
   import {loginOut} from '@/apis/modules'
-  import {mapState} from 'vuex'
+  import {mapState, mapActions} from 'vuex'
   export default {
     data() {
       return {
@@ -67,6 +67,7 @@
       ...mapState('users', ['userInfo', 'notificationInfo'])
     },
     methods: {
+      ...mapActions('users', ['getNotification']),
       jump2UserInfo() {
         this.$router.push({ path: '/user-info' })
         this.isPopoverShow = false
@@ -77,6 +78,9 @@
         loginOut().finally(() => this.$store.dispatch('users/logout'))
         this.$router.replace({ path: '/login' })
       }
+    },
+    created() {
+      this.getNotification()
     }
   }
 </script>
