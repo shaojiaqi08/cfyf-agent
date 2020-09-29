@@ -156,7 +156,7 @@
                     }
                 }
                 .tree-wrap{
-                    height: 100%;
+                    height: 99%;
                     border-radius: 4px;
                 }
                 .el-table .el-button{
@@ -165,6 +165,9 @@
                 }
             }
         }
+    }
+    ::v-deep .el-scrollbar__bar.is-horizontal {
+        height: 8px;
     }
 </style>
 <style lang="scss">
