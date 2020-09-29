@@ -11,10 +11,10 @@
             <span class="item-label">主体类型</span>
             <span class="item-value">{{ companyInfo.subject_str }}</span>
           </el-col>
-          <el-col class="mb12" :span="6">
+          <!-- <el-col class="mb12" :span="6">
             <span class="item-label">渠道</span>
             <span class="item-value">{{ companyInfo.sale_channel_str }}</span>
-          </el-col>
+          </el-col> -->
           <el-col class="mb12" :span="6">
             <span class="item-label">企业名称</span>
             <span class="item-value">
