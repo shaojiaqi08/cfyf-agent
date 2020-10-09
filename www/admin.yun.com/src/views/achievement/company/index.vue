@@ -322,7 +322,7 @@
                 stripe
                 v-loading="tableLoading"
                 :row-style="rowStyleFormat">
-        <el-table-column label="团队" prop="sales_team_name" align="center" fixed="left"></el-table-column>
+        <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
         <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
