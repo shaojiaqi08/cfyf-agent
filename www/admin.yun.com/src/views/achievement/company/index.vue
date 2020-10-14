@@ -3,8 +3,8 @@
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="tabChange">
         <el-tab-pane name="order" label="订单"></el-tab-pane>
-        <el-tab-pane name="rank" label="业绩排行"></el-tab-pane>
-        <el-tab-pane name="statistics" label="商品统计"></el-tab-pane>
+        <el-tab-pane name="rank" label="业绩排行" v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"></el-tab-pane>
+        <el-tab-pane name="statistics" label="商品统计" v-if="$checkAuth('/company_performance/company/insurance_class_rank') || $checkAuth('/company_performance/company/product_rank')"></el-tab-pane>
       </el-tabs>
       <el-input v-model="searchModel.keyword"
                 placeholder="搜索单号或投被保人信息"

@@ -105,219 +105,225 @@
         </span>
       </template>
     </filter-shell>
-    <div class="table-header">
-      团队业绩排行
-      <el-button class="fr"
-                 size="small"
-                 type="primary"
-                 :loading="exporting"
-                 icon="iconfont iconxiao16_xiazai mr4"
-                 @click="policyExport('exportTeamRank')">导出数据</el-button>
+    <div v-if="$checkAuth('/company_performance/team_rank')">
+      <div class="table-header">
+        团队业绩排行
+        <el-button class="fr"
+                  size="small"
+                  type="primary"
+                  :loading="exporting"
+                  icon="iconfont iconxiao16_xiazai mr4"
+                  v-if="$checkAuth('/company_performance/export_team_rank')"
+                  @click="policyExport('exportTeamRank')">导出数据</el-button>
+      </div>
+      <el-table :data="salesCompanyRankList"
+                stripe
+                border
+                height="32vh"
+                v-loading="salesCompanyRankListLoading">
+        <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
+        <el-table-column align="center" label="团队" width="150px" prop="team_name"></el-table-column>
+        <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium">
+          <template slot="header">
+            <div>承保保费总计</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.underwrite_premium }}</div>
+            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity">
+          <template slot="header">
+            <div>有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.underwrite_quantity }}</div>
+            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
+        <el-table-column align="center" label="人力" width="150px" prop="manpower">
+          <template slot="header">
+            <div>人力</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.manpower }}</div>
+            <div>({{ scope.row.manpower_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
+        <el-table-column align="center" label="长险保费" width="150px" prop="long_insurance_premium">
+          <template slot="header">
+            <div>长险保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.long_insurance_premium }}</div>
+            <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity">
+          <template slot="header">
+            <div>长险有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.long_insurance_quantity }}</div>
+            <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
+        <el-table-column align="center" label="短险保费" width="150px" prop="short_insurance_premium">
+          <template slot="header">
+            <div>短险保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.short_insurance_premium }}</div>
+            <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity">
+          <template slot="header">
+            <div>短险有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.short_insurance_quantity }}</div>
+            <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
+        <el-table-column align="center" label="退保保费" width="150px" prop="surrender_premium">
+          <template slot="header">
+            <div>退保保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.surrender_premium }}</div>
+            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium">
+          <template slot="header">
+            <div>犹退保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.hesitate_surrender_premium }}</div>
+            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-    <el-table :data="salesCompanyRankList"
-              stripe
-              border
-              height="32vh"
-              v-loading="salesCompanyRankListLoading">
-      <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
-      <el-table-column align="center" label="团队" width="150px" prop="team_name"></el-table-column>
-      <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium">
-        <template slot="header">
-          <div>承保保费总计</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.underwrite_premium }}</div>
-          <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity">
-        <template slot="header">
-          <div>有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.underwrite_quantity }}</div>
-          <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
-      <el-table-column align="center" label="人力" width="150px" prop="manpower">
-        <template slot="header">
-          <div>人力</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.manpower }}</div>
-          <div>({{ scope.row.manpower_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
-      <el-table-column align="center" label="长险保费" width="150px" prop="long_insurance_premium">
-        <template slot="header">
-          <div>长险保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.long_insurance_premium }}</div>
-          <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity">
-        <template slot="header">
-          <div>长险有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.long_insurance_quantity }}</div>
-          <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
-      <el-table-column align="center" label="短险保费" width="150px" prop="short_insurance_premium">
-        <template slot="header">
-          <div>短险保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.short_insurance_premium }}</div>
-          <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity">
-        <template slot="header">
-          <div>短险有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.short_insurance_quantity }}</div>
-          <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
-      <el-table-column align="center" label="退保保费" width="150px" prop="surrender_premium">
-        <template slot="header">
-          <div>退保保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.surrender_premium }}</div>
-          <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium">
-        <template slot="header">
-          <div>犹退保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.hesitate_surrender_premium }}</div>
-          <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="table-header mt20">
-      个人业绩排行
-      <el-button class="fr"
-                 size="small"
-                 type="primary"
-                 :loading="exporting"
-                 icon="iconfont iconxiao16_xiazai mr4"
-                 @click="policyExport('exportPersonalRank')">导出数据</el-button>
+    <div v-if="$checkAuth('/company_performance/company/personal_rank')">
+      <div class="table-header mt20">
+        个人业绩排行
+        <el-button class="fr"
+                  size="small"
+                  type="primary"
+                  :loading="exporting"
+                  icon="iconfont iconxiao16_xiazai mr4"
+                  v-if="$checkAuth('/company_performance/company/export_personal_rank')"
+                  @click="policyExport('exportPersonalRank')">导出数据</el-button>
+      </div>
+      <el-table :data="personalRankList"
+                stripe
+                border
+                height="32vh"
+                v-loading="personalRankListLoading">
+        <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
+        <el-table-column align="center" label="出单人" width="150px" prop="sales_real_name"></el-table-column>
+        <el-table-column align="center" label="团队" width="150px" prop="sales_team_name"></el-table-column>
+        <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium_rate">
+          <template slot="header">
+            <div>承保保费总计</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.underwrite_premium }}</div>
+            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity_rate">
+          <template slot="header">
+            <div>有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.underwrite_quantity }}</div>
+            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
+        <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
+        <el-table-column align="center" label="长险保费" width="150px" prop="long_insurance_premium_rate">
+          <template slot="header">
+            <div>长险保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.long_insurance_premium }}</div>
+            <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity_rate">
+          <template slot="header">
+            <div>长险有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.long_insurance_quantity }}</div>
+            <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
+        <el-table-column align="center" label="短险保费" width="150px" prop="short_insurance_premium_rate">
+          <template slot="header">
+            <div>短险保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.short_insurance_premium }}</div>
+            <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity_rate">
+          <template slot="header">
+            <div>短险有效出单件数</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.short_insurance_quantity }}</div>
+            <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
+        <el-table-column align="center" label="退保保费" width="150px" prop="surrender_premium_rate">
+          <template slot="header">
+            <div>退保保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.surrender_premium }}</div>
+            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium_rate">
+          <template slot="header">
+            <div>犹退保费</div>
+            <div>(占比)</div>
+          </template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.hesitate_surrender_premium }}</div>
+            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
-    <el-table :data="personalRankList"
-              stripe
-              border
-              height="32vh"
-              v-loading="personalRankListLoading">
-      <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
-      <el-table-column align="center" label="出单人" width="150px" prop="sales_real_name"></el-table-column>
-      <el-table-column align="center" label="团队" width="150px" prop="sales_team_name"></el-table-column>
-      <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium_rate">
-        <template slot="header">
-          <div>承保保费总计</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.underwrite_premium }}</div>
-          <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity_rate">
-        <template slot="header">
-          <div>有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.underwrite_quantity }}</div>
-          <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
-      <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
-      <el-table-column align="center" label="长险保费" width="150px" prop="long_insurance_premium_rate">
-        <template slot="header">
-          <div>长险保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.long_insurance_premium }}</div>
-          <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity_rate">
-        <template slot="header">
-          <div>长险有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.long_insurance_quantity }}</div>
-          <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
-      <el-table-column align="center" label="短险保费" width="150px" prop="short_insurance_premium_rate">
-        <template slot="header">
-          <div>短险保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.short_insurance_premium }}</div>
-          <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity_rate">
-        <template slot="header">
-          <div>短险有效出单件数</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.short_insurance_quantity }}</div>
-          <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
-      <el-table-column align="center" label="退保保费" width="150px" prop="surrender_premium_rate">
-        <template slot="header">
-          <div>退保保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.surrender_premium }}</div>
-          <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium_rate">
-        <template slot="header">
-          <div>犹退保费</div>
-          <div>(占比)</div>
-        </template>
-        <template slot-scope="scope">
-          <div>{{ scope.row.hesitate_surrender_premium }}</div>
-          <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
-        </template>
-      </el-table-column>
-    </el-table>
   </div>
 </template>
 
