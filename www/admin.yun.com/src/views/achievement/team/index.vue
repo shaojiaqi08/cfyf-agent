@@ -1,7 +1,37 @@
 <template>
   <div class="order-container page-container">
     <div class="header">
-      团队业绩
+      <el-tabs class="tabs" v-model="tabIndex" @tab-click="tabChange">
+        <el-tab-pane name="order" label="订单"></el-tab-pane>
+        <el-tab-pane name="rank" label="业绩排行"></el-tab-pane>
+        <el-tab-pane name="statistics" label="商品统计"></el-tab-pane>
+      </el-tabs>
+      <el-input v-model="searchModel.keyword"
+                placeholder="搜索单号或投被保人信息"
+                size="small"
+                class="fw400"
+                clearable
+                v-if="tabIndex === 'order'"
+                @input="searchModelChange">
+        <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+      </el-input>
+      <el-input v-model="rankKeywords"
+                placeholder="搜索团队名或出单人姓名"
+                size="small"
+                class="fw400"
+                clearable
+                v-if="tabIndex === 'rank'">
+        <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+      </el-input>
+      <el-input v-model="statisticsKeywords"
+                placeholder="搜索保险产品名"
+                size="small"
+                class="fw400"
+                clearable
+                v-if="tabIndex === 'statistics'">
+        <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+      </el-input>
+      <!-- 团队业绩
       <div class="flex-between">
         <el-button size="small"
                    type="primary"
@@ -18,9 +48,9 @@
                   @input="searchModelChange">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
-      </div>
+      </div> -->
     </div>
-    <div class="scroll-box" ref="content">
+    <div class="scroll-box" v-if="tabIndex === 'order'" ref="content">
       <!--全部出单日期-->
       <filter-shell v-model="searchModel.date_range"
                     :width="300"
@@ -320,6 +350,8 @@
         </el-table-column>
       </el-table>
     </div>
+    <Rank class="scroll-box" :keywords="rankKeywords" v-if="tabIndex === 'rank'" ref="content"></Rank>
+    <Statistics class="scroll-box" :keywords="statisticsKeywords" v-if="tabIndex === 'statistics'" ref="content"></Statistics>
   </div>
 </template>
 
@@ -333,16 +365,21 @@ import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
 import orderListMixin from '@/mixins/order-list-mixin'
+import Rank from './tabs/rank'
+import Statistics from './tabs/statistics'
 
 // 团队业绩
 export default {
   name: 'achievement-team',
   mixins: [scrollMixin, orderListMixin],
   components: {
-    FilterShell
+    FilterShell,
+    Rank,
+    Statistics
   },
   data() {
     return {
+      tabIndex: 'order',
       formatDate,
       filterValue: false,
       belongVisible: false,
@@ -350,6 +387,8 @@ export default {
       page: 1,
       page_size: 20,
       total: 0,
+      rankKeywords: '',
+      statisticsKeywords: '',
       policyStatusArray,
       insuranceTypeArray,
       productList: [],
@@ -378,6 +417,26 @@ export default {
     };
   },
   methods: {
+    tabChange() {
+      Object.assign(this.searchModel, {
+        keyword: '',
+        sales_id: [],
+        policy_status: [],
+        products: [],
+        supplier_id: [],
+        product_insurance_class: [],
+        date_range: [+new Date(), +new Date()]
+      })
+      this.rankKeywords = ''
+      this.statisticsKeywords = ''
+
+      if (this.tabIndex === 'order') {
+        this.tableLoading = true
+        this.statisticLoading = true
+        this.getTeamPolicyList()
+        this.getTeamPolicyStatistics()
+      }
+    },
     policyExport() {
       const url = `${exportTeamPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
       this.exporting = true

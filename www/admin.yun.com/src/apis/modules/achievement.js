@@ -5,15 +5,15 @@ export const policyTransfer = params => post('/agent/proxy/policy/transfer', par
 
 // 个人业绩
 export const getSelfPolicyList = params => get('/agent/proxy/policy/self_policy_list', params)
-export const getSelfPolicyStatistics = params => get('/agent/proxy/policy/self_statistics', params)
+export const getSelfPolicyStatistics = params => get('/agent/proxy/policy_statistics/self_statistics', params)
 
 // 团队业绩
 export const getTeamPolicyList = params => get('/agent/proxy/policy/sales_team_policy_list', params)
-export const getTeamPolicyStatistics = params => get('/agent/proxy/policy/sales_team_statistics', params)
+export const getTeamPolicyStatistics = params => get('/agent/proxy/policy_statistics/sales_team_statistics', params)
 
 // 公司业绩
 export const getCompanyPolicyList = params => get('/agent/proxy/policy/company_policy_list', params)
-export const getCompanyPolicyStatistics = params => get('/agent/proxy/policy/company_statistics', params)
+export const getCompanyPolicyStatistics = params => get('/agent/proxy/policy_statistics/company_statistics', params)
 // 归属成员
 export const getManagementSalesList = params => get('/agent/proxy/sales/list_for_transfer_policy', params)
 
@@ -37,3 +37,33 @@ export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/p
 export const exportTeamPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_team_policy` 
 // 导出订单数据(个人)
 export const exportSelfPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_self_policy` 
+
+// 公司团队业绩排行
+export const getTeamRank = (params) => get('/agent/proxy/policy_statistics/company/team_rank', params)
+// 公司个人业绩排行榜
+export const getPersonalRank = (params) => get('/agent/proxy/policy_statistics/company/personal_rank', params)
+// 公司险种类别排行榜
+export const getInsuranceClassRank = (params) => get('/agent/proxy/policy_statistics/company/insurance_class_rank', params) 
+// 公司保险产品排行榜
+export const getProductRank = (params) => get('/agent/proxy/policy_statistics/company/product_rank', params)
+// 团队个人业绩排行榜
+export const getTeamPersonalRank = (params) => get('/agent/proxy/policy_statistics/team/personal_rank', params)
+// 团队险种类别排行榜
+export const getTeamInsuranceClassRank = (params) => get('/agent/proxy/policy_statistics/team/insurance_class_rank', params)
+// 团队保险产品排行榜
+export const getTeamProductRank = (params) => get('/agent/proxy/policy_statistics/team/product_rank', params)
+
+// 导出团队业绩排行
+export const exportTeamRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/company/export_team_rank`
+// 导出个人业绩排行榜
+export const exportPersonalRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/company/export_personal_rank`
+// 导出险种类别排行榜
+export const exportInsuranceClassRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/company/export_insurance_class_rank`
+// 导出保险产品排行榜
+export const exportProductRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/company/export_product_rank`
+// 团队个人业绩排行
+export const exportTeamPersonalRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/team/export_personal_rank`
+// 团队险种类别统计
+export const exportTeamInsuranceClassRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/team/export_insurance_class_rank`
+// 团队保险产品统计
+export const exportTeamProductRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/team/export_product_rank`
