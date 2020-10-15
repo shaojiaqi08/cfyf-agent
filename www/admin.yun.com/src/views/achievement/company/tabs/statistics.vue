@@ -174,7 +174,7 @@
             <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="犹退件数" width="150px" prop="hesitate_surrender_quantity">
+        <el-table-column align="center" label="犹退件数" prop="hesitate_surrender_quantity">
           <template slot="header">
             <div>犹退件数</div>
             <div>(占比)</div>
@@ -255,7 +255,7 @@
             <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="犹退件数" width="150px" prop="hesitate_surrender_premium_rate">
+        <el-table-column align="center" label="犹退件数" prop="hesitate_surrender_premium_rate">
           <template slot="header">
             <div>犹退件数</div>
             <div>(占比)</div>

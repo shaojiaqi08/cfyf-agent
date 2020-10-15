@@ -196,7 +196,7 @@
           <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium_rate">
+      <el-table-column align="center" label="犹退保费" prop="hesitate_surrender_premium_rate">
         <template slot="header">
           <div>犹退保费</div>
           <div>(占比)</div>
