@@ -105,7 +105,7 @@
                         <div class="product-detail-table-column">{{detailData.has_underwriting_result_trace}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">支持的投保人群：</div>
+                        <div class="product-detail-table-column">被保人支持的投保证件：</div>
                         <div class="product-detail-table-column">{{detailData.applicant_crowd}}</div>
                     </div>
                     <div class="product-detail-table-row">
