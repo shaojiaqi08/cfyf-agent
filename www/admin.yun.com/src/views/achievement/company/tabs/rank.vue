@@ -130,7 +130,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_premium }}</div>
-            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity">
@@ -140,7 +140,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_quantity }}</div>
-            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
@@ -151,7 +151,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.manpower }}</div>
-            <div>({{ scope.row.manpower_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.manpower_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
@@ -162,7 +162,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.long_insurance_premium }}</div>
-            <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity">
@@ -172,7 +172,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.long_insurance_quantity }}</div>
-            <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
@@ -183,7 +183,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.short_insurance_premium }}</div>
-            <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity">
@@ -193,7 +193,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.short_insurance_quantity }}</div>
-            <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
@@ -204,7 +204,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_premium }}</div>
-            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退保费" prop="hesitate_surrender_premium">
@@ -214,7 +214,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.team_id">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
       </el-table>
@@ -236,7 +236,20 @@
                 height="32vh"
                 v-loading="personalRankListLoading">
         <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
-        <el-table-column align="center" label="出单人" width="150px" prop="sales_real_name"></el-table-column>
+        <el-table-column align="center" label="出单人" width="200px" prop="sales_real_name">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.sales_real_name }}
+              <div v-if="scope.row.sales_avatar_url">
+                <img :src="scope.row.sales_avatar_url"
+                    style="border-radius: 50%;"
+                    width="40"
+                    height="40">
+              </div>
+              <span class="ml4" v-if="scope.row.sales_position_name">({{ scope.row.sales_position_name }})</span>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="团队" width="150px" prop="sales_team_name"></el-table-column>
         <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium_rate">
           <template slot="header">
@@ -245,7 +258,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_premium }}</div>
-            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity_rate">
@@ -255,7 +268,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_quantity }}</div>
-            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
@@ -267,7 +280,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.long_insurance_premium }}</div>
-            <div>({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.long_insurance_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="长险有效出单件数" width="150px" prop="long_insurance_quantity_rate">
@@ -277,7 +290,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.long_insurance_quantity }}</div>
-            <div>({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.long_insurance_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="长险件均保费" width="150px" prop="long_insurance_premium_avg"></el-table-column>
@@ -288,7 +301,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.short_insurance_premium }}</div>
-            <div>({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.short_insurance_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="短险有效出单件数" width="150px" prop="short_insurance_quantity_rate">
@@ -298,7 +311,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.short_insurance_quantity }}</div>
-            <div>({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.short_insurance_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="短险件均保费" width="150px" prop="short_insurance_premium_avg"></el-table-column>
@@ -309,7 +322,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_premium }}</div>
-            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退保费" prop="hesitate_surrender_premium_rate">
@@ -319,7 +332,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.sales_id">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
       </el-table>

@@ -130,7 +130,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_premium }}</div>
-            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity_rate">
@@ -140,7 +140,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_quantity }}</div>
-            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
@@ -151,7 +151,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_premium }}</div>
-            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="退保件数" width="150px" prop="surrender_quantity">
@@ -161,7 +161,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_quantity }}</div>
-            <div>({{ scope.row.surrender_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.surrender_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium">
@@ -171,7 +171,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退件数" prop="hesitate_surrender_quantity">
@@ -181,7 +181,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_quantity }}</div>
-            <div>({{ scope.row.hesitate_surrender_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.insurance_class">({{ scope.row.hesitate_surrender_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
       </el-table>
@@ -211,7 +211,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_premium }}</div>
-            <div>({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.underwrite_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="有效出单件数" width="150px" prop="underwrite_quantity">
@@ -221,7 +221,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.underwrite_quantity }}</div>
-            <div>({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.underwrite_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
@@ -232,7 +232,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_premium }}</div>
-            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="退保件数" width="150px" prop="surrender_premium_rate">
@@ -242,7 +242,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.surrender_premium }}</div>
-            <div>({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium">
@@ -252,7 +252,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退件数" prop="hesitate_surrender_premium_rate">
@@ -262,7 +262,7 @@
           </template>
           <template slot-scope="scope">
             <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div>({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div v-if="scope.row.id_type">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
           </template>
         </el-table-column>
       </el-table>
