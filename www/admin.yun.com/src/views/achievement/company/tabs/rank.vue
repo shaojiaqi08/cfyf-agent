@@ -272,7 +272,6 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="件均保费" width="150px" prop="average_underwrite_premium"></el-table-column>
-        <el-table-column align="center" label="人均保费" width="150px" prop="person_avg_premium"></el-table-column>
         <el-table-column align="center" label="长险保费" width="150px" prop="long_insurance_premium_rate">
           <template slot="header">
             <div>长险保费</div>
