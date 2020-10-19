@@ -308,13 +308,13 @@ export default {
         products: [],
         product_insurance_class: [],
         sales_company_id: [],
-        keyword: ''
+        product_name: ''
       }
     }
   },
   watch: {
     keywords(v) {
-      this.searchModel.keyword = v
+      this.searchModel.product_name = v
       this.searchModelChange()
     }
   },
