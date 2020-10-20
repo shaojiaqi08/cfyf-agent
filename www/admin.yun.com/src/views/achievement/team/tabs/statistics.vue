@@ -241,8 +241,8 @@
             <div>(占比)</div>
           </template>
           <template slot-scope="scope">
-            <div>{{ scope.row.surrender_premium }}</div>
-            <div v-if="scope.row.id_type">({{ scope.row.surrender_premium_rate || 0 }}%)</div>
+            <div>{{ scope.row.surrender_quantity }}</div>
+            <div v-if="scope.row.id_type">({{ scope.row.surrender_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="犹退保费" width="150px" prop="hesitate_surrender_premium">
@@ -261,8 +261,8 @@
             <div>(占比)</div>
           </template>
           <template slot-scope="scope">
-            <div>{{ scope.row.hesitate_surrender_premium }}</div>
-            <div v-if="scope.row.id_type">({{ scope.row.hesitate_surrender_premium_rate || 0 }}%)</div>
+            <div>{{ scope.row.hesitate_surrender_quantity }}</div>
+            <div v-if="scope.row.id_type">({{ scope.row.hesitate_surrender_quantity_rate || 0 }}%)</div>
           </template>
         </el-table-column>
       </el-table>
