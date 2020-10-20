@@ -322,6 +322,7 @@ export default {
     },
     getTeamPersonalRank() {
       this.personalRankListLoading = true
+      this.personalRankList = []
       getTeamPersonalRank(this.searchModelFormat()).then(res => {
         this.personalRankList = res
       }).finally(() => {

@@ -359,6 +359,7 @@ export default {
     },
     getProductRank() {
       this.productRankListLoading = true
+      this.productRankList = []
       getProductRank(this.searchModelFormat()).then(res => {
         this.productRankList = res
       }).finally(() => {
@@ -367,6 +368,7 @@ export default {
     },
     getInsuranceClassRank() {
       this.insuranceClassRankListLoading = true
+      this.insuranceClassRankList = []
       getInsuranceClassRank(this.searchModelFormat()).then(res => {
         this.insuranceClassRankList = res
       }).finally(() => {

@@ -445,6 +445,7 @@ export default {
     },
     getTeamRank() {
       this.salesCompanyRankListLoading = true
+      this.salesCompanyRankList = []
       getTeamRank(this.searchModelFormat()).then(res => {
         this.salesCompanyRankList = res
       })
@@ -454,6 +455,7 @@ export default {
     },
     getPersonalRank() {
       this.personalRankListLoading = true
+      this.personalRankList = []
       getPersonalRank(this.searchModelFormat()).then(res => {
         this.personalRankList = res
       }).finally(() => {
