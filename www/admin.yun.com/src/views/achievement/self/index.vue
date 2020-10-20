@@ -20,133 +20,135 @@
         </el-input>
       </div>
     </div>
-    <div class="scroll-box" ref="content">
-      <!--全部出单日期-->
-      <filter-shell v-model="searchModel.date_range"
-                    :width="300"
-                    :textOverflow="false"
-                    :collapse="false"
-                    autoClose
-                    autoFocus
-                    class="mb16"
-                    @input="searchModelChange">
-        <el-date-picker
-                v-model="searchModel.date_range"
-                type="daterange"
-                style="width: 265px;"
-                value-format="timestamp"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :clearable="false"
-                @change="searchModelChange">
-        </el-date-picker>
-        <template v-slot:label>
-          {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}
-        </template>
-        <template v-slot:link>
-          <div class="link-content">
-            <span v-for="(date, index) in dateRange"
-                  :key="index"
-                  class="date-item"
-                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
-                  @click.stop="dateSelect(date)">
-              {{ date.name }}
-            </span>
-          </div>
-        </template>
-      </filter-shell>
-      <!--全部保单状态-->
-      <filter-shell v-model="searchModel.policy_status"
-                    autoFocus
-                    class="mb16"
-                    @input="searchModelChange">
-        <el-select class="block"
-                   v-model="searchModel.policy_status"
-                   multiple
-                   clearable
-                   filterable
-                   placeholder="请选择"
-                   @change="searchModelChange">
-          <el-option
-                  v-for="item in policyStatusArray"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-          ></el-option>
-        </el-select>
-        <template v-slot:label>
-          {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
-        </template>
-      </filter-shell>
-      <!--全部保险产品-->
-      <filter-shell v-model="searchModel.products"
-                    autoFocus
-                    class="mb16"
-                    @input="searchModelChange">
-        <el-select class="block"
-                   v-model="searchModel.products"
-                   multiple
-                   clearable
-                   filterable
-                   placeholder="请选择"
-                   @change="searchModelChange">
-          <el-option
-                  v-for="item in productList"
-                  :key="item.id_type"
-                  :label="item.name"
-                  :value="item.id_type"
-          ></el-option>
-        </el-select>
-        <template v-slot:label>
-          {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
-        </template>
-      </filter-shell>
-      <!--全部保险公司-->
-      <filter-shell v-model="searchModel.supplier_id"
-                    autoFocus
-                    class="mb16"
-                    @input="searchModelChange">
-        <el-select class="block"
-                   v-model="searchModel.supplier_id"
-                   multiple
-                   clearable
-                   filterable
-                   placeholder="请选择"
-                   @change="searchModelChange">
-          <el-option
-                  v-for="item in supplierList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-          ></el-option>
-        </el-select>
-        <template v-slot:label>
-          {{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}
-        </template>
-      </filter-shell>
-      <!--全部险种分类-->
-      <filter-shell v-model="searchModel.product_insurance_class"
-                    autoFocus
-                    class="mb16"
-                    @input="searchModelChange">
-        <el-select class="block"
-                   v-model="searchModel.product_insurance_class"
-                   multiple
-                   clearable
-                   filterable
-                   placeholder="请选择"
-                   @change="searchModelChange">
-          <el-option
-                  v-for="item in insuranceTypeArray"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-          ></el-option>
-        </el-select>
-        <template v-slot:label>
-          {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
-        </template>
-      </filter-shell>
+    <div class="scroll-box p16" ref="content">
+      <div>
+        <!--全部出单日期-->
+        <filter-shell v-model="searchModel.date_range"
+                      :width="300"
+                      :textOverflow="false"
+                      :collapse="false"
+                      autoClose
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-date-picker
+                  v-model="searchModel.date_range"
+                  type="daterange"
+                  style="width: 265px;"
+                  value-format="timestamp"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :clearable="false"
+                  @change="searchModelChange">
+          </el-date-picker>
+          <template v-slot:label>
+            {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}
+          </template>
+          <template v-slot:link>
+            <div class="link-content">
+              <span v-for="(date, index) in dateRange"
+                    :key="index"
+                    class="date-item"
+                    :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                    @click.stop="dateSelect(date)">
+                {{ date.name }}
+              </span>
+            </div>
+          </template>
+        </filter-shell>
+        <!--全部保单状态-->
+        <filter-shell v-model="searchModel.policy_status"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                    v-model="searchModel.policy_status"
+                    multiple
+                    clearable
+                    filterable
+                    placeholder="请选择"
+                    @change="searchModelChange">
+            <el-option
+                    v-for="item in policyStatusArray"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
+          </template>
+        </filter-shell>
+        <!--全部保险产品-->
+        <filter-shell v-model="searchModel.products"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                    v-model="searchModel.products"
+                    multiple
+                    clearable
+                    filterable
+                    placeholder="请选择"
+                    @change="searchModelChange">
+            <el-option
+                    v-for="item in productList"
+                    :key="item.id_type"
+                    :label="item.name"
+                    :value="item.id_type"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
+          </template>
+        </filter-shell>
+        <!--全部保险公司-->
+        <filter-shell v-model="searchModel.supplier_id"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                    v-model="searchModel.supplier_id"
+                    multiple
+                    clearable
+                    filterable
+                    placeholder="请选择"
+                    @change="searchModelChange">
+            <el-option
+                    v-for="item in supplierList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            {{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}
+          </template>
+        </filter-shell>
+        <!--全部险种分类-->
+        <filter-shell v-model="searchModel.product_insurance_class"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                    v-model="searchModel.product_insurance_class"
+                    multiple
+                    clearable
+                    filterable
+                    placeholder="请选择"
+                    @change="searchModelChange">
+            <el-option
+                    v-for="item in insuranceTypeArray"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
+          </template>
+        </filter-shell>
+      </div>
       <div class="data-row" ref="dataRow">
         <el-button
           class="left"

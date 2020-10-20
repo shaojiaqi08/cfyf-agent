@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar class="scrollbar" style="height: 94vh;">
-    <div class="p16">
+    <div class="pl16 pr16 pt16">
       <filter-shell v-model="searchModel.date_range"
                     :width="300"
                     autoClose
