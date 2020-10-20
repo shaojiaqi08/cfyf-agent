@@ -392,9 +392,18 @@ export default {
     hasValue,
     formatDate,
     policyExport(type) {
+      let exportName
+      switch (type) {
+        case 'exportTeamRank':
+          exportName = '团队业绩排行'
+          break
+        case 'exportPersonalRank':
+          exportName = '个人业绩排行'
+          break
+      }
       const url = `${this[type]}?${qs.stringify({...this.searchModelFormat()})}`
       this.exporting = true
-      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+      downloadFrameA(url, `${exportName}-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
       }).finally(() => {
         this.exporting = false
       })
@@ -467,16 +476,16 @@ export default {
       this.total = 0
       this.salesCompanyRankList = []
       this.personalRankList = []
-      this.getTeamRank()
-      this.getPersonalRank()
+      this.$checkAuth('/company_performance/team_rank') && this.getTeamRank()
+      this.$checkAuth('/company_performance/company/personal_rank') && this.getPersonalRank()
     }
   },
   mounted() {
     this.getDateRange()
     this.getAllProducts()
     this.getSalesTeamData()
-    this.getTeamRank()
-    this.getPersonalRank()
+    this.$checkAuth('/company_performance/team_rank') && this.getTeamRank()
+    this.$checkAuth('/company_performance/company/personal_rank') && this.getPersonalRank()
   }
 }
 </script>

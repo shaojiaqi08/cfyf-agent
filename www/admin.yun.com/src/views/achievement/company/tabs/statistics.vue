@@ -323,9 +323,18 @@ export default {
     hasValue,
     formatDate,
     policyExport(type) {
+      let exportName
+      switch (type) {
+        case 'exportInsuranceClassRank':
+          exportName = '险种类别统计'
+          break
+        case 'exportProductRank':
+          exportName = '保险产品统计'
+          break
+      }
       const url = `${this[type]}?${qs.stringify({...this.searchModelFormat()})}`
       this.exporting = true
-      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+      downloadFrameA(url, `${exportName}-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
       }).finally(() => {
         this.exporting = false
       })
@@ -397,16 +406,16 @@ export default {
       this.total = 0
       this.productRankList = []
       this.insuranceClassRankList = []
-      this.getProductRank()
-      this.getInsuranceClassRank()
+      this.$checkAuth('/company_performance/company/product_rank') && this.getProductRank()
+      this.$checkAuth('/company_performance/company/insurance_class_rank') && this.getInsuranceClassRank()
     }
   },
   mounted() {
     this.getDateRange()
     this.getAllProducts()
     this.getSalesTeamData()
-    this.getProductRank()
-    this.getInsuranceClassRank()
+    this.$checkAuth('/company_performance/company/product_rank') && this.getProductRank()
+    this.$checkAuth('/company_performance/company/insurance_class_rank') && this.getInsuranceClassRank()
   }
 }
 </script>

@@ -16,7 +16,7 @@
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
       </el-input>
       <el-input v-model="rankKeywords"
-                placeholder="搜索团队名或出单人姓名"
+                placeholder="搜索出单人姓名"
                 size="small"
                 class="fw400"
                 clearable

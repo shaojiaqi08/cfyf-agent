@@ -81,7 +81,7 @@
         </span>
       </template>
     </filter-shell>
-    <filter-shell v-model="searchModel.sales_company_id"
+    <!-- <filter-shell v-model="searchModel.sales_company_id"
                   autoFocus
                   class="mb16"
                   @input="searchModelChange">
@@ -104,7 +104,7 @@
             {{ hasValue(searchModel.sales_company_id) ? teamList.find(i => i.id === searchModel.sales_company_id[0]).name : '全部团队' }}
         </span>
       </template>
-    </filter-shell>
+    </filter-shell> -->
     <div v-if="$checkAuth('/team_performance/insurance_class_rank')">
       <div class="table-header">
         险种类别统计
@@ -323,9 +323,18 @@ export default {
     hasValue,
     formatDate,
     policyExport(type) {
+      let exportName
+      switch (type) {
+        case 'exportTeamInsuranceClassRank':
+          exportName = '险种类别统计'
+          break
+        case 'exportTeamProductRank':
+          exportName = '保险产品统计'
+          break
+      }
       const url = `${this[type]}?${qs.stringify({...this.searchModelFormat()})}`
       this.exporting = true
-      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+      downloadFrameA(url, `${exportName}-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
       }).finally(() => {
         this.exporting = false
       })
@@ -397,16 +406,16 @@ export default {
       this.total = 0
       this.productRankList = []
       this.insuranceClassRankList = []
-      this.getTeamInsuranceClassRank()
-      this.getTeamProductRank()
+      this.$checkAuth('/team_performance/insurance_class_rank') && this.getTeamInsuranceClassRank()
+      this.$checkAuth('/team_performance/product_rank') && this.getTeamProductRank()
     }
   },
   mounted() {
     this.getDateRange()
     this.getAllProducts()
     this.getSalesTeamData()
-    this.getTeamInsuranceClassRank()
-    this.getTeamProductRank()
+    this.$checkAuth('/team_performance/insurance_class_rank') && this.getTeamInsuranceClassRank()
+    this.$checkAuth('/team_performance/product_rank') && this.getTeamProductRank()
   }
 }
 </script>

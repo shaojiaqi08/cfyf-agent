@@ -81,7 +81,7 @@
         </span>
       </template>
     </filter-shell>
-    <filter-shell v-model="searchModel.sales_company_id"
+    <!-- <filter-shell v-model="searchModel.sales_company_id"
                   autoFocus
                   class="mb16"
                   @input="searchModelChange">
@@ -104,7 +104,7 @@
             {{ hasValue(searchModel.sales_company_id) ? teamList.find(i => i.id === searchModel.sales_company_id[0]).name : '全部团队' }}
         </span>
       </template>
-    </filter-shell>
+    </filter-shell> -->
     <div class="table-header">
       个人业绩排行
       <el-button class="fr"
@@ -271,7 +271,7 @@ export default {
     policyExport() {
       const url = `${exportTeamPersonalRank}?${qs.stringify({...this.searchModelFormat()})}`
       this.exporting = true
-      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+      downloadFrameA(url, `个人业绩排行-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
       }).finally(() => {
         this.exporting = false
       })
