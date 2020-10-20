@@ -50,7 +50,7 @@
         </el-input>
       </div> -->
     </div>
-    <div class="scroll-box" v-if="tabIndex === 'order'" ref="content">
+    <div class="scroll-box p16" v-if="tabIndex === 'order'" ref="content">
       <!--全部出单日期-->
       <filter-shell v-model="searchModel.date_range"
                     :width="300"

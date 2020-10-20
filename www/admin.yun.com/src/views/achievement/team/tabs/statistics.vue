@@ -1,111 +1,89 @@
 <template>
-  <div>
-    <filter-shell v-model="searchModel.date_range"
-                  :width="300"
-                  autoClose
-                  autoFocus
-                  class="mb16"
-                  :collapse="false"
-                  :textOverflow="false"
-                  @input="searchModelChange">
-      <el-date-picker
-              v-model="searchModel.date_range"
-              type="daterange"
-              style="width: 265px;"
-              value-format="timestamp"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :clearable="false"
-              @change="searchModelChange">
-      </el-date-picker>
-      <template v-slot:label>
-        <span>{{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} 至 ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}</span>
-      </template>
-      <template v-slot:link>
-        <div class="link-content">
-          <span v-for="(date, index) in dateRange"
-                :key="index"
-                class="date-item"
-                :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
-                @click.stop="dateSelect(date, 'searchModel')">
-            {{ date.name }}
+  <el-scrollbar class="scrollbar" style="height: 94vh;">
+    <div class="p16">
+      <filter-shell v-model="searchModel.date_range"
+                    :width="300"
+                    autoClose
+                    autoFocus
+                    class="mb16"
+                    :collapse="false"
+                    :textOverflow="false"
+                    @input="searchModelChange">
+        <el-date-picker
+                v-model="searchModel.date_range"
+                type="daterange"
+                style="width: 265px;"
+                value-format="timestamp"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :clearable="false"
+                @change="searchModelChange">
+        </el-date-picker>
+        <template v-slot:label>
+          <span>{{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} 至 ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}</span>
+        </template>
+        <template v-slot:link>
+          <div class="link-content">
+            <span v-for="(date, index) in dateRange"
+                  :key="index"
+                  class="date-item"
+                  :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                  @click.stop="dateSelect(date, 'searchModel')">
+              {{ date.name }}
+            </span>
+          </div>
+        </template>
+      </filter-shell>
+      <filter-shell v-model="searchModel.products"
+                    autoFocus
+                    class="mb16"
+                    @input="searchModelChange">
+        <el-select class="block"
+                  v-model="searchModel.products"
+                  clearable
+                  filterable
+                  multiple
+                  placeholder="请选择"
+                  @change="searchModelChange">
+          <el-option
+                  v-for="item in productList"
+                  :key="item.id_type"
+                  :label="item.name"
+                  :value="item.id_type"
+          ></el-option>
+        </el-select>
+        <template v-slot:label>
+          <span>
+              {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
           </span>
-        </div>
-      </template>
-    </filter-shell>
-    <filter-shell v-model="searchModel.products"
-                  autoFocus
-                  class="mb16"
-                  @input="searchModelChange">
-      <el-select class="block"
-                v-model="searchModel.products"
-                clearable
-                filterable
-                multiple
-                placeholder="请选择"
-                @change="searchModelChange">
-        <el-option
-                v-for="item in productList"
-                :key="item.id_type"
-                :label="item.name"
-                :value="item.id_type"
-        ></el-option>
-      </el-select>
-      <template v-slot:label>
-        <span>
-            {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
-        </span>
-      </template>
-    </filter-shell>
-    <filter-shell v-model="searchModel.product_insurance_class"
-                  autoFocus
-                  class="mb16"
-                  @input="searchModelChange">
-      <el-select class="block"
-                v-model="searchModel.product_insurance_class"
-                clearable
-                filterable
-                multiple
-                placeholder="请选择"
-                @change="searchModelChange">
-        <el-option
-                v-for="item in insuranceTypeArray"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-        ></el-option>
-      </el-select>
-      <template v-slot:label>
-        <span>
-            {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
-        </span>
-      </template>
-    </filter-shell>
-    <!-- <filter-shell v-model="searchModel.sales_company_id"
-                  autoFocus
-                  class="mb16"
-                  @input="searchModelChange">
-      <el-select class="block"
-                v-model="searchModel.sales_company_id"
-                clearable
-                filterable
-                multiple
-                placeholder="请选择"
-                @change="searchModelChange">
-        <el-option
-                v-for="item in teamList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-        ></el-option>
-      </el-select>
-      <template v-slot:label>
-        <span>
-            {{ hasValue(searchModel.sales_company_id) ? teamList.find(i => i.id === searchModel.sales_company_id[0]).name : '全部团队' }}
-        </span>
-      </template>
-    </filter-shell> -->
-    <div v-if="$checkAuth('/team_performance/insurance_class_rank')">
+        </template>
+      </filter-shell>
+      <filter-shell v-model="searchModel.product_insurance_class"
+                    autoFocus
+                    class="mb16"
+                    @input="searchModelChange">
+        <el-select class="block"
+                  v-model="searchModel.product_insurance_class"
+                  clearable
+                  filterable
+                  multiple
+                  placeholder="请选择"
+                  @change="searchModelChange">
+          <el-option
+                  v-for="item in insuranceTypeArray"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+          ></el-option>
+        </el-select>
+        <template v-slot:label>
+          <span>
+              {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
+          </span>
+        </template>
+      </filter-shell>
+    </div>
+    <div class="pl16 pr16" v-if="$checkAuth('/team_performance/insurance_class_rank')">
       <div class="table-header">
         险种类别统计
         <el-button class="fr"
@@ -119,7 +97,7 @@
       <el-table :data="insuranceClassRankList"
                 stripe
                 border
-                height="32vh"
+                height="768px"
                 v-loading="insuranceClassRankListLoading">
         <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
         <el-table-column align="center" label="险种类别" width="250px" prop="insurance_class_name"></el-table-column>
@@ -186,7 +164,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="$checkAuth('/team_performance/product_rank')">
+    <div class="pl16 pr16" v-if="$checkAuth('/team_performance/product_rank')">
       <div class="table-header mt16">
         保险产品统计
         <el-button class="fr"
@@ -200,7 +178,7 @@
       <el-table :data="productRankList"
                 stripe
                 border
-                height="32vh"
+                height="768px"
                 v-loading="productRankListLoading">
         <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
         <el-table-column align="center" label="保险产品" width="250px" prop="product_name"></el-table-column>
@@ -267,7 +245,7 @@
         </el-table-column>
       </el-table>
     </div>
-  </div>
+  </el-scrollbar>
 </template>
 
 <script>
