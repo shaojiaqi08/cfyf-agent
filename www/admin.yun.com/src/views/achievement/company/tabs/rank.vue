@@ -509,6 +509,7 @@ export default {
   padding: 0 8px;
   .avatar {
     display: inline-block;
+    vertical-align: middle;
     img {
       border-radius: 50%;
     }
