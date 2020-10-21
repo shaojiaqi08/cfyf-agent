@@ -384,7 +384,7 @@ export default {
       this.total = 0
       this.productRankList = []
       this.insuranceClassRankList = []
-      this.$checkAuth('/team_performance/insurance_class_rank') && this.getTeamInsuranceClassRank()
+      this.$checkAuth('/team_performance/export_insurance_class_rank') && this.getTeamInsuranceClassRank()
       this.$checkAuth('/team_performance/product_rank') && this.getTeamProductRank()
     }
   },
@@ -392,7 +392,7 @@ export default {
     this.getDateRange()
     this.getAllProducts()
     this.getSalesTeamData()
-    this.$checkAuth('/team_performance/insurance_class_rank') && this.getTeamInsuranceClassRank()
+    this.$checkAuth('/team_performance/export_insurance_class_rank') && this.getTeamInsuranceClassRank()
     this.$checkAuth('/team_performance/product_rank') && this.getTeamProductRank()
   }
 }
