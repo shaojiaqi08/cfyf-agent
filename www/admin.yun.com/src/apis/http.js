@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '../store'
 import { statusCode, responseCode, notification } from './code'
-import { addPending, removePending, REPEATSYMBOL } from './cancel-token-helper'
+import { addPending, REPEATSYMBOL } from './cancel-token-helper'
 import router from '@/router'
 let overdueFlag = false
 
@@ -18,15 +18,15 @@ service.interceptors.request.use(config => {
     config.headers['Cfyf-Authorization'] = userInfo.token
     config.headers['Agent-Authorization'] = userInfo.agent_token
   }
-
-  removePending(config, () => addPending(config))
+  addPending(config)
+  // removePending(config, () => addPending(config))
   return config
 }, error => {
   return Promise.reject(error)
 })
 
 service.interceptors.response.use(response => {
-  removePending(response.config)
+  // removePending(response.config)
   const resCode = response.status
   if (resCode === responseCode.SUCCESS) {
     const code = response.data.code
