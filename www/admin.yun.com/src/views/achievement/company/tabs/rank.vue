@@ -240,16 +240,17 @@
         <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
         <el-table-column align="center" label="出单人" width="250px" prop="sales_real_name">
           <template slot-scope="scope">
-            <div style="display: flex;align-items: center;">
-              <span class="mr4">{{ scope.row.sales_real_name }}</span>
+            <div class="user-info-container">
               <div v-if="scope.row.sales_avatar_url"
-                   style="display: inline-block;">
+                    class="avatar">
                 <img :src="scope.row.sales_avatar_url"
-                    style="border-radius: 50%;"
-                    width="40"
-                    height="40">
+                      width="40"
+                      height="40">
               </div>
-              <span class="ml4 mr4" v-if="scope.row.sales_position_name">({{ scope.row.sales_position_name }})</span>
+              <div class="ml10">
+                <div class="main-label">{{ scope.row.sales_real_name || '-' }}</div>
+                <div class="sub-label" v-if="scope.row.sales_position_name">({{ scope.row.sales_position_name || '-' }})</div>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -501,5 +502,25 @@ export default {
   font-size: 16px;
   font-weight: 500;
   line-height: 32px;
+}
+.user-info-container {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  .avatar {
+    display: inline-block;
+    img {
+      border-radius: 50%;
+    }
+  }
+  .main-label {
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .sub-label {
+    color: #909399;
+    font-size: 12px;
+  }
 }
 </style>
