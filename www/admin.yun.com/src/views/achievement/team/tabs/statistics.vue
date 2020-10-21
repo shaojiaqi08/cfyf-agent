@@ -91,7 +91,7 @@
                   type="primary"
                   :loading="exporting"
                   icon="iconfont iconxiao16_xiazai mr4"
-                  v-if="$checkAuth('/team_performance/export_personal_rank')"
+                  v-if="$checkAuth('/team_performance/export_insurance_class_rank')"
                   @click="policyExport('exportTeamInsuranceClassRank')">导出数据</el-button>
       </div>
       <el-table :data="insuranceClassRankList"
