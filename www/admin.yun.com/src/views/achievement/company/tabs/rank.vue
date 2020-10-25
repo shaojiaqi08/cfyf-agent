@@ -237,7 +237,7 @@
                 border
                 height="768px"
                 v-loading="personalRankListLoading">
-        <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
+        <el-table-column align="center" label="团队" width="150px" prop="sales_team_name"></el-table-column>
         <el-table-column align="center" label="出单人" width="250px" prop="sales_real_name">
           <template slot-scope="scope">
             <div class="user-info-container">
@@ -254,7 +254,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="团队" width="150px" prop="sales_team_name"></el-table-column>
+        <el-table-column align="center" label="排名" width="150px" prop="rank"></el-table-column>
         <el-table-column align="center" label="承保保费总计" width="150px" prop="underwrite_premium_rate">
           <template slot="header">
             <div>承保保费总计</div>
