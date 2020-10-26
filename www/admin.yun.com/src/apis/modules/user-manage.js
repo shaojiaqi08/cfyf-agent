@@ -82,5 +82,7 @@ export const getPosDetail = (params) => get('/agent/proxy/rbac/business_permissi
 export const createPosLv = (params) => post('/agent/proxy/sales_position/store', params)
 // 编辑职位
 export const updatePosLv = (params) => post('/agent/proxy/sales_position/update', params)
+// 删除职位
+export const deleteSalesPosition = (params) => post('/agent/proxy/sales_position/delete', params)
 // 跟新权限树
 export const updatePosTree = (params) => post('/agent/proxy/rbac/business_role_permission_relation/update', params)
