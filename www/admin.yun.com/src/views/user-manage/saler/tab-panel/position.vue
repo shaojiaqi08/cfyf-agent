@@ -41,7 +41,7 @@
                     </div>
                     <div class="flex-center">
                         <el-tooltip content="职位内无成员才可以删除"
-                                    v-if="$checkAuth('/manager/admin_position/delete')"
+                                    v-if="$checkAuth('/sale/position_and_authority/sales_position/delete')"
                                     placement="top">
                             <el-link :style="{lineHeight: '20px', color: tableList.length > 0 ? '#999': null}"
                                         :disabled="tableList.length > 0"
@@ -52,7 +52,7 @@
                         </el-tooltip>
                         <el-button type="primary"
                                     @click="handleSetPos"
-                                    v-if="$checkAuth('/manager/admin_position/update')"
+                                    v-if="$checkAuth('/sale/position_and_authority/sales_position/update')"
                                     size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                     </div>
                 </div>
@@ -159,7 +159,7 @@
              createPosLv,
              updatePosTree,
              getAllSalesList,
-             delMangePos,
+             deleteSalesPosition,
              getSalesDetail,
              updateSalesPassword,
              updateSalesStatus,
@@ -351,7 +351,7 @@
             },
             delPosition() {
                 this.confirm('删除后，数据无法恢复，请确认', '删除').then(() => {
-                    delMangePos({id: this.selPosVal}).then(() => {
+                    deleteSalesPosition({id: this.selPosVal}).then(() => {
                         this.$message.success('操作成功!')
                         this.selPosVal = ''
                         this.selPosName = ''
