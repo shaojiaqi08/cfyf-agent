@@ -284,6 +284,7 @@
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保单号" prop="proposal_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
+        <el-table-column label="回访状态" prop="visit_status_str" align="center"></el-table-column>
         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="170px" align="center"> </el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>

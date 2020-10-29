@@ -93,6 +93,25 @@
           <span>{{ policyInfo.policy_recognizee_mobile || '-' }}</span>
         </div>
       </div>
+      <h4>回访信息</h4>
+      <div class="row">
+        <div>
+          回访状态
+          <span>{{ policyInfo.visit_status_str || '-' }}</span>
+        </div>
+        <div>
+          回访时间
+          <span>{{ policyInfo.visit_at_str || '-' }}</span>
+        </div>
+        <div>
+          回访方式
+          <span>{{ policyInfo.visit_way_name || '-' }}</span>
+        </div>
+        <div>
+          回访失败原因
+          <span>{{ policyInfo.visit_ques_reason || '-' }}</span>
+        </div>
+      </div>
       <h4>销售信息</h4>
       <div class="row">
         <div>
