@@ -66,10 +66,6 @@
         </div>
         <!-------------------------------->
         <div>
-          回访日期
-          <span>{{policyInfo.visit_at_str || '-'}}</span>
-        </div>
-        <div>
           过犹日期
           <span>{{ policyInfo.over_hesitation_at_str || '-'}}</span>
         </div>
