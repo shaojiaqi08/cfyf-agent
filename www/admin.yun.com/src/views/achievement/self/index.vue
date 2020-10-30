@@ -79,6 +79,29 @@
             {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
           </template>
         </filter-shell>
+        <!--回访状态-->
+        <filter-shell v-model="searchModel.visit_status"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                     v-model="searchModel.visit_status"
+                     multiple
+                     clearable
+                     filterable
+                     placeholder="请选择"
+                     @change="searchModelChange">
+            <el-option
+                    v-for="item in visitStatusArray"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            {{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '全部回访状态' }}
+          </template>
+        </filter-shell>
         <!--全部保险产品-->
         <filter-shell v-model="searchModel.products"
                       autoFocus
@@ -306,6 +329,7 @@ import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
 import qs from 'qs'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
+import { visitStatus, visitStatusArray } from '@/enums/achievement'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
 import orderListMixin from '@/mixins/order-list-mixin'
@@ -326,6 +350,8 @@ export default {
       total: 0,
       policyStatusArray,
       insuranceTypeArray,
+      visitStatus,
+      visitStatusArray,
       productList: [],
       supplierList: [],
       companyList: [],
@@ -346,7 +372,8 @@ export default {
         supplier_id: '',
         product_insurance_class: '',
         date_range: [+new Date(), +new Date()],
-        sales_company_id: ''
+        sales_company_id: '',
+        visit_status: []
       }
     };
   },
