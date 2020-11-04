@@ -117,7 +117,7 @@
               >{{ is_show_company_profile ? '展示' : '不展示' }}</span>
             </div>
           </div>
-          <div class="form-row pb16">
+          <div class="form-row">
             <div>
               投保链接
               <el-switch
