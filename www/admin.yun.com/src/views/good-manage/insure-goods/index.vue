@@ -319,7 +319,7 @@ export default {
         getInsureCpsList(params).then(cpsData => {
           this.list = [...apiData, ...cpsData.map(i => ({
             ...i,
-            title: i.share_title,
+            title: i.title,
             duty_pic_url: i.share_cover,
             web_url: i.link,
             isCpsData: true
