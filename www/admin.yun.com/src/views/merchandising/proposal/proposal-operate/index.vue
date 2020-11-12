@@ -117,7 +117,7 @@
               >{{ is_show_company_profile ? '展示' : '不展示' }}</span>
             </div>
           </div>
-          <div class="form-row pb16">
+          <div class="form-row">
             <div>
               投保链接
               <el-switch
@@ -130,6 +130,21 @@
                 class="switcher-tips"
                 :class="{ active: is_show_link }"
               >{{ is_show_link ? '展示' : '不展示' }}</span>
+            </div>
+          </div>
+          <div class="form-row pb16">
+            <div>
+              保额总汇
+              <el-switch
+                style="margin-left: 37px;"
+                v-model="is_show_coverage_aggregate"
+                active-color="#1F78FF"
+                inactive-color="#E6E6E6"
+              ></el-switch>
+              <span
+                class="switcher-tips"
+                :class="{ active: is_show_coverage_aggregate }"
+              >{{ is_show_coverage_aggregate ? '展示' : '不展示' }}</span>
             </div>
           </div>
         </el-card>
@@ -899,6 +914,7 @@ export default {
       containerWidth: 0,
       is_show_company_profile: 1,
       is_show_link: 0,
+      is_show_coverage_aggregate: 0,
       fixedRightPoint: 0
     }
   },
@@ -1084,6 +1100,7 @@ export default {
           this.customerId = res.customer_id
           this.is_show_company_profile = !!res.is_show_company_profile
           this.is_show_link = !!res.is_show_link
+          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate
           this.proposal_struct_id = res.proposal_struct_id
           // if (this.customerId > 0) {
           //   this.getProposalCustomerSync(this.customerId)
@@ -1302,6 +1319,7 @@ export default {
         customer_name: this.customerName,
         is_show_company_profile: this.is_show_company_profile ? 1 : 0,
         is_show_link: this.is_show_link ? 1 : 0,
+        is_show_coverage_aggregate: this.is_show_coverage_aggregate ? 1 : 0,
         status: type,
         remark: this.formData.remark,
         illustration: this.formData.illustration,
