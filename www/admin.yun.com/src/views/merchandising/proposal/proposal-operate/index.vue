@@ -138,7 +138,7 @@
               <el-switch
                 style="margin-left: 37px;"
                 v-model="is_show_coverage_aggregate"
-                active-color="#FF9B19"
+                active-color="#1F78FF"
                 inactive-color="#E6E6E6"
               ></el-switch>
               <span
