@@ -95,8 +95,9 @@
                 </div>
                 <el-table :data="tableData" border :style="{fontSize: fontSize + 'px'}" :max-height="maxHeight">
                     <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
-                    <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
-                    <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
+                    <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
+                    <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
+                    <el-table-column label="产品名称" prop="product_name" width="250px" align="center"></el-table-column>
                     <template  v-for="(item,index) in illnessCategoryLength">
                         <el-table-column
                                 :prop="`illness_categorys[${index}]`"

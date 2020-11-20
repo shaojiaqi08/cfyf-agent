@@ -2,9 +2,9 @@
     <div class="health-notice-container page-container">
         <div class="header">
             <el-tabs v-model="tabIndex">
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwriting')" name="underwrite-search" label="核保查询"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_rule')" name="underwrite-rules" label="投保规则"></el-tab-pane>
                 <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/health_report_inquiry')" name="health-search" label="健告查询"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_rule')" name="underwrite-rules" label="核保规则"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwriting')" name="underwrite-search" label="智核查询"></el-tab-pane>
             </el-tabs>
         </div>
         <div class="content">
@@ -39,12 +39,12 @@
             'userInfo.permissions': {
                 handler() {
                     // 初始化tab权限
-                    if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
-                        this.tabIndex = 'underwrite-search'
+                    if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
+                        this.tabIndex = 'underwrite-rules'
                     } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
                         this.tabIndex = 'health-search'
-                    } else if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
-                        this.tabIndex = 'underwrite-rules'
+                    } else if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
+                        this.tabIndex = 'underwrite-search'
                     }
                 },
                 immediate: true
