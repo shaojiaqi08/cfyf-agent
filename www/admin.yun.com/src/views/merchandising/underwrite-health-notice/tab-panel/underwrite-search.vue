@@ -37,7 +37,7 @@
                                     clearable
                                     @input="debounceAjaxProductData"></el-input>
                         </div>
-                        <div>
+                        <div class="mb20">
                             <span class="mr10">条件</span>
                             <el-input v-model="searchModel.condition_search"
                                     class="inline-block"
@@ -45,6 +45,15 @@
                                     clearable
                                     placeholder="多个条件以逗号分隔，最多5个"
                                     @input="debounceAjaxProductData"></el-input>
+                        </div>
+                        <div>
+                            <span class="mr10">结论</span>
+                            <el-input v-model="searchModel.conclusion"
+                                      class="inline-block"
+                                      style="width: 240px;"
+                                      clearable
+                                      placeholder="多个条件以逗号分隔，最多5个"
+                                      @input="debounceAjaxProductData"></el-input>
                         </div>
                         <template v-slot:label>
                             筛选
@@ -149,6 +158,7 @@
                     illness: '',
                     condition_search: '',
                     is_reverse: '0',
+                    conclusion: ''
                 },
                 illnessCategoryLength: 0,
                 maxConditionLength: 0,
