@@ -97,7 +97,14 @@
                     <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
                     <el-table-column label="器官" prop="organ" width="150px" align="center"></el-table-column>
                     <el-table-column label="病种模块" prop="illness_module" width="250px" align="center"></el-table-column>
-                    <el-table-column label="病种分类" prop="illness_category" width="250px" align="center"></el-table-column>
+                    <template  v-for="(item,index) in illnessCategoryLength">
+                        <el-table-column
+                                :prop="`illness_categorys[${index}]`"
+                                :label="`病种分类${index+1}`"
+                                width="250px"
+                                :key="index"
+                                align="center"></el-table-column>
+                    </template>
                     <template v-for="(item,index) in maxConditionLength">
                         <el-table-column
                                 width="250px"
@@ -107,6 +114,7 @@
                                 :key="index"
                         ></el-table-column>
                     </template>
+                    <el-table-column label="结论" prop="conclusion" width="250px" align="center"></el-table-column>
                 </el-table>
             </template>
             <div class="empty-tips" v-else>
@@ -141,7 +149,8 @@
                     condition_search: '',
                     is_reverse: '0',
                 },
-                maxConditionLength: 15,
+                illnessCategoryLength: 0,
+                maxConditionLength: 0,
                 fontSize: 14,
                 isReverseData: [
                     {label: '正向条件', value: '0'},
@@ -169,7 +178,18 @@
                     ...this.searchModel,
                     product_name,
                 }).then(res => {
+                    let illnessCategoryLength = 0
+                    let maxConditionLength = 0
+                    res.forEach(i => {
+                        const conditionLen = i.conditions.filter(i => i!=='').length
+                        maxConditionLength = Math.max(maxConditionLength, conditionLen)
+                        const illLen = i.illness_categorys.filter(i => i!=='').length
+                        illnessCategoryLength = Math.max(illnessCategoryLength, illLen)
+                    })
                     this.tableData = res
+                    this.illnessCategoryLength = illnessCategoryLength
+                    this.maxConditionLength = maxConditionLength
+
                 }).finally(() => {
                     this.detailLoading = false
                 })

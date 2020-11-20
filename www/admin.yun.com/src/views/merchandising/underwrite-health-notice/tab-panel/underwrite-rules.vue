@@ -37,43 +37,43 @@
                         <div class="product-detail-table-column">{{detailData.company}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">出单渠道：</div>
+                        <div class="product-detail-table-column">对接渠道：</div>
                         <div class="product-detail-table-column">{{detailData.channel}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">产品类型：</div>
+                        <div class="product-detail-table-column">对接方式：</div>
                         <div class="product-detail-table-column">{{detailData.insurance_class}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">投保险人年龄：</div>
+                        <div class="product-detail-table-column">投保人年龄：</div>
                         <div class="product-detail-table-column">{{detailData.applicant_age}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">被保险人年龄：</div>
+                        <div class="product-detail-table-column">投保人豁免是否占风险保额：</div>
+                        <div class="product-detail-table-column">{{detailData.applicant_occupied_risk_coverage}}</div>
+                    </div>
+                    <div class="product-detail-table-row">
+                        <div class="product-detail-table-column">承保年龄：</div>
                         <div class="product-detail-table-column">{{detailData.insured_age}}</div>
                     </div>
                     <div class="product-detail-table-row">
                         <div class="product-detail-table-column">可为谁投保：</div>
-                        <div class="product-detail-table-column">{{detailData.applicant_insured_relation}}</div>
+                        <div class="product-detail-table-column" v-html="detailData.applicant_insured_relation"></div>
+                    </div>
+                    <div class="product-detail-table-row">
+                        <div class="product-detail-table-column">投保职业：</div>
+                        <div class="product-detail-table-column">{{detailData.occupation}}</div>
                     </div>
                     <div class="product-detail-table-row">
                         <div class="product-detail-table-column">保额限制：</div>
-                        <div class="product-detail-table-column" v-html="detailData.guarantee_quota"></div>
-                    </div>
-                    <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">投保人豁免是否占用风险保额：</div>
-                        <div class="product-detail-table-column">{{detailData.applicant_occupied_risk_coverage}}</div>
-                    </div>
-                    <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">职业限制：</div>
-                        <div class="product-detail-table-column">{{detailData.occupation}}</div>
+                        <div class="product-detail-table-column">{{detailData.guarantee_quota}}</div>
                     </div>
                     <div class="product-detail-table-row">
                         <div class="product-detail-table-column">BMI限制：</div>
                         <div class="product-detail-table-column">{{detailData.bmi_restrict}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">反洗钱规则：</div>
+                        <div class="product-detail-table-column">反洗钱处理（20万总保费）：</div>
                         <div class="product-detail-table-column">{{detailData.aml}}</div>
                     </div>
                     <div class="product-detail-table-row">
@@ -81,35 +81,27 @@
                         <div class="product-detail-table-column">{{detailData.risk_management}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">实名认证（校验）：</div>
+                        <div class="product-detail-table-column">代收保费：</div>
+                        <div class="product-detail-table-column">{{detailData.collect_premium}}</div>
+                    </div>
+                    <div class="product-detail-table-row">
+                        <div class="product-detail-table-column">支付认证（校验）：</div>
                         <div class="product-detail-table-column">{{detailData.check_wechat_real_name}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">保费缴纳方式：</div>
-                        <div class="product-detail-table-column" v-html="detailData.payment_method"></div>
+                        <div class="product-detail-table-column">首期支付方式：</div>
+                        <div class="product-detail-table-column">{{detailData.first_payment_way}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">是否可以支持医保卡外借：</div>
-                        <div class="product-detail-table-column">{{detailData.medical_card_lend_out}}</div>
+                        <div class="product-detail-table-column">续期支付方式：</div>
+                        <div class="product-detail-table-column">{{detailData.renewal_payment_way}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">被保险人是否有智能核保：</div>
-                        <div class="product-detail-table-column">{{detailData.insured_intelligent_underwriting}}</div>
-                    </div>
-                    <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">预核保（邮件）/人工核保：</div>
-                        <div class="product-detail-table-column">{{detailData.pre_underwriting_support}}</div>
-                    </div>
-                    <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">核保结果是否行业内留痕：</div>
-                        <div class="product-detail-table-column">{{detailData.has_underwriting_result_trace}}</div>
-                    </div>
-                    <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">被保人支持的投保证件：</div>
+                        <div class="product-detail-table-column" style="padding-right: 50px;">被保人支持的投保证件：</div>
                         <div class="product-detail-table-column">{{detailData.applicant_crowd}}</div>
                     </div>
                     <div class="product-detail-table-row">
-                        <div class="product-detail-table-column">投保区域：</div>
+                        <div class="product-detail-table-column" style="padding-right: 50px;">销售区域：</div>
                         <div class="product-detail-table-column">{{detailData.apply_area}}</div>
                     </div>
                     <div class="product-detail-table-row">
