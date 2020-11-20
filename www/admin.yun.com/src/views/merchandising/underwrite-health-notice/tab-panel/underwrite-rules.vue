@@ -42,7 +42,7 @@
                     </div>
                     <div class="product-detail-table-row">
                         <div class="product-detail-table-column">对接方式：</div>
-                        <div class="product-detail-table-column">{{detailData.insurance_class}}</div>
+                        <div class="product-detail-table-column">{{detailData.join_way}}</div>
                     </div>
                     <div class="product-detail-table-row">
                         <div class="product-detail-table-column">投保人年龄：</div>
