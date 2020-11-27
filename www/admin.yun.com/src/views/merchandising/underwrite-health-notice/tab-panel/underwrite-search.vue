@@ -761,7 +761,7 @@ export default {
       var condition_search = this.supperFormData.condition_search.value.filter(function (item) {
         return item && item.trim()
       })
-      var conclusion_search = this.formData.conclusion_search.value.filter(function (item) {
+      var conclusion_search = this.supperFormData.conclusion_search.value.filter(function (item) {
         return item && item.trim()
       })
       let insuranceList = this.supperClassifyList.filter(item => {
@@ -778,15 +778,15 @@ export default {
         product_name: this.supperFormData.product_name,
         illness_categorys_search: {
           value: illness_categorys_search.join(','),
-          query_rule: this.formData.illness_categorys_search.query_rule
+          query_rule: this.supperFormData.illness_categorys_search.query_rule
         },
         condition_search: {
           value: condition_search.join(','),
-          query_rule: this.formData.condition_search.query_rule
+          query_rule: this.supperFormData.condition_search.query_rule
         },
         conclusion_search: {
           value: conclusion_search.join(','),
-          query_rule: this.formData.conclusion_search.query_rule
+          query_rule: this.supperFormData.conclusion_search.query_rule
         },
         is_reverse: this.supperFormData.isReverse,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
