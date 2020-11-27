@@ -809,7 +809,28 @@ export default {
     },
     loopDetail(nowIndex) {
       // this.supperDetailTableData = []
-      if (!this.isShowSupperSearch || nowIndex !== this.nowIndex) {
+      if (!this.isShowSupperSearch) {
+        this.supperFormData = {
+          product_name: '',
+          illness_categorys_search: {
+            value: ['', '', '', '', '', '', '', '', '', ''],
+            query_rule: 'and'
+          },
+          condition_search: {
+            value: ['', '', '', '', '', '', '', '', '', ''],
+            query_rule: 'and'
+          },
+          conclusion_search: {
+            value: ['', '', '', '', '', '', '', '', '', ''],
+            query_rule: 'and'
+          },
+          isReverse: 0
+        }
+        this.supperDetailTableData = []
+        return
+      }
+      if (nowIndex !== this.nowIndex) {
+        this.supperDetailTableData = []
         return
       }
       var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
@@ -824,6 +845,16 @@ export default {
       let detailItemIndex = this.tempSupperDetailTableData.findIndex(item => {
         return item.isSearch === false
       })
+      let insuranceList = this.supperClassifyList.filter(item => {
+        return item.isSelect
+      })
+      let insurance_class
+      if (insuranceList) {
+        console.log(insuranceList)
+        insurance_class = insuranceList.map(item => {
+          return item.name
+        })
+      }
       let params = {
         product_name: this.tempSupperDetailTableData[detailItemIndex].product_name,
         illness_categorys_search: {
@@ -838,12 +869,33 @@ export default {
           value: conclusion_search.join(','),
           query_rule: this.supperFormData.conclusion_search.query_rule
         },
+        insurance_class: insurance_class ? insurance_class.join(',') : '',
         is_reverse: this.supperFormData.isReverse
       }
       this.searchConditionData = { ...params }
       getUnderwritingDetail(params)
       .then((res) => {
-        if (!this.isShowSupperSearch || nowIndex !== this.nowIndex) {
+        if (!this.isShowSupperSearch) {
+          this.supperFormData = {
+            product_name: '',
+            illness_categorys_search: {
+              value: ['', '', '', '', '', '', '', '', '', ''],
+              query_rule: 'and'
+            },
+            condition_search: {
+              value: ['', '', '', '', '', '', '', '', '', ''],
+              query_rule: 'and'
+            },
+            conclusion_search: {
+              value: ['', '', '', '', '', '', '', '', '', ''],
+              query_rule: 'and'
+            },
+            isReverse: 0
+          }
+          this.supperDetailTableData = []
+          return
+        }
+        if (nowIndex !== this.nowIndex) {
           this.supperDetailTableData = []
           return
         }
@@ -893,7 +945,7 @@ export default {
             dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = (dom.getElementsByClassName('el-table')[0].clientHeight - 44) + 'px'
           }, 2000)
         } else {
-          this.loopDetail()
+          this.loopDetail(nowIndex)
         }
         // this.detailTableData = Object.freeze(res)
       })
@@ -1011,17 +1063,15 @@ export default {
       if (!this.isShowSupperSearch) {
         this.curProduct = {}
         this.isShowList = {
-          illness_categorys: false,
-          condition_search: false,
-          conclusion: false
+          all: false,
+          supperAll: false
         }
         this.page = 1
         this.requestList()
       } else {
         this.isShowList = {
-          illness_categorys: false,
-          condition_search: false,
-          conclusion: false
+          all: false,
+          supperAll: false
         }
         this.supperRequestList()
       }
