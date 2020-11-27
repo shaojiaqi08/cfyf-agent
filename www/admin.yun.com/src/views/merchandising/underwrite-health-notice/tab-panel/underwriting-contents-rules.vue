@@ -340,17 +340,19 @@ export default {
           })
           this.$nextTick(() => {
             this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
-            this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach(item => {
-              let itemHeight = item.offsetHeight
-              // let itemWidth = item.clientWidth
-              let clonedNode = item.cloneNode(true);
-              clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
-              clonedNode.style.widhth = '200px'
-              this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
-            })
-            this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 32是两个padding
-            this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
-            this.$refs.rightBox.$el.addEventListener('scroll', this.changeScrollPx)
+            setTimeout(() => {
+              this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach(item => {
+                let itemHeight = item.offsetHeight
+                // let itemWidth = item.clientWidth
+                let clonedNode = item.cloneNode(true);
+                clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
+                clonedNode.style.widhth = '200px'
+                this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
+              })
+              this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 16是一个padding
+              this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
+              this.$refs.rightBox.$el.addEventListener('scroll', this.changeScrollPx)
+            }, 300)
           })
         })
         .finally(() => {
