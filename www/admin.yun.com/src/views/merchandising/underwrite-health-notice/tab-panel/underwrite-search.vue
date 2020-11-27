@@ -18,14 +18,14 @@
             placeholder="搜索产品名称"
             v-model="formData.product_name"
             prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-            @input="ajaxProductData"
+            @input="search"
           ></el-input>
         </div>
         <div class="filter-container flex-between">
           <el-radio-group
             size="mini"
             v-model="formData.isReverse"
-            @change="ajaxProductData"
+            @change="search"
             class="radio-group-wrap"
           >
             <el-radio-button
@@ -260,7 +260,7 @@
           <el-radio-group
             size="mini"
             v-model="supperFormData.isReverse"
-            @change="ajaxProductData"
+            @change="supperRequestList"
             class="radio-group-wrap"
           >
             <el-radio-button
