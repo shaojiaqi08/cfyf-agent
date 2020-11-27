@@ -848,8 +848,8 @@ export default {
           this.supperDetailTableData = []
           return
         }
-        res[0].isShow = false
         if (res.length > 1) {
+          res[0].isShow = false
           res.map((item, index) => {
             if (index === 0) {
               item.isShow = true
@@ -1005,6 +1005,7 @@ export default {
         },
         isReverse: 0
       }
+      this.supperSearchText = ''
       this.supperDetailTableData = []
     },
     search() {
