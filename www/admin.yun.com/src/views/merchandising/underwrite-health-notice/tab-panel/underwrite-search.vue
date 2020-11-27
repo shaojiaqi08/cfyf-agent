@@ -345,7 +345,7 @@
               </span>
             </el-popover>
             <span class="close-btn" @click="resetSupper" v-if="supperSearchText">
-              <i class="iconfont iconxiao_yuanxingguanbi"></i>
+              <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
             </span>
           </div>
         </el-form>
@@ -359,7 +359,6 @@
             height="73vh"
             stripe
             class="not-select"
-            v-loading="loadingDetail"
             :style="{fontSize: supperSetFontSize + 'px'}"
           >
             <el-table-column label="保险产品" prop="product_name" align="center" width="100px"></el-table-column>
