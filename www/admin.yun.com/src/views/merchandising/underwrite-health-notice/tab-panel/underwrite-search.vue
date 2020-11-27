@@ -808,9 +808,9 @@ export default {
         this.supperLoading = false
       })
     },
-    loopDetail() {
+    loopDetail(nowIndex) {
       // this.supperDetailTableData = []
-      if (!this.isShowSupperSearch) {
+      if (!this.isShowSupperSearch || nowIndex !== this.nowIndex) {
         return
       }
       var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
@@ -844,7 +844,7 @@ export default {
       this.searchConditionData = { ...params }
       getUnderwritingDetail(params)
       .then((res) => {
-        if (!this.isShowSupperSearch) {
+        if (!this.isShowSupperSearch || nowIndex !== this.nowIndex) {
           this.supperDetailTableData = []
           return
         }
