@@ -5,6 +5,7 @@
                 <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_rule')" name="underwrite-rules" label="投保规则"></el-tab-pane>
                 <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/health_report_inquiry')" name="health-search" label="健告查询"></el-tab-pane>
                 <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwriting')" name="underwrite-search" label="智核查询"></el-tab-pane>
+                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_content_rule')" name="underwrite-content-rules" label="核保规则"></el-tab-pane>
             </el-tabs>
         </div>
         <div class="content">
@@ -18,13 +19,15 @@
     import UnderwriteSearch from './tab-panel/underwrite-search'
     import HealthSearch from './tab-panel/health-search'
     import UnderwriteRules from './tab-panel/underwrite-rules'
+    import UnderwriteContentRules from './tab-panel/underwriting-contents-rules'
     import {mapState} from 'vuex'
     export default {
         name: 'underwrite-health-notice',
         components: {
             UnderwriteSearch,
             HealthSearch,
-            UnderwriteRules
+            UnderwriteRules,
+            UnderwriteContentRules
         },
         computed: {
             ...mapState('users', ['userInfo'])
@@ -45,6 +48,8 @@
                         this.tabIndex = 'health-search'
                     } else if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
                         this.tabIndex = 'underwrite-search'
+                    } else if (this.$checkAuth('/underwrite-health-notice/underwrite_content_rule')) {
+                        this.tabIndex = 'underwrite-content-rules'
                     }
                 },
                 immediate: true

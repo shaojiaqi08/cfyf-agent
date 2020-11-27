@@ -16,10 +16,12 @@ export const getHealthNoticeProductList = params => get('/agent/proxy/health_not
 export const removeHealthNoticeProduct = params => get('/agent/proxy/health_notice/product_name/del', params)
 // 根据产品名称删除核保信息
 export const removeUnderwritingProduct = params => get('/agent/proxy/health_notice/underwriting/product_name/del', params)
-// 核保规则列表
+// 投保规则列表
 export const getUnderwriteRuleList = params => get('/agent/proxy/health_notice/underwrite-rule/list', params)
-// 核保规则详情
+// 投保规则详情
 export const getUnderwriteRuleDetail = params => get('/agent/proxy/health_notice/underwrite-rule/detail', params)
+// 核保规则列表
+export const getInsuranceRuleList = params => get('/agent/proxy/health_notice/underwrite-rule/insurance/list', params)
 // 获取对比表的字段配置
 export const getProductEvaluationConfig = params => get('/agent/proxy/product_evaluation/compare_columns_config', params)
 // 一览表产品列表

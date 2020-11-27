@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "npm run serve",
     "serve": "vue-cli-service serve --mode dev",
     "beta": "vue-cli-service build --mode beta",
     "build": "vue-cli-service build --mode prod",
