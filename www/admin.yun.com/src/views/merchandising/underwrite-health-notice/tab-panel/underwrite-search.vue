@@ -323,11 +323,11 @@
                   <div class="formData-select-list-info">同时满足</div>
                   <div class="formData-select-list">
                     <div class="formData-select-list-header">
-                      <el-radio v-model="supperFormData. conclusion_search.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData. conclusion_search.query_rule" label="or">满足其一</el-radio>
+                      <el-radio v-model="supperFormData.conclusion_search.query_rule" label="and">同时满足</el-radio>
+                      <el-radio v-model="supperFormData.conclusion_search.query_rule" label="or">满足其一</el-radio>
                     </div>
-                    <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData. conclusion_search.value" :key="index">
-                      <el-input v-model="supperFormData. conclusion_search.value[index]" placeholder="请输入结论"></el-input>
+                    <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData.conclusion_search.value" :key="index">
+                      <el-input v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
                     </el-form-item>
                   </div>
                 </div>
