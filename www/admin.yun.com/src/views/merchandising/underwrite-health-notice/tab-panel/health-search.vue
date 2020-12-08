@@ -430,7 +430,7 @@ export default {
     .customer-health-search-list-box{
       height: 100%;
       .customer-health-search-left{
-        min-width: 280px;
+        // min-width: 280px;
         border-right: 1px solid #E6E6E6;
         height: 100%;
         padding: 20px 16px 16px 0;

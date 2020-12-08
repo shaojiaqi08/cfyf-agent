@@ -189,9 +189,6 @@
             :style="{fontSize: setFontSize + 'px'}"
           >
             <el-table-column label="序号" prop="sequence_number" align="center" width="100px"></el-table-column>
-            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
-            <el-table-column label="产品名称" prop="product_name" width="250px" align="center"></el-table-column>
             <template v-for="(item,index) in maxCategorysLength">
               <el-table-column
                 v-if="allConditionShow[index]"
@@ -213,6 +210,9 @@
               ></el-table-column>
             </template>
             <el-table-column label="结论" prop="conclusion" width="250px" align="center"></el-table-column>
+            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
+            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
+            <el-table-column label="产品名称" prop="product_name" width="250px" align="center"></el-table-column>
           </el-table>
         </div>
       </template>
@@ -361,10 +361,8 @@
             class="not-select"
             :style="{fontSize: supperSetFontSize + 'px'}"
           >
-            <el-table-column label="保险产品" prop="product_name" align="center" width="100px"></el-table-column>
+            <el-table-column label="保险产品" prop="product_name" fixed align="center" width="100px"></el-table-column>
             <el-table-column label="序号" prop="sequence_number" align="center" width="100px"></el-table-column>
-            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
             <template v-for="(item,index) in maxCategorysLength">
               <el-table-column
                 v-if="allConditionShow[index]"
@@ -386,6 +384,8 @@
               ></el-table-column>
             </template>
             <el-table-column label="结论" prop="conclusion" width="250px" align="center"></el-table-column>
+            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
+            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
           </el-table>
         </div>
       </div>

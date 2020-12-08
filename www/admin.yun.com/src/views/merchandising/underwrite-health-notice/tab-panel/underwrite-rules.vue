@@ -627,7 +627,7 @@ export default {
   .underwriting-all-rule-box{
     height: 100%;
     .underwriting-rule-left{
-      min-width: 280px;
+      // min-width: 280px;
       border-right: 1px solid #E6E6E6;
       height: 95vh;
       padding: 16px;
