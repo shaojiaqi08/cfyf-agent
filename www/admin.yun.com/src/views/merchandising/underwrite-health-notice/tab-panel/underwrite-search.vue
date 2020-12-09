@@ -1309,7 +1309,7 @@ export default {
 
 .detail-wrap{
   ::v-deep .el-table__body-wrapper{
-    height: 76vh!important;
+    height: 76vh;
   }
 }
 
