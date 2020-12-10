@@ -78,6 +78,10 @@
         <div class="height-warp">
         </div>
         <div class="underwriting-contents-rule-box">
+          <div class="underwriting-contents-rule-row underwriting-contents-header-info" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
+            <div class="underwriting-contents-rule-row-title">产品名称</div>
+            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
+          </div>
           <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
             <div class="underwriting-contents-rule-row-title">产品名称</div>
             <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
@@ -341,13 +345,15 @@ export default {
           this.$nextTick(() => {
             this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
             setTimeout(() => {
-              this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach(item => {
+              this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach((item, index) => {
                 let itemHeight = item.offsetHeight
                 // let itemWidth = item.clientWidth
                 let clonedNode = item.cloneNode(true);
                 clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
                 clonedNode.style.widhth = '200px'
-                this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
+                if (index !== 0) {
+                  this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
+                }
               })
               this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 16是一个padding
               this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
@@ -622,6 +628,10 @@ export default {
         background: #EBEBEB;
         border-right: 1px solid rgba(0, 0, 0, .15);
         box-sizing: border-box;
+        &.underwriting-contents-header-info{
+        position: fixed;
+        z-index: 11;
+      }
         &:first-child{
           // border-left:1px solid rgba(0, 0, 0, .15);
         }
@@ -640,6 +650,9 @@ export default {
         }
         &:nth-child(2n-1){
           background: #F5F5F5;
+        }
+        &:nth-child(2n){
+          background: #fff;
         }
       }
     }
