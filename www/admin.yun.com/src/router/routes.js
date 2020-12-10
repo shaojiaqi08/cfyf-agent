@@ -3,6 +3,36 @@ const getView = (name) => () => import(`@/views/${name}/index.vue`)
 
 export const routers = [
   {
+    label: '商品管理',
+    icon: 'iconcebiandaohang20_shangpin',
+    children: [
+      {
+        path: '/insure-goods',
+        name: 'insure-goods',
+        meta: {
+          title: '保险商品',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/insure-goods'
+        },
+        component: getView('good-manage/insure-goods')
+      },
+      {
+        path: '/rate',
+        name: 'rate',
+        meta: {
+          title: '费率管理',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/rate'
+        },
+        component: getView('good-manage/rate')
+      }
+    ]
+  },
+  {
     label: '业绩',
     icon: 'iconcebiandaohang20_yeji1',
     children: [
@@ -81,32 +111,44 @@ export const routers = [
     ]
   },
   {
-    label: '商品管理',
-    icon: 'iconcebiandaohang20_shangpin',
+    label: '客户',
+    icon: '',
     children: [
       {
-        path: '/insure-goods',
-        name: 'insure-goods',
+        path: '/all-customer',
+        name: 'all-customer',
         meta: {
-          title: '保险商品',
+          title: '全部客户',
           header: true,
           menu: true,
           show: true,
-          permission: '/insure-goods'
+          permission: '/proposal'
         },
-        component: getView('good-manage/insure-goods')
+        component: () => import('views/customer/all-customer')
       },
       {
-        path: '/rate',
-        name: 'rate',
+        path: '/all-customer-detail',
+        name: 'all-customer-detail',
         meta: {
-          title: '费率管理',
+          title: '投保人详情',
           header: true,
-          menu: true,
-          show: true,
-          permission: '/rate'
+          menu: false,
+          show: false,
+          permission: '/proposal'
         },
-        component: getView('good-manage/rate')
+        component: () => import('views/customer/customer-detail')
+      },
+      {
+        path: '/all-family-detail',
+        name: 'all-customer-detail',
+        meta: {
+          title: '投保人详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/proposal'
+        },
+        component: () => import('views/customer/family-detail')
       }
     ]
   },

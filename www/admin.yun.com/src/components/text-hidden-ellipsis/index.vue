@@ -1,7 +1,8 @@
 <template>
   <div
     class="text-hidden-ellipsis-component"
-    :style="{ width: parseInt(width) + 'px' }"
+    :style="{ width: computedWidth, maxWidth: computedMaxWidth }"
+    ref="container"
   >
     <div
       :class="['text', hiddenEllipsis ? 'text-hidden-ellipsis' : '']"
@@ -36,6 +37,20 @@ export default {
     placement: {
       type: String,
       default: 'top'
+    },
+    maxWidth: {
+      type: [String, Number],
+      default: ''
+    }
+  },
+  computed: {
+    computedWidth() {
+      const { width } = this
+      return typeof width === 'number' ? width + 'px' : width
+    },
+    computedMaxWidth() {
+      const { maxWidth } = this
+      return typeof width === 'number' ? maxWidth + 'px' : maxWidth
     }
   },
   data() {
@@ -44,13 +59,15 @@ export default {
     }
   },
   updated() {
-    if (this.$refs.text.offsetWidth > parseInt(this.width)) {
+    if (this.$refs.text.offsetWidth > this.$refs.container.offsetWidth) {
       this.hiddenEllipsis = true
+    } else {
+      this.hiddenEllipsis = false
     }
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.$refs.text.offsetWidth > parseInt(this.width)) {
+      if (this.$refs.text.offsetWidth > this.$refs.container.offsetWidth) {
         this.hiddenEllipsis = true
       }
     })

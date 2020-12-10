@@ -17,6 +17,10 @@ export const getInsureApiList = (data) => get('/agent/proxy/product/distribution
 export const getInsureCpsList = (data) => get('/agent/proxy/product/cps/list', data)
 // 详情
 export const getInsureDetail = data => get('/agent/proxy/policy/detail', data)
+// 产品分享链接
+export const getProductShareLink = data => post('/agent/proxy/product/distribution/generate-share-link', data)
+// 产品资料
+export const getProductDocs = data => get('/agent/proxy/product/docs', data)
 
 // 显示管理员角色的职位列表
 export const getPositionsWithAdminRoles = (data) => get('/agent/proxy/sales_position/positions_with_admin_roles', data)
@@ -38,7 +42,7 @@ export const getCommissionSettingList = (data) => get('/agent/proxy/sales/positi
 export const companyCommissionUpdate = (data) => post('/agent/proxy/sales/position_commission/update', data)
 // 创建规则
 export const companyCommissionCreate = (data) => post('/agent/proxy/sales/position_commission/create', data)
-// 产品列表 
+// 产品列表
 export const getCommissionAllProduct = (data) => get('/agent/proxy/sales/position_commission/product_options', data)
 // 删除规则
 export const deleteCompanyCommission = (data) => post('/agent/proxy/sales/position_commission/delete', data)
