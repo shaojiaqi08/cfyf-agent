@@ -201,10 +201,6 @@
         <div class="height-warp">
         </div>
         <div class="underwriting-rule-box">
-          <div class="underwriting-rule-row underwriting-header-info" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
-            <div class="underwriting-rule-row-title">产品名称</div>
-            <div class="underwriting-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
-          </div>
           <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
             <div class="underwriting-rule-row-title">产品名称</div>
             <div class="underwriting-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
@@ -493,15 +489,13 @@ export default {
           this.$nextTick(() => {
             this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
             setTimeout(() => {
-              this.$refs.rightBox.$el.querySelectorAll('.underwriting-rule-row-title').forEach((item, index) => {
+              this.$refs.rightBox.$el.querySelectorAll('.underwriting-rule-row-title').forEach(item => {
                 let itemHeight = item.offsetHeight
                 // let itemWidth = item.clientWidth
                 let clonedNode = item.cloneNode(true);
                 clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
                 clonedNode.style.widhth = '200px'
-                if (index !== 0) {
-                  this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
-                }
+                this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
               })
               this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 32是两个padding
               this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
@@ -763,10 +757,6 @@ export default {
       &:first-child{
         border-top: 1px solid rgba(0, 0, 0, .15);
       }
-      &.underwriting-header-info{
-        position: fixed;
-        z-index: 11;
-      }
       .underwriting-rule-row-title{
         position: relative;
         letter-spacing: normal;
@@ -798,9 +788,6 @@ export default {
         }
         &:nth-child(2n-1){
           background: #F5F5F5;
-        }
-        &:nth-child(2n){
-          background: #fff;
         }
       }
     }
