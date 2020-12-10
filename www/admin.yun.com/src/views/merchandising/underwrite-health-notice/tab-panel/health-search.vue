@@ -130,6 +130,7 @@ export default {
       if (this.isCreateImgLock) {
         return false
       }
+      this.detailLoading = true
       this.isCreateImgLock = true
       this.$nextTick(() => {
         let self = this
@@ -148,6 +149,7 @@ export default {
           document.body.removeChild(eleLink)
         })
         self.isCreateImgLock = false
+        self.loadingDetail = false
       })
     },
     selectItem(item) {
