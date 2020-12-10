@@ -40,7 +40,7 @@
           <div ref="imageDom">
             <el-table :data="detailTableData" border :style="{ fontSize: fontSize + 'px' }" :height="tableHeight">
               <el-table-column class-name="p16">
-                <template slot="header">
+                <template #header>
                   <h3 style="color: #333333; margin: 0; line-height: 38px">{{ selVal }}</h3>
                 </template>
                 <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
@@ -132,6 +132,7 @@ export default {
       if (this.isCreateImgLock) {
         return false
       }
+      this.detailLoading = true
       this.isCreateImgLock = true
       let dom = this.$refs.imageDom
       let eltableHeight = dom.getElementsByClassName('el-table__body-wrapper')[0].style.height
@@ -157,6 +158,7 @@ export default {
           document.body.removeChild(eleLink)
         })
         self.isCreateImgLock = false
+        self.loadingDetail = false
       })
     },
     selectItem(item) {

@@ -660,8 +660,10 @@ export default {
         let dom
         if (ref === 'imageDom') {
           dom = this.$refs.imageDom
+          this.loadingDetail = true
         } else {
           dom = this.$refs.supperImageDom
+          this.supperLoading = true
         }
         let lastWidth = dom.clientWidth
         let lastHeight = dom.clientHeight
@@ -689,6 +691,8 @@ export default {
           // 然后移除
           document.body.removeChild(eleLink)
           self.isCreateImgLock = false
+          self.loadingDetail = false
+          self.supperLoading = false
         })
       })
     },
