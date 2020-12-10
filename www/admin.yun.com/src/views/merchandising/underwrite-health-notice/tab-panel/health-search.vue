@@ -36,7 +36,7 @@
             <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary" @click="createImg" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
           </div>
         </div>
-        <el-scrollbar style="height: 100%">
+        <el-scrollbar style="height: 100%" class="table-box">
           <div ref="imageDom">
             <el-table :data="detailTableData" border :style="{ fontSize: fontSize + 'px' }" :height="tableHeight">
               <el-table-column class-name="p16">
@@ -210,7 +210,8 @@ export default {
         .then((res) => {
           this.detailTableData = res
           this.$nextTick(() => {
-            this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight - 16
+            this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight
+            // this.tableHeight = 800
           })
         })
         .finally(() => {
