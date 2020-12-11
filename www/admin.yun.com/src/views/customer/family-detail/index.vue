@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-loading="loading">
         <div class="header">
             <div>
                 <p>张先生的家庭</p>
@@ -9,20 +9,24 @@
                        type="primary"
                        size="small"
                        class="ml16"
-                       v-if="$checkAuth('/edit_brand_info')">编辑家庭</el-button>
+                       v-if="$checkAuth('/edit_brand_info') && isMyFamily">编辑家庭</el-button>
         </div>
         <div class="content">
             <div class="table-head">
                 <span>投保人</span>
                 <el-button type="primary" size="small" icon="iconfont iconxiao16_guanlian mr4">关联投保人</el-button>
             </div>
-            <el-table border table-head class="mb24" max-height="600px" style="width: 100%">
+            <el-table :data="policyHolderList" border table-head class="mb24" max-height="600px" style="width: 100%">
                 <el-table-column label="姓名" align="center"></el-table-column>
                 <el-table-column label="手机号" align="center"></el-table-column>
                 <el-table-column label="身份证号" align="center" width="310px"></el-table-column>
                 <el-table-column label="出生日期" align="center"></el-table-column>
                 <el-table-column label="保单数量" align="center"></el-table-column>
-                <el-table-column label="操作" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template v-slot="{ row }">
+                        <el-linke type="primary" v-if="policyHolderList.length > 1" @click="removePolicyHolder(row)">移除</el-linke>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="table-head">
                 <span>相关保单<span>共66单</span></span>
@@ -40,17 +44,42 @@
                 <el-table-column label="投保日期" align="center"></el-table-column>
             </el-table>
         </div>
+        <operate-family-dialog v-if="isMyFamily" model="detail"></operate-family-dialog>
     </div>
 </template>
 
 <script>
+    import OperateFamilyDialog from '../modal/operate-family-dialog'
     export default {
         name: 'family-detail',
+        components: {
+            OperateFamilyDialog
+        },
         data() {
             return {
+                loading: false,
                 detail: {},
-                list: []
+                policyHolderList: []
             }
+        },
+        methods: {
+            relativePolicyHolder() {
+
+            },
+            removePolicyHolder(row) {
+                console.log(row)
+            },
+            getDetail() {
+
+            }
+        },
+        computed: {
+            isMyFamily() {
+                return this.$route.name === 'my-family-detail'
+            }
+        },
+        created() {
+            this.getDetail()
         }
     }
 </script>
@@ -72,14 +101,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            p {
-                margin: 0 0 8px 0;
-                font-size: 16px;
-                color: #1A1A1A;
-                font-weight: bold;
-                & + span {
-                    color: #999;
-                    font-size: 14px;
+            & > div {
+                flex: 1;
+                overflow: hidden;
+                p {
+                    margin: 0 0 8px 0;
+                    font-size: 16px;
+                    color: #1A1A1A;
+                    font-weight: bold;
+                    & + span {
+                        color: #999;
+                        font-size: 14px;
+                    }
                 }
             }
         }

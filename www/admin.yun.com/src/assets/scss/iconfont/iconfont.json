@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18762464",
+      "name": "侧边导航(20)_客户",
+      "font_class": "cebiandaohang20_kehu",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
       "icon_id": "18706993",
       "name": "小(16)_发送",
       "font_class": "xiao16_fasong",

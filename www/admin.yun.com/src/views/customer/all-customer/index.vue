@@ -110,7 +110,7 @@
           <el-table-column label="出生日期" align="center"></el-table-column>
           <el-table-column label="保单数量" align="center"></el-table-column>
           <el-table-column label="关联家庭" align="center"></el-table-column>
-          <el-table-column label="操作" align="center" fixed="right">
+          <el-table-column label="操作" align="center" fixed="right" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
             </template>
@@ -123,7 +123,12 @@
           <el-table-column label="创建人" align="center"></el-table-column>
           <el-table-column label="团队" align="center"></el-table-column>
           <el-table-column label="备注" align="center"></el-table-column>
-          <el-table-column label="操作" align="center"></el-table-column>
+          <el-table-column label="操作" align="center" width="120px">
+            <template v-slot="{ row }">
+              <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
+              <el-link type="primary" @click="dismiss(row)">解散</el-link>
+            </template>
+          </el-table-column>
         </template>
       </el-table>
     </div>
@@ -180,6 +185,10 @@ export default {
     viewDetail(row) {
       console.log(row)
     },
+    viewFamilyDetail() {
+
+    },
+    dismiss() {},
     searchModelChange() {
 
     },

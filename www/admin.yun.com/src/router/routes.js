@@ -112,7 +112,7 @@ export const routers = [
   },
   {
     label: '客户',
-    icon: '',
+    icon: 'iconcebiandaohang20_kehu',
     children: [
       {
         path: '/all-customer',
@@ -127,10 +127,10 @@ export const routers = [
         component: () => import('views/customer/all-customer')
       },
       {
-        path: '/all-customer-detail',
-        name: 'all-customer-detail',
+        path: '/customer-detail',
+        name: 'customer-detail',
         meta: {
-          title: '投保人详情',
+          title: '客户详情',
           header: true,
           menu: false,
           show: false,
@@ -139,10 +139,46 @@ export const routers = [
         component: () => import('views/customer/customer-detail')
       },
       {
-        path: '/all-family-detail',
-        name: 'all-customer-detail',
+        path: '/customer-family-detail',
+        name: 'customer-family-detail',
         meta: {
-          title: '投保人详情',
+          title: '客户家庭详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/proposal'
+        },
+        component: () => import('views/customer/family-detail')
+      },
+      {
+        path: '/my-customer',
+        name: 'my-customer',
+        meta: {
+          title: '我的客户',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/proposal'
+        },
+        component: () => import('views/customer/my-customer')
+      },
+      {
+        path: '/my-customer-detail/:id',
+        name: 'my-customer-detail',
+        meta: {
+          title: '我的客户详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/proposal'
+        },
+        component: () => import('views/customer/customer-detail')
+      },
+      {
+        path: '/my-family-detail',
+        name: 'my-family-detail',
+        meta: {
+          title: '我的家庭详情',
           header: true,
           menu: false,
           show: false,

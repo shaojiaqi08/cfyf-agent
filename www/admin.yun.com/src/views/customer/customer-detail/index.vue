@@ -58,6 +58,14 @@
                 detail: {},
                 list: []
             }
+        },
+        methods: {
+            getData() {
+
+            }
+        },
+        created() {
+            this.getData()
         }
     }
 </script>
