@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18796395",
+      "name": "小(16)_跳转",
+      "font_class": "xiao16_tiaozhuan",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
       "icon_id": "18762464",
       "name": "侧边导航(20)_客户",
       "font_class": "cebiandaohang20_kehu",

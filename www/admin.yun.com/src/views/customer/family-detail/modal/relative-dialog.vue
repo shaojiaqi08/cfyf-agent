@@ -1,17 +1,19 @@
 <template>
-    <el-dialog :visible="visible" @close="closeDialog" width="1200px" :close-on-click-modal="false">
+    <el-dialog class="relative-dialog" :visible="visible" @close="closeDialog" width="1200px" :close-on-click-modal="false">
         <span slot="title">
-            关联投保人
+            <span class="dialog-title" style="font-size: 18px">关联投保人<span style="">提示：仅展示尚未关联任何家庭的投保人</span></span>
         </span>
         <div>
-            <el-input v-model="keyword" placeholder="搜索姓名、身份证号或手机号" class="mb20"></el-input>
-            <el-table :data="list" border stripe height="640px" v-loading="loading">
-                <el-table-column label="姓名" align="center" prop="name"></el-table-column>
-                <el-table-column label="手机号" align="center" prop="name"></el-table-column>
-                <el-table-column label="身份证号" align="center" prop="name"></el-table-column>
-                <el-table-column label="出生日期" align="center" prop="name"></el-table-column>
-                <el-table-column label="保单数量" align="center" prop="name"></el-table-column>
-                <el-table-column label="操作" align="center" prop="name" width="120px">
+            <el-input prefix-icon="iconfont iconxiao16_sousuo ml4" v-model="keyword" placeholder="搜索姓名、身份证号或手机号" class="mb20" @input="handleInput" clearable></el-input>
+            <el-table :data="list" border stripe height="600px" v-loading="loading" v-table-infinite-scroll="scroll2Bottom">
+                <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
+                <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+                <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
+                <el-table-column prop="birthday" label="出生日期" align="center">
+                    <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
+                </el-table-column>
+                <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
+                <el-table-column label="操作" align="center" width="120px">
                     <template v-slot="{ row }">
                         <el-link type="primary" class="mr8" @click="relative(row)">关联</el-link>
                         <el-link type="primary" @click="viewPolicy(row)">查看保单</el-link>
@@ -19,7 +21,7 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog :visible.sync="policyDialogVisible" append-to-body :show-close="false" :modal="false">
+        <el-dialog class="policy-dialog" :visible.sync="policyDialogVisible" append-to-body :show-close="false" >
             <el-table :data="policyList" border stripe height="640px" v-loading="loading">
                 <el-table-column label="被保人" align="center" prop="name" fixed="left"></el-table-column>
                 <el-table-column label="投保人" align="center" prop="name"></el-table-column>
@@ -44,6 +46,10 @@
 
 <script>
     // 关联投保人
+    import { getCustomerNoRelation, relativePolicyHolder, getMyCustomerDetail } from '@/apis/modules/customer'
+    import { debounce } from '@/utils'
+    import { formatDate } from '@/utils/formatTime'
+    let relatived = false // 标记是否关联过, 关闭时刷新主界面
     export default {
         name: 'relative-dialog',
         props: {
@@ -57,13 +63,65 @@
                 policyLoading: false,
                 keyword: '',
                 list: [],
-                policyList: []
+                policyList: [],
+                page: 1,
+                page_size: 20,
+                total: 0
+            }
+        },
+        computed: {
+            familyId() {
+                return this.$route.params.id
             }
         },
         methods: {
-            getData(){},
-            getPolicyData() {},
-            relative() {},
+            formatDate,
+            scroll2Bottom() {
+                const {page, page_size, total} = this
+                if (page * page_size < total) {
+                    this.loading = true
+                    this.page += 1
+                    this.getData()
+                }
+            },
+            getData(isSearch = false){
+                if (isSearch) {
+                    this.page = 1
+                    this.keyword = ''
+                }
+                const { page, page_size, keyword, list } = this
+                this.loading = true
+                getCustomerNoRelation({
+                    page,
+                    page_size,
+                    keyword
+                }).then(res => {
+                    this.total = res.total
+                    this.list = page === 1 ? res.data : [...list, ...res.data]
+                }).finally(() => {
+                    this.loading = false
+                })
+            },
+            handleInput: debounce(function() {
+                this.getData()
+            }, 300),
+            getPolicyData(relation_id) {
+                getMyCustomerDetail({
+                    relation_id
+                }).then(res => {
+
+                })
+            },
+            relative({ relation_id }) {
+                relativePolicyHolder({
+                    relation_id,
+                    family_id: this.familyId
+                }).then(() => {
+                    this.$message.success('关联成功')
+                    relatived = true
+                    this.getData()
+                })
+            },
             viewPolicy(id) {
                 this.getPolicyData(id)
                 this.policyDialogVisible = true
@@ -72,16 +130,34 @@
                 this.list = []
                 this.keyword = ''
                 this.$emit('update:visible', false)
+                if (relatived) {
+                    this.$emit('refresh')
+                    relatived = false
+                }
             }
         },
         watch: {
             visible(v) {
-               v && this.getData()
+               v && this.getData(true)
             }
         }
     }
 </script>
 
-<style scoped lang="scss+">
-
+<style scoped lang="scss">
+    .relative-dialog {
+        .dialog-title {
+            font-size: 18px;
+            & > span {
+                font-size: 14px;
+                color: #999;
+                margin-left: 8px;
+                font-weight: normal;
+            }
+        }
+        ::v-deep .el-dialog__body {
+            max-height: 100vh;
+            padding-bottom: 20px;
+        }
+    }
 </style>

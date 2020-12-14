@@ -127,7 +127,7 @@ export const routers = [
         component: () => import('views/customer/all-customer')
       },
       {
-        path: '/customer-detail',
+        path: '/customer-detail/:id',
         name: 'customer-detail',
         meta: {
           title: '客户详情',
@@ -139,7 +139,7 @@ export const routers = [
         component: () => import('views/customer/customer-detail')
       },
       {
-        path: '/customer-family-detail',
+        path: '/customer-family-detail/:id',
         name: 'customer-family-detail',
         meta: {
           title: '客户家庭详情',
@@ -175,8 +175,8 @@ export const routers = [
         component: () => import('views/customer/customer-detail')
       },
       {
-        path: '/my-family-detail',
-        name: 'my-family-detail',
+        path: '/my-customer-family-detail/:id',
+        name: 'my-customer-family-detail',
         meta: {
           title: '我的家庭详情',
           header: true,

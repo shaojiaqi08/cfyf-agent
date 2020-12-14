@@ -10,7 +10,11 @@
           type="primary"
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
-          size="small">导出数据</el-button>
+          v-if="tabIndex === 'my'"
+          size="small"
+          @click="exportList"
+          :loading="exporting"
+          :disabled="exporting">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
@@ -25,7 +29,7 @@
     <div class="scroll-box p16" ref="content">
       <div style="height: 40px;">
         <!--关联家庭-->
-        <filter-shell v-model="searchModel.policy_status"
+        <filter-shell v-model="searchModel.family_id"
                       autoFocus
                       v-if="tabIndex === 'my'"
                       @input="search()">
@@ -38,16 +42,16 @@
                     @change="search()">
             <el-option
                     v-for="item in relativeFamilyList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ searchModel.family_id.length ? relativeFamilyList.find(i => i.value === searchModel.family_id[0]).label : '全部关联家庭' }}
+            {{ searchModel.family_id.length ? relativeFamilyList.find(i => i.id === searchModel.family_id[0]).name : '全部关联家庭' }}
           </template>
         </filter-shell>
-        <el-button v-else icon="iconfont iconxiao16_jiahao mr4" type="primary fr" size="small">添加家庭</el-button>
+        <el-button v-else icon="iconfont iconxiao16_jiahao mr4" type="primary fr" size="small" @click="createFamily">添加家庭</el-button>
       </div>
       <el-table :data="list"
                 height="calc(100vh - 173px)"
@@ -73,11 +77,10 @@
           </el-table-column>
         </template>
         <template v-else>
-          <el-table-column label="家庭名称" align="center"></el-table-column>
-          <el-table-column label="投保人" align="center"></el-table-column>
-          <el-table-column label="保单数量" align="center"></el-table-column>
-          <el-table-column label="备注" align="center"></el-table-column>
-          <el-table-column label="备注" align="center"></el-table-column>
+          <el-table-column label="家庭名称" prop="name" align="center"></el-table-column>
+          <el-table-column label="投保人" prop="members_name" align="center"></el-table-column>
+          <el-table-column label="保单数量" prop="policy_quantity" align="center"></el-table-column>
+          <el-table-column label="备注" prop="remark" align="center"></el-table-column>
           <el-table-column label="操作" align="center" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
@@ -93,9 +96,9 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getMyCustomerList, getMyCustomerFamilyList } from '@/apis/modules/customer'
-import { debounce } from '@/utils'
-// import qs from 'qs'
+import { getMyCustomerList, getMyCustomerFamilyList, dismissFamily, getMyCustomerRelativeFamily, exportMyCustomerListUrl } from '@/apis/modules/customer'
+import { debounce, downloadFrameA } from '@/utils'
+import qs from 'qs'
 import FilterShell from '@/components/filters/filter-shell'
 import OperateFamilyDialog from '../modal/operate-family-dialog'
 // 客户 - 我的客户
@@ -120,7 +123,7 @@ export default {
       teamList: [],
       relativeFamilyList: [],
       page: 1,
-      page_size: 20,
+      page_size: 50,
       total: 0,
       keyword: '',
       tableLoading: false,
@@ -132,6 +135,17 @@ export default {
     };
   },
   methods: {
+    exportList() {
+      const url = `${exportMyCustomerListUrl}?${qs.stringify(this.searchModel)}`
+      this.exporting = true
+      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {('导出成功')
+      }).finally(() => {
+        this.exporting = false
+      })
+    },
+    createFamily() {
+      this.familyDialogVisible = true
+    },
     viewDetail(row) {
       const url = this.$router.resolve({
         name: 'my-customer-detail',
@@ -141,10 +155,23 @@ export default {
       }).href
       window.open(url)
     },
-    viewFamilyDetail() {
-
+    viewFamilyDetail(row) {
+      const url = this.$router.resolve({
+        name: 'my-customer-family-detail',
+        params: {
+          id: row.id
+        }
+      }).href
+      window.open(url)
     },
-    dismiss() {},
+    dismiss(row) {
+      this.$confirm(`正在解散【${row.name}】，是否确认？`, '提示').then(() => {
+        dismissFamily({ family_id: row.id }).then(() => {
+          this.getMyCustomerFamilyList()
+          this.$message.success('解散家庭成功')
+        })
+      })
+    },
     handleTabChange() {
       this.searchModel.keyword = ''
       this.list = []
@@ -156,7 +183,7 @@ export default {
       this.tabIndex === 'my' ? this.getMyCustomerList() : this.getMyCustomerFamilyList()
     },
     addFamilySuccess() {
-
+      this.handleTabChange()
     },
     scroll2Bottom() {
       const {page, page_size, total} = this
@@ -168,7 +195,7 @@ export default {
       this.tableLoading = true
       const { searchModel, page, page_size } = this
       getMyCustomerList({
-        keyword: searchModel.keyword,
+        ...searchModel,
         page,
         page_size
       }).then(res => {
@@ -194,6 +221,10 @@ export default {
     }, 300)
   },
   created() {
+    // 筛选项 - 关联家庭数据
+    getMyCustomerRelativeFamily().then(res => {
+      this.relativeFamilyList = res
+    })
     this.getMyCustomerList()
   }
 };
@@ -205,7 +236,7 @@ export default {
     overflow: hidden;
     .header {
       height: 56px;
-      background-color: #e6e6e6;
+      background-color: #f5f5f5;
       padding: 0 16px;
       display: flex;
       justify-content: space-between;
