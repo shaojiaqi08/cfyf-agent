@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">投保人信息</div>
         <div class="content">
-            <el-row type="flex" class="mb14" justify="start">
+            <el-row type="flex" class="mb14" justify="middle">
                 <el-col :span="6">
                     <span>姓名<span class="ml8">{{detail.real_name || '-'}}</span></span>
                 </el-col>
@@ -16,17 +16,17 @@
                     <span>出生日期<span class="ml8">{{detail.birthday ? formatDate(detail.birthday * 1000, 'yyyy-MM-dd') : '-'}}</span></span>
                 </el-col>
             </el-row>
-            <el-row type="flex" class="mb30" justify="start" align="middle">
+            <el-row type="flex" class="mb30" justify="start" align="top">
                 <template v-if="!isMyCustomer">
                     <el-col :span="6">
-                        <span>出单人<span class="ml8">xxx</span></span>
+                        <span>出单人<span class="ml8">{{detail.sales_name || '-'}}</span></span>
                     </el-col>
                     <el-col :span="6">
-                        <span>团队<span class="ml8">xxx</span></span>
+                        <span>团队<span class="ml8">{{detail.sales_team_name || '-'}}</span></span>
                     </el-col>
                 </template>
-                <el-col :span="6">
-                    <span>关联家庭<span class="ml8">{{detail.family_name || '-'}}</span></span>
+                <el-col :span="6" class="flex">
+                    <span>关联家庭<span class="ml8" style="padding-right: 0">{{detail.family_name || '-'}}</span></span>
                     <i v-if="detail.family_id" class="iconfont iconxiao16_tiaozhuan ml8" @click="goFamilyDetail" style="color: #1F78FF"></i>
                 </el-col>
             </el-row>
@@ -46,7 +46,7 @@
                     border
                     stripe
                     :span-method="tableSpan"
-                    height="calc(100% - 120px)"
+                    height="calc(100% - 125px)"
                     style="width: 100%" >
                 <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
                 <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-    import { getMyCustomerDetail, getCustomerDetail, exportMyCustomerPolicyUrl } from '@/apis/modules/customer'
+    import { getMyCustomerDetail, getCustomerDetail, exportMyCustomerPolicyUrl, exportCustomerPolicyUrl } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
     import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
@@ -95,12 +95,15 @@
             },
             getDetail() {
                 return this.isMyCustomer ? getMyCustomerDetail : getCustomerDetail
+            },
+            exportUrl() {
+                return this.isMyCustomer ? exportMyCustomerPolicyUrl : exportCustomerPolicyUrl
             }
         },
         methods: {
             formatDate,
             exportPolicy() {
-                const url = `${exportMyCustomerPolicyUrl}?relation_id=${this.relation_id}`
+                const url = `${this.exportUrl}?relation_id=${this.relationId}`
                 this.exporting = true
                 downloadFrameA(url, `客户保单-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
                     this.exporting = false
@@ -160,8 +163,17 @@
             flex: 1;
             padding: 16px;
             .el-col {
-                span > span {
-                    font-weight: bold;
+                span {
+                    display: flex;
+                    & > span {
+                        font-weight: bold;
+                        flex: 1;
+                        overflow: visible;
+                        display: block;
+                        height: 16px;
+                        padding-right: 16px;
+                        word-break: break-all;
+                    }
                 }
             }
             .table-title {

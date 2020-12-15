@@ -1,7 +1,7 @@
 <template>
   <div class="order-container page-container">
     <div class="header">
-      <el-tabs class="tabs" v-model="tabIndex" @tab-click="tabChange">
+      <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
         <el-tab-pane name="all" label="全部客户"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"></el-tab-pane>
       </el-tabs>
@@ -10,14 +10,18 @@
           type="primary"
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
-          size="small">导出数据</el-button>
+          size="small"
+          @click="exportList"
+          v-if="tabIndex === 'all'"
+          :loading="exporting"
+          :disabled="exporting">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
                   class="fw400"
                   clearable
                   style="width:360px"
-                  @input="searchModelChange">
+                  @input="search()">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
@@ -29,47 +33,48 @@
                       autoFocus
                       class="mb16"
                       placeholder="全部出单人"
-                      @input="searchModelChange">
+                      @input="search()">
           <el-select class="block"
                      v-model="searchModel.sales_id"
                      clearable
                      filterable
                      multiple
                      placeholder="请选择"
-                     @change="searchModelChange">
+                     @change="search()">
             <el-option
-                    v-for="item in teamList"
+                    v-for="item in salesList"
                     :key="item.id"
                     :label="item.real_name"
                     :value="item.id"
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{searchModel.sales_id.length ? teamList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}
+            {{searchModel.sales_id.length ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}
           </template>
         </filter-shell>
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_id"
+        <filter-shell v-model="searchModel.sales_team_id"
                       autoFocus
                       class="mb16"
                       placeholder="全部出单人"
-                      @input="searchModelChange">
+                      :width="330"
+                      @input="search()">
           <el-select class="block"
-                    v-model="searchModel.sales_id"
+                    v-model="searchModel.sales_team_id"
                     clearable
                     filterable
                     multiple
                     placeholder="请选择"
-                    @change="searchModelChange">
+                    @change="search()">
               <el-option
-                  v-for="item in teamList"
+                  v-for="item in salesTeamList"
                   :key="item.id"
-                  :label="item.real_name"
+                  :label="item.name"
                   :value="item.id"
               ></el-option>
           </el-select>
           <template v-slot:label>
-            {{searchModel.sales_id.length ? teamList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部团队'}}
+            {{searchModel.sales_team_id.length ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '全部团队'}}
           </template>
         </filter-shell>
         <!--全部关联家庭-->
@@ -77,39 +82,42 @@
                       autoFocus
                       class="mb16"
                       v-if="tabIndex === 'all'"
-                      @input="searchModelChange">
+                      @input="search()">
           <el-select class="block"
                     v-model="searchModel.policy_status"
                     multiple
                     clearable
                     filterable
                     placeholder="请选择"
-                    @change="searchModelChange">
+                    @change="search()">
             <el-option
                     v-for="item in relativeFamilyList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ searchModel.policy_status.length ? relativeFamilyList.find(i => i.value === searchModel.policy_status[0]).label : '全部关联家庭' }}
+            {{ searchModel.family_id.length ? relativeFamilyList.find(i => i.id === searchModel.family_id[0]).name : '全部关联家庭' }}
           </template>
         </filter-shell>
       </div>
       <el-table :data="list"
-                height="calc(100vh - 163px)"
+                height="calc(100vh - 173px)"
                 v-table-infinite-scroll="scroll2Bottom"
                 border
                 stripe
+                :key="tabIndex"
                 v-loading="tableLoading">
         <template v-if="tabIndex === 'all'">
-          <el-table-column label="姓名" align="center" fixed="left"></el-table-column>
-          <el-table-column label="手机号" align="center"></el-table-column>
-          <el-table-column label="身份证号" align="center"></el-table-column>
-          <el-table-column label="出生日期" align="center"></el-table-column>
-          <el-table-column label="保单数量" align="center"></el-table-column>
-          <el-table-column label="关联家庭" align="center"></el-table-column>
+          <el-table-column prop="real_name" label="姓名" align="center" fixed="left"></el-table-column>
+          <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
+          <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
+          <el-table-column prop="birthday" label="出生日期" align="center">
+            <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
+          </el-table-column>
+          <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
+          <el-table-column prop="family_name" label="关联家庭" align="center"></el-table-column>
           <el-table-column label="操作" align="center" fixed="right" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
@@ -117,16 +125,15 @@
           </el-table-column>
         </template>
         <template v-else>
-          <el-table-column label="家庭名称" align="center"></el-table-column>
-          <el-table-column label="投保人" align="center"></el-table-column>
-          <el-table-column label="保单数量" align="center"></el-table-column>
-          <el-table-column label="创建人" align="center"></el-table-column>
-          <el-table-column label="团队" align="center"></el-table-column>
-          <el-table-column label="备注" align="center"></el-table-column>
+          <el-table-column prop="name" label="家庭名称" align="center"></el-table-column>
+          <el-table-column prop="members_name" label="投保人" align="center"></el-table-column>
+          <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
+          <el-table-column prop="sales_name" label="创建人" align="center"></el-table-column>
+          <el-table-column prop="sales_team_name" label="团队" align="center"></el-table-column>
+          <el-table-column prop="remark" label="备注" align="center"></el-table-column>
           <el-table-column label="操作" align="center" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
-              <el-link type="primary" @click="dismiss(row)">解散</el-link>
             </template>
           </el-table-column>
         </template>
@@ -137,8 +144,10 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-// import { debounce, downloadFrameA } from '@/utils'
-// import qs from 'qs'
+import { getCustomerList, getCustomerFamilyList, exportCustomerListUrl } from '@/apis/modules/customer'
+import { getSalesData, getSalesTeamData} from '@/apis/modules/achievement'
+import { debounce, downloadFrameA } from '@/utils'
+import qs from 'qs'
 import FilterShell from '@/components/filters/filter-shell'
 
 // 客户 - 全部客户
@@ -155,79 +164,122 @@ export default {
   data() {
     return {
       tabIndex: 'all',
-      formatDate,
-      filterValue: false,
-      belongVisible: false,
-      belongData: {},
       list: [],
       teamList: [],
       relativeFamilyList: [],
       page: 1,
-      page_size: 20,
+      page_size: 50,
       total: 0,
       tableLoading: false,
       exporting: false,
       searchModel: {
         keyword: '',
-        policy_status: [],
-        products: [],
-        supplier_id: [],
-        product_insurance_class: [],
-        date_range: [+new Date(), +new Date()],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: '0',
-        visit_status: []
-      }
+        family_id: []
+      },
+      salesList: [],
+      salesTeamList: []
     };
   },
   methods: {
+    formatDate,
+    exportList() {
+      const url = `${exportCustomerListUrl}?${qs.stringify(this.searchModel)}`
+      this.exporting = true
+      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+        this.exporting = false
+      })
+    },
     viewDetail(row) {
-      console.log(row)
+      const url = this.$router.resolve({
+        name: 'customer-detail',
+        params: {
+          id: row.relation_id
+        }
+      }).href
+      window.open(url)
     },
-    viewFamilyDetail() {
+    viewFamilyDetail(row) {
+      const url = this.$router.resolve({
+        name: 'customer-family-detail',
+        params: {
+          id: row.id
+        }
+      }).href
+      window.open(url)
+    },
+    getCustomerList: debounce(function() {
+      this.tableLoading = true
+      const { page, page_size, searchModel } = this
+      getCustomerList({
+        page,
+        page_size,
+        ...searchModel,
+        family_id: void 0
+      }).then(res => {
+        this.list = page === 1 ? res.data : [...this.list, ...res.data]
+        this.total = res.total
+      }).finally(() => {
+        this.tableLoading = false
+      })
+    }, 300),
+    getCustomerFamilyList: debounce(function() {
+      this.tableLoading = true
+      const { page, page_size, searchModel } = this
+      getCustomerFamilyList({
+        page,
+        page_size,
+        ...searchModel,
 
-    },
-    dismiss() {},
-    searchModelChange() {
-
-    },
-    tabChange() {
-      Object.assign(this.searchModel, {
+      }).then(res => {
+        this.list = page === 1 ? res.data : [...this.list, ...res.data]
+        this.total = res.total
+      }).finally(() => {
+        this.tableLoading = false
+      })
+    }, 300),
+    handleTabChange() {
+      this.searchModel =  {
         keyword: '',
-        policy_status: [],
-        products: [],
-        supplier_id: [],
-        product_insurance_class: [],
-        date_range: [+new Date(), +new Date()],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: '0',
-      })
-      this.rankKeywords = ''
-      this.statisticsKeywords = ''
+        family_id: []
+      }
+      this.list = []
+      this.search()
+    },
+    search(page = 1) {
+      this.page = page;
+      this.total = 0;
+      this.tabIndex === 'all' ? this.getCustomerList() : this.getCustomerFamilyList()
     },
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
-        this.tableLoading = true
-        this.page += 1
-      }
-    }
-  },
-  watch: {
-    belongVisible(v) {
-      if (!v) {
-        this.belongData = {};
+        this.search(this.page + 1)
       }
     },
-    'searchModel.sales_team_id'(v) {
-      if(v.length <= 0) {
-        this.searchModel.include_child_team = '0'
-      }
+    getSalesData() {
+      getSalesData().then(res => {
+        this.salesList = res
+      }).catch(err => console.log(err))
+    },
+    getSalesTeamData() {
+      getSalesTeamData().then(res => {
+        this.salesTeamList = res
+      }).catch(err => console.log(err))
     }
   },
-  created() {}
+  created() {
+    // 筛选项 - 关联家庭数据
+    getCustomerFamilyList({page: 1, page_size: 9999999}).then(res => {
+      this.relativeFamilyList = res.data
+    })
+    this.getSalesData()
+    this.getSalesTeamData()
+    this.getCustomerList()
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -237,7 +289,7 @@ export default {
     overflow: hidden;
     .header {
       height: 56px;
-      background-color: #e6e6e6;
+      background-color: #f5f5f5;
       padding: 0 16px;
       display: flex;
       justify-content: space-between;

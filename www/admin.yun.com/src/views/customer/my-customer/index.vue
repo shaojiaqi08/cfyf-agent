@@ -213,7 +213,7 @@ export default {
         page_size
       }).then(res => {
         this.total = res.total
-        this.list = res.data
+        this.list = page === 1 ? res.data : this.list.concat(res.data)
       }).finally(() => {
         this.tableLoading = false
       })

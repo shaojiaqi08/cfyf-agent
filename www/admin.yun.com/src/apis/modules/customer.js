@@ -1,20 +1,28 @@
 import { get, post } from '../helper'
 
+// 全部客户 - 客户列表
+export const getCustomerList = params => get('/agent/proxy/customer/admin/customer_page_list', params)
+// 全部客户 - 导出客户列表
+export const exportCustomerListUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/admin/export_customers`
 // 全部客户 - 家庭列表
-export const getCustomerFamilyList = params => get('/agent/proxy/customer/sales/family_page_list', params)
+export const getCustomerFamilyList = params => get('/agent/proxy/customer/admin/family_page_list', params)
+// 全部客户 - 导出客户保单
+export const exportCustomerPolicyUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/admin/export_customer_policy`
+// 全部客户 - 导出家庭保单
+export const exportFamilyPolicyUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/admin/export_family_policy`
 // 全部客户 - 客户详情
-export const getCustomerDetail = params => get('/agent/proxy', params)
+export const getCustomerDetail = params => get('/agent/proxy/customer/admin/customer_detail_with_policies', params)
 // 全部客户 - 家庭详情
-export const getFamilyDetail = params => get('/agent/proxy', params)
+export const getFamilyDetail = params => get('/agent/proxy/customer/admin/family_with_policies', params)
 
 // 我的客户 - 客户列表
 export const getMyCustomerList = params => get('/agent/proxy/customer/sales/page_list', params)
 // 我的客户 - 导出客户列表
-export const exportMyCustomerListUrl = '/agent/proxy/customer/sales/export_customers'
+export const exportMyCustomerListUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/sales/export_customers`
 // 我的客户 - 导出客户保单
-export const exportMyCustomerPolicyUrl = '/agent/proxy/customer/sales/export_customer_policy'
+export const exportMyCustomerPolicyUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/sales/export_customer_policy`
 // 我的客户 - 导出家庭保单
-export const exportMyFamilyPolicyUrl = '/agent/proxy/customer/sales/export_family_policy'
+export const exportMyFamilyPolicyUrl = `${process.env.VUE_APP_API_URL}/agent/proxy/customer/sales/export_family_policy`
 // 我的客户 - 客户详情
 export const getMyCustomerDetail = params => get('/agent/proxy/customer/sales/detail_with_policies', params)
 // 我的客户 - 家庭列表

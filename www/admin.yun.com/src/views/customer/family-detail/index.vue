@@ -84,7 +84,7 @@
 <script>
     import OperateFamilyDialog from '../modal/operate-family-dialog'
     import RelativeDialog from './modal/relative-dialog'
-    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, removePolicyHolder} from '@/apis/modules/customer'
+    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, exportFamilyPolicyUrl, removePolicyHolder} from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
     import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
@@ -110,7 +110,7 @@
         methods: {
             formatDate,
             exportPolicy() {
-                const url = `${exportMyFamilyPolicyUrl}?family_id=${this.familyId}`
+                const url = `${this.exportUrl}?family_id=${this.familyId}`
                 this.exporting = true
                 downloadFrameA(url, `家庭保单-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
                     this.exporting = false
@@ -166,6 +166,9 @@
             },
             getDetail() {
                 return this.isMyCustomer ? getMyCustomerFamilyDetail : getFamilyDetail
+            },
+            exportUrl() {
+                return this.isMyCustomer ? exportMyFamilyPolicyUrl : exportFamilyPolicyUrl
             }
         },
         created() {

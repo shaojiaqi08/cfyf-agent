@@ -75,7 +75,7 @@ export default {
       default: ""
     },
     // 容器宽度
-    width: {
+      width: {
       type: Number,
       default: 272
     },

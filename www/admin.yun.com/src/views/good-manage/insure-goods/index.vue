@@ -24,7 +24,6 @@
           </div>
           <div class="ml20">
             <filter-shell v-model="searchModel.first_product_category_id"
-                          autoFocus
                           autoClose
                           :collapse="false"
                           :textOverflow="false"
@@ -201,21 +200,22 @@
       </div>
     </el-dialog>
     <el-dialog
-        title="正在分享"
+        title="转发客户"
         :visible.sync="dialogVisible"
         width="480px"
-        class="dark-dialog"
-        style="text-align: center;">
-      <div class="share-title-tips">正在分享</div>
-      <div style="margin-bottom: 20px !important;
+        class="dark-dialog">
+      <div style="margin-bottom: 10px !important;
         color: #333 !important;
-        font-size: 18px !important;
+        font-size: 16px !important;
         font-weight: 500 !important;">{{ productObj.title }}</div>
-        <img v-if="qrcodeUrl"
-            :src="qrcodeUrl"
-            width="200"
-            height="200">
-        <p style="color: #999;">请使用微信扫描上方二维码后分享给客户</p>
+        <el-image
+          :src="qrcodeUrl"
+          style="width: 200px;height: 200px">
+          <div slot="error" style="width:200px;height:200px" class="flex-center">
+            <i class="el-icon-loading fs28"></i>
+          </div>
+        </el-image>
+        <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
     </el-dialog>
     <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px">
       <div v-loading="docsLoading" style="min-height: 200px;">
@@ -481,6 +481,9 @@ export default {
     margin-bottom: 10px;
     font-size: 14px;
     color: #999;
+  }
+  ::v-deep .el-dialog__body {
+    text-align: center;
   }
 }
 .insure-goods-container {
