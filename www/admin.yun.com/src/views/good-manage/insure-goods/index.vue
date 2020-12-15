@@ -227,7 +227,7 @@
               <span>{{doc.name}}</span>
               <span>{{'.' + doc.ext_name}}</span>
             </div>
-            <el-link type="primary">下载</el-link>
+            <el-link type="primary" @click="downloadDocs(doc)">下载</el-link>
           </div>
         </div>
         <div v-if="productDocsData.length === 0" class="flex-center">
@@ -292,6 +292,9 @@ export default {
     };
   },
   methods: {
+    downloadDocs({ file_url }) {
+      window.open(file_url)
+    },
     detailDialogClose() {
       this.productObj = {}
     },

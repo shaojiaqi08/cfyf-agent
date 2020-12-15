@@ -138,8 +138,7 @@ export default {
     exportList() {
       const url = `${exportMyCustomerListUrl}?${qs.stringify(this.searchModel)}`
       this.exporting = true
-      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {('导出成功')
-      }).finally(() => {
+      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
         this.exporting = false
       })
     },

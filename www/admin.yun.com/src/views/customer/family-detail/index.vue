@@ -16,7 +16,7 @@
             <div class="content">
                 <div class="table-head">
                     <span>投保人</span>
-                    <el-button type="primary" size="small" icon="iconfont iconxiao16_guanlian mr4" @click="relativePolicyHolder">关联投保人</el-button>
+                    <el-button v-if="isMyCustomer" type="primary" size="small" icon="iconfont iconxiao16_guanlian mr4" @click="relativePolicyHolder">关联投保人</el-button>
                 </div>
                 <el-table :data="customers" border table-head class="mb24" max-height="600px" style="width: 100%">
                     <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
@@ -26,7 +26,7 @@
                         <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
                     </el-table-column>
                     <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
-                    <el-table-column label="操作" align="center" width="120px">
+                    <el-table-column label="操作" align="center" width="120px" v-if="isMyCustomer">
                         <template v-slot="{ row, $index }">
                             <el-link type="primary" v-if="customers.length > 1" @click="removePolicyHolder(row, $index)">移除</el-link>
                             <span v-else>-</span>
@@ -35,7 +35,13 @@
                 </el-table>
                 <div class="table-head">
                     <span>相关保单<span>共{{policies.length}}单</span></span>
-                    <el-button type="primary" size="small" icon="iconfont iconxiao16_xiazai mr4">导出表格</el-button>
+                    <el-button
+                        type="primary"
+                        size="small"
+                        icon="iconfont iconxiao16_xiazai mr4"
+                        @click="exportPolicy"
+                        :loading="exporting"
+                        :disabled="exporting">导出表格</el-button>
                 </div>
                 <el-table
                     :data="policies"
@@ -78,8 +84,9 @@
 <script>
     import OperateFamilyDialog from '../modal/operate-family-dialog'
     import RelativeDialog from './modal/relative-dialog'
-    import { getMyCustomerFamilyDetail, getFamilyDetail} from '@/apis/modules/customer'
+    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, removePolicyHolder} from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
+    import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
     export default {
         name: 'family-detail',
@@ -96,11 +103,19 @@
                 family: {},
                 customers: [],
                 policies: [],
-                policyHolderList: []
+                policyHolderList: [],
+                exporting: false
             }
         },
         methods: {
             formatDate,
+            exportPolicy() {
+                const url = `${exportMyFamilyPolicyUrl}?family_id=${this.familyId}`
+                this.exporting = true
+                downloadFrameA(url, `家庭保单-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+                    this.exporting = false
+                })
+            },
             editFamilySuccess({ name, remark}) {
                 const f = this.family
                 f.name = name
@@ -112,9 +127,13 @@
             relativePolicyHolder() {
                 this.relativeDialogVisible = true
             },
-            removePolicyHolder(row) {
-                this.$confirm(`正在移除投保人【${row.real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
-
+            removePolicyHolder({ real_name, relation_id }, index) {
+                this.$confirm(`正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
+                    removePolicyHolder({
+                        relation_id
+                    }).then(() => {
+                        this.customers.splice(index, 1)
+                    })
                 })
             },
             getData() {

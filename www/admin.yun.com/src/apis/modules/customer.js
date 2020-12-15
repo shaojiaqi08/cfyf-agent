@@ -11,12 +11,18 @@ export const getFamilyDetail = params => get('/agent/proxy', params)
 export const getMyCustomerList = params => get('/agent/proxy/customer/sales/page_list', params)
 // 我的客户 - 导出客户列表
 export const exportMyCustomerListUrl = '/agent/proxy/customer/sales/export_customers'
+// 我的客户 - 导出客户保单
+export const exportMyCustomerPolicyUrl = '/agent/proxy/customer/sales/export_customer_policy'
+// 我的客户 - 导出家庭保单
+export const exportMyFamilyPolicyUrl = '/agent/proxy/customer/sales/export_family_policy'
 // 我的客户 - 客户详情
 export const getMyCustomerDetail = params => get('/agent/proxy/customer/sales/detail_with_policies', params)
 // 我的客户 - 家庭列表
 export const getMyCustomerFamilyList = params => get('/agent/proxy/customer/sales/family_page_list', params)
 // 我的客户 - 家庭详情
 export const getMyCustomerFamilyDetail = params => get('/agent/proxy/customer/sales/family_with_policies', params)
+// 我的客户 - 家庭移除投保人
+export const removePolicyHolder = params => post('/agent/proxy/customer/sales/remove_family_member', params)
 // 我的客户 - 解散家庭
 export const dismissFamily = params => post('/agent/proxy/customer/sales/disband_family', params)
 // 我的客户 - 新建家庭

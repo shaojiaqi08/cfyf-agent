@@ -31,11 +31,14 @@
                 </el-col>
             </el-row>
             <div class="flex-between mb16">
-                <span class="table-title">相关保单<span class="ml8">共66张</span></span>
+                <span class="table-title">相关保单<span class="ml8">共{{list.length}}张</span></span>
                 <el-button
                     type="primary"
                     icon="iconfont iconxiao16_xiazai mr4"
                     class="mr16"
+                    @click="exportPolicy"
+                    :loading="exporting"
+                    :disabled="exporting"
                     size="small">导出表格</el-button>
             </div>
             <el-table
@@ -69,8 +72,9 @@
 </template>
 
 <script>
-    import { getMyCustomerDetail, getCustomerDetail } from '@/apis/modules/customer'
+    import { getMyCustomerDetail, getCustomerDetail, exportMyCustomerPolicyUrl } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
+    import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
     export default {
         name: 'customer-detail',
@@ -78,7 +82,8 @@
         data() {
             return {
                 detail: {},
-                list: []
+                list: [],
+                exporting: false
             }
         },
         computed: {
@@ -94,6 +99,13 @@
         },
         methods: {
             formatDate,
+            exportPolicy() {
+                const url = `${exportMyCustomerPolicyUrl}?relation_id=${this.relation_id}`
+                this.exporting = true
+                downloadFrameA(url, `客户保单-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+                    this.exporting = false
+                })
+            },
             goFamilyDetail() {
                 const url = this.$router.resolve({
                     name: this.isMyCustomer ? 'my-customer-family-detail' : 'customer-family-detail',
