@@ -21,24 +21,38 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog class="policy-dialog" :visible.sync="policyDialogVisible" append-to-body :show-close="false" >
-            <el-table :data="policyList" border stripe height="640px" v-loading="loading">
-                <el-table-column label="被保人" align="center" prop="name" fixed="left"></el-table-column>
-                <el-table-column label="投保人" align="center" prop="name"></el-table-column>
-                <el-table-column label="险种类型" align="center" prop="name"></el-table-column>
-                <el-table-column label="产品名称" align="center" prop="name"></el-table-column>
-                <el-table-column label="缴费期间" align="center" prop="name"></el-table-column>
-                <el-table-column label="年交保费" align="center" prop="name"></el-table-column>
-                <el-table-column label="基本保险金额" align="center" prop="name"></el-table-column>
-                <el-table-column label="保障期间" align="center" prop="name"></el-table-column>
-                <el-table-column label="投保日期" align="center" prop="name"></el-table-column>
-                <el-table-column label="等待期" align="center" prop="name"></el-table-column>
-                <el-table-column label="受益人" align="center" prop="name"></el-table-column>
-                <el-table-column label="保险公司" align="center" prop="name"></el-table-column>
-                <el-table-column label="缴费银行" align="center" prop="name"></el-table-column>
-                <el-table-column label="银行卡号" align="center" prop="name"></el-table-column>
-                <el-table-column label="保单号" align="center" prop="name"></el-table-column>
-                <el-table-column label="备注" align="center" prop="name"></el-table-column>
+        <el-dialog
+            class="policy-dialog"
+            :visible.sync="policyDialogVisible"
+            append-to-body
+            :v-loading="policyLoading"
+            :show-close="false" >
+            <h3>{{customer.real_name}}，{{customer.mobile}}的保单</h3>
+            <el-table
+                :data="policyList"
+                border
+                stripe
+                :span-method="tableSpan"
+                max-height="520px"
+                v-loading="loading">
+                <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
+                <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
+                <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
+                <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
+                <el-table-column prop="guarantee_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
+                <el-table-column prop="premium" label="年缴保费" align="center" width="120px"></el-table-column>
+                <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
+                <el-table-column prop="payment_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
+                <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
+                    <template v-slot="{ row }">{{formatDate(row.proposal_at * 1000, 'yyyy-MM-dd')}}</template>
+                </el-table-column>
+                <el-table-column prop="wait_days" label="等待期" align="center" width="120px"></el-table-column>
+                <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
+                <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
+                <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
+                <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
+                <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
+                <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
             </el-table>
         </el-dialog>
     </el-dialog>
@@ -49,9 +63,11 @@
     import { getCustomerNoRelation, relativePolicyHolder, getMyCustomerDetail } from '@/apis/modules/customer'
     import { debounce } from '@/utils'
     import { formatDate } from '@/utils/formatTime'
+    import commonMixin from '../../mixin'
     let relatived = false // 标记是否关联过, 关闭时刷新主界面
     export default {
         name: 'relative-dialog',
+        mixins: [ commonMixin ],
         props: {
             visible: Boolean,
             id: [String, Number]
@@ -63,6 +79,7 @@
                 policyLoading: false,
                 keyword: '',
                 list: [],
+                customer: {},
                 policyList: [],
                 page: 1,
                 page_size: 20,
@@ -106,10 +123,22 @@
                 this.getData()
             }, 300),
             getPolicyData(relation_id) {
+                this.policyLoading = true
                 getMyCustomerDetail({
                     relation_id
                 }).then(res => {
-
+                    let list = []
+                    res.policies.forEach(policy => {
+                        const len = policy.length
+                        if (len) {
+                            policy[0].rowSpan = len
+                        }
+                        list.push(...policy)
+                    })
+                    this.customer = res.customer
+                    this.policyList = list
+                }).finally(() => {
+                    this.policyLoading = false
                 })
             },
             relative({ relation_id }) {
@@ -122,8 +151,8 @@
                     this.getData()
                 })
             },
-            viewPolicy(id) {
-                this.getPolicyData(id)
+            viewPolicy({ relation_id }) {
+                this.getPolicyData(relation_id)
                 this.policyDialogVisible = true
             },
             closeDialog() {
@@ -158,6 +187,19 @@
         ::v-deep .el-dialog__body {
             max-height: 100vh;
             padding-bottom: 20px;
+        }
+    }
+    .policy-dialog {
+        ::v-deep .el-dialog__header {
+            display: none;
+        }
+
+        ::v-deep .el-dialog__body {
+            height: 600px;
+            padding-bottom: 20px;
+            h3 {
+                margin-top: 0;
+            }
         }
     }
 </style>

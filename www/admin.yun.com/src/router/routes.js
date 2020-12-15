@@ -33,7 +33,7 @@ export const routers = [
     ]
   },
   {
-    label: '业绩',
+    label: '出单业绩',
     icon: 'iconcebiandaohang20_yeji1',
     children: [
       {
@@ -107,6 +107,58 @@ export const routers = [
           permission: '/achievement-self/detail'
         },
         component: getView('achievement/self/detail')
+      }
+    ]
+  },
+  {
+    label: '助销工具',
+    icon: 'iconcebiandaohang20_zhuxiaogongju',
+    children: [
+      {
+        path: '/proposal',
+        name: 'Proposal',
+        meta: {
+          title: '计划书',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/proposal'
+        },
+        component: () => import('views/merchandising/proposal')
+      },
+      {
+        path: '/proposal/proposal-operate',
+        name: 'Proposal-operate',
+        meta: {
+          title: '计划书编辑',
+          show: false,
+          permission: '/proposal/proposal-operate/update'
+        },
+        component: () => import('views/merchandising/proposal/proposal-operate')
+      },
+      {
+        path: '/underwrite-health-notice',
+        name: 'Underwrite-health-notice',
+        meta: {
+          title: '核保健告',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/underwrite-health-notice'
+        },
+        component: () => import('views/merchandising/underwrite-health-notice')
+      },
+      {
+        path: '/interactive-logs',
+        name: 'Interactive-logs',
+        meta: {
+          title: '互动记录',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/interactive-logs'
+        },
+        component: () => import('views/merchandising/interactive-logs')
       }
     ]
   },
@@ -185,58 +237,6 @@ export const routers = [
           permission: '/proposal'
         },
         component: () => import('views/customer/family-detail')
-      }
-    ]
-  },
-  {
-    label: '助销工具',
-    icon: 'iconcebiandaohang20_zhuxiaogongju',
-    children: [
-      {
-        path: '/proposal',
-        name: 'Proposal',
-        meta: {
-          title: '计划书',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/proposal'
-        },
-        component: () => import('views/merchandising/proposal')
-      },
-      {
-        path: '/proposal/proposal-operate',
-        name: 'Proposal-operate',
-        meta: {
-          title: '计划书编辑',
-          show: false,
-          permission: '/proposal/proposal-operate/update'
-        },
-        component: () => import('views/merchandising/proposal/proposal-operate')
-      },
-      {
-        path: '/underwrite-health-notice',
-        name: 'Underwrite-health-notice',
-        meta: {
-          title: '核保健告',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/underwrite-health-notice'
-        },
-        component: () => import('views/merchandising/underwrite-health-notice')
-      },
-      {
-        path: '/interactive-logs',
-        name: 'Interactive-logs',
-        meta: {
-          title: '互动记录',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/interactive-logs'
-        },
-        component: () => import('views/merchandising/interactive-logs')
       }
     ]
   },

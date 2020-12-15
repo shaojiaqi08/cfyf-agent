@@ -48,11 +48,11 @@
                     <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
                     <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
                     <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="product_name" label="产品名称" align="center" width="250px"></el-table-column>
-                    <el-table-column prop="" label="缴费期间" align="center" width="120px"></el-table-column>
+                    <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
+                    <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
                     <el-table-column prop="premium" label="年交保费" align="center" width="120px"></el-table-column>
                     <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="" label="保障期间" align="center" width="120px"></el-table-column>
+                    <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
                     <el-table-column prop="proposal_at" label="投保日期" align="center" width="120px">
                         <template v-slot="{ row }">{{row.proposal_at ? formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') : ''}}</template>
                     </el-table-column>
@@ -80,8 +80,10 @@
     import RelativeDialog from './modal/relative-dialog'
     import { getMyCustomerFamilyDetail, getFamilyDetail} from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
+    import commonMixin from '../mixin'
     export default {
         name: 'family-detail',
+        mixins: [ commonMixin ],
         components: {
             OperateFamilyDialog,
             RelativeDialog
@@ -107,26 +109,13 @@
             editFamily() {
                 this.editDialogVisible = true
             },
-            tableSpan({ row, columnIndex }) {
-                if (columnIndex === 0) {
-                    if (row.rowSpan) {
-                        return {
-                            rowspan: row.rowSpan,
-                            colspan: 1
-                        }
-                    } else {
-                        return {
-                            rowspan: 0,
-                            colspan: 0
-                        }
-                    }
-                }
-            },
             relativePolicyHolder() {
                 this.relativeDialogVisible = true
             },
             removePolicyHolder(row) {
-                this.$confirm(`正在移除投保人【${row.holder_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {})
+                this.$confirm(`正在移除投保人【${row.real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
+
+                })
             },
             getData() {
                 this.loading = true

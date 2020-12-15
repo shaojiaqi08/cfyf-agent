@@ -36,7 +36,7 @@
                     type="primary"
                     icon="iconfont iconxiao16_xiazai mr4"
                     class="mr16"
-                    size="small">导出数据</el-button>
+                    size="small">导出表格</el-button>
             </div>
             <el-table
                     :data="list"
@@ -45,21 +45,21 @@
                     :span-method="tableSpan"
                     height="calc(100% - 120px)"
                     style="width: 100%" >
-                <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left"></el-table-column>
-                <el-table-column prop="holder_name" label="投保人" align="center"></el-table-column>
-                <el-table-column prop="product_insurance_class_name" label="险种类型" align="center"></el-table-column>
-                <el-table-column prop="product_name" label="产品名称" align="center" width="200px"></el-table-column>
-                <el-table-column prop="guarantee_period_desc" label="缴费期间" align="center"></el-table-column>
-                <el-table-column prop="premium" label="年缴保费" align="center"></el-table-column>
+                <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
+                <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
+                <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
+                <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
+                <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
+                <el-table-column prop="premium" label="年缴保费" align="center" width="120px"></el-table-column>
                 <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
-                <el-table-column prop="payment_period_desc" label="保障期间" align="center"></el-table-column>
+                <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
                 <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
                     <template v-slot="{ row }">{{formatDate(row.proposal_at * 1000, 'yyyy-MM-dd')}}</template>
                 </el-table-column>
-                <el-table-column prop="wait_days" label="等待期" align="center"></el-table-column>
-                <el-table-column prop="beneficiaries" label="受益人" align="center"></el-table-column>
+                <el-table-column prop="wait_days" label="等待期" align="center" width="120px"></el-table-column>
+                <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
                 <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
-                <el-table-column prop="account_bank_name" label="缴费银行" align="center"></el-table-column>
+                <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
                 <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
                 <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
                 <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
@@ -71,8 +71,10 @@
 <script>
     import { getMyCustomerDetail, getCustomerDetail } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
+    import commonMixin from '../mixin'
     export default {
         name: 'customer-detail',
+        mixins: [ commonMixin ],
         data() {
             return {
                 detail: {},
@@ -92,25 +94,12 @@
         },
         methods: {
             formatDate,
-            tableSpan({ row, columnIndex }) {
-                if (columnIndex === 0) {
-                    if (row.rowSpan) {
-                        return {
-                            rowspan: row.rowSpan,
-                            colspan: 1
-                        }
-                    } else {
-                        return {
-                            rowspan: 0,
-                            colspan: 0
-                        }
-                    }
-                }
-            },
             goFamilyDetail() {
                 const url = this.$router.resolve({
                     name: this.isMyCustomer ? 'my-customer-family-detail' : 'customer-family-detail',
-                    id: this.detail.relation_id
+                    params: {
+                        id: this.detail.family_id
+                    }
                 }).href
                 window.open(url)
             },
@@ -122,7 +111,7 @@
                     res.policies.forEach(policy => {
                         const len = policy.length
                         if (len) {
-                            policy.rowSpan = len
+                            policy[0].rowSpan = len
                         }
                         list.push(...policy)
                     })
