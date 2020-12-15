@@ -218,10 +218,10 @@
         <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
     </el-dialog>
     <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px">
-      <div v-loading="docsLoading" style="min-height: 200px;">
+      <div v-loading="docsLoading" style="min-height: 200px;max-height: 600px;">
         <div class="category-wrap" v-for="(category, index) in productDocsData" :key="index">
           <p>{{category.name}}</p>
-          <div class="docs-wrap flex flex-between" v-for="(doc, idx) in category" :key="idx">
+          <div class="docs-wrap flex flex-between" v-for="(doc, idx) in category.docs" :key="idx">
             <div class="flex">
               <i class="iconfont iconxiao16_ziliao mr4"></i>
               <span>{{doc.name}}</span>
@@ -246,7 +246,7 @@ import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
 import SideFilterList from '@/components/side-filter-list'
 import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
-import { debounce, downloadFrameA} from "@/utils";
+import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
 import qs from 'qs'
@@ -292,8 +292,8 @@ export default {
     };
   },
   methods: {
-    downloadDocs({ file_url }) {
-      window.open(file_url)
+    downloadDocs({ download_file_url }) {
+      window.open(download_file_url)
     },
     detailDialogClose() {
       this.productObj = {}
@@ -339,12 +339,13 @@ export default {
             const { name } = doc
             doc.ext_name = ''
             const match = name.match(/.([a-zA-Z]+)$/)
-            if (match && match[1]) {
+            if (match) {
               doc.ext_name = match[1].toLowerCase()
+              doc.name = doc.name = name.replace(/.[a-zA-Z]+$/, '')
             }
           })
         })
-        this.productCategoryData = res
+        this.productDocsData = res
       }).finally(() => {
         this.docsLoading = false
       })
