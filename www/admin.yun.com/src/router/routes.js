@@ -174,7 +174,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/proposal'
+          permission: '/customer/admin/customer_page_list'
         },
         component: () => import('views/customer/all-customer')
       },
@@ -186,7 +186,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/proposal'
+          permission: '/customer/admin/customer_detail'
         },
         component: () => import('views/customer/customer-detail')
       },
@@ -198,7 +198,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/proposal'
+          permission: '/customer/admin/family_detail'
         },
         component: () => import('views/customer/family-detail')
       },
@@ -210,7 +210,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/proposal'
+          permission: '/customer/page_list/for_sales'
         },
         component: () => import('views/customer/my-customer')
       },
@@ -222,7 +222,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/proposal'
+          permission: '/customer/sales_customer/detail'
         },
         component: () => import('views/customer/customer-detail')
       },
@@ -234,7 +234,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/proposal'
+          permission: '/customer/sales/family_detail'
         },
         component: () => import('views/customer/family-detail')
       }

@@ -11,7 +11,7 @@
                            size="small"
                            class="ml16"
                            @click="editFamily"
-                           v-if="$checkAuth('/edit_brand_info') && isMyCustomer">编辑家庭</el-button>
+                           v-if="$checkAuth('/customer/sales/edit_family') && isMyCustomer">编辑家庭</el-button>
             </div>
             <div class="content">
                 <div class="table-head">
@@ -26,7 +26,7 @@
                         <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
                     </el-table-column>
                     <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
-                    <el-table-column label="操作" align="center" width="120px" v-if="isMyCustomer">
+                    <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/sales/remove_family_member') && isMyCustomer">
                         <template v-slot="{ row, $index }">
                             <el-link type="primary" v-if="customers.length > 1" @click="removePolicyHolder(row, $index)">移除</el-link>
                             <span v-else>-</span>
@@ -40,6 +40,7 @@
                         size="small"
                         icon="iconfont iconxiao16_xiazai mr4"
                         @click="exportPolicy"
+                        v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/detail/export_policy' : '/customer/admin/export_family_policy')"
                         :loading="exporting"
                         :disabled="exporting">导出表格</el-button>
                 </div>

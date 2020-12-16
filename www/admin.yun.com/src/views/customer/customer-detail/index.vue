@@ -27,7 +27,7 @@
                 </template>
                 <el-col :span="6" class="flex">
                     <span>关联家庭<span class="ml8" style="padding-right: 0">{{detail.family_name || '-'}}</span></span>
-                    <i v-if="detail.family_id" class="iconfont iconxiao16_tiaozhuan ml8" @click="goFamilyDetail" style="color: #1F78FF"></i>
+                    <i v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/detail/jump2family' : '/customer/admin/jump2family') && detail.family_id" class="iconfont iconxiao16_tiaozhuan ml8" @click="goFamilyDetail" style="color: #1F78FF"></i>
                 </el-col>
             </el-row>
             <div class="flex-between mb16">
@@ -39,6 +39,7 @@
                     @click="exportPolicy"
                     :loading="exporting"
                     :disabled="exporting"
+                    v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/detail/export_policy' : '/customer/admin/export_customer_policy')"
                     size="small">导出表格</el-button>
             </div>
             <el-table

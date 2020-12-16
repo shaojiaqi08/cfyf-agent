@@ -3,16 +3,16 @@
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
         <el-tab-pane name="my" label="我的客户"></el-tab-pane>
-        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"></el-tab-pane>
+        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/sales/family_page_list')"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
         <el-button
           type="primary"
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
-          v-if="tabIndex === 'my'"
           size="small"
           @click="exportList"
+          v-if="$checkAuth(tabIndex === 'my' ? '/customer/sales_customer/export' : '/customer/sales_customer/export')"
           :loading="exporting"
           :disabled="exporting">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
@@ -96,7 +96,14 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getMyCustomerList, getMyCustomerFamilyList, dismissFamily, getMyCustomerRelativeFamily, exportMyCustomerListUrl } from '@/apis/modules/customer'
+import {
+  getMyCustomerList,
+  getMyCustomerFamilyList,
+  dismissFamily,
+  getMyCustomerRelativeFamily,
+  exportMyCustomerListUrl,
+  exportMyFamilyListUrl
+} from '@/apis/modules/customer'
 import { debounce, downloadFrameA } from '@/utils'
 import qs from 'qs'
 import FilterShell from '@/components/filters/filter-shell'
@@ -136,10 +143,17 @@ export default {
   },
   methods: {
     exportList() {
-      const url = `${exportMyCustomerListUrl}?${qs.stringify(this.searchModel)}`
+      const isMy = this.tabIndex === 'my'
+      const params = { ...this.searchModel }
+      if (!isMy) {
+        delete params.family_id
+      }
+      const url = `${isMy ? exportMyCustomerListUrl : exportMyFamilyListUrl }?${qs.stringify(params)}`
       this.exporting = true
-      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+      downloadFrameA(url, `${isMy ? '我的客户' : '我的客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
         this.exporting = false
+      }).catch(e => {
+        this.$message.error(e.message)
       })
     },
     createFamily() {

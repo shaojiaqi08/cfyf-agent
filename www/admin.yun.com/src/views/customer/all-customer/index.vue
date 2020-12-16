@@ -3,7 +3,7 @@
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
         <el-tab-pane name="all" label="全部客户"></el-tab-pane>
-        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"></el-tab-pane>
+        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
         <el-button
@@ -11,8 +11,8 @@
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
           size="small"
+          v-if="$checkAuth(tabIndex === 'my' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
           @click="exportList"
-          v-if="tabIndex === 'all'"
           :loading="exporting"
           :disabled="exporting">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
@@ -144,7 +144,7 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
-import { getCustomerList, getCustomerFamilyList, exportCustomerListUrl } from '@/apis/modules/customer'
+import { getCustomerList, getCustomerFamilyList, exportCustomerListUrl, exportFamilyListUrl } from '@/apis/modules/customer'
 import { getSalesData, getSalesTeamData} from '@/apis/modules/achievement'
 import { debounce, downloadFrameA } from '@/utils'
 import qs from 'qs'
@@ -185,10 +185,17 @@ export default {
   methods: {
     formatDate,
     exportList() {
-      const url = `${exportCustomerListUrl}?${qs.stringify(this.searchModel)}`
+      const isAll = this.tabIndex === 'all'
+      const params = { ...this.searchModel }
+      if (!isAll) {
+        delete params.family_id
+      }
+      const url = `${isAll ? exportCustomerListUrl : exportFamilyListUrl }?${qs.stringify(params)}`
       this.exporting = true
-      downloadFrameA(url, `我的客户列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+      downloadFrameA(url, `${isAll ? '客户' : '客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
         this.exporting = false
+      }).catch(e => {
+        this.$message.error(e.message)
       })
     },
     viewDetail(row) {
