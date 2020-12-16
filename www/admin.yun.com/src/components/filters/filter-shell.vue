@@ -66,6 +66,7 @@ export function emptyValue(value) {
 
 export function clearValue(e, value) {
   this.$emit("input", emptyValue(value));
+  this.$emit("closePopover");
 }
 
 export default {
