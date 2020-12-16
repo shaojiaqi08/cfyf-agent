@@ -115,6 +115,7 @@
         },
         methods: {
             formatDate,
+            // 导出
             exportPolicy() {
                 const url = `${this.exportUrl}?family_id=${this.familyId}`
                 this.exporting = true
@@ -133,6 +134,7 @@
             relativePolicyHolder() {
                 this.relativeDialogVisible = true
             },
+            // 移除投保人
             removePolicyHolder({ real_name, relation_id }) {
                 this.$confirm(
                     `正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`,
@@ -147,6 +149,7 @@
                     })
                 })
             },
+            // 获取详情
             getData() {
                 this.loading = true
                 this.getDetail({
@@ -205,6 +208,7 @@
         .header {
             height: 84px;
             font-size: 16px;
+            font-weight: bold;
             border-bottom: 1px solid #e6e6e6;
             background-color: #f5f5f5;
             padding: 0 16px;

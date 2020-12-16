@@ -43,12 +43,12 @@
                     size="small">导出表格</el-button>
             </div>
             <el-table
-                    :data="list"
-                    border
-                    stripe
-                    :span-method="tableSpan"
-                    height="calc(100% - 125px)"
-                    style="width: 100%" >
+                :data="list"
+                border
+                stripe
+                :span-method="tableSpan"
+                height="calc(100% - 125px)"
+                style="width: 100%" >
                 <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
                 <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
                 <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
@@ -95,15 +95,18 @@
             isMyCustomer() {
                 return this.$route.name === 'my-customer-detail'
             },
+            // 详情接口
             getDetail() {
                 return this.isMyCustomer ? getMyCustomerDetail : getCustomerDetail
             },
+            // 导出链接
             exportUrl() {
                 return this.isMyCustomer ? exportMyCustomerPolicyUrl : exportCustomerPolicyUrl
             }
         },
         methods: {
             formatDate,
+            // 导出保单
             exportPolicy() {
                 const url = `${this.exportUrl}?relation_id=${this.relationId}`
                 this.exporting = true
@@ -111,6 +114,7 @@
                     this.exporting = false
                 })
             },
+            // 打开家庭详情标签
             goFamilyDetail() {
                 const url = this.$router.resolve({
                     name: this.isMyCustomer ? 'my-customer-family-detail' : 'customer-family-detail',
@@ -120,6 +124,7 @@
                 }).href
                 window.open(url)
             },
+            // 获取详情
             getData() {
                 this.loading = true
                 this.getDetail({
@@ -158,6 +163,7 @@
         .header {
             height: 56px;
             font-size: 16px;
+            font-weight: bold;
             border-bottom: 1px solid #e6e6e6;
             background-color: #f5f5f5;
             padding: 0 16px;

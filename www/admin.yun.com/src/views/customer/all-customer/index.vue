@@ -14,19 +14,20 @@
           v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
           @click="exportList"
           :loading="exporting"
-          :disabled="exporting || list.length <= 0">导出数据</el-button>
+          :disabled="exporting || list.length <= 0 || loading">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
                   class="fw400"
                   clearable
                   style="width:360px"
+                  :readonly="loading"
                   @input="search()">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
     </div>
-    <div class="scroll-box p16" ref="content">
+    <div class="scroll-box p16" ref="content" v-loading="loading">
       <div>
         <!--全部出单人-->
         <filter-shell v-model="searchModel.sales_id"
@@ -108,7 +109,7 @@
                 border
                 stripe
                 :key="tabIndex"
-                v-loading="tableLoading">
+                style="width: 100%">
         <template v-if="tabIndex === 'customer'">
           <el-table-column prop="real_name" label="姓名" align="center" fixed="left"></el-table-column>
           <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
@@ -172,7 +173,7 @@ export default {
       page: 1,
       page_size: 50,
       total: 0,
-      tableLoading: false,
+      loading: false,
       exporting: false,
       searchModel: {
         keyword: '',
@@ -186,20 +187,22 @@ export default {
   },
   methods: {
     formatDate,
+    // 导出
     exportList() {
-      const isAll = this.tabIndex === 'customer'
+      const isCustomerTab = this.tabIndex === 'customer'
       const params = { ...this.searchModel }
-      if (!isAll) {
+      if (!isCustomerTab) {
         delete params.family_id
       }
-      const url = `${isAll ? exportCustomerListUrl : exportFamilyListUrl }?${qs.stringify(params)}`
+      const url = `${isCustomerTab ? exportCustomerListUrl : exportFamilyListUrl }?${qs.stringify(params)}`
       this.exporting = true
-      downloadFrameA(url, `${isAll ? '客户' : '客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+      downloadFrameA(url, `${isCustomerTab ? '客户' : '客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
         this.exporting = false
       }).catch(e => {
         this.$message.error(e.message)
       })
     },
+    // 打开客户详情标签
     viewDetail(row) {
       const url = this.$router.resolve({
         name: 'customer-detail',
@@ -209,6 +212,7 @@ export default {
       }).href
       window.open(url)
     },
+    // 打开家庭详情标签
     viewFamilyDetail(row) {
       const url = this.$router.resolve({
         name: 'customer-family-detail',
@@ -219,7 +223,7 @@ export default {
       window.open(url)
     },
     getCustomerList: debounce(function() {
-      this.tableLoading = true
+      this.loading = true
       const { page, page_size, searchModel } = this
       getCustomerList({
         page,
@@ -229,11 +233,11 @@ export default {
         this.list = page === 1 ? res.data : [...this.list, ...res.data]
         this.total = res.total
       }).finally(() => {
-        this.tableLoading = false
+        this.loading = false
       })
     }, 300),
     getCustomerFamilyList: debounce(function() {
-      this.tableLoading = true
+      this.loading = true
       const { page, page_size, searchModel } = this
       getCustomerFamilyList({
         page,
@@ -244,7 +248,7 @@ export default {
         this.list = page === 1 ? res.data : [...this.list, ...res.data]
         this.total = res.total
       }).finally(() => {
-        this.tableLoading = false
+        this.loading = false
       })
     }, 300),
     handleTabChange() {
@@ -262,17 +266,20 @@ export default {
       this.total = 0;
       this.tabIndex === 'customer' ? this.getCustomerList() : this.getCustomerFamilyList()
     },
+    // 主表滚动条到底部handler
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
         this.search(this.page + 1)
       }
     },
+    // 出单人筛选数据
     getSalesData() {
       getSalesData().then(res => {
         this.salesList = res
       }).catch(err => console.log(err))
     },
+    // 团队筛选数据
     getSalesTeamData() {
       getSalesTeamData().then(res => {
         this.salesTeamList = res

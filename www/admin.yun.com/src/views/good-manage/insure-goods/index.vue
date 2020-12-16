@@ -17,7 +17,7 @@
                       placeholder="搜索保险商品"
                       size="small"
                       v-model.trim="searchModel.title"
-                      :disabled="loading"
+                      :readonly="loading"
                       clearable
                       @input="debounceAjaxListData">
               <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>

@@ -14,19 +14,20 @@
           @click="exportList"
           v-if="$checkAuth(tabIndex === 'customer' ? '/customer/sales_customer/export' : '/customer/sales/export_family_list')"
           :loading="exporting"
-          :disabled="exporting || list.length <= 0">导出数据</el-button>
+          :disabled="exporting || list.length <= 0 || loading">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
                   class="fw400"
                   clearable
                   style="width:360px"
+                  :readonly="loading"
                   @input="search()">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
       </div>
     </div>
-    <div class="scroll-box p16" ref="content">
+    <div class="scroll-box p16" ref="content" v-loading="loading">
       <div style="height: 40px;">
         <!--关联家庭-->
         <filter-shell v-model="searchModel.family_id"
@@ -64,8 +65,7 @@
                 v-table-infinite-scroll="scroll2Bottom"
                 border
                 stripe
-                :key="tabIndex"
-                v-loading="tableLoading">
+                :key="tabIndex">
         <template v-if="tabIndex === 'customer'">
           <el-table-column label="姓名" prop="real_name" align="center" fixed="left"></el-table-column>
           <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
@@ -138,7 +138,7 @@ export default {
       page_size: 50,
       total: 0,
       keyword: '',
-      tableLoading: false,
+      loading: false,
       exporting: false,
       searchModel: {
         keyword: '',
@@ -147,15 +147,16 @@ export default {
     };
   },
   methods: {
+    // 导出
     exportList() {
-      const isMy = this.tabIndex === 'customer'
+      const isCustomerTab = this.tabIndex === 'customer'
       const params = { ...this.searchModel }
-      if (!isMy) {
+      if (!isCustomerTab) {
         delete params.family_id
       }
-      const url = `${isMy ? exportMyCustomerListUrl : exportMyFamilyListUrl }?${qs.stringify(params)}`
+      const url = `${isCustomerTab ? exportMyCustomerListUrl : exportMyFamilyListUrl }?${qs.stringify(params)}`
       this.exporting = true
-      downloadFrameA(url, `${isMy ? '我的客户' : '我的客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
+      downloadFrameA(url, `${isCustomerTab ? '我的客户' : '我的客户家庭'}列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).finally(() => {
         this.exporting = false
       }).catch(e => {
         this.$message.error(e.message)
@@ -164,6 +165,7 @@ export default {
     createFamily() {
       this.familyDialogVisible = true
     },
+    // 打开我的客户详情标签
     viewDetail(row) {
       const url = this.$router.resolve({
         name: 'my-customer-detail',
@@ -173,6 +175,7 @@ export default {
       }).href
       window.open(url)
     },
+    // 打开我的客户家庭详情标签啊
     viewFamilyDetail(row) {
       const url = this.$router.resolve({
         name: 'my-customer-family-detail',
@@ -182,6 +185,7 @@ export default {
       }).href
       window.open(url)
     },
+    // 解散
     dismiss(row) {
       this.$confirm(
         `正在解散【${row.name}】，是否确认？`,
@@ -207,14 +211,16 @@ export default {
     addFamilySuccess() {
       this.handleTabChange()
     },
+    // 主表滚动条到底部handler
     scroll2Bottom() {
       const {page, page_size, total} = this
       if (page * page_size < total) {
         this.search(this.page + 1)
       }
     },
+    // 客户列表数据
     getMyCustomerList: debounce(function() {
-      this.tableLoading = true
+      this.loading = true
       const { searchModel, page, page_size } = this
       getMyCustomerList({
         ...searchModel,
@@ -224,11 +230,12 @@ export default {
         this.total = res.total
         this.list = page === 1 ? res.data : this.list.concat(res.data)
       }).finally(() => {
-        this.tableLoading = false
+        this.loading = false
       })
     }, 300),
+    // 家庭列表数据
     getMyCustomerFamilyList: debounce(function() {
-      this.tableLoading = true
+      this.loading = true
       const { searchModel, page, page_size } = this
       getMyCustomerFamilyList({
         keyword: searchModel.keyword,
@@ -238,7 +245,7 @@ export default {
         this.total = res.total
         this.list = page === 1 ? res.data : this.list.concat(res.data)
       }).finally(() => {
-        this.tableLoading = false
+        this.loading = false
       })
     }, 300)
   },
