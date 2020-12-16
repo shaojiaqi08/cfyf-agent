@@ -122,7 +122,7 @@ export default {
   },
   computed: {
     placeholder () {
-      return this.tabIndex === 'customer' ? '搜索昵称、姓名、ID、身份证号或手机号' : '搜索家庭名称或投保人名称'
+      return this.tabIndex === 'customer' ? '搜索姓名、身份证号或手机号' : '搜索家庭名称或投保人名称'
     }
   },
   data() {
