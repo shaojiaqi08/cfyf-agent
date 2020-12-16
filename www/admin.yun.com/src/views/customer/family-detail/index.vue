@@ -16,7 +16,12 @@
             <div class="content">
                 <div class="table-head">
                     <span>投保人</span>
-                    <el-button v-if="isMyCustomer" type="primary" size="small" icon="iconfont iconxiao16_guanlian mr4" @click="relativePolicyHolder">关联投保人</el-button>
+                    <el-button
+                        v-if="$checkAuth('/customer/sales/customer_join_family') && isMyCustomer"
+                        type="primary"
+                        size="small"
+                        icon="iconfont iconxiao16_guanlian mr4"
+                        @click="relativePolicyHolder">关联投保人</el-button>
                 </div>
                 <el-table :data="customers" border table-head class="mb24" max-height="600px" style="width: 100%">
                     <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
@@ -133,9 +138,9 @@
                 this.$confirm(`正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
                     removePolicyHolder({
                         relation_id
-                    }).then(() => this.getData())
-                }).catch(() => {
-                    this.loading = false
+                    }).then(() => this.getData()).catch(() => {
+                        this.loading = false
+                    })
                 })
             },
             getData() {

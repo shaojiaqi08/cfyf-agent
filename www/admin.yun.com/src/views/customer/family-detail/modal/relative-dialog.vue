@@ -120,6 +120,8 @@
                 })
             },
             handleInput: debounce(function() {
+                this.page = 1
+                this.total = 0
                 this.getData()
             }, 300),
             getPolicyData(relation_id) {
