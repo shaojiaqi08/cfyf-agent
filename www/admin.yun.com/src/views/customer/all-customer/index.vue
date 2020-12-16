@@ -78,13 +78,13 @@
           </template>
         </filter-shell>
         <!--全部关联家庭-->
-        <filter-shell v-model="searchModel.policy_status"
+        <filter-shell v-model="searchModel.family_id"
                       autoFocus
                       class="mb16"
                       v-if="tabIndex === 'customer'"
                       @input="search()">
           <el-select class="block"
-                    v-model="searchModel.policy_status"
+                    v-model="searchModel.family_id"
                     multiple
                     clearable
                     filterable
@@ -118,6 +118,8 @@
           </el-table-column>
           <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
           <el-table-column prop="family_name" label="关联家庭" align="center"></el-table-column>
+          <el-table-column prop="sales_name" label="出单人" align="center"></el-table-column>
+          <el-table-column prop="sales_team_name" label="团队" align="center"></el-table-column>
           <el-table-column label="操作" align="center" fixed="right" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
@@ -222,8 +224,7 @@ export default {
       getCustomerList({
         page,
         page_size,
-        ...searchModel,
-        family_id: void 0
+        ...searchModel
       }).then(res => {
         this.list = page === 1 ? res.data : [...this.list, ...res.data]
         this.total = res.total
@@ -238,7 +239,7 @@ export default {
         page,
         page_size,
         ...searchModel,
-
+        family_id: void 0
       }).then(res => {
         this.list = page === 1 ? res.data : [...this.list, ...res.data]
         this.total = res.total

@@ -210,7 +210,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/customer/page_list/for_sales'
+          permission: '/customer/sales_customer/page_list'
         },
         component: () => import('views/customer/my-customer')
       },
