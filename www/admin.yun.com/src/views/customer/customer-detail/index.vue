@@ -38,7 +38,7 @@
                     class="mr16"
                     @click="exportPolicy"
                     :loading="exporting"
-                    :disabled="exporting"
+                    :disabled="exporting || list.length <= 0"
                     v-if="$checkAuth(isMyCustomer ? '/customer/sales/export_customer_policy' : '/customer/admin/export_customer_policy')"
                     size="small">导出表格</el-button>
             </div>
@@ -54,7 +54,7 @@
                 <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
                 <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
-                <el-table-column prop="premium" label="年缴保费" align="center" width="120px"></el-table-column>
+                <el-table-column prop="premium" label="年交保费" align="center" width="120px"></el-table-column>
                 <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
                 <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
                 <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
@@ -64,7 +64,7 @@
                 <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
                 <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
                 <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
-                <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
+                <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="220px"></el-table-column>
                 <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
                 <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
             </el-table>

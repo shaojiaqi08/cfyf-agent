@@ -47,7 +47,7 @@
                         @click="exportPolicy"
                         v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/export' : '/customer/admin/export_family_policy')"
                         :loading="exporting"
-                        :disabled="exporting">导出表格</el-button>
+                        :disabled="exporting || policies.length <= 0">导出表格</el-button>
                 </div>
                 <el-table
                     :data="policies"
@@ -78,10 +78,10 @@
                 </el-table>
             </div>
             <operate-family-dialog
-                    v-if="isMyCustomer"
-                    :model="family"
-                    :visible.sync="editDialogVisible"
-                    @confirm="editFamilySuccess"></operate-family-dialog>
+                v-if="isMyCustomer"
+                :model="family"
+                :visible.sync="editDialogVisible"
+                @confirm="editFamilySuccess"></operate-family-dialog>
             <relative-dialog :visible.sync="relativeDialogVisible" @refresh="getData"></relative-dialog>
         </div>
     </el-scrollbar>
@@ -134,8 +134,12 @@
                 this.relativeDialogVisible = true
             },
             removePolicyHolder({ real_name, relation_id }) {
-                this.loading = true
-                this.$confirm(`正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
+                this.$confirm(
+                    `正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`,
+                    '移除投保人',
+                    { confirmButtonText: '确认' }
+                ).then(() => {
+                    this.loading = true
                     removePolicyHolder({
                         relation_id
                     }).then(() => this.getData()).catch(() => {

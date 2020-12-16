@@ -1,7 +1,7 @@
 <template>
   <div class="order-container page-container">
     <div class="header">
-      <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
+      <el-tabs class="tabs" v-model="tabIndex">
         <el-tab-pane name="customer" label="我的客户"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/sales/family_page_list')"></el-tab-pane>
       </el-tabs>
@@ -14,7 +14,7 @@
           @click="exportList"
           v-if="$checkAuth(tabIndex === 'customer' ? '/customer/sales_customer/export' : '/customer/sales/export_family_list')"
           :loading="exporting"
-          :disabled="exporting">导出数据</el-button>
+          :disabled="exporting || list.length <= 0">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
@@ -183,7 +183,11 @@ export default {
       window.open(url)
     },
     dismiss(row) {
-      this.$confirm(`正在解散【${row.name}】，是否确认？`, '提示').then(() => {
+      this.$confirm(
+        `正在解散【${row.name}】，是否确认？`,
+        '解散家庭',
+        { confirmButtonText: '确认' }
+      ).then(() => {
         dismissFamily({ family_id: row.id }).then(() => {
           this.getMyCustomerFamilyList()
           this.$message.success('解散家庭成功')
@@ -237,6 +241,11 @@ export default {
         this.tableLoading = false
       })
     }, 300)
+  },
+  watch: {
+    tabIndex() {
+      this.handleTabChange()
+    }
   },
   created() {
     // 筛选项 - 关联家庭数据

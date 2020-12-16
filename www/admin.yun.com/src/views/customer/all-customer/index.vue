@@ -1,7 +1,7 @@
 <template>
   <div class="order-container page-container">
     <div class="header">
-      <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
+      <el-tabs class="tabs" v-model="tabIndex">
         <el-tab-pane name="customer" label="全部客户"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')"></el-tab-pane>
       </el-tabs>
@@ -14,7 +14,7 @@
           v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
           @click="exportList"
           :loading="exporting"
-          :disabled="exporting">导出数据</el-button>
+          :disabled="exporting || list.length <= 0">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
                   :placeholder="placeholder"
                   size="small"
@@ -277,6 +277,11 @@ export default {
       getSalesTeamData().then(res => {
         this.salesTeamList = res
       }).catch(err => console.log(err))
+    }
+  },
+  watch: {
+    tabIndex() {
+      this.handleTabChange()
     }
   },
   created() {

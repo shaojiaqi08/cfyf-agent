@@ -1,16 +1,16 @@
 <template>
     <el-dialog :visible="visible" :title="title" width="480px" @close="closeDialog">
-        <el-form :model="formModel" label-width="100px" :rules="rules" ref="form">
+        <el-form :model="formModel" label-width="80px" :rules="rules" ref="form" label-position="left">
             <el-form-item label="家庭名称" prop="name">
-                <el-input v-model="formModel.name" placeholder="请输入家庭名称，最多50字" :maxlength="50"></el-input>
+                <el-input v-model.trim="formModel.name" placeholder="请输入家庭名称，最多50字" :maxlength="50"></el-input>
             </el-form-item>
-            <el-form-item label="选择客户" prop="name" v-if="!isEdit">
-                <el-select multiple :loading="customerLoading" v-model="formModel.customer_ids" placeholder="请选择投保人" style="width: 100%">
+            <el-form-item label="选择客户" prop="customer_ids" v-if="!isEdit">
+                <el-select multiple :loading="customerLoading" v-model="formModel.customer_ids" placeholder="请选择客户" style="width: 100%">
                     <el-option v-for="(item, index) in customerList" :key="index" :label="item.real_name" :value="'' + item.relation_id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="备注" prop="name">
-                <el-input v-model="formModel.remark" placeholder="请输入备注内容" type="textarea" row="4"></el-input>
+            <el-form-item label="备注" prop="remark">
+                <el-input v-model.trim="formModel.remark" placeholder="请输入备注内容，最多100字" type="textarea" :rows="4" :maxlength="100"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer">
