@@ -16,7 +16,8 @@
             <el-input style="width: 100%;"
                       placeholder="搜索保险商品"
                       size="small"
-                      v-model="searchModel.title"
+                      v-model.trim="searchModel.title"
+                      :disabled="loading"
                       clearable
                       @input="debounceAjaxListData">
               <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>
@@ -46,20 +47,6 @@
                 @change="ajaxListData"
                 clearable
               ></el-cascader>
-              <!-- <el-select class="block"
-                        v-model="searchModel.first_product_category_id"
-                        clearable
-                        filterable
-                        multiple
-                        @change="ajaxListData"
-                        placeholder="请选择">
-                <el-option
-                        v-for="item in productCategoryData"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                ></el-option>
-              </el-select> -->
               <template v-slot:label>
                 <span>
                     {{ hasValue(searchModel.first_product_category_id) ? getChildName(searchModel.first_product_category_id) : '险种' }}
@@ -167,21 +154,6 @@
           </div>
         </template>
       </side-filter-list>
-<!--      <div class="right">-->
-<!--        <div class="product-button-group" v-if="productObj.product_type === 'cps'">-->
-<!--          <el-button type="primary"-->
-<!--                     size="small"-->
-<!--                     v-clipboard:success="onCopy"-->
-<!--                     v-clipboard:error="onError"-->
-<!--                     v-clipboard:copy="productObj.share_link"-->
-<!--                     plain-->
-<!--                     round>复制链接</el-button>-->
-<!--          <el-button @click="share" type="primary" size="small" round>转发客户</el-button>-->
-<!--        </div>-->
-<!--        <iframe v-if="productUrl"-->
-<!--                :style="{ height: productObj.product_type === 'cps' ? `94%` : `100%` }"-->
-<!--                :src="`${productUrl}&user_token=${$store.state.users.userInfo.agent_token}&platform=crm_web`"></iframe>-->
-<!--      </div>-->
     </div>
     <el-dialog title="售前告知" :visible.sync="notifyVisible" width="480px">
       <div class="pb20 fs14" style="line-height: 1.45" ref="notifyContent">

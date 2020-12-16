@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-loading="loading">
         <div class="header">投保人信息</div>
         <div class="content">
             <el-row type="flex" class="mb14" justify="middle">
@@ -84,7 +84,8 @@
             return {
                 detail: {},
                 list: [],
-                exporting: false
+                exporting: false,
+                loading: false
             }
         },
         computed: {
@@ -120,6 +121,7 @@
                 window.open(url)
             },
             getData() {
+                this.loading = true
                 this.getDetail({
                     relation_id: this.relationId
                 }).then(res => {
@@ -133,6 +135,8 @@
                     })
                     this.detail = res.customer
                     this.list = list
+                }).finally(() => {
+                    this.loading = false
                 })
             }
         },
