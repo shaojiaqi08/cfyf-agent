@@ -2,7 +2,7 @@
   <div class="order-container page-container">
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
-        <el-tab-pane name="all" label="全部客户"></el-tab-pane>
+        <el-tab-pane name="customer" label="全部客户"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
@@ -11,7 +11,7 @@
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
           size="small"
-          v-if="$checkAuth(tabIndex === 'my' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
+          v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
           @click="exportList"
           :loading="exporting"
           :disabled="exporting">导出数据</el-button>
@@ -81,7 +81,7 @@
         <filter-shell v-model="searchModel.policy_status"
                       autoFocus
                       class="mb16"
-                      v-if="tabIndex === 'all'"
+                      v-if="tabIndex === 'customer'"
                       @input="search()">
           <el-select class="block"
                     v-model="searchModel.policy_status"
@@ -109,7 +109,7 @@
                 stripe
                 :key="tabIndex"
                 v-loading="tableLoading">
-        <template v-if="tabIndex === 'all'">
+        <template v-if="tabIndex === 'customer'">
           <el-table-column prop="real_name" label="姓名" align="center" fixed="left"></el-table-column>
           <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
           <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
@@ -131,7 +131,7 @@
           <el-table-column prop="sales_name" label="创建人" align="center"></el-table-column>
           <el-table-column prop="sales_team_name" label="团队" align="center"></el-table-column>
           <el-table-column prop="remark" label="备注" align="center"></el-table-column>
-          <el-table-column label="操作" align="center" width="120px">
+          <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/admin/customer_detail')">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
             </template>
@@ -158,12 +158,12 @@ export default {
   },
   computed: {
     placeholder () {
-      return this.tabIndex === 'all' ? '搜索昵称、姓名、ID、身份证号或手机号' : '搜索家庭名称或投保人名称'
+      return this.tabIndex === 'customer' ? '搜索昵称、姓名、ID、身份证号或手机号' : '搜索家庭名称或投保人名称'
     }
   },
   data() {
     return {
-      tabIndex: 'all',
+      tabIndex: 'customer',
       list: [],
       teamList: [],
       relativeFamilyList: [],
@@ -185,7 +185,7 @@ export default {
   methods: {
     formatDate,
     exportList() {
-      const isAll = this.tabIndex === 'all'
+      const isAll = this.tabIndex === 'customer'
       const params = { ...this.searchModel }
       if (!isAll) {
         delete params.family_id
@@ -259,7 +259,7 @@ export default {
     search(page = 1) {
       this.page = page;
       this.total = 0;
-      this.tabIndex === 'all' ? this.getCustomerList() : this.getCustomerFamilyList()
+      this.tabIndex === 'customer' ? this.getCustomerList() : this.getCustomerFamilyList()
     },
     scroll2Bottom() {
       const {page, page_size, total} = this

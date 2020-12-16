@@ -64,3 +64,15 @@ Vue.directive('table-infinite-scroll', {
     scrollWrap.addEventListener('scroll', scrollHandle)
   }
 })
+
+// 全局判断权限方法
+Vue.prototype.$checkAuth = function(data) {
+  const permissions = this.$store.state.users.userInfo.permissions
+  if (!permissions) return false
+  if (typeof data === 'string') {
+    return permissions.includes(data)
+  }else if (Array.isArray(data) && data.length > 0 ) {
+    return !!~data.findIndex(i => permissions.includes(i))
+  }
+  return false
+}

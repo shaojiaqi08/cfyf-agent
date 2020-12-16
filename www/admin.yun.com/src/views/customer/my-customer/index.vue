@@ -2,7 +2,7 @@
   <div class="order-container page-container">
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="handleTabChange">
-        <el-tab-pane name="my" label="我的客户"></el-tab-pane>
+        <el-tab-pane name="customer" label="我的客户"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/sales/family_page_list')"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
@@ -12,7 +12,7 @@
           class="mr16"
           size="small"
           @click="exportList"
-          v-if="$checkAuth(tabIndex === 'my' ? '/customer/sales_customer/export' : '/customer/sales_customer/export')"
+          v-if="$checkAuth(tabIndex === 'customer' ? '/customer/sales_customer/export' : '/customer/sales/export_family_list')"
           :loading="exporting"
           :disabled="exporting">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
@@ -31,7 +31,7 @@
         <!--关联家庭-->
         <filter-shell v-model="searchModel.family_id"
                       autoFocus
-                      v-if="tabIndex === 'my'"
+                      v-if="tabIndex === 'customer'"
                       @input="search()">
           <el-select class="block"
                     v-model="searchModel.family_id"
@@ -51,7 +51,12 @@
             {{ searchModel.family_id.length ? relativeFamilyList.find(i => i.id === searchModel.family_id[0]).name : '全部关联家庭' }}
           </template>
         </filter-shell>
-        <el-button v-else icon="iconfont iconxiao16_jiahao mr4" type="primary fr" size="small" @click="createFamily">添加家庭</el-button>
+        <el-button
+          v-else-if="$checkAuth('/customer/sales/create_family')"
+          icon="iconfont iconxiao16_jiahao mr4"
+          type="primary fr"
+          size="small"
+          @click="createFamily">添加家庭</el-button>
       </div>
       <el-table :data="list"
                 height="calc(100vh - 173px)"
@@ -61,7 +66,7 @@
                 stripe
                 :key="tabIndex"
                 v-loading="tableLoading">
-        <template v-if="tabIndex === 'my'">
+        <template v-if="tabIndex === 'customer'">
           <el-table-column label="姓名" prop="real_name" align="center" fixed="left"></el-table-column>
           <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
           <el-table-column label="身份证号" prop="certificate_number" align="center"></el-table-column>
@@ -83,8 +88,8 @@
           <el-table-column label="备注" prop="remark" align="center"></el-table-column>
           <el-table-column label="操作" align="center" width="120px">
             <template v-slot="{ row }">
-              <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
-              <el-link type="primary" @click="dismiss(row)">解散</el-link>
+              <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8" v-if="$checkAuth('/customer/sales_customer/detail')">查看详情</el-link>
+              <el-link type="primary" @click="dismiss(row)" v-if="$checkAuth('/customer/sales/disband_family')">解散</el-link>
             </template>
           </el-table-column>
         </template>
@@ -117,12 +122,12 @@ export default {
   },
   computed: {
     placeholder () {
-      return this.tabIndex === 'all' ? '搜索昵称、姓名、ID、身份证号或手机号' : '搜索家庭名称或投保人名称'
+      return this.tabIndex === 'customer' ? '搜索昵称、姓名、ID、身份证号或手机号' : '搜索家庭名称或投保人名称'
     }
   },
   data() {
     return {
-      tabIndex: 'my',
+      tabIndex: 'customer',
       formatDate,
       familyDialogVisible: false,
       filterValue: false,
@@ -143,7 +148,7 @@ export default {
   },
   methods: {
     exportList() {
-      const isMy = this.tabIndex === 'my'
+      const isMy = this.tabIndex === 'customer'
       const params = { ...this.searchModel }
       if (!isMy) {
         delete params.family_id
@@ -193,7 +198,7 @@ export default {
     search(page = 1) {
       this.page = page;
       this.total = 0;
-      this.tabIndex === 'my' ? this.getMyCustomerList() : this.getMyCustomerFamilyList()
+      this.tabIndex === 'customer' ? this.getMyCustomerList() : this.getMyCustomerFamilyList()
     },
     addFamilySuccess() {
       this.handleTabChange()

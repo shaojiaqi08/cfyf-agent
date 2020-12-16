@@ -40,7 +40,7 @@
                         size="small"
                         icon="iconfont iconxiao16_xiazai mr4"
                         @click="exportPolicy"
-                        v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/detail/export_policy' : '/customer/admin/export_family_policy')"
+                        v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/export' : '/customer/admin/export_family_policy')"
                         :loading="exporting"
                         :disabled="exporting">导出表格</el-button>
                 </div>

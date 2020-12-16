@@ -16,18 +16,6 @@ if (process.env.NODE_ENV === 'development') {
 Vue.use(Element, {size: 'medium', zIndex: 3000});
 Vue.use(VueClipboard)
 
-// 全局判断权限方法
-Vue.prototype.$checkAuth = function(data) {
-  const permissions = this.$store.state.users.userInfo.permissions
-  if (!permissions) return false
-  if (typeof data === 'string') {
-    return permissions.includes(data)
-  }else if (Array.isArray(data) && data.length > 0 ) {
-    return !!~data.findIndex(i => permissions.includes(i))
-  }
-  return false
-}
-
 new Vue({
   router,
   store,
