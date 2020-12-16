@@ -128,13 +128,14 @@
             relativePolicyHolder() {
                 this.relativeDialogVisible = true
             },
-            removePolicyHolder({ real_name, relation_id }, index) {
+            removePolicyHolder({ real_name, relation_id }) {
+                this.loading = true
                 this.$confirm(`正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`, '提示').then(() => {
                     removePolicyHolder({
                         relation_id
-                    }).then(() => {
-                        this.customers.splice(index, 1)
-                    })
+                    }).then(() => this.getData())
+                }).catch(() => {
+                    this.loading = false
                 })
             },
             getData() {

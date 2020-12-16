@@ -102,8 +102,9 @@
                     if (this.isEdit) {
                         formModel.name = model.name
                         formModel.remark = model.remark
+                    } else {
+                        this.getCustomerList()
                     }
-                    this.getCustomerList()
                 }
             }
         }
