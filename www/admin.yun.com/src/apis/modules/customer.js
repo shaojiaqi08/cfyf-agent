@@ -47,3 +47,5 @@ export const getCustomerNoRelation = params => get('/agent/proxy/customer/sales/
 export const getMyCustomerRelativeFamily = params => get('/agent/proxy/customer/sales/families', params)
 // 我的客户 - 关联投保人
 export const relativePolicyHolder = params => post('/agent/proxy/customer/sales/join_family', params)
+// 我的客户 - 修改保单备注
+export const modifyRemark = params => post('/agent/proxy/policy/fill_policy_remark', params)

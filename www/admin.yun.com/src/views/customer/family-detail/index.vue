@@ -57,6 +57,7 @@
                     stripe
                     class="mb16"
                     max-height="600px"
+                    @cell-click="handleCelClick"
                     style="width: 100%">
                     <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
                     <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
@@ -75,7 +76,26 @@
                     <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
                     <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
                     <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
-                    <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
+                    <el-table-column prop="remark" label="备注" align="center" width="260px">
+                        <template v-slot="{row}">
+                            <div v-if="row === editRow" class="flex edit-remark-wrap">
+                                <el-input v-if="row === editRow"
+                                          v-focus
+                                          ref="remarkInput"
+                                          v-model.trim="editRemark"
+                                          @keyup.esc.native="cancelEditRemark"
+                                          @keyup.enter.native="editRemark!==row.verify_remark && submitEditVerifyRemark()"></el-input>
+                                <i v-if="editRemark && editRemark!==row.remark"
+                                   :disabled="remarkSubmitting"
+                                   class="el-icon-success ml4"
+                                   @click="submitEditVerifyRemark"></i>
+                                <i v-if="!remarkSubmitting"
+                                   class="el-icon-error ml8"
+                                   @click="cancelEditRemark"></i>
+                            </div>
+                            <span v-else>{{row.remark}}</span>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </div>
             <operate-family-dialog
@@ -91,7 +111,14 @@
 <script>
     import OperateFamilyDialog from '../modal/operate-family-dialog'
     import RelativeDialog from './modal/relative-dialog'
-    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, exportFamilyPolicyUrl, removePolicyHolder } from '@/apis/modules/customer'
+    import {
+        getMyCustomerFamilyDetail,
+        getFamilyDetail,
+        exportMyFamilyPolicyUrl,
+        exportFamilyPolicyUrl,
+        removePolicyHolder,
+        modifyRemark
+    } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
     import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
@@ -102,6 +129,13 @@
             OperateFamilyDialog,
             RelativeDialog
         },
+        directives: {
+            focus: {
+                inserted(el) {
+                    el.getElementsByTagName('input')[0].focus()
+                }
+            }
+        },
         data() {
             return {
                 loading: false,
@@ -111,11 +145,38 @@
                 customers: [],
                 policies: [],
                 policyHolderList: [],
-                exporting: false
+                exporting: false,
+                editRow: null,
+                editRemark: '',
+                remarkSubmitting: false
             }
         },
         methods: {
             formatDate,
+            // 点击备注列
+            handleCelClick(row, {property}) {
+                if (this.isMyCustomer && property === 'remark' && this.$checkAuth('/customer/sales_customer/export')) {
+                    this.editRow = row
+                    this.editRemark = row.remark
+                }
+            },
+            submitEditVerifyRemark() {
+                const { editRemark, editRow } = this
+                this.remarkSubmitting = true
+                modifyRemark({
+                    policy_id: editRow.id,
+                    remark: editRemark
+                }).then(() => {
+                    this.$set(editRow, 'remark', editRemark)
+                    this.cancelEditRemark()
+                }).finally(() => {
+                    this.remarkSubmitting = false
+                })
+            },
+            cancelEditRemark() {
+                this.editRow = null
+                this.editRemark = ''
+            },
             // 导出
             exportPolicy() {
                 const url = `${this.exportUrl}?family_id=${this.familyId}`
@@ -245,6 +306,18 @@
                         font-size: 14px;
                         margin-left: 8px;
                     }
+                }
+            }
+            .edit-remark-wrap {
+                i {
+                    cursor: pointer;
+                    font-size: 18px;
+                }
+                .el-icon-success {
+                    color: #ff9000;
+                }
+                .el-icon-error {
+                    color: #FF4C4C;
                 }
             }
         }
