@@ -1,7 +1,12 @@
 <template>
   <div class="underwriting-contents-rule">
-    <el-row class="underwriting-all-rule-box">
-      <el-col :span="5" class="underwriting-contents-rule-left">
+    <i
+            class="collapse-button"
+            :class="{'el-icon-arrow-left': !collapse, 'el-icon-arrow-right' : collapse}"
+            :style="`${collapse ? 'left: 18px;transform: translateX(0)' : null}`"
+            @click="collapsePage"></i>
+    <div class="underwriting-all-rule-box">
+      <div style="width: 280px" v-if="!collapse" class="underwriting-contents-rule-left">
         <div>
           险种筛选
         </div>
@@ -67,97 +72,110 @@
           <el-col :span="8"><el-button @click="reset">重置</el-button></el-col>
           <el-col :span="16"><el-button type="warning" @click="search">搜索</el-button></el-col>
         </el-row>
-      </el-col>
-      <el-col :span="19" class="underwriting-contents-rule-right" v-loading="loading" ref="rightBox">
-        <div class="clone-dom-box">
-          <div class="width-warp">
-          </div>
-          <div class="clone-dom-inner">
-          </div>
-        </div>
-        <div class="height-warp">
-        </div>
-        <div class="underwriting-contents-rule-box">
-          <div class="underwriting-contents-rule-row underwriting-contents-header-info" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">产品名称</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">产品名称</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (company.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">保险公司</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in company" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (insurance_class.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">产品类别</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in insurance_class" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (intelligent_underwriting.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">智能核保</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in intelligent_underwriting" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人工核保</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_way.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核方式</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_way" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_operation.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核具体条件</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_operation" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (medicare_card_loan.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">是否可以支持医保卡外借</div>
+      </div>
+      <div class="underwriting-contents-rule-right" v-loading="loading" ref="rightBox">
+<!--        <div class="clone-dom-box">-->
+<!--          <div class="width-warp">-->
+<!--          </div>-->
+<!--          <div class="clone-dom-inner">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="height-warp">-->
+<!--        </div>-->
+<!--        <div class="underwriting-contents-rule-box">-->
+<!--          <div class="underwriting-contents-rule-row underwriting-contents-header-info" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">产品名称</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">产品名称</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (company.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">保险公司</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in company" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (insurance_class.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">产品类别</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in insurance_class" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (intelligent_underwriting.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">智能核保</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in intelligent_underwriting" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人工核保</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_way.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核方式</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_way" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_operation.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核具体条件</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_operation" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (medicare_card_loan.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">是否可以支持医保卡外借</div>-->
 
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in medicare_card_loan" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_time_limit.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人工核保时效</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_time_limit" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_refuse_leave_trace.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核拒保是否留痕</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_refuse_leave_trace" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_query_way.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核结论查询方式</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_query_way" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_expire_date.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核结论有效期</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_expire_date" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_pass_how_to_insure.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人工核保通过后如何投保</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_pass_how_to_insure" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_birthday_order_premium.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核生日单保费计算</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_birthday_order_premium" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_on_policy.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">人核结论是否会体现在保单上</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_on_policy" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (underwriting_endorsement_application.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">核保批单申请</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in underwriting_endorsement_application" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (applicant_issue_underwriting.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">是否支持投保人问题核保</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in applicant_issue_underwriting" :key="item + index" v-html="item"></div>
-          </div>
-          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (support_reconsider.length) + 'px'}]">
-            <div class="underwriting-contents-rule-row-title">是否支持复议</div>
-            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in support_reconsider" :key="item + index" v-html="item"></div>
-          </div>
-        </div>
-      </el-col>
-    </el-row>
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in medicare_card_loan" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_time_limit.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人工核保时效</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_time_limit" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_refuse_leave_trace.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核拒保是否留痕</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_refuse_leave_trace" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_query_way.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核结论查询方式</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_query_way" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_expire_date.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核结论有效期</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_expire_date" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_pass_how_to_insure.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人工核保通过后如何投保</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_pass_how_to_insure" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_birthday_order_premium.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核生日单保费计算</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_birthday_order_premium" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (manual_underwriting_conclusion_on_policy.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">人核结论是否会体现在保单上</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in manual_underwriting_conclusion_on_policy" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (underwriting_endorsement_application.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">核保批单申请</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in underwriting_endorsement_application" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (applicant_issue_underwriting.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">是否支持投保人问题核保</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in applicant_issue_underwriting" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--          <div class="underwriting-contents-rule-row" :style="[{'width': 200 + 280 * (support_reconsider.length) + 'px'}]">-->
+<!--            <div class="underwriting-contents-rule-row-title">是否支持复议</div>-->
+<!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in support_reconsider" :key="item + index" v-html="item"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+        <el-table :data="tableData" border :height="tableHeight" style="width: 100%" class="main-table" ref="mainTable">
+          <el-table-column class-name="gray-column" width="200" align="center" prop="name" label="产品名称"></el-table-column>
+          <el-table-column
+                  v-for="(item, index) in columnsData"
+                  :key="index"
+                  :prop="`column-${index}-value`"
+                  :width="280"
+                  align="center"
+                  :class-name="index && index % 2 !== 0 ? 'gray-column' : null"
+                  :label="item.product_name">
+            <template></template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -171,7 +189,28 @@ export default {
   },
   data() {
     return {
-      tableData: [],
+      collapse: false,
+      tableData: [
+        { name: '保险公司', key: 'company'},
+        { name: '产品类别', key: 'insurance_class'},
+        { name: '智能核保', key: 'intelligent_underwriting'},
+        { name: '人工核保', key: 'manual_underwriting'},
+        { name: '人核方式', key: 'manual_underwriting_way'},
+        { name: '人核具体条件', key: 'manual_underwriting_operation'},
+        { name: '是否可以支持医保卡外借', key: 'medicare_card_loan'},
+        { name: '人工核保时效', key: 'manual_underwriting_time_limit'},
+        { name: '人核拒保是否留痕', key: 'manual_underwriting_refuse_leave_trace'},
+        { name: '人核结论查询方式', key: 'manual_underwriting_conclusion_query_way'},
+        { name: '人核结论有效期', key: 'manual_underwriting_conclusion_expire_date'},
+        { name: '人工核保通过后如何投保', key: 'manual_underwriting_pass_how_to_insure'},
+        { name: '人核生日单保费计算', key: 'manual_underwriting_birthday_order_premium'},
+        { name: '人核结论是否会体现在保单上', key: 'manual_underwriting_conclusion_on_policy'},
+        { name: '核保批单申请', key: 'underwriting_endorsement_application'},
+        { name: '是否支持投保人问题核保', key: 'applicant_issue_underwriting'},
+        { name: '是否支持复议', key: 'support_reconsider'}
+      ],
+      columnsData: [],
+      tableHeight: null,
       loading: false,
       loadingDetail: false,
       isReverse: 0,
@@ -260,6 +299,9 @@ export default {
     }
   },
   methods: {
+    collapsePage() {
+      this.collapse = !this.collapse
+    },
     reset() {
       this.formData = {
         product_name_like: '', // 产品名称
@@ -322,44 +364,55 @@ export default {
           this.underwriting_endorsement_application = []
           this.applicant_issue_underwriting = []
           this.support_reconsider = []
-          res.map(item => {
-            this.product_name.push(item.product_name || '-')
-            this.company.push(item.company || '-') // 保险公司
-            this.intelligent_underwriting.push(item.intelligent_underwriting || '-') // 智能核保
-            this.insurance_class.push(item.insurance_class || '-')
-            this.manual_underwriting.push(item.manual_underwriting || '-') // 人工核保
-            this.manual_underwriting_way.push(item.manual_underwriting_way || '-') // 人核方式
-            this.manual_underwriting_operation.push(item.manual_underwriting_operation || '-') // 人核具体条件
-            this.medicare_card_loan.push(item.medicare_card_loan || '-') // 是否可以支持医保卡外借
-            this.manual_underwriting_time_limit.push(item.manual_underwriting_time_limit || '-') // 人工核保时效
-            this.manual_underwriting_refuse_leave_trace.push(item.manual_underwriting_refuse_leave_trace || '-') // 人核拒保是否留痕
-            this.manual_underwriting_conclusion_query_way.push(item.manual_underwriting_conclusion_query_way || '-') // 人核结论查询方式
-            this.manual_underwriting_conclusion_expire_date.push(item.manual_underwriting_conclusion_expire_date || '-') // 人核结论有效期
-            this.manual_underwriting_pass_how_to_insure.push(item.manual_underwriting_pass_how_to_insure || '-') // 人工核保通过后如何投保
-            this.manual_underwriting_birthday_order_premium.push(item.manual_underwriting_birthday_order_premium || '-') // 人核生日单保费计算
-            this.manual_underwriting_conclusion_on_policy.push(item.manual_underwriting_conclusion_on_policy || '-') // 人核结论是否会体现在保单上
-            this.underwriting_endorsement_application.push(item.underwriting_endorsement_application || '-') // 核保批单申请
-            this.applicant_issue_underwriting.push(item.applicant_issue_underwriting || '-') // 是否支持投保人问题核保
-            this.support_reconsider.push(item.support_reconsider || '-') // 是否支持复议
+          this.tableHeight = null
+          this.tableData.map(row => {
+            res.forEach((col, index) => {
+              this.$set(row, `column-${index}-value`, col[row.key])
+            })
           })
-          this.$nextTick(() => {
-            this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
-            setTimeout(() => {
-              this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach((item, index) => {
-                let itemHeight = item.offsetHeight
-                // let itemWidth = item.clientWidth
-                let clonedNode = item.cloneNode(true);
-                clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
-                clonedNode.style.widhth = '200px'
-                if (index !== 0) {
-                  this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
-                }
-              })
-              this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 16是一个padding
-              this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
-              this.$refs.rightBox.$el.addEventListener('scroll', this.changeScrollPx)
-            }, 300)
-          })
+          this.columnsData = res
+          setTimeout(() => {
+            this.tableHeight = '100%'
+            this.loading = false
+          }, 1000)
+          // res.map(item => {
+          //   this.product_name.push(item.product_name || '-')
+          //   this.company.push(item.company || '-') // 保险公司
+          //   this.intelligent_underwriting.push(item.intelligent_underwriting || '-') // 智能核保
+          //   this.insurance_class.push(item.insurance_class || '-')
+          //   this.manual_underwriting.push(item.manual_underwriting || '-') // 人工核保
+          //   this.manual_underwriting_way.push(item.manual_underwriting_way || '-') // 人核方式
+          //   this.manual_underwriting_operation.push(item.manual_underwriting_operation || '-') // 人核具体条件
+          //   this.medicare_card_loan.push(item.medicare_card_loan || '-') // 是否可以支持医保卡外借
+          //   this.manual_underwriting_time_limit.push(item.manual_underwriting_time_limit || '-') // 人工核保时效
+          //   this.manual_underwriting_refuse_leave_trace.push(item.manual_underwriting_refuse_leave_trace || '-') // 人核拒保是否留痕
+          //   this.manual_underwriting_conclusion_query_way.push(item.manual_underwriting_conclusion_query_way || '-') // 人核结论查询方式
+          //   this.manual_underwriting_conclusion_expire_date.push(item.manual_underwriting_conclusion_expire_date || '-') // 人核结论有效期
+          //   this.manual_underwriting_pass_how_to_insure.push(item.manual_underwriting_pass_how_to_insure || '-') // 人工核保通过后如何投保
+          //   this.manual_underwriting_birthday_order_premium.push(item.manual_underwriting_birthday_order_premium || '-') // 人核生日单保费计算
+          //   this.manual_underwriting_conclusion_on_policy.push(item.manual_underwriting_conclusion_on_policy || '-') // 人核结论是否会体现在保单上
+          //   this.underwriting_endorsement_application.push(item.underwriting_endorsement_application || '-') // 核保批单申请
+          //   this.applicant_issue_underwriting.push(item.applicant_issue_underwriting || '-') // 是否支持投保人问题核保
+          //   this.support_reconsider.push(item.support_reconsider || '-') // 是否支持复议
+          // })
+          // this.$nextTick(() => {
+          //   this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
+          //   setTimeout(() => {
+          //     this.$refs.rightBox.$el.querySelectorAll('.underwriting-contents-rule-row-title').forEach((item, index) => {
+          //       let itemHeight = item.offsetHeight
+          //       // let itemWidth = item.clientWidth
+          //       let clonedNode = item.cloneNode(true);
+          //       clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
+          //       clonedNode.style.widhth = '200px'
+          //       if (index !== 0) {
+          //         this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
+          //       }
+          //     })
+          //     this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 16是一个padding
+          //     this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
+          //     this.$refs.rightBox.$el.addEventListener('scroll', this.changeScrollPx)
+          //   }, 300)
+          // })
         })
         .finally(() => {
           this.loading = false
@@ -369,7 +422,7 @@ export default {
       this.$refs.rightBox.$el.querySelector('.clone-dom-inner').style.marginTop = -this.$refs.rightBox.$el.scrollTop + 'px'
     },
     requestDetail() {
-      
+
       this.detailTableData = []
       this.loadingDetail = true
       getUnderwriteRuleDetail({
@@ -484,6 +537,7 @@ export default {
 
   .underwriting-all-rule-box{
     height: 100%;
+    display: flex;
     .underwriting-contents-rule-left{
       // min-width: 280px;
       border-right: 1px solid #E6E6E6;
@@ -515,6 +569,9 @@ export default {
         border-color: #1F78FF;
         float: right;
       }
+    }
+    .underwriting-contents-rule-right {
+      flex: 1;
     }
   }
   .classify-box{
@@ -602,8 +659,8 @@ export default {
 .underwriting-contents-rule-right{
   height: 88vh;
   padding: 16px;
-  padding-left: 0px;
-  overflow: scroll;
+  padding-left: 16px;
+  overflow: hidden;
   .underwriting-contents-rule-box{
     font-size: 14px;
     margin-left: 16px;;
@@ -695,5 +752,44 @@ export default {
   left: 0px;
   top: 0px;
   background: #fff;
+}
+::v-deep .main-table{
+  border: 1px solid rgba(0, 0, 0, .15);
+  th {
+    background-color: #fff;
+  }
+  .gray-column {
+    background-color: #f5f5f5;
+  }
+  .el-table__body tr:hover td ,.hover-row td{
+    background: rgba(0, 0, 0, .15)!important;
+  }
+  th.is-leaf,.el-table--border, .el-table--group, .el-table__row td{
+    border-right: 1px solid rgba(0, 0, 0, .15);
+    border-bottom: 1px solid rgba(0, 0, 0, .15);
+  }
+  .el-table--border::after, .el-table--group::after, .el-table::before{
+    background-color: rgba(0, 0, 0, .15);
+  }
+}
+
+.collapse-button {
+  position: absolute;
+  top: 136px;
+  left: 296px;
+  cursor: pointer;
+  z-index: 999999;
+  transform: translateX(-50%);
+  background-color: #ffffff;
+  color: #ff9000;
+  border: 1px solid #ff9000;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
 }
 </style>
