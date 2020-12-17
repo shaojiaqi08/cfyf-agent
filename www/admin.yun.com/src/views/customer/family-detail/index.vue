@@ -6,12 +6,13 @@
                     <p>{{family.name}}</p>
                     <span>{{family.remark}}</span>
                 </div>
-                <el-button icon="iconfont iconxiao16_bianji mr4"
-                           type="primary"
-                           size="small"
-                           class="ml16"
-                           @click="editFamily"
-                           v-if="$checkAuth('/customer/sales/edit_family') && isMyCustomer">编辑家庭</el-button>
+                <el-button
+                    icon="iconfont iconxiao16_bianji mr4"
+                    type="primary"
+                    size="small"
+                    class="ml16"
+                    @click="editFamily"
+                    v-if="$checkAuth('/customer/sales/edit_family') && isMyCustomer">编辑家庭</el-button>
             </div>
             <div class="content">
                 <div class="table-head">
@@ -90,7 +91,7 @@
 <script>
     import OperateFamilyDialog from '../modal/operate-family-dialog'
     import RelativeDialog from './modal/relative-dialog'
-    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, exportFamilyPolicyUrl, removePolicyHolder} from '@/apis/modules/customer'
+    import { getMyCustomerFamilyDetail, getFamilyDetail, exportMyFamilyPolicyUrl, exportFamilyPolicyUrl, removePolicyHolder } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
     import { downloadFrameA } from '@/utils'
     import commonMixin from '../mixin'
