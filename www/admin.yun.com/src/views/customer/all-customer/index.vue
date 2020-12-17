@@ -282,7 +282,7 @@ export default {
     // 团队筛选数据
     getSalesTeamData() {
       getSalesTeamData().then(res => {
-        this.salesTeamList = res
+        this.salesTeamList = res.filter(i => i.id !== -1)
       }).catch(err => console.log(err))
     }
   },
