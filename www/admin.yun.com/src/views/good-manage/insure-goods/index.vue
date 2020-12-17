@@ -296,8 +296,8 @@ export default {
     // 查看产品资料
     handleViewMaterial(row) {
       this.materialVisible = true
-      const { product_id, product_type } = row
-      this.getProductDocs(product_id, product_type)
+      const { product_id, product_type, id } = row
+      this.getProductDocs(product_type === 'cps' ? id : product_id, product_type)
     },
     getProductDocs(product_id, product_type) {
       this.docsLoading = true
