@@ -83,8 +83,9 @@
                                           v-focus
                                           ref="remarkInput"
                                           v-model.trim="editRemark"
+                                          :readonly="remarkSubmitting"
                                           @keyup.esc.native="cancelEditRemark"
-                                          @keyup.enter.native="editRemark!==row.verify_remark && submitEditVerifyRemark()"></el-input>
+                                          @keyup.enter.native="editRemark!==row.remark && submitEditVerifyRemark()"></el-input>
                                 <i v-if="editRemark && editRemark!==row.remark"
                                    :disabled="remarkSubmitting"
                                    class="el-icon-success ml4"
