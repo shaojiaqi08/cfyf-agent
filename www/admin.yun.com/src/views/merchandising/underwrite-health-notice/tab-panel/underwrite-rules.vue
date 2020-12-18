@@ -127,7 +127,7 @@
         <div class="classify-box">
           <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
         </div>
-        <el-scrollbar style="height:calc(100% - 200px)">
+        <el-scrollbar>
           <el-form inline :modal="formData" @submit.native.prevent label-position="top">
               <el-form-item label="产品名称">
               <el-input v-model="formData.product_name_like" placeholder="请输入搜索关键字"></el-input>
@@ -197,104 +197,6 @@
         </el-row>
       </div>
         <div class="underwriting-rules-right" v-loading="loading" ref="rightBox" :style="collapse ? 'margin-left: 16px; border-left: 1px solid #e6e6e6' : null">
-<!--        <div class="clone-dom-box">-->
-<!--          <div class="width-warp">-->
-<!--          </div>-->
-<!--          <div class="clone-dom-inner">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="height-warp">-->
-<!--        </div>-->
-<!--        <div class="underwriting-rule-box">-->
-<!--          <div class="underwriting-rule-row underwriting-header-info" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">产品名称</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (product_name.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">产品名称</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in product_name" :key="item + index" v-html="item">{{item}}</div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (company.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">保险公司</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in company" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (insurance_class.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">产品类别</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in insurance_class" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (channel.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">对接渠道</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in channel" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (join_way.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">对接方式</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in join_way" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (applicant_age.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">投保人年龄</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in applicant_age" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (applicant_occupied_risk_coverage.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">投保人豁免是否占风险保额</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in applicant_occupied_risk_coverage" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (insured_age.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">承保年龄</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in insured_age" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (applicant_insured_relation.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">可为谁投保</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in applicant_insured_relation" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (occupation.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">投保职业</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in occupation" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (guarantee_quota.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">保额限制</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in guarantee_quota" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (bmi_restrict.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">BMI限制</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in bmi_restrict" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (aml.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">反洗钱处理（20万总保费）</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in aml" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (risk_management.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">是否有风控</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in risk_management" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (collect_premium.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">代收保费</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in collect_premium" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (check_wechat_real_name.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">支付认证（校验）</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in check_wechat_real_name" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (first_payment_way.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">首期支付方式</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in first_payment_way" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (renewal_payment_way.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">续期支付方式</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in renewal_payment_way" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (applicant_crowd.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">被保人支持的投保证件</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in applicant_crowd" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (apply_area.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">销售区域</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in apply_area" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--          <div class="underwriting-rule-row" :style="[{'width': 200 + 280 * (holder_recognizee_same_person_death_handle.length) + 'px'}]">-->
-<!--            <div class="underwriting-rule-row-title">投被保人为同一人且不带身故责任时，身故处理</div>-->
-<!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in holder_recognizee_same_person_death_handle" :key="item + index" v-html="item"></div>-->
-<!--          </div>-->
-<!--        </div>-->
             <vxe-table
                 :data="tableData"
                 :height="tableHeight"
@@ -316,13 +218,9 @@
 </template>
 
 <script>
-// import SideFilterList from '@/components/side-filter-list'
 import {getUnderwriteRuleList, getUnderwriteRuleDetail} from '@/apis/modules/underwriting'
 export default {
   name: 'underwrite-rules',
-  components: {
-      // SideFilterList
-  },
   data() {
     return {
       collapse: false,
@@ -379,27 +277,6 @@ export default {
         apply_area: '', // 销售区域
         holder_recognizee_same_person_death_handle: '' // 投被保人为同一人且不带身故责任时，身故处理
       },
-      // product_name: [],
-      // company: [], // 保险公司
-      // insurance_class: [],
-      // channel: [], // 对接渠道
-      // join_way: [], // 对接方式
-      // applicant_age: [], // 投保人年龄
-      // applicant_occupied_risk_coverage: [], // 投保人豁免是否占风险保额
-      // insured_age: [], // 承保年龄
-      // applicant_insured_relation: [], // 可为谁投保
-      // occupation: [], // 投保职业
-      // guarantee_quota: [], // 保额限制
-      // bmi_restrict: [], // BMI限制
-      // aml: [], // 反洗钱处理（20万总保费）
-      // risk_management: [], // 是否有风控
-      // collect_premium: [], // 代收保费
-      // check_wechat_real_name: [], // 支付认证（校验）
-      // first_payment_way: [], // 首期支付方式
-      // renewal_payment_way: [], // 续期支付方式
-      // applicant_crowd: [], // 被保人支持的投保证件
-      // apply_area: [], // 销售区域
-      // holder_recognizee_same_person_death_handle: [], // 投被保人为同一人且不带身故责任时，身故处理
       classifyList: Object.freeze([
         {
           name: '重疾险',
@@ -446,7 +323,8 @@ export default {
   methods: {
     rowCellStyle({ columnIndex }) {
         return {
-            backgroundColor: columnIndex % 2 === 0 ? columnIndex === 0 ? '#ebebeb' : '#f5f5f5' : '#fff'
+            backgroundColor: columnIndex % 2 === 0 ? columnIndex === 0 ? '#ebebeb' : '#f5f5f5' : '#fff',
+            fontWeight: columnIndex === 0 ? 'bold' : 'normal'
         }
     },
     collapsePage() {
@@ -496,96 +374,14 @@ export default {
       getUnderwriteRuleList({
         ...this.formData,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
-      })
-        .then((res) => {
-          // this.product_name = []
-          // this.company = []
-          // this.channel = []
-          // this.insurance_class = []
-          // this.join_way = []
-          // this.applicant_age = []
-          // this.applicant_occupied_risk_coverage = []
-          // this.insured_age = []
-          // this.applicant_insured_relation = []
-          // this.occupation = []
-          // this.guarantee_quota = []
-          // this.bmi_restrict = []
-          // this.aml = []
-          // this.risk_management = []
-          // this.collect_premium = []
-          // this.check_wechat_real_name = []
-          // this.first_payment_way = []
-          // this.renewal_payment_way = []
-          // this.applicant_crowd = []
-          // this.apply_area = []
-          // this.holder_recognizee_same_person_death_handle = []
-          // this.tableHeight = null
-            // this.tableData.map(row => {
-            //     res.forEach((col, index) => {
-            //         this.$set(row, `column-${index}-value`, col[row.key])
-            //     })
-            // })
+      }).then((res) => {
             this.columnsData = Object.freeze(res)
-            this.loading = false
-            // setTimeout(() => {
-            //     this.tableHeight = '100%'
-            //
-            // }, 500)
-          //   this.$nextTick(() => {
-          //     this.tableHeight = '100%'
-          // })
-          // res.map(item => {
-          //   this.product_name.push(item.product_name || '-')
-          //   this.company.push(item.company || '-') // 保险公司
-          //   this.insurance_class.push(item.insurance_class || '-')
-          //   this.channel.push(item.channel || '-') // 对接渠道
-          //   this.join_way.push(item.join_way || '-') // 对接方式
-          //   this.applicant_age.push(item.applicant_age || '-') // 投保人年龄
-          //   this.applicant_occupied_risk_coverage.push(item.applicant_occupied_risk_coverage || '-') // 投保人豁免是否占风险保额
-          //   this.insured_age.push(item.insured_age || '-') // 承保年龄
-          //   this.applicant_insured_relation.push(item.applicant_insured_relation || '-') // 可为谁投保
-          //   this.occupation.push(item.occupation || '-') // 投保职业
-          //   this.guarantee_quota.push(item.guarantee_quota || '-') // 保额限制
-          //   this.bmi_restrict.push(item.bmi_restrict || '-') // BMI限制
-          //   this.aml.push(item.aml || '-') // 反洗钱处理（20万总保费）
-          //   this.risk_management.push(item.risk_management || '-') // 是否有风控
-          //   this.collect_premium.push(item.collect_premium || '-') // 代收保费
-          //   this.check_wechat_real_name.push(item.check_wechat_real_name || '-') // 支付认证（校验）
-          //   this.first_payment_way.push(item.first_payment_way || '-') // 首期支付方式
-          //   this.renewal_payment_way.push(item.renewal_payment_way || '-') // 续期支付方式
-          //   this.applicant_crowd.push(item.applicant_crowd || '-') // 被保人支持的投保证件
-          //   this.apply_area.push(item.apply_area || '-') // 销售区域
-          //   this.holder_recognizee_same_person_death_handle.push(item.holder_recognizee_same_person_death_handle || '-') // 投被保人为同一人且不带身故责任时，身故处理
-          // })
-
-          // this.$nextTick(() => {
-          //   this.$refs.rightBox.$el.querySelector('.clone-dom-inner').innerHTML = "";
-          //   setTimeout(() => {
-          //     this.$refs.rightBox.$el.querySelectorAll('.underwriting-rule-row-title').forEach((item, index) => {
-          //       let itemHeight = item.offsetHeight
-          //       // let itemWidth = item.clientWidth
-          //       let clonedNode = item.cloneNode(true);
-          //       clonedNode.style.height = itemHeight + 1 + 'px' // 修正父级下边框
-          //       clonedNode.style.widhth = '200px'
-          //       if (index !== 0) {
-          //         this.$refs.rightBox.$el.querySelector('.clone-dom-inner').appendChild(clonedNode)
-          //       }
-          //     })
-          //     this.$refs.rightBox.$el.querySelector('.clone-dom-box').style.height = this.$refs.rightBox.$el.clientHeight - 16 + 'px' // 32是两个padding
-          //     this.$refs.rightBox.$el.removeEventListener('scroll', this.changeScrollPx)
-          //     this.$refs.rightBox.$el.addEventListener('scroll', this.changeScrollPx)
-          //   }, 300)
-          // })
         })
-        .catch(() => {
+        .finally(() => {
           this.loading = false
         })
     },
-    changeScrollPx() {
-      this.$refs.rightBox.$el.querySelector('.clone-dom-inner').style.marginTop = -this.$refs.rightBox.$el.scrollTop + 'px'
-    },
     requestDetail() {
-
       this.detailTableData = []
       this.loadingDetail = true
       getUnderwriteRuleDetail({
@@ -705,13 +501,18 @@ export default {
   .underwriting-all-rule-box{
     position: relative;
     height: 100%;
-      display: flex;
+    display: flex;
     .underwriting-rule-left{
-      // min-width: 280px;
+      width: 280px;
       border-right: 1px solid #E6E6E6;
-      height: 95vh;
+      height: 100%;
       padding: 16px;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      .el-scrollbar {
+          flex: 1;
+      }
       .el-form-item{
         width: 100%;
         margin-bottom: 20px!important;
@@ -921,15 +722,20 @@ export default {
     .vxe-table--border-line {
         border: 1px solid rgba(0, 0, 0, .1);
     }
+    td, th {
+        color: #333;
+    }
     .vxe-header--column, .vxe-body--column {
         background-image: linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)),linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1))
     }
     .vxe-header--column{
         background-position: 100% 0, 0 calc(100% - .6px);
     }
-
     .vxe-table--fixed-left-wrapper {
         border-right: 1px solid rgba(0, 0, 0, .1);
+    }
+    .vxe-table--header-border-line {
+        border: transparent;
     }
 }
 .collapse-button {
