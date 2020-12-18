@@ -114,9 +114,9 @@
               <img :src="row.company_logo">
               <div>
                 {{row.title}}
-                <div class="flex mb16 mt8">
-                  <div class="mr20" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;">
-                    <text-hidden-ellipsis width="auto" maxWidth="350px" :popoverTip="item">{{item}}</text-hidden-ellipsis>
+                <div class="flex mb16 mt8 flex-around">
+                  <div class="mr20" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;flex: 1">
+                    <text-hidden-ellipsis width="100%" :popoverTip="item"><i class="iconfont iconxiao16_duigou mr4"></i>{{item}}</text-hidden-ellipsis>
                   </div>
                 </div>
               </div>
@@ -165,7 +165,7 @@
                    v-clipboard:copy="notifyText"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="保险责任" :visible.sync="picVisible" width="480px" class="pic-dialog">
+    <el-dialog title="保险责任" :visible.sync="picVisible" width="1200px" class="pic-dialog">
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
         <el-button type="primary" @click="download"><i class="iconfont iconxiao16_xiazai mr4"></i>下载保险责任图片</el-button>
@@ -322,15 +322,8 @@ export default {
         this.docsLoading = false
       })
     },
-    // 下载资料
-    downloadMaterial() {},
-    // 下载全部资料
-    downloadAllMaterial() {},
     copy() {
       this.$message.success('售前告知内容已复制到粘贴板')
-    },
-    copyProductLink() {
-
     },
     share(obj) {
       const { product_id, product_type } = obj
@@ -461,6 +454,10 @@ export default {
 }
 .insure-goods-container {
   padding: 0 20px 0 20px;
+  ::v-deep .text-hidden-ellipsis-component .icon{
+    color: #999;
+  }
+
   .header {
     font-size: 16px;
     font-weight: bold;

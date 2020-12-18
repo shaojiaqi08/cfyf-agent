@@ -1,7 +1,7 @@
 <template>
     <div class="container" v-loading="loading">
         <div class="header">投保人信息</div>
-        <div class="content">
+        <div class="content" ref="content">
             <el-row type="flex" class="mb14" justify="middle">
                 <el-col :span="6">
                     <span>姓名<span class="ml8">{{detail.real_name || '-'}}</span></span>
@@ -47,7 +47,7 @@
                 border
                 stripe
                 :span-method="tableSpan"
-                height="calc(100% - 125px)"
+                :max-height="tableHeight"
                 style="width: 100%" >
                 <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
                 <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
@@ -75,7 +75,7 @@
 <script>
     import { getMyCustomerDetail, getCustomerDetail, exportMyCustomerPolicyUrl, exportCustomerPolicyUrl } from '@/apis/modules/customer'
     import { formatDate } from '@/utils/formatTime'
-    import { downloadFrameA } from '@/utils'
+    import { downloadFrameA, debounce } from '@/utils'
     import commonMixin from '../mixin'
     export default {
         name: 'customer-detail',
@@ -85,7 +85,8 @@
                 detail: {},
                 list: [],
                 exporting: false,
-                loading: false
+                loading: false,
+                tableHeight: null
             }
         },
         computed: {
@@ -143,10 +144,24 @@
                 }).finally(() => {
                     this.loading = false
                 })
+            },
+            calcTableHeight() {
+                const func = () => {
+                    this.tableHeight = this.$refs.content.offsetHeight - 157
+                }
+                func()
+                this.calcTableHeight = debounce(func, 300)
             }
         },
         created() {
             this.getData()
+        },
+        mounted() {
+            this.calcTableHeight()
+            window.addEventListener('resize', this.calcTableHeight)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.calcTableHeight)
         }
     }
 </script>

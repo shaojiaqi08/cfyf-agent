@@ -80,7 +80,6 @@ export default {
   font-size: 14px;
   position: relative;
   .text {
-    display: block;
     white-space: nowrap;
   }
   .iconfont {
@@ -91,6 +90,7 @@ export default {
     right: 0;
     top: 0;
     color: #1F78FF;
+    line-height: 24px;
   }
 }
 </style>

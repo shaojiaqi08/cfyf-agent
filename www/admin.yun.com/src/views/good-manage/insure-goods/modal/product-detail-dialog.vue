@@ -90,7 +90,9 @@
                 background-color: #e6e6e6;
                 border-radius: 4px;
                 display: flex;
-                justify-content: space-around;
+                padding: 0 4px;
+                box-sizing: border-box;
+                justify-content: space-between;
                 align-items: center;
                 & > div {
                     width: 24px;
@@ -102,6 +104,9 @@
                     &.active {
                         background-color: #fff;
                         border-radius: 2px;
+                    }
+                    &:hover {
+                        color: #1F78FF;
                     }
                 }
             }

@@ -24,7 +24,7 @@
                         icon="iconfont iconxiao16_guanlian mr4"
                         @click="relativePolicyHolder">关联投保人</el-button>
                 </div>
-                <el-table :data="customers" border table-head class="mb24" max-height="600px" style="width: 100%">
+                <el-table :data="customers" border stripe table-head class="mb24" max-height="600px" style="width: 100%">
                     <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
                     <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
                     <el-table-column prop="certificate_number" label="身份证号" align="center" width="310px"></el-table-column>
@@ -54,9 +54,9 @@
                     :data="policies"
                     :span-method="tableSpan"
                     border
-                    stripe
-                    class="mb16"
+                    class="mb16 policy-table"
                     max-height="600px"
+                    :row-class-name="policyRowClassName"
                     @cell-click="handleCelClick"
                     style="width: 100%">
                     <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
@@ -154,6 +154,12 @@
         },
         methods: {
             formatDate,
+            // 保单列表行className
+            policyRowClassName({ row }) {
+                if (row.$is_gray_row) {
+                    return 'policy-gray-row'
+                }
+            },
             // 点击备注列
             handleCelClick(row, {property}) {
                 if (this.isMyCustomer && property === 'remark' && this.$checkAuth('/customer/sales_customer/export')) {
@@ -199,11 +205,25 @@
             },
             // 移除投保人
             removePolicyHolder({ real_name, relation_id }) {
-                this.$confirm(
-                    `正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`,
-                    '移除投保人',
-                    { confirmButtonText: '确认' }
-                ).then(() => {
+                const h = this.$createElement
+                this.$msgbox({
+                    title: '提示',
+                    message: h('p', null, [
+                        h('i', { class: {
+                                iconfont: true,
+                                'iconzhong20_gantanhao': true
+                            },
+                            style: {
+                                color: 'red',
+                                marginRight: '10px'
+                            }
+                        }),
+                        h('span', null, `正在移除投保人【${real_name}】，移除后，此投保人的保单也将从家庭单中移除，是否确认？`)
+                    ]),
+                    confirmButtonClass: 'el-button--danger',
+                    confirmButtonText: '移除',
+                    showCancelButton: true
+                }).then(() => {
                     this.loading = true
                     removePolicyHolder({
                         relation_id
@@ -221,10 +241,14 @@
                     this.customers = res.customers
                     this.family = res.family
                     const policies = []
-                    res.policies.forEach(policy => {
+                    res.policies.forEach((policy, index) => {
                         const len = policy.length
-                        if (len) {
-                            policy[0].rowSpan = len
+                        policy[0].rowSpan = len
+                        if (index % 2 !== 0) {
+                            policy.forEach(i => {
+                                // 标记斑马行
+                                i.$is_gray_row = true
+                            })
                         }
                         policies.push(...policy)
                     })
@@ -263,7 +287,6 @@
     }
     .container {
         color: #1A1A1A;
-        background-color: #fff;
         width: 1200px;
         margin: 0 auto 20px auto;
         display: flex;
@@ -278,6 +301,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border-radius: 4px 4px 0 0;
             & > div {
                 flex: 1;
                 overflow: hidden;
@@ -294,6 +318,7 @@
             }
         }
         .content {
+            background-color: #fff;
             padding: 16px;
             .table-head {
                 display: flex;
@@ -302,10 +327,12 @@
                 margin-bottom: 16px;
                 & > span {
                     font-size: 16px;
+                    font-weight: bold;
                     span {
                         color: #999;
                         font-size: 14px;
                         margin-left: 8px;
+                        font-weight: normal;
                     }
                 }
             }
@@ -320,6 +347,11 @@
                 .el-icon-error {
                     color: #FF4C4C;
                 }
+            }
+        }
+        ::v-deep .policy-table {
+            .policy-gray-row {
+                background: #fafafa;
             }
         }
     }

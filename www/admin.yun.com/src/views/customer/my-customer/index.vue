@@ -187,12 +187,26 @@ export default {
     },
     // 解散
     dismiss(row) {
-      this.$confirm(
-        `正在解散【${row.name}】，是否确认？`,
-        '解散家庭',
-        { confirmButtonText: '确认' }
-      ).then(() => {
-        dismissFamily({ family_id: row.id }).then(() => {
+      const h = this.$createElement
+      this.$msgbox({
+        title: '提示',
+        message: h('p', null, [
+          h('i', { class: {
+              iconfont: true,
+              'iconzhong20_gantanhao': true
+            },
+            style: {
+              color: 'red',
+              marginRight: '10px'
+            }
+          }),
+          h('span', null, `正在解散【${row.name}】，是否确认？`)
+        ]),
+        confirmButtonClass: 'el-button--danger',
+        confirmButtonText: '解散',
+        showCancelButton: true
+      }).then(() => {
+        dismissFamily({family_id: row.id}).then(() => {
           this.getMyCustomerFamilyList()
           this.$message.success('解散家庭成功')
         })
@@ -273,6 +287,7 @@ export default {
       background-color: #f5f5f5;
       padding: 0 16px;
       display: flex;
+      border: 1px solid #e6e6e6;
       justify-content: space-between;
       align-items: center;
       .tabs {

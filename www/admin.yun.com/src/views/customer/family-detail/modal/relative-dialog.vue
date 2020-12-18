@@ -5,7 +5,7 @@
         </span>
         <div>
             <el-input prefix-icon="iconfont iconxiao16_sousuo ml4" v-model="keyword" placeholder="搜索姓名、身份证号或手机号" class="mb20" @input="handleInput" clearable></el-input>
-            <el-table :data="list" border stripe height="600px" v-loading="loading" v-table-infinite-scroll="scroll2Bottom">
+            <el-table :data="list" border stripe :max-height="tableMaxHeight" v-loading="loading" v-table-infinite-scroll="scroll2Bottom">
                 <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
                 <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
                 <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
@@ -26,8 +26,10 @@
             :visible.sync="policyDialogVisible"
             append-to-body
             :v-loading="policyLoading"
+            width="1000px"
+            :modal="false"
             :show-close="false" >
-            <h3>{{customer.real_name}}，{{customer.mobile}}的保单</h3>
+            <h3 style="color: #1A1A1A;font-size: 16px">{{customer.real_name}}，{{customer.mobile}}的保单</h3>
             <el-table
                 :data="policyList"
                 border
@@ -83,8 +85,16 @@
                 policyList: [],
                 page: 1,
                 page_size: 20,
-                total: 0
+                total: 0,
+                tableMaxHeight: null
             }
+        },
+        created() {
+            this.calcTableHeight()
+            window.addEventListener('resize', this.calcTableHeight)
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.calcTableHeight)
         },
         computed: {
             familyId() {
@@ -165,6 +175,13 @@
                     this.$emit('refresh')
                     relatived = false
                 }
+            },
+            calcTableHeight() {
+                const func = () => {
+                    this.tableMaxHeight = window.innerHeight * 0.899 - 180
+                }
+                func()
+                this.calcTableHeight = debounce(func, 300)
             }
         },
         watch: {
