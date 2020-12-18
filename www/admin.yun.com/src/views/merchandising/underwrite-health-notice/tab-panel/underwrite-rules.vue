@@ -127,7 +127,7 @@
         <div class="classify-box">
           <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
         </div>
-        <el-scrollbar style="height:77%">
+        <el-scrollbar style="height:calc(100% - 200px)">
           <el-form inline :modal="formData" @submit.native.prevent label-position="top">
               <el-form-item label="产品名称">
               <el-input v-model="formData.product_name_like" placeholder="请输入搜索关键字"></el-input>
@@ -295,18 +295,21 @@
 <!--            <div class="underwriting-rule-row-desc" v-for="(item, index) in holder_recognizee_same_person_death_handle" :key="item + index" v-html="item"></div>-->
 <!--          </div>-->
 <!--        </div>-->
-          <el-table :data="tableData" border :height="tableHeight" style="width: 100%" class="main-table" ref="mainTable">
-              <el-table-column class-name="gray-column" width="200" align="center" prop="name" label="产品名称"></el-table-column>
-              <el-table-column
-                v-for="(item, index) in columnsData"
-                :key="index"
-                :width="280"
-                align="center"
-                :class-name="index && index % 2 !== 0 ? 'gray-column' : null"
-                :label="item.product_name">
-                  <template v-slot="{ row }">{{columnsData[index][row.key] || '-'}}</template>
-              </el-table-column>
-          </el-table>
+            <vxe-table
+                :data="tableData"
+                :height="tableHeight"
+                :scroll-x="{ enabled: false }"
+                style="width: 100%"
+                border
+                :header-cell-style="rowCellStyle"
+                :cell-style="rowCellStyle"
+                class="main-table"
+                ref="mainTable">
+                <vxe-table-column class-name="gray-column" fixed="left" width="200" align="center" field="name" title="产品名称"></vxe-table-column>
+                <vxe-table-column class-name="gray-column" v-for="(item, index) in columnsData" :key="index" width="280" align="center" field="name" :title="item.product_name">
+                    <template v-slot="{ row }">{{columnsData[index][row.key] || '-'}}</template>
+                </vxe-table-column>
+            </vxe-table>
       </div>
     </div>
   </div>
@@ -441,6 +444,11 @@ export default {
     }
   },
   methods: {
+    rowCellStyle({ columnIndex }) {
+        return {
+            backgroundColor: columnIndex % 2 === 0 ? columnIndex === 0 ? '#ebebeb' : '#f5f5f5' : '#fff'
+        }
+    },
     collapsePage() {
         this.collapse = !this.collapse
     },
@@ -511,17 +519,18 @@ export default {
           // this.applicant_crowd = []
           // this.apply_area = []
           // this.holder_recognizee_same_person_death_handle = []
-          this.tableHeight = null
+          // this.tableHeight = null
             // this.tableData.map(row => {
             //     res.forEach((col, index) => {
             //         this.$set(row, `column-${index}-value`, col[row.key])
             //     })
             // })
             this.columnsData = Object.freeze(res)
-            setTimeout(() => {
-                this.tableHeight = '100%'
-                this.loading = false
-            }, 1000)
+            this.loading = false
+            // setTimeout(() => {
+            //     this.tableHeight = '100%'
+            //
+            // }, 500)
           //   this.$nextTick(() => {
           //     this.tableHeight = '100%'
           // })
@@ -610,7 +619,9 @@ export default {
   created() {
     this.requestList()
   },
-  mounted() {}
+  mounted() {
+      this.tableHeight = this.$refs.rightBox.offsetHeight - 32
+  }
 }
 </script>
 
@@ -679,6 +690,7 @@ export default {
 }
 
 .underwriting-rule {
+  height: 100%;
   .el-card__body {
     height: 100%;
     .not-content {
@@ -725,10 +737,6 @@ export default {
         border-color: #1F78FF;
         float: right;
       }
-    }
-
-    .underwriting-rules-right {
-        flex: 1;
     }
   }
   .classify-box{
@@ -814,7 +822,7 @@ export default {
 }
 
 .underwriting-rules-right{
-  height: 88vh;
+  flex: 1;
   padding: 16px;
   overflow: hidden;
   .underwriting-rule-box{
@@ -910,22 +918,18 @@ export default {
   background: #fff;
 }
 ::v-deep .main-table{
-    border: 1px solid rgba(0, 0, 0, .15);
-    th {
-        background-color: #fff;
+    .vxe-table--border-line {
+        border: 1px solid rgba(0, 0, 0, .1);
     }
-    .gray-column {
-        background-color: #f5f5f5;
+    .vxe-header--column, .vxe-body--column {
+        background-image: linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)),linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1))
     }
-    .el-table__body tr:hover td ,.hover-row td{
-        background: rgba(0, 0, 0, .15)!important;
+    .vxe-header--column{
+        background-position: 100% 0, 0 calc(100% - .6px);
     }
-    th.is-leaf,.el-table--border, .el-table--group, .el-table__row td{
-        border-right: 1px solid rgba(0, 0, 0, .15);
-        border-bottom: 1px solid rgba(0, 0, 0, .15);
-    }
-    .el-table--border::after, .el-table--group::after, .el-table::before{
-        background-color: rgba(0, 0, 0, .15);
+
+    .vxe-table--fixed-left-wrapper {
+        border-right: 1px solid rgba(0, 0, 0, .1);
     }
 }
 .collapse-button {

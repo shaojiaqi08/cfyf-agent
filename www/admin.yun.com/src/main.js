@@ -8,7 +8,11 @@ import VueClipboard from 'vue-clipboard2'
 import './element-variables.scss';
 import './assets/scss/iconfont/iconfont.css'
 import './assets/scss/index.scss';
+import 'xe-utils'
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
 
+Vue.use(VXETable)
 if (process.env.NODE_ENV === 'development') {
   Vue.config.productionTip = true;
 }

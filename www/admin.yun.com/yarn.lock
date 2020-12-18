@@ -8894,6 +8894,11 @@ vuex@^3.4.0:
   resolved "https://registry.npm.taobao.org/vuex/download/vuex-3.4.0.tgz#20cc086062d750769fce1febb34e7fceeaebde45"
   integrity sha1-IMwIYGLXUHafzh/rs05/zurr3kU=
 
+vxe-table@^3.0.13:
+  version "3.0.13"
+  resolved "https://registry.npm.taobao.org/vxe-table/download/vxe-table-3.0.13.tgz#bc14425c7a76ddd0b91975784d1c5523ac8a8b05"
+  integrity sha1-vBRCXHp23dC5GXV4TRxVI6yKiwU=
+
 watchpack-chokidar2@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/watchpack-chokidar2/download/watchpack-chokidar2-2.0.0.tgz#9948a1866cbbd6cb824dea13a7ed691f6c8ddff0"
@@ -9150,6 +9155,11 @@ ws@^6.0.0, ws@^6.2.1:
   integrity sha1-RC/fCkftZPWbal2P8TD0dI7VJPs=
   dependencies:
     async-limiter "~1.0.0"
+
+xe-utils@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npm.taobao.org/xe-utils/download/xe-utils-3.0.4.tgz#dbb45180b07feab6551ccf8e774ff1550023e773"
+  integrity sha1-27RRgLB/6rZVHM+Od0/xVQAj53M=
 
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"

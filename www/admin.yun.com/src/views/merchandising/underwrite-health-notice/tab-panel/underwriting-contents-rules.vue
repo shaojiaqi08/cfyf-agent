@@ -13,7 +13,7 @@
         <div class="classify-box">
           <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
         </div>
-        <el-scrollbar style="height:77%">
+        <el-scrollbar  style="height:calc(100% - 200px)">
           <el-form inline :modal="formData" @submit.native.prevent label-position="top">
               <el-form-item label="保险公司">
               <el-input v-model="formData.company" placeholder="请输入搜索关键字"></el-input>
@@ -73,7 +73,7 @@
           <el-col :span="16"><el-button type="warning" @click="search">搜索</el-button></el-col>
         </el-row>
       </div>
-      <div class="underwriting-contents-rule-right" v-loading="loading" ref="rightBox">
+      <div class="underwriting-contents-rule-right" v-loading="loading" ref="rightBox" :style="collapse ? 'margin-left: 16px; border-left: 1px solid #e6e6e6' : null">
 <!--        <div class="clone-dom-box">-->
 <!--          <div class="width-warp">-->
 <!--          </div>-->
@@ -161,19 +161,21 @@
 <!--            <div class="underwriting-contents-rule-row-desc" v-for="(item, index) in support_reconsider" :key="item + index" v-html="item"></div>-->
 <!--          </div>-->
 <!--        </div>-->
-        <el-table :data="tableData" border :height="tableHeight" style="width: 100%" class="main-table" ref="mainTable">
-          <el-table-column class-name="gray-column" width="200" align="center" prop="name" label="产品名称"></el-table-column>
-          <el-table-column
-                  v-for="(item, index) in columnsData"
-                  :key="index"
-                  :prop="`column-${index}-value`"
-                  :width="280"
-                  align="center"
-                  :class-name="index && index % 2 !== 0 ? 'gray-column' : null"
-                  :label="item.product_name">
-            <template></template>
-          </el-table-column>
-        </el-table>
+        <vxe-table
+                :data="tableData"
+                :height="tableHeight"
+                :scroll-x="{enabled: false}"
+                style="width: 100%"
+                border
+                :header-cell-style="rowCellStyle"
+                :cell-style="rowCellStyle"
+                class="main-table"
+                ref="mainTable">
+          <vxe-table-column class-name="gray-column" fixed="left" width="200" align="center" field="name" title="产品名称"></vxe-table-column>
+          <vxe-table-column class-name="gray-column" v-for="(item, index) in columnsData" :key="index" width="280" align="center" field="name" :title="item.product_name">
+            <template v-slot="{ row }">{{columnsData[index][row.key] || '-'}}</template>
+          </vxe-table-column>
+        </vxe-table>
       </div>
     </div>
   </div>
@@ -237,24 +239,24 @@ export default {
         applicant_issue_underwriting: '', // 是否支持投保人问题核保
         support_reconsider: '' // 是否支持复议
       },
-      product_name: [],
-      company: [], // 保险公司
-      insurance_class: [],
-      intelligent_underwriting: [], // 智能核保
-      manual_underwriting: [], // 人工核保
-      manual_underwriting_way: [], // 人核方式
-      manual_underwriting_operation: [], // 人核具体条件
-      medicare_card_loan: [], // 是否可以支持医保卡外借
-      manual_underwriting_time_limit: [], // 人工核保时效
-      manual_underwriting_refuse_leave_trace: [], // 人核拒保是否留痕
-      manual_underwriting_conclusion_query_way: [], // 人核结论查询方式
-      manual_underwriting_conclusion_expire_date: [], // 人核结论有效期
-      manual_underwriting_pass_how_to_insure: [], // 人工核保通过后如何投保
-      manual_underwriting_birthday_order_premium: [], // 人核生日单保费计算
-      manual_underwriting_conclusion_on_policy: [], // 人核结论是否会体现在保单上
-      underwriting_endorsement_application: [], // 核保批单申请
-      applicant_issue_underwriting: [], // 是否支持投保人问题核保
-      support_reconsider: [], // 是否支持复议
+      // product_name: [],
+      // company: [], // 保险公司
+      // insurance_class: [],
+      // intelligent_underwriting: [], // 智能核保
+      // manual_underwriting: [], // 人工核保
+      // manual_underwriting_way: [], // 人核方式
+      // manual_underwriting_operation: [], // 人核具体条件
+      // medicare_card_loan: [], // 是否可以支持医保卡外借
+      // manual_underwriting_time_limit: [], // 人工核保时效
+      // manual_underwriting_refuse_leave_trace: [], // 人核拒保是否留痕
+      // manual_underwriting_conclusion_query_way: [], // 人核结论查询方式
+      // manual_underwriting_conclusion_expire_date: [], // 人核结论有效期
+      // manual_underwriting_pass_how_to_insure: [], // 人工核保通过后如何投保
+      // manual_underwriting_birthday_order_premium: [], // 人核生日单保费计算
+      // manual_underwriting_conclusion_on_policy: [], // 人核结论是否会体现在保单上
+      // underwriting_endorsement_application: [], // 核保批单申请
+      // applicant_issue_underwriting: [], // 是否支持投保人问题核保
+      // support_reconsider: [], // 是否支持复议
       classifyList: [
         {
           name: '重疾险',
@@ -299,6 +301,11 @@ export default {
     }
   },
   methods: {
+    rowCellStyle({ columnIndex }) {
+      return {
+        backgroundColor: columnIndex % 2 === 0 ? columnIndex === 0 ? '#ebebeb' : '#f5f5f5' : '#fff'
+      }
+    },
     collapsePage() {
       this.collapse = !this.collapse
     },
@@ -346,35 +353,30 @@ export default {
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       })
         .then((res) => {
-          this.product_name = []
-          this.company = []
-          this.intelligent_underwriting = []
-          this.insurance_class = []
-          this.manual_underwriting = []
-          this.manual_underwriting_way = []
-          this.manual_underwriting_operation = []
-          this.medicare_card_loan = []
-          this.manual_underwriting_time_limit = []
-          this.manual_underwriting_refuse_leave_trace = []
-          this.manual_underwriting_conclusion_query_way = []
-          this.manual_underwriting_conclusion_expire_date = []
-          this.manual_underwriting_pass_how_to_insure = []
-          this.manual_underwriting_birthday_order_premium = []
-          this.manual_underwriting_conclusion_on_policy = []
-          this.underwriting_endorsement_application = []
-          this.applicant_issue_underwriting = []
-          this.support_reconsider = []
-          this.tableHeight = null
-          this.tableData.map(row => {
-            res.forEach((col, index) => {
-              this.$set(row, `column-${index}-value`, col[row.key])
-            })
-          })
-          this.columnsData = res
-          setTimeout(() => {
-            this.tableHeight = '100%'
-            this.loading = false
-          }, 1000)
+          // this.product_name = []
+          // this.company = []
+          // this.intelligent_underwriting = []
+          // this.insurance_class = []
+          // this.manual_underwriting = []
+          // this.manual_underwriting_way = []
+          // this.manual_underwriting_operation = []
+          // this.medicare_card_loan = []
+          // this.manual_underwriting_time_limit = []
+          // this.manual_underwriting_refuse_leave_trace = []
+          // this.manual_underwriting_conclusion_query_way = []
+          // this.manual_underwriting_conclusion_expire_date = []
+          // this.manual_underwriting_pass_how_to_insure = []
+          // this.manual_underwriting_birthday_order_premium = []
+          // this.manual_underwriting_conclusion_on_policy = []
+          // this.underwriting_endorsement_application = []
+          // this.applicant_issue_underwriting = []
+          // this.support_reconsider = []
+          // this.tableData.map(row => {
+          //   res.forEach((col, index) => {
+          //     this.$set(row, `column-${index}-value`, col[row.key])
+          //   })
+          // })
+          this.columnsData = Object.freeze(res)
           // res.map(item => {
           //   this.product_name.push(item.product_name || '-')
           //   this.company.push(item.company || '-') // 保险公司
@@ -455,6 +457,9 @@ export default {
   },
   created() {
     this.requestList()
+  },
+  mounted() {
+    this.tableHeight = this.$refs.rightBox.offsetHeight - 32
   }
 }
 </script>
@@ -524,6 +529,7 @@ export default {
 }
 
 .underwriting-contents-rule {
+  height: 100%;
   .el-card__body {
     height: 100%;
     .not-content {
@@ -657,7 +663,7 @@ export default {
 }
 
 .underwriting-contents-rule-right{
-  height: 88vh;
+  flex: 1;
   padding: 16px;
   padding-left: 16px;
   overflow: hidden;
@@ -754,25 +760,20 @@ export default {
   background: #fff;
 }
 ::v-deep .main-table{
-  border: 1px solid rgba(0, 0, 0, .15);
-  th {
-    background-color: #fff;
+  .vxe-table--border-line {
+    border: 1px solid rgba(0, 0, 0, .1);
   }
-  .gray-column {
-    background-color: #f5f5f5;
+  .vxe-header--column, .vxe-body--column {
+    background-image: linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)),linear-gradient(rgba(0, 0, 0, .1), rgba(0, 0, 0, .1))
   }
-  .el-table__body tr:hover td ,.hover-row td{
-    background: rgba(0, 0, 0, .15)!important;
+  .vxe-header--column{
+    background-position: 100% 0, 0 calc(100% - .6px);
   }
-  th.is-leaf,.el-table--border, .el-table--group, .el-table__row td{
-    border-right: 1px solid rgba(0, 0, 0, .15);
-    border-bottom: 1px solid rgba(0, 0, 0, .15);
-  }
-  .el-table--border::after, .el-table--group::after, .el-table::before{
-    background-color: rgba(0, 0, 0, .15);
+
+  .vxe-table--fixed-left-wrapper {
+    border-right: 1px solid rgba(0, 0, 0, .1);
   }
 }
-
 .collapse-button {
   position: absolute;
   top: 136px;
