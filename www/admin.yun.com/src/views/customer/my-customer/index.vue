@@ -67,14 +67,14 @@
                 stripe
                 :key="tabIndex">
         <template v-if="tabIndex === 'customer'">
-          <el-table-column label="姓名" prop="real_name" align="center" fixed="left"></el-table-column>
-          <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-          <el-table-column label="身份证号" prop="certificate_number" align="center"></el-table-column>
+          <el-table-column label="姓名" prop="real_name" align="center" fixed="left" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="手机号" prop="mobile" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="身份证号" prop="certificate_number" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="出生日期" prop="birthday" align="center">
-            <template v-slot="{ row }">{{ formatDate(row.birthday * 1000, 'yyyy-MM-dd') }}</template>
+            <template v-slot="{ row }">{{row.birthday ? row.birthday.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : '-'}}</template>
           </el-table-column>
-          <el-table-column label="保单数量" prop="policy_quantity" align="center"></el-table-column>
-          <el-table-column label="关联家庭" prop="family_name" align="center"></el-table-column>
+          <el-table-column label="保单数量" prop="policy_quantity" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="关联家庭" prop="family_name" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="操作" align="center" fixed="right" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
@@ -82,10 +82,10 @@
           </el-table-column>
         </template>
         <template v-else>
-          <el-table-column label="家庭名称" prop="name" align="center"></el-table-column>
-          <el-table-column label="投保人" prop="members_name" align="center"></el-table-column>
-          <el-table-column label="保单数量" prop="policy_quantity" align="center"></el-table-column>
-          <el-table-column label="备注" prop="remark" align="center"></el-table-column>
+          <el-table-column label="家庭名称" prop="name" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="投保人" prop="members_name" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="保单数量" prop="policy_quantity" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column label="备注" prop="remark" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="操作" align="center" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8" v-if="$checkAuth('/customer/sales_customer/detail')">查看详情</el-link>
@@ -101,6 +101,7 @@
 
 <script>
 import { formatDate } from '@/utils/formatTime'
+import commonMixin from '../mixin'
 import {
   getMyCustomerList,
   getMyCustomerFamilyList,
@@ -120,6 +121,7 @@ export default {
     FilterShell,
     OperateFamilyDialog
   },
+  mixins: [ commonMixin ],
   computed: {
     placeholder () {
       return this.tabIndex === 'customer' ? '搜索姓名、身份证号或手机号' : '搜索家庭名称或投保人名称'
@@ -128,7 +130,6 @@ export default {
   data() {
     return {
       tabIndex: 'customer',
-      formatDate,
       familyDialogVisible: false,
       filterValue: false,
       list: [],

@@ -189,7 +189,7 @@
         </el-image>
         <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
     </el-dialog>
-    <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px">
+    <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px" destroy-on-close>
       <div v-loading="docsLoading" style="min-height: 200px;max-height: 600px;">
         <div class="category-wrap" v-for="(category, index) in productDocsData" :key="index">
           <p>{{category.name}}</p>
@@ -301,6 +301,7 @@ export default {
     },
     getProductDocs(product_id, product_type) {
       this.docsLoading = true
+      this.productDocsData = []
       getProductDocs({
         product_id,
         product_type
@@ -385,7 +386,6 @@ export default {
           this.list = [...apiData, ...cpsData.map(i => ({
             ...i,
             title: i.title,
-            duty_pic_url: i.share_cover,
             web_url: i.link,
             isCpsData: true
           }))]

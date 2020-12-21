@@ -111,16 +111,16 @@
                 :key="tabIndex"
                 style="width: 100%">
         <template v-if="tabIndex === 'customer'">
-          <el-table-column prop="real_name" label="姓名" align="center" fixed="left"></el-table-column>
-          <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
-          <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
+          <el-table-column prop="real_name" label="姓名" align="center" fixed="left" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="mobile" label="手机号" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="certificate_number" label="身份证号" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column prop="birthday" label="出生日期" align="center">
-            <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
+            <template v-slot="{ row }">{{row.birthday ? row.birthday.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : '-'}}</template>
           </el-table-column>
-          <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
-          <el-table-column prop="family_name" label="关联家庭" align="center"></el-table-column>
-          <el-table-column prop="sales_name" label="出单人" align="center"></el-table-column>
-          <el-table-column prop="sales_team_name" label="团队" align="center"></el-table-column>
+          <el-table-column prop="policy_quantity" label="保单数量" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="family_name" label="关联家庭" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="sales_name" label="出单人" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="sales_team_name" label="团队" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="操作" align="center" fixed="right" width="120px">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
@@ -128,12 +128,12 @@
           </el-table-column>
         </template>
         <template v-else>
-          <el-table-column prop="name" label="家庭名称" align="center"></el-table-column>
-          <el-table-column prop="members_name" label="投保人" align="center"></el-table-column>
-          <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
-          <el-table-column prop="sales_name" label="创建人" align="center"></el-table-column>
-          <el-table-column prop="sales_team_name" label="团队" align="center"></el-table-column>
-          <el-table-column prop="remark" label="备注" align="center"></el-table-column>
+          <el-table-column prop="name" label="家庭名称" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="members_name" label="投保人" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="policy_quantity" label="保单数量" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="sales_name" label="创建人" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="sales_team_name" label="团队" align="center" :formatter="cellFormatter"></el-table-column>
+          <el-table-column prop="remark" label="备注" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/admin/customer_detail')">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
@@ -146,12 +146,13 @@
 </template>
 
 <script>
-import { formatDate } from '@/utils/formatTime'
 import { getCustomerList, getCustomerFamilyList, exportCustomerListUrl, exportFamilyListUrl } from '@/apis/modules/customer'
 import { getSalesData, getSalesTeamData} from '@/apis/modules/achievement'
 import { debounce, downloadFrameA } from '@/utils'
+import { formatDate } from '@/utils/formatTime'
 import qs from 'qs'
 import FilterShell from '@/components/filters/filter-shell'
+import commonMixin from '../mixin'
 
 // 客户 - 全部客户
 export default {
@@ -159,6 +160,7 @@ export default {
   components: {
     FilterShell
   },
+  mixins: [ commonMixin ],
   computed: {
     placeholder () {
       return this.tabIndex === 'customer' ? '搜索姓名、身份证号或手机号' : '搜索家庭名称或投保人名称'
@@ -186,7 +188,6 @@ export default {
     };
   },
   methods: {
-    formatDate,
     // 导出
     exportList() {
       const isCustomerTab = this.tabIndex === 'customer'

@@ -14,6 +14,16 @@ export default {
                     }
                 }
             }
+        },
+        cellFormatter(row, column, cellValue, index) { // eslint-disable-line
+            return (cellValue || cellValue === 0) ? cellValue : '-'
         }
-    }
+    },
+    directives: {
+        focus: {
+            inserted(el) {
+                el.getElementsByTagName('input')[0].focus()
+            }
+        }
+    },
 }

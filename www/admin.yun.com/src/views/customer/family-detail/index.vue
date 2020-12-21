@@ -25,13 +25,13 @@
                         @click="relativePolicyHolder">关联投保人</el-button>
                 </div>
                 <el-table :data="customers" border stripe table-head class="mb24" max-height="600px" style="width: 100%">
-                    <el-table-column prop="real_name" label="姓名" align="center"></el-table-column>
-                    <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
-                    <el-table-column prop="certificate_number" label="身份证号" align="center" width="310px"></el-table-column>
+                    <el-table-column prop="real_name" label="姓名" align="center" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="mobile" label="手机号" align="center" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="certificate_number" label="身份证号" align="center" width="310px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="birthday" label="出生日期" align="center">
-                        <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
+                        <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : '-'}}</template>
                     </el-table-column>
-                    <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
+                    <el-table-column prop="policy_quantity" label="保单数量" align="center" :formatter="cellFormatter"></el-table-column>
                     <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/sales/remove_family_member') && isMyCustomer">
                         <template v-slot="{ row, $index }">
                             <el-link type="primary" v-if="customers.length > 1" @click="removePolicyHolder(row, $index)">移除</el-link>
@@ -59,23 +59,23 @@
                     :row-class-name="policyRowClassName"
                     @cell-click="handleCelClick"
                     style="width: 100%">
-                    <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
-                    <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
-                    <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="premium" label="年交保费" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
+                    <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="holder_name" label="投保人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="product_name" label="产品名称" align="center" width="260px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="premium" label="年交保费" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="proposal_at" label="投保日期" align="center" width="120px">
-                        <template v-slot="{ row }">{{row.proposal_at ? formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') : ''}}</template>
+                        <template v-slot="{ row }">{{row.proposal_at ? formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') : '-'}}</template>
                     </el-table-column>
-                    <el-table-column prop="wait_days" label="等待期" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
-                    <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
-                    <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
-                    <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
+                    <el-table-column prop="wait_days" label="等待期" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px" :formatter="cellFormatter"></el-table-column>
+                    <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="remark" label="备注" align="center" width="260px">
                         <template v-slot="{row}">
                             <div v-if="row === editRow" class="flex edit-remark-wrap">
@@ -129,13 +129,6 @@
         components: {
             OperateFamilyDialog,
             RelativeDialog
-        },
-        directives: {
-            focus: {
-                inserted(el) {
-                    el.getElementsByTagName('input')[0].focus()
-                }
-            }
         },
         data() {
             return {
