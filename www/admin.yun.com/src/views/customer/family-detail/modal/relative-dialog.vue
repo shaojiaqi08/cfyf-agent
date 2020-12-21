@@ -16,47 +16,43 @@
                 <el-table-column label="操作" align="center" width="120px">
                     <template v-slot="{ row }">
                         <el-link type="primary" class="mr8" @click="relative(row)">关联</el-link>
-                        <el-link type="primary" @click="viewPolicy(row)">查看保单</el-link>
+                        <el-popover placement="left">
+                            <el-link slot="reference" type="primary" @click="viewPolicy(row)">查看保单</el-link>
+                            <div style="width: 1000px" v-loading="policyLoading">
+                                <h3 style="color: #1A1A1A;font-size: 16px">{{customer.real_name}}，{{customer.mobile}}的保单</h3>
+                                <el-table
+                                        :data="policyList"
+                                        border
+                                        stripe
+                                        :span-method="tableSpan"
+                                        max-height="520px"
+                                        style="width: 100%"
+                                        v-loading="loading">
+                                    <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
+                                    <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
+                                    <el-table-column prop="guarantee_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="premium" label="年缴保费" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="payment_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
+                                        <template v-slot="{ row }">{{formatDate(row.proposal_at * 1000, 'yyyy-MM-dd')}}</template>
+                                    </el-table-column>
+                                    <el-table-column prop="wait_days" label="等待期" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
+                                    <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
+                                    <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
+                                    <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
+                                    <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
+                                </el-table>
+                            </div>
+                        </el-popover>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog
-            class="policy-dialog"
-            :visible.sync="policyDialogVisible"
-            append-to-body
-            :v-loading="policyLoading"
-            width="1000px"
-            :modal="false"
-            :show-close="false" >
-            <h3 style="color: #1A1A1A;font-size: 16px">{{customer.real_name}}，{{customer.mobile}}的保单</h3>
-            <el-table
-                :data="policyList"
-                border
-                stripe
-                :span-method="tableSpan"
-                max-height="520px"
-                v-loading="loading">
-                <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px"></el-table-column>
-                <el-table-column prop="holder_name" label="投保人" align="center" width="120px"></el-table-column>
-                <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px"></el-table-column>
-                <el-table-column prop="product_name" label="产品名称" align="center" width="260px"></el-table-column>
-                <el-table-column prop="guarantee_period_desc" label="缴费期间" align="center" width="120px"></el-table-column>
-                <el-table-column prop="premium" label="年缴保费" align="center" width="120px"></el-table-column>
-                <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px"></el-table-column>
-                <el-table-column prop="payment_period_desc" label="保障期间" align="center" width="120px"></el-table-column>
-                <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
-                    <template v-slot="{ row }">{{formatDate(row.proposal_at * 1000, 'yyyy-MM-dd')}}</template>
-                </el-table-column>
-                <el-table-column prop="wait_days" label="等待期" align="center" width="120px"></el-table-column>
-                <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px"></el-table-column>
-                <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px"></el-table-column>
-                <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px"></el-table-column>
-                <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="200px"></el-table-column>
-                <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px"></el-table-column>
-                <el-table-column prop="remark" label="备注" align="center" width="200px"></el-table-column>
-            </el-table>
-        </el-dialog>
     </el-dialog>
 </template>
 
@@ -76,7 +72,6 @@
         },
         data() {
             return {
-                policyDialogVisible: false,
                 loading: false,
                 policyLoading: false,
                 keyword: '',
@@ -136,6 +131,7 @@
             }, 300),
             getPolicyData(relation_id) {
                 this.policyLoading = true
+                this.policyList = []
                 getMyCustomerDetail({
                     relation_id
                 }).then(res => {
@@ -165,7 +161,6 @@
             },
             viewPolicy({ relation_id }) {
                 this.getPolicyData(relation_id)
-                this.policyDialogVisible = true
             },
             closeDialog() {
                 this.list = []

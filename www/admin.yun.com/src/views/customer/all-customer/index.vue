@@ -312,7 +312,7 @@ export default {
       background-color: #f5f5f5;
       padding: 0 16px;
       display: flex;
-      border: 1px solid #e6e6e6;
+      border-bottom: 1px solid #e6e6e6;
       justify-content: space-between;
       align-items: center;
       .tabs {

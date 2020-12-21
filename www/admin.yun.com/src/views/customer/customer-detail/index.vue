@@ -1,7 +1,7 @@
 <template>
-    <div class="container" v-loading="loading">
+    <div class="container" v-loading="loading" ref="container">
         <div class="header">投保人信息</div>
-        <div class="content" ref="content">
+        <div class="content">
             <el-row type="flex" class="mb14" justify="middle">
                 <el-col :span="6">
                     <span>姓名<span class="ml8">{{detail.real_name || '-'}}</span></span>
@@ -147,7 +147,7 @@
             },
             calcTableHeight() {
                 const func = () => {
-                    this.tableHeight = this.$refs.content.offsetHeight - 157
+                    this.tableHeight = this.$refs.container.offsetHeight - 213
                 }
                 func()
                 this.calcTableHeight = debounce(func, 300)
@@ -169,7 +169,6 @@
 <style scoped lang="scss">
     .container {
         color: #1A1A1A;
-        background-color: #fff;
         width: 1200px;
         margin: auto;
         height: calc(100vh - 76px);
@@ -186,8 +185,8 @@
         }
         .content {
             overflow: hidden;
-            flex: 1;
             padding: 16px;
+            background-color: #fff;
             .el-col {
                 span {
                     display: flex;

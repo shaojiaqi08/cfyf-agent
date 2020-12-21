@@ -4,10 +4,10 @@
         <div slot="footer" class="flex-between" v-if="productObj.product_type === 'cps'">
             <div class="switch-wrap">
                 <div :class="{ active: isMobileScreen }" @click="changeScreen(true)">
-                    <i class="iconfont iconzhong20_shouji"></i>
+                    <i class="iconfont iconzhong20_shouji fs18"></i>
                 </div>
                 <div  :class="{ active: !isMobileScreen }" @click="changeScreen(false)">
-                    <i class="iconfont iconzhong20_diannao"></i>
+                    <i class="iconfont iconzhong20_diannao fs18"></i>
                 </div>
             </div>
             <div>
