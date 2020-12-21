@@ -19,7 +19,7 @@
                         <el-popover placement="left">
                             <el-link slot="reference" type="primary" @click="viewPolicy(row)">查看保单</el-link>
                             <div style="width: 1000px" v-loading="policyLoading">
-                                <h3 style="color: #1A1A1A;font-size: 16px">{{customer.real_name}}，{{customer.mobile}}的保单</h3>
+                                <h3 style="color: #1A1A1A;font-size: 16px;margin-top: 0">{{customer.real_name}}，{{customer.mobile}}的保单</h3>
                                 <el-table
                                         :data="policyList"
                                         border
@@ -201,19 +201,6 @@
         ::v-deep .el-dialog__body {
             max-height: 100vh;
             padding-bottom: 20px;
-        }
-    }
-    .policy-dialog {
-        ::v-deep .el-dialog__header {
-            display: none;
-        }
-
-        ::v-deep .el-dialog__body {
-            height: 600px;
-            padding-bottom: 20px;
-            h3 {
-                margin-top: 0;
-            }
         }
     }
 </style>

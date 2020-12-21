@@ -114,11 +114,11 @@
               <img :src="row.company_logo">
               <div>
                 {{row.title}}
-                <div class="flex mb16 mt8 flex-around">
-                  <div class="mr20" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;flex: 1">
+                <el-row class="mb16 mt8" :gutter="20">
+                  <el-col :span="8" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;">
                     <text-hidden-ellipsis width="100%" :popoverTip="item"><i class="iconfont iconxiao16_duigou mr4"></i>{{item}}</text-hidden-ellipsis>
-                  </div>
-                </div>
+                  </el-col>
+                </el-row>
               </div>
             </div>
             <div class="flex-between">
@@ -420,16 +420,6 @@ export default {
       }
     },
     dialogVisible(v) {
-      // if (v) {
-      //   const { share_link, web_url, product_type} = this.productObj
-      //   QRCode.toDataURL(product_type === 'cps' ? share_link : web_url)
-      //   .then(result => {
-      //     this.qrcodeUrl = result
-      //   })
-      //   .catch(err => {
-      //     console.error(err)
-      //   })
-      // }
       if (!v) {
         this.qrcodeUrl = ''
       }
