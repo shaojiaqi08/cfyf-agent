@@ -465,7 +465,7 @@ export default {
     height: 56px;
     background: #f5f5f5;
     border-radius: 4px 4px 0px 0px;
-    border: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
     display: flex;
     justify-content: space-between;
     align-items: center;
