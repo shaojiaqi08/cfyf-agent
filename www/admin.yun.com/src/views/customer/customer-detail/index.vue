@@ -1,7 +1,7 @@
 <template>
-    <div class="container" v-loading="loading" ref="container">
+    <div class="container" ref="container">
         <div class="header">投保人信息</div>
-        <div class="content">
+        <div class="content" v-loading="loading">
             <el-row type="flex" class="mb14" justify="middle">
                 <el-col :span="6">
                     <span>姓名<span class="ml8">{{detail.real_name || '-'}}</span></span>
