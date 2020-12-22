@@ -27,7 +27,11 @@
                 </template>
                 <el-col :span="6" class="flex">
                     <span>关联家庭<span class="ml8" style="padding-right: 0">{{detail.family_name || '-'}}</span></span>
-                    <i v-if="$checkAuth(isMyCustomer ? '/customer/sales/detail/jump2family' : '/customer/admin/jump2family') && detail.family_name" class="iconfont iconxiao16_tiaozhuan ml8" @click="goFamilyDetail" style="color: #1F78FF"></i>
+                    <i
+                        v-if="$checkAuth(isMyCustomer ? '/customer/sales/detail/jump2family' : '/customer/admin/jump2family') && detail.family_name"
+                        class="iconfont iconxiao16_tiaozhuan ml8"
+                        @click="goFamilyDetail"
+                        style="color: #1F78FF; cursor: pointer"></i>
                 </el-col>
             </el-row>
             <div class="flex-between mb16">
