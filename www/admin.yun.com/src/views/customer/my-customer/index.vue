@@ -2,8 +2,8 @@
   <div class="order-container page-container">
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex">
-        <el-tab-pane name="customer" label="我的客户"></el-tab-pane>
-        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/sales/family_page_list')"></el-tab-pane>
+        <el-tab-pane name="customer" label="我的客户" :disabled="loading"></el-tab-pane>
+        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/sales/family_page_list')" :disabled="loading"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
         <el-button

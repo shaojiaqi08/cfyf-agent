@@ -2,8 +2,8 @@
   <div class="order-container page-container">
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex">
-        <el-tab-pane name="customer" label="全部客户"></el-tab-pane>
-        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')"></el-tab-pane>
+        <el-tab-pane name="customer" label="全部客户" :disabled="loading"></el-tab-pane>
+        <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')" :disabled="loading"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
         <el-button
@@ -153,7 +153,6 @@ import { formatDate } from '@/utils/formatTime'
 import qs from 'qs'
 import FilterShell from '@/components/filters/filter-shell'
 import commonMixin from '../mixin'
-
 // 客户 - 全部客户
 export default {
   name: 'all-customer',
