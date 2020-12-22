@@ -286,7 +286,7 @@
         display: flex;
         flex-direction: column;
         .header {
-            height: 84px;
+            min-height: 84px;
             font-size: 16px;
             font-weight: bold;
             border-bottom: 1px solid #e6e6e6;
