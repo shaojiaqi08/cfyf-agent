@@ -82,11 +82,12 @@
                                 <el-input v-if="row === editRow"
                                           v-focus
                                           ref="remarkInput"
+                                          clearable
                                           v-model.trim="editRemark"
                                           :readonly="remarkSubmitting"
                                           @keyup.esc.native="cancelEditRemark"
                                           @keyup.enter.native="editRemark!==row.remark && submitEditVerifyRemark()"></el-input>
-                                <i v-if="editRemark && editRemark!==row.remark"
+                                <i v-if="editRemark!==row.remark"
                                    :disabled="remarkSubmitting"
                                    class="el-icon-success ml4"
                                    @click="submitEditVerifyRemark"></i>
@@ -94,7 +95,7 @@
                                    class="el-icon-error ml8"
                                    @click="cancelEditRemark"></i>
                             </div>
-                            <span v-else>{{row.remark}}</span>
+                            <span v-else>{{row.remark || '-'}}</span>
                         </template>
                     </el-table-column>
                 </el-table>
