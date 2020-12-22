@@ -45,10 +45,11 @@
             <el-table
                 :data="list"
                 border
-                stripe
+                class="policy-table"
                 :span-method="tableSpan"
                 :max-height="tableHeight"
                 @cell-click="handleCelClick"
+                :row-class-name="policyRowClassName"
                 style="width: 100%" >
                 <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="holder_name" label="投保人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
@@ -132,6 +133,12 @@
         },
         methods: {
             formatDate,
+            // 保单列表行className
+            policyRowClassName({ row }) {
+                if (row.$is_gray_row) {
+                    return 'policy-gray-row'
+                }
+            },
             // 点击备注列
             handleCelClick(row, {property}) {
                 if (this.isMyCustomer && property === 'remark' && this.$checkAuth('/customer/sales_customer/export')) {
@@ -181,10 +188,14 @@
                     relation_id: this.relationId
                 }).then(res => {
                     let list = []
-                    res.policies.forEach(policy => {
+                    res.policies.forEach((policy, index) => {
                         const len = policy.length
-                        if (len) {
-                            policy[0].rowSpan = len
+                        policy[0].rowSpan = len
+                        if (index % 2 !== 0) {
+                            policy.forEach(i => {
+                                // 标记斑马行
+                                i.$is_gray_row = true
+                            })
                         }
                         list.push(...policy)
                     })
@@ -271,6 +282,11 @@
                     color: #999;
                     font-weight: normal;
                     font-size: 14px;
+                }
+            }
+            ::v-deep .policy-table {
+                .policy-gray-row {
+                    background: #fafafa;
                 }
             }
         }

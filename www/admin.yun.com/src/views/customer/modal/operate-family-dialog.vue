@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible="visible" :title="title" width="480px" @close="closeDialog">
+    <el-dialog :visible="visible" :title="title" width="480px" @close="closeDialog" :close-on-click-modal="false">
         <el-form :model="formModel" label-width="80px" :rules="rules" ref="form" label-position="left">
             <el-form-item label="家庭名称" prop="name">
                 <el-input v-model.trim="formModel.name" placeholder="请输入家庭名称，最多50字" :maxlength="50"></el-input>
