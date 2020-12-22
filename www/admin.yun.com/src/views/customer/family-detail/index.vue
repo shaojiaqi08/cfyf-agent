@@ -29,7 +29,7 @@
                     <el-table-column prop="mobile" label="手机号" align="center" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="certificate_number" label="身份证号" align="center" width="310px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="birthday" label="出生日期" align="center">
-                        <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : '-'}}</template>
+                        <template v-slot="{ row }">{{row.birthday ? row.birthday.toString().replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3") : '-'}}</template>
                     </el-table-column>
                     <el-table-column prop="policy_quantity" label="保单数量" align="center" :formatter="cellFormatter"></el-table-column>
                     <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/sales/remove_family_member') && isMyCustomer">
@@ -291,7 +291,7 @@
             font-weight: bold;
             border-bottom: 1px solid #e6e6e6;
             background-color: #f5f5f5;
-            padding: 0 16px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;

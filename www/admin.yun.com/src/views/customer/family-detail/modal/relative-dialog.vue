@@ -10,7 +10,7 @@
                 <el-table-column prop="mobile" label="手机号" align="center"></el-table-column>
                 <el-table-column prop="certificate_number" label="身份证号" align="center"></el-table-column>
                 <el-table-column prop="birthday" label="出生日期" align="center">
-                    <template v-slot="{ row }">{{row.birthday ? formatDate(row.birthday * 1000, 'yyyy-MM-dd') : ''}}</template>
+                    <template v-slot="{ row }">{{row.birthday ? row.birthday.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : '-'}}</template>
                 </el-table-column>
                 <el-table-column prop="policy_quantity" label="保单数量" align="center"></el-table-column>
                 <el-table-column label="操作" align="center" width="120px">
