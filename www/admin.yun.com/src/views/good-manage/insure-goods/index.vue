@@ -137,7 +137,7 @@
                          @click="handleNotify(row.inquiry_info)">
                   <i class="iconfont iconxiao16_shouqiangaozhi  mr4"></i>售前告知
                 </el-link>
-                <el-link v-if="$checkAuth('/insure-goods/sale_notify')"
+                <el-link v-if="$checkAuth('/insure-goods/product_docs') && row.is_has_docs"
                          type="primary"
                          :underline="false"
                          class="mr20"
