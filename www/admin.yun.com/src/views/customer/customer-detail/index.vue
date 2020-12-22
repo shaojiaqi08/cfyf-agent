@@ -13,7 +13,7 @@
                     <span>身份证号<span class="ml8">{{detail.certificate_number || '-'}}</span></span>
                 </el-col>
                 <el-col :span="6">
-                    <span>出生日期<span class="ml8">{{detail.birthday ? formatDate(detail.birthday * 1000, 'yyyy-MM-dd') : '-'}}</span></span>
+                    <span>出生日期<span class="ml8">{{detail.birthday ? detail.birthday.toString().replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : '-'}}</span></span>
                 </el-col>
             </el-row>
             <el-row type="flex" class="mb30" justify="start" align="top">
