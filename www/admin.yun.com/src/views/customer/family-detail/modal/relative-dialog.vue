@@ -150,13 +150,15 @@
                 })
             },
             relative({ relation_id }) {
-                relativePolicyHolder({
-                    relation_id,
-                    family_id: this.familyId
-                }).then(() => {
-                    this.$message.success('关联成功')
-                    relatived = true
-                    this.getData()
+                this.$confirm('是否确认关联该投保人？', '提示').then(() => {
+                    relativePolicyHolder({
+                        relation_id,
+                        family_id: this.familyId
+                    }).then(() => {
+                        this.$message.success('关联成功')
+                        relatived = true
+                        this.getData()
+                    })
                 })
             },
             viewPolicy({ relation_id }) {
