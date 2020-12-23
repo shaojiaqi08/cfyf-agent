@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :visible="visible" custom-class="dialog" title="" :width="isMobileScreen ? '414px' : '1200px'" @close="closeDialog">
+    <el-dialog :visible="visible" custom-class="dialog" title="" :width="isMobileScreen ? '414px' : '1200px'" @close="closeDialog" :destroy-on-close="true">
         <iframe :src="iframeSrc" frameborder="0"></iframe>
         <div slot="footer" class="flex-between" v-if="productObj.product_type === 'cps'">
             <div class="switch-wrap">
@@ -38,7 +38,8 @@
         },
         computed: {
             iframeSrc() {
-                return this.productObj.share_link || this.productObj.web_url
+              const baseUrl = this.productObj.share_link || this.productObj.web_url || ''
+              return baseUrl ? `${baseUrl}&user_token=${this.$store.state.users.userInfo.agent_token}&platform=crm_web` : null
             }
         },
         data() {
