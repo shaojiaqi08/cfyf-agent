@@ -284,10 +284,28 @@ export default {
       getSalesTeamData().then(res => {
         this.salesTeamList = res.filter(i => i.id !== -1)
       }).catch(err => console.log(err))
+    },
+    getFilterData() {
+      // 筛选项 - 关联家庭数据
+      this.tabIndex === 'customer' && getCustomerFamilyList({page: 1, page_size: 9999999}).then(res => {
+        this.relativeFamilyList = res.data
+      })
+      this.getSalesData()
+      this.getSalesTeamData()
     }
   },
   watch: {
     tabIndex() {
+      this.relativeFamilyList = []
+      this.salesList = []
+      this.salesTeamList = []
+      this.searchModel = {
+        keyword: '',
+        sales_id: [],
+        sales_team_id: [],
+        family_id: []
+      }
+      this.getFilterData()
       this.handleTabChange()
     }
   },
@@ -299,12 +317,7 @@ export default {
       this.tabIndex = 'family'
       this.getCustomerFamilyList()
     }
-    // 筛选项 - 关联家庭数据
-    getCustomerFamilyList({page: 1, page_size: 9999999}).then(res => {
-      this.relativeFamilyList = res.data
-    })
-    this.getSalesData()
-    this.getSalesTeamData()
+    this.getFilterData()
   }
 };
 </script>

@@ -262,10 +262,23 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-    }, 300)
+    }, 300),
+    getFilterData() {
+      getMyCustomerRelativeFamily().then(res => {
+      this.relativeFamilyList = res
+    })
+    }
   },
   watch: {
-    tabIndex() {
+    tabIndex(v) {
+      this.relativeFamilyList = []
+      this.searchModel = {
+        keyword: '',
+        family_id: []
+      }
+      if (v === 'customer') {
+        this.getFilterData()
+      }
       this.handleTabChange()
     }
   },
@@ -278,9 +291,7 @@ export default {
       this.getMyCustomerFamilyList()
     }
     // 筛选项 - 关联家庭数据
-    getMyCustomerRelativeFamily().then(res => {
-      this.relativeFamilyList = res
-    })
+    this.getFilterData()
   }
 };
 </script>
