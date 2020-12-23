@@ -45,7 +45,8 @@
       menuInit() {
         this.routers = routers.reduce((prev, next) => {
           const hasPermissionChildren = this.filterRoutes(next.children).filter(i => {
-            return this.permission.includes(i.meta.permission)
+            const curPermission = i.meta.permission
+            return Array.isArray(curPermission) ? this.permission.some(i => curPermission.includes(i)) : this.permission.includes(curPermission)
           })
           if (hasPermissionChildren.length) {
             return prev.concat({...next, children: hasPermissionChildren})

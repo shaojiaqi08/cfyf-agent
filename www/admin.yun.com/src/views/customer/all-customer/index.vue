@@ -2,7 +2,7 @@
   <div class="order-container page-container">
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex">
-        <el-tab-pane name="customer" label="全部客户" :disabled="loading"></el-tab-pane>
+        <el-tab-pane name="customer" label="全部客户" :disabled="loading" v-if="$checkAuth('/customer/admin/customer_page_list')"></el-tab-pane>
         <el-tab-pane name="family" label="客户家庭" v-if="$checkAuth('/customer/admin/family_page_list')" :disabled="loading"></el-tab-pane>
       </el-tabs>
       <div class="flex-center">
@@ -167,7 +167,7 @@ export default {
   },
   data() {
     return {
-      tabIndex: 'customer',
+      tabIndex: '',
       list: [],
       teamList: [],
       relativeFamilyList: [],
@@ -292,13 +292,19 @@ export default {
     }
   },
   created() {
+    if (this.$checkAuth('/customer/admin/customer_page_list')) {
+      this.tabIndex = 'customer'
+      this.getCustomerList()
+    } else {
+      this.tabIndex = 'family'
+      this.getCustomerFamilyList()
+    }
     // 筛选项 - 关联家庭数据
     getCustomerFamilyList({page: 1, page_size: 9999999}).then(res => {
       this.relativeFamilyList = res.data
     })
     this.getSalesData()
     this.getSalesTeamData()
-    this.getCustomerList()
   }
 };
 </script>

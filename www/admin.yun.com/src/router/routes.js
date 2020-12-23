@@ -174,7 +174,10 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/customer/admin/customer_page_list'
+          permission: [
+            '/customer/admin/customer_page_list',
+            '/customer/admin/family_page_list'
+          ]
         },
         component: () => import('views/customer/all-customer')
       },
@@ -210,7 +213,10 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/customer/sales_customer/page_list'
+          permission: [
+              '/customer/sales_customer/page_list',
+              '/customer/sales/family_page_list'
+          ]
         },
         component: () => import('views/customer/my-customer')
       },
