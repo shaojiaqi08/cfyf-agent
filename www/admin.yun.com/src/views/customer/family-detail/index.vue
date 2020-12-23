@@ -1,28 +1,28 @@
 <template>
-    <el-scrollbar>
-        <div class="container" v-loading="loading">
-            <div class="header">
-                <div>
-                    <p>{{family.name}}</p>
-                    <span>{{family.remark}}</span>
-                </div>
-                <el-button
+    <div class="container" v-loading="loading">
+        <div class="header">
+            <div>
+                <p>{{family.name}}</p>
+                <span>{{family.remark}}</span>
+            </div>
+            <el-button
                     icon="iconfont iconxiao16_bianji mr4"
                     type="primary"
                     size="small"
                     class="ml16"
                     @click="editFamily"
                     v-if="$checkAuth('/customer/sales/edit_family') && isMyCustomer">编辑家庭</el-button>
-            </div>
-            <div class="content">
+        </div>
+        <div class="content">
+            <el-scrollbar>
                 <div class="table-head">
                     <span>投保人</span>
                     <el-button
-                        v-if="$checkAuth('/customer/sales/customer_join_family') && isMyCustomer"
-                        type="primary"
-                        size="small"
-                        icon="iconfont iconxiao16_guanlian mr4"
-                        @click="relativePolicyHolder">关联投保人</el-button>
+                            v-if="$checkAuth('/customer/sales/customer_join_family') && isMyCustomer"
+                            type="primary"
+                            size="small"
+                            icon="iconfont iconxiao16_guanlian mr4"
+                            @click="relativePolicyHolder">关联投保人</el-button>
                 </div>
                 <el-table :data="customers" border stripe table-head class="mb24" max-height="600px" style="width: 100%">
                     <el-table-column prop="real_name" label="姓名" align="center" :formatter="cellFormatter"></el-table-column>
@@ -42,23 +42,23 @@
                 <div class="table-head">
                     <span>相关保单<span>共{{policies.length}}单</span></span>
                     <el-button
-                        type="primary"
-                        size="small"
-                        icon="iconfont iconxiao16_xiazai mr4"
-                        @click="exportPolicy"
-                        v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/export' : '/customer/admin/export_family_policy')"
-                        :loading="exporting"
-                        :disabled="exporting || policies.length <= 0">导出表格</el-button>
+                            type="primary"
+                            size="small"
+                            icon="iconfont iconxiao16_xiazai mr4"
+                            @click="exportPolicy"
+                            v-if="$checkAuth(isMyCustomer ? '/customer/sales_customer/export' : '/customer/admin/export_family_policy')"
+                            :loading="exporting"
+                            :disabled="exporting || policies.length <= 0">导出表格</el-button>
                 </div>
                 <el-table
-                    :data="policies"
-                    :span-method="tableSpan"
-                    border
-                    class="mb16 policy-table"
-                    max-height="600px"
-                    :row-class-name="policyRowClassName"
-                    @cell-click="handleCelClick"
-                    style="width: 100%">
+                        :data="policies"
+                        :span-method="tableSpan"
+                        border
+                        class="policy-table"
+                        max-height="600px"
+                        :row-class-name="policyRowClassName"
+                        @cell-click="handleCelClick"
+                        style="width: 100%">
                     <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="holder_name" label="投保人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                     <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
@@ -99,15 +99,15 @@
                         </template>
                     </el-table-column>
                 </el-table>
-            </div>
-            <operate-family-dialog
+            </el-scrollbar>
+        </div>
+        <operate-family-dialog
                 v-if="isMyCustomer"
                 :model="family"
                 :visible.sync="editDialogVisible"
                 @confirm="editFamilySuccess"></operate-family-dialog>
-            <relative-dialog :visible.sync="relativeDialogVisible" @refresh="getData"></relative-dialog>
-        </div>
-    </el-scrollbar>
+        <relative-dialog :visible.sync="relativeDialogVisible" @refresh="getData"></relative-dialog>
+    </div>
 </template>
 
 <script>
@@ -274,7 +274,10 @@
 
 <style scoped lang="scss">
     .el-scrollbar {
-        height: calc(100vh - 60px);
+        height: 100%;
+        ::v-deep .el-scrollbar__view{
+            padding: 16px;
+        }
         ::v-deep .el-scrollbar__wrap {
             overflow-x: hidden;
         }
@@ -282,7 +285,9 @@
     .container {
         color: #1A1A1A;
         width: 1200px;
-        margin: 0 auto 20px auto;
+        margin: 20px auto;
+        height: calc(100% - 20px);
+        overflow: hidden;
         display: flex;
         flex-direction: column;
         .header {
@@ -313,7 +318,8 @@
         }
         .content {
             background-color: #fff;
-            padding: 16px;
+            flex: 1;
+            overflow: hidden;
             .table-head {
                 display: flex;
                 justify-content: space-between;
