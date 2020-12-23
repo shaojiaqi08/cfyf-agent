@@ -11,7 +11,7 @@
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
           size="small"
-          v-if="$checkAuth(tabIndex === 'customer' ? ' /customer/admin/export_customers' : '/customer/admin/export_family_list')"
+          v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customers' : '/customer/admin/export_family_list')"
           @click="exportList"
           :loading="exporting"
           :disabled="exporting || list.length <= 0 || loading">导出数据</el-button>
