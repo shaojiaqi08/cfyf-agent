@@ -75,7 +75,7 @@
           </el-table-column>
           <el-table-column label="保单数量" prop="policy_quantity" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="关联家庭" prop="family_name" align="center" :formatter="cellFormatter"></el-table-column>
-          <el-table-column label="操作" align="center" fixed="right" width="120px">
+          <el-table-column label="操作" align="center" fixed="right" width="120px" v-if="$checkAuth('/customer/sales_customer/detail')">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
             </template>
@@ -88,7 +88,7 @@
           <el-table-column label="备注" prop="remark" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column label="操作" align="center" width="120px">
             <template v-slot="{ row }">
-              <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8" v-if="$checkAuth('/customer/sales_customer/detail')">查看详情</el-link>
+              <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8" v-if="$checkAuth('/customer/sales/family_detail')">查看详情</el-link>
               <el-link type="primary" @click="dismiss(row)" v-if="$checkAuth('/customer/sales/disband_family')">解散</el-link>
             </template>
           </el-table-column>

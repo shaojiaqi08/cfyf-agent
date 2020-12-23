@@ -11,7 +11,7 @@
           icon="iconfont iconxiao16_xiazai mr4"
           class="mr16"
           size="small"
-          v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customers' : '/customer/admin/family_page_list')"
+          v-if="$checkAuth(tabIndex === 'customer' ? '/customer/admin/export_customer_policy' : '/customer/admin/export_family_list')"
           @click="exportList"
           :loading="exporting"
           :disabled="exporting || list.length <= 0 || loading">导出数据</el-button>
@@ -121,7 +121,7 @@
           <el-table-column prop="family_name" label="关联家庭" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column prop="sales_name" label="出单人" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column prop="sales_team_name" label="团队" align="center" :formatter="cellFormatter"></el-table-column>
-          <el-table-column label="操作" align="center" fixed="right" width="120px">
+          <el-table-column label="操作" align="center" fixed="right" width="120px" v-if="$checkAuth('/customer/admin/customer_detail')">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewDetail(row)">查看详情</el-link>
             </template>
@@ -134,7 +134,7 @@
           <el-table-column prop="sales_name" label="创建人" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column prop="sales_team_name" label="团队" align="center" :formatter="cellFormatter"></el-table-column>
           <el-table-column prop="remark" label="备注" align="center" :formatter="cellFormatter"></el-table-column>
-          <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/admin/customer_detail')">
+          <el-table-column label="操作" align="center" width="120px" v-if="$checkAuth('/customer/admin/family_detail')">
             <template v-slot="{ row }">
               <el-link type="primary" @click="viewFamilyDetail(row)" class="mr8">查看详情</el-link>
             </template>
