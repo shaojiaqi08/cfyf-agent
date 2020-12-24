@@ -125,10 +125,10 @@
         total: 0,
         searchModel: {
           product_insurance_class: null,
-          product_name: null,
+          // product_name: null,
           supplier_name: null,
           page: 1,
-          keywork: ''
+          keyword: ''
         },
         searchValue: '',
         timer: null
@@ -191,13 +191,13 @@
           console.log(model)
           this.list = []
           if (model) {
-            this.searchModel.keywork = model
-            this.searchModel.product_name = model
+            this.searchModel.keyword = model
+            // this.searchModel.product_name = model
             // this.searchModel.supplier_name = null
             // this.searchModel[model.keyword_type] = this.searchValue
           }else{
-            this.searchModel.product_name = ''
-            this.searchModel.keywork = ''
+            // this.searchModel.product_name = ''
+            this.searchModel.keyword = ''
           }
           this.searchModel.page = 1
           this.total = 0
