@@ -165,7 +165,7 @@ export const routers = [
         name: 'product-compare',
         component: () => import('views/underwriting-health-notice/product-compare'),
         meta: {
-          permission: '/interactive-logs',
+          permission: '/product_compare/entry',
           title: '产品对比',
           header: true,
           menu: true,
@@ -177,7 +177,7 @@ export const routers = [
         name: 'product-compare-lab',
         component: () => import('views/underwriting-health-notice/product-compare/product-compare-lab'),
         meta: {
-          permission: '/interactive-logs',
+          permission: '/product_compare/entry',
           title: '产品对比',
           header: false,
           menu: false,

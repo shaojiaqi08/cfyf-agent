@@ -12,6 +12,7 @@
              :class="{ actived: $route.name === nav.name }"
              v-for="nav in item.children"
              :key="nav.name"
+             v-allowed="[$route.meta.permission]"
              @click="jump(nav.name)">
           {{ nav.meta.title }}
         </div>

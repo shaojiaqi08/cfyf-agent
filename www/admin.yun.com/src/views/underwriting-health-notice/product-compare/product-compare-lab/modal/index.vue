@@ -83,4 +83,8 @@ export default {
     background-color: #FAFAFA;
   }
 }
+
+.mt10{
+  padding-bottom: 20px;
+}
 </style>

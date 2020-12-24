@@ -10,41 +10,41 @@
                  @mouseleave="leftBodyMouseOut">
               <el-scrollbar class="left scroll-bar">
                 <!-- <div class="inner-relation-container"> -->
-                <div class="table-header"><span>产品名称</span>
-                <div class="template-btns-style">
-                  <div>
-                    <span class="btns-template-label-style">险种：</span>
-                    <el-select v-model="btn_insurance_class.default"
-                               placeholder="请选择险种"
-                               class="btns-template-select-style">
-                      <el-option
-                        v-for="item in btn_insurance_class.options"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                  <div>
-                    <span class="btns-template-label-style">端：</span>
-                    <el-select v-model="btn_client.default"
-                               placeholder="请选择端"
-                               class="btns-template-select-style">
-                      <el-option
-                        v-for="item in btn_client.options"
-                        :key="item.label"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                  <div>
-                    <el-button type="primary"
-                               size="small"
-                               :loading="isLoadTemplate"
-                               @click="useTemplateConf()">{{isLoadTemplate ? '获取模板中' : '使用'}}</el-button>
-                  </div>
-                </div>
+                <div class="table-header"><span class="table-header-text">产品名称</span>
+<!--                <div class="template-btns-style">-->
+<!--                  <div>-->
+<!--                    <span class="btns-template-label-style">险种：</span>-->
+<!--                    <el-select v-model="btn_insurance_class.default"-->
+<!--                               placeholder="请选择险种"-->
+<!--                               class="btns-template-select-style">-->
+<!--                      <el-option-->
+<!--                        v-for="item in btn_insurance_class.options"-->
+<!--                        :key="item.label"-->
+<!--                        :label="item.label"-->
+<!--                        :value="item.value">-->
+<!--                      </el-option>-->
+<!--                    </el-select>-->
+<!--                  </div>-->
+<!--                  <div>-->
+<!--                    <span class="btns-template-label-style">端：</span>-->
+<!--                    <el-select v-model="btn_client.default"-->
+<!--                               placeholder="请选择端"-->
+<!--                               class="btns-template-select-style">-->
+<!--                      <el-option-->
+<!--                        v-for="item in btn_client.options"-->
+<!--                        :key="item.label"-->
+<!--                        :label="item.label"-->
+<!--                        :value="item.value">-->
+<!--                      </el-option>-->
+<!--                    </el-select>-->
+<!--                  </div>-->
+<!--                  <div>-->
+<!--                    <el-button type="primary"-->
+<!--                               size="small"-->
+<!--                               :loading="isLoadTemplate"-->
+<!--                               @click="useTemplateConf()">{{isLoadTemplate ? '获取模板中' : '使用'}}</el-button>-->
+<!--                  </div>-->
+<!--                </div>-->
                 </div>
                 <div class="table-body">
                   <!-- columnsOrderArray遍历循环多少种类 -->
@@ -63,12 +63,12 @@
                       >{{ columns[orderKey].label }}</el-checkbox>
                       <span class="move-group">
                         <i
-                          class="button iconfont iconxiao_shangzhixiangjiantou"
+                          class="button iconfont iconxiao16_shangzhixiangjiantou"
                           @click="moveOrder(index, 'up')"
                           v-if="index"
                         ></i>
                         <i
-                          class="button iconfont iconxiao_xiazhixiangjiantou"
+                          class="button iconfont iconxiao16_xiazhixiangjiantou"
                           @click="moveOrder(index, 'down')"
                           v-if="index !== columnsOrderArray.length"
                         ></i>
@@ -132,7 +132,7 @@
                   <div class="table-header">
                     <div class="item" v-for="(item, index) in productTableList" :key="index">
                       <span class="close-btn" @click="removeProduct(index)">
-                        <i class="iconfont iconxiao_yuanxingguanbi"></i>
+                        <i class="iconfont iconxiao16_yuanxingchahao"></i>
                       </span>
                       <div class="table-header-title">{{ item.evaluation_product.product_name }}</div>
                       <div class="table-header-company">{{ item.evaluation_product.supplier_name }}</div>
@@ -239,6 +239,7 @@
       title="调整投被保人信息"
       :visible="adjustInsuredInfoModalShow"
       @close="adjustInsuredInfoModalShow = false"
+      class="product-params-form"
     >
       <el-form label-width="100px" label-position="left">
         <h3>被保人信息</h3>
@@ -1342,7 +1343,7 @@ export default {
       if (val === 'no_no') {
         this.$message({
           type: 'error',
-          message: '清先选择模板条件'
+          message: '请先选择模板条件'
         })
       } else {
         if (this.btn_insurance_class.default === 'no' || this.btn_client.default === 'no') {
@@ -1468,5 +1469,18 @@ export default {
 }
 .table-header{
   width: 100%;
+  height: 100%;
+
+  .table-header-text{
+    display: inline-block;
+    line-height: 150px;
+    height: 150px;
+  }
+}
+
+.product-params-form{
+  .tr{
+    padding-bottom: 20px;
+  }
 }
 </style>

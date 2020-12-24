@@ -4,7 +4,7 @@
     <div class="header">
         产品对比
         <div class="flex-between">
-            <el-input placeholder="搜索产品或保险公司" size="small">
+            <el-input placeholder="搜索产品或保险公司" size="small" v-model="searchValue" @keyup.enter.native="search">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
         </div>
@@ -126,7 +126,8 @@ export default {
         product_name: null,
         supplier_name: null,
         page: 1
-      }
+      },
+      searchValue: ''
     }
   },
   mounted() {
@@ -176,11 +177,12 @@ export default {
       window.open(route.href, '_blank')
     },
     search(model) {
+      // le.log(111)
       if (model) {
         this.list = []
-        this.searchModel.product_name = null
-        this.searchModel.supplier_name = null
-        this.searchModel[model.keyword_type] = model.keyword
+        this.searchModel.product_name = this.searchValue
+        // this.searchModel.supplier_name = null
+        // this.searchModel[model.keyword_type] = this.searchValue
         this.searchModel.page = 1
         this.total = 0
       }
@@ -325,7 +327,7 @@ export default {
                         position: absolute;
                         bottom: 20px;
                         left: 20px;
-                        width: 360px;
+                        right: 20px;
                         height: 36px;
                         background-color: #1F78FF;
                         color: #fff;
