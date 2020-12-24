@@ -4,7 +4,7 @@
     <div class="header">
       产品对比
       <div class="flex-between">
-        <el-input v-model="searchValue" :disabled="isLoading" placeholder="搜索产品或保险公司" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
+        <el-input v-model="searchValue" placeholder="搜索产品或保险公司" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -181,19 +181,19 @@
       },
       search (model) {
         clearTimeout(this.timer)
-
-        this.list = []
-        console.log(model)
-        // if (model) {
-        this.searchModel.product_name = this.searchValue
-        // this.searchModel.supplier_name = null
-        // this.searchModel[model.keyword_type] = this.searchValue
-        // }
-        this.searchModel.page = 1
-        this.total = 0
         this.timer = setTimeout(() => {
+          this.list = []
+          console.log(model)
+          // if (model) {
+          this.searchModel.product_name = this.searchValue
+          // this.searchModel.supplier_name = null
+          // this.searchModel[model.keyword_type] = this.searchValue
+          // }
+          this.searchModel.page = 1
+          this.total = 0
+
           this.getEvaluationProductPageList()
-        }, 400)
+        }, 1000)
 
       },
       getEvaluationProductPageList () {
