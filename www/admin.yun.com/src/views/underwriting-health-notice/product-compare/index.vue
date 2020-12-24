@@ -4,7 +4,7 @@
     <div class="header">
         产品对比
         <div class="flex-between">
-            <el-input placeholder="搜索产品或保险公司" size="small" v-model="searchValue" @keyup.enter.native="search">
+            <el-input placeholder="搜索产品或保险公司" size="small" v-model="searchValue" @keyup.enter.native="search" @input="search">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
         </div>
@@ -127,7 +127,8 @@ export default {
         supplier_name: null,
         page: 1
       },
-      searchValue: ''
+      searchValue: '',
+      timer: null
     }
   },
   mounted() {
@@ -177,16 +178,27 @@ export default {
       window.open(route.href, '_blank')
     },
     search(model) {
-      // le.log(111)
-      if (model) {
-        this.list = []
-        this.searchModel.product_name = this.searchValue
-        // this.searchModel.supplier_name = null
-        // this.searchModel[model.keyword_type] = this.searchValue
-        this.searchModel.page = 1
-        this.total = 0
+      if(this.timer) {
+        clearTimeout(this.timer)
+        return this.timer = null
       }
-      this.getEvaluationProductPageList()
+      this.timer = setTimeout(() => {
+        if (model) {
+          this.list = []
+          this.searchModel.product_name = this.searchValue
+          // this.searchModel.supplier_name = null
+          // this.searchModel[model.keyword_type] = this.searchValue
+          this.searchModel.page = 1
+          this.total = 0
+        }else if(!this.searchValue){
+          this.list = []
+          this.searchModel.product_name = ''
+          this.searchModel.page = 1
+          this.total = 0
+        }
+        this.getEvaluationProductPageList()
+      }, 200)
+
     },
     getEvaluationProductPageList() {
       this.isLoading = true
