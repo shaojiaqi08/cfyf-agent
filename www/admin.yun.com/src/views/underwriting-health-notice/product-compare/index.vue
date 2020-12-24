@@ -4,7 +4,7 @@
     <div class="header">
       产品对比
       <div class="flex-between">
-        <el-input v-model="searchValue" placeholder="搜索产品或保险公司" size="small" :disabled="isLoading" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
+        <el-input v-model="searchValue" :disabled="isLoading" placeholder="搜索产品或保险公司" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -37,7 +37,7 @@
           <el-scrollbar class="scroll-bar" style="height: 800px;">
             <div v-infinite-scroll="load">
               <div v-for="(item, index) in list"
-                   :key="item.id + index"
+                   :key="item.id"
                    class="item">
                 <div class="title">
                   {{ item.product_name }}
@@ -125,10 +125,9 @@
         total: 0,
         searchModel: {
           product_insurance_class: null,
-          // product_name: null,
+          product_name: null,
           supplier_name: null,
-          page: 1,
-          keyword: ''
+          page: 1
         },
         searchValue: '',
         timer: null
@@ -181,28 +180,21 @@
         window.open(route.href, '_blank')
       },
       search (model) {
-        // if(this.timer) {
-        //   clearTimeout(this.timer)
-        //   return this.timer = null
-        // }
-        // this.timer = setTimeout(() => {
         clearTimeout(this.timer)
+
+        this.list = []
+        console.log(model)
+        // if (model) {
+        this.searchModel.product_name = this.searchValue
+        // this.searchModel.supplier_name = null
+        // this.searchModel[model.keyword_type] = this.searchValue
+        // }
+        this.searchModel.page = 1
+        this.total = 0
         this.timer = setTimeout(() => {
-          console.log(model)
-          this.list = []
-          if (model) {
-            this.searchModel.keyword = model
-            // this.searchModel.product_name = model
-            // this.searchModel.supplier_name = null
-            // this.searchModel[model.keyword_type] = this.searchValue
-          }else{
-            // this.searchModel.product_name = ''
-            this.searchModel.keyword = ''
-          }
-          this.searchModel.page = 1
-          this.total = 0
           this.getEvaluationProductPageList()
-        }, 500)
+        }, 400)
+
       },
       getEvaluationProductPageList () {
         this.isLoading = true
