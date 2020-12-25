@@ -464,6 +464,8 @@ export default {
           this.apply_area = []
           this.holder_recognizee_same_person_death_handle = []
           res.map(item => {
+            // 去除guarantee_quota中的<br />字符串
+            item.guarantee_quota = item.guarantee_quota.replace(/<br \/>/g, '')
             this.product_name.push(item.product_name || '-')
             this.company.push(item.company || '-') // 保险公司
             this.insurance_class.push(item.insurance_class || '-')
