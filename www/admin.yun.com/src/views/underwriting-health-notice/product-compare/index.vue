@@ -4,7 +4,7 @@
     <div class="header">
       产品对比
       <div class="flex-between">
-        <el-input v-model="searchValue" placeholder="搜索产品或保险公司" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
+        <el-input v-model="searchValue" placeholder="请输入搜索产品" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
