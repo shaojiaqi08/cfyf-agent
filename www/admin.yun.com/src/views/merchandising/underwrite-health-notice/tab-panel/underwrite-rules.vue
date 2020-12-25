@@ -209,7 +209,9 @@
                 ref="mainTable">
                 <vxe-table-column class-name="gray-column" fixed="left" width="200" align="center" field="name" title="产品名称"></vxe-table-column>
                 <vxe-table-column class-name="gray-column" v-for="(item, index) in columnsData" :key="index" width="280" align="center" field="name" :title="item.product_name">
-                    <template v-slot="{ row }">{{columnsData[index][row.key] || '-'}}</template>
+                    <template v-slot="{ row }">
+                        <span v-html="columnsData[index][row.key] || '-'"></span>
+                    </template>
                 </vxe-table-column>
             </vxe-table>
       </div>
