@@ -4,7 +4,7 @@
     <div class="header">
       产品对比
       <div class="flex-between">
-        <el-input v-model="searchValue" placeholder="请输入搜索产品" size="small" @input="search(searchValue)" @keyup.enter.native="search(searchValue)">
+        <el-input v-model="searchValue" placeholder="请输入搜索产品" size="small" @input="search" @keyup.enter.native="search">
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
         </el-input>
       </div>
@@ -37,7 +37,7 @@
           <el-scrollbar class="scroll-bar" style="height: 800px;">
             <div v-infinite-scroll="load">
               <div v-for="(item, index) in list"
-                   :key="item.id"
+                   :key="item.id + item.product_name + index"
                    class="item">
                 <div class="title">
                   {{ item.product_name }}
@@ -104,6 +104,7 @@
 <script>
   // import HeaderContent from './components/header-content'
   import { getEvaluationProductPageList } from '@/apis/modules/underwriting'
+  import { debounce } from '@/utils'
 
   const insuranceClasses = [
     {value: 'stricken', name: '重疾险'},
@@ -130,7 +131,6 @@
           page: 1
         },
         searchValue: '',
-        timer: null
       }
     },
     mounted () {
@@ -179,23 +179,15 @@
 
         window.open(route.href, '_blank')
       },
-      search (model) {
-        clearTimeout(this.timer)
-        this.timer = setTimeout(() => {
-          this.list = []
-          console.log(model)
-          // if (model) {
-          this.searchModel.product_name = this.searchValue
-          // this.searchModel.supplier_name = null
-          // this.searchModel[model.keyword_type] = this.searchValue
-          // }
-          this.searchModel.page = 1
-          this.total = 0
 
-          this.getEvaluationProductPageList()
-        }, 1000)
+      search: debounce( function () {
+        this.list = []
+        this.searchModel.product_name = this.searchValue
+        this.searchModel.page = 1
+        this.total = 0
 
-      },
+        this.getEvaluationProductPageList()
+      }, 1000),
       getEvaluationProductPageList () {
         this.isLoading = true
         getEvaluationProductPageList(this.searchModel)
