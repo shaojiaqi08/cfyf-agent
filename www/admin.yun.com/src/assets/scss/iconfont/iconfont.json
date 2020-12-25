@@ -6,6 +6,146 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "18875546",
+      "name": "小(16)_对勾",
+      "font_class": "xiao16_duigou",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "18796395",
+      "name": "小(16)_跳转",
+      "font_class": "xiao16_tiaozhuan",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "18762464",
+      "name": "侧边导航(20)_客户",
+      "font_class": "cebiandaohang20_kehu",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "18706993",
+      "name": "小(16)_发送",
+      "font_class": "xiao16_fasong",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "18657924",
+      "name": "中(20)_电脑",
+      "font_class": "zhong20_diannao",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "18657910",
+      "name": "中(20)_手机",
+      "font_class": "zhong20_shouji",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "18657896",
+      "name": "小(16)_详情",
+      "font_class": "xiao16_xiangqing",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "18657897",
+      "name": "小(16)_资料",
+      "font_class": "xiao16_ziliao",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "18657898",
+      "name": "小(16)_关联",
+      "font_class": "xiao16_guanlian",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "17452728",
+      "name": "大(24)_公司资料",
+      "font_class": "da24_gongsiziliao1",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "17452729",
+      "name": "大(24)_团队成员",
+      "font_class": "da24_tuanduichengyuan1",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "17203665",
+      "name": "中(20x36)_方形加号",
+      "font_class": "zhong20x36_fangxingjiahao",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "17203666",
+      "name": "中(20x36)_方形减号",
+      "font_class": "zhong20x36_fangxingjianhao",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "17203675",
+      "name": "侧边导航(20)_用户管理",
+      "font_class": "cebiandaohang20_yonghuguanli1",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "17203680",
+      "name": "大(24)_公司资料",
+      "font_class": "da24_gongsiziliao",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "17203681",
+      "name": "大(24)_团队成员",
+      "font_class": "da24_tuanduichengyuan",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "16959906",
+      "name": "小(16)_长左箭头",
+      "font_class": "xiao16_changzuojiantou",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "16959907",
+      "name": "小(16)_长右箭头",
+      "font_class": "xiao16_changyoujiantou",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "16959807",
+      "name": "特大(28)_上架",
+      "font_class": "teda28_shangjia",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "16959808",
+      "name": "特大(28)_下架",
+      "font_class": "teda28_xiajia",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
       "icon_id": "16161461",
       "name": "侧边导航(20)_业绩",
       "font_class": "cebiandaohang20_yeji1",
@@ -258,13 +398,6 @@
       "unicode_decimal": 58885
     },
     {
-      "icon_id": "15767978",
-      "name": "侧边导航(20)_业绩",
-      "font_class": "cebiandaohang20_yeji",
-      "unicode": "e600",
-      "unicode_decimal": 58880
-    },
-    {
       "icon_id": "15767979",
       "name": "侧边导航(20)_商品",
       "font_class": "cebiandaohang20_shangpin",
@@ -277,13 +410,6 @@
       "font_class": "cebiandaohang20_zhuxiaogongju",
       "unicode": "e602",
       "unicode_decimal": 58882
-    },
-    {
-      "icon_id": "15767981",
-      "name": "侧边导航(20)_用户管理",
-      "font_class": "cebiandaohang20_yonghuguanli",
-      "unicode": "e603",
-      "unicode_decimal": 58883
     }
   ]
 }

@@ -3,7 +3,37 @@ const getView = (name) => () => import(`@/views/${name}/index.vue`)
 
 export const routers = [
   {
-    label: '业绩',
+    label: '商品管理',
+    icon: 'iconcebiandaohang20_shangpin',
+    children: [
+      {
+        path: '/insure-goods',
+        name: 'insure-goods',
+        meta: {
+          title: '保险商品',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/insure-goods'
+        },
+        component: getView('good-manage/insure-goods')
+      },
+      {
+        path: '/rate',
+        name: 'rate',
+        meta: {
+          title: '费率管理',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/rate'
+        },
+        component: getView('good-manage/rate')
+      }
+    ]
+  },
+  {
+    label: '出单业绩',
     icon: 'iconcebiandaohang20_yeji1',
     children: [
       {
@@ -81,36 +111,6 @@ export const routers = [
     ]
   },
   {
-    label: '商品管理',
-    icon: 'iconcebiandaohang20_shangpin',
-    children: [
-      {
-        path: '/insure-goods',
-        name: 'insure-goods',
-        meta: {
-          title: '保险商品',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/insure-goods'
-        },
-        component: getView('good-manage/insure-goods')
-      },
-      {
-        path: '/rate',
-        name: 'rate',
-        meta: {
-          title: '费率管理',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/rate'
-        },
-        component: getView('good-manage/rate')
-      }
-    ]
-  },
-  {
     label: '助销工具',
     icon: 'iconcebiandaohang20_zhuxiaogongju',
     children: [
@@ -183,6 +183,90 @@ export const routers = [
           menu: false,
           show: false,
         }
+      }
+    ]
+  },
+  {
+    label: '客户',
+    icon: 'iconcebiandaohang20_kehu',
+    children: [
+      {
+        path: '/all-customer',
+        name: 'all-customer',
+        meta: {
+          title: '全部客户',
+          header: true,
+          menu: true,
+          show: true,
+          permission: [
+            '/customer/admin/customer_page_list',
+            '/customer/admin/family_page_list'
+          ]
+        },
+        component: () => import('views/customer/all-customer')
+      },
+      {
+        path: '/customer-detail/:id',
+        name: 'customer-detail',
+        meta: {
+          title: '客户详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/customer/admin/customer_detail'
+        },
+        component: () => import('views/customer/customer-detail')
+      },
+      {
+        path: '/customer-family-detail/:id',
+        name: 'customer-family-detail',
+        meta: {
+          title: '客户家庭详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/customer/admin/family_detail'
+        },
+        component: () => import('views/customer/family-detail')
+      },
+      {
+        path: '/my-customer',
+        name: 'my-customer',
+        meta: {
+          title: '我的客户',
+          header: true,
+          menu: true,
+          show: true,
+          permission: [
+              '/customer/sales_customer/page_list',
+              '/customer/sales/family_page_list'
+          ]
+        },
+        component: () => import('views/customer/my-customer')
+      },
+      {
+        path: '/my-customer-detail/:id',
+        name: 'my-customer-detail',
+        meta: {
+          title: '我的客户详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/customer/sales_customer/detail'
+        },
+        component: () => import('views/customer/customer-detail')
+      },
+      {
+        path: '/my-customer-family-detail/:id',
+        name: 'my-customer-family-detail',
+        meta: {
+          title: '我的家庭详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/customer/sales/family_detail'
+        },
+        component: () => import('views/customer/family-detail')
       }
     ]
   },

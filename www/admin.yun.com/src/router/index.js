@@ -28,14 +28,16 @@ router.beforeEach((to, from, next) => {
         ...userInfo,
         permissions: res
       }).then(() => {
-        if (meta.permission && !res.includes(meta.permission)) {
+        if (meta.permission && (Array.isArray(meta.permission) ? !res.some(i => meta.permission.includes(i)) : !res.includes(meta.permission))) {
           next('/user-info')
         }
       })
     })
   }
   // 判断当前页面权限
-  if (meta.permission && userInfo.permissions && !userInfo.permissions.includes(meta.permission)) {
+  if (meta.permission &&
+        userInfo.permissions &&
+        (Array.isArray(meta.permission) ? !userInfo.permissions.some(i => meta.permission.includes(i)) : !userInfo.permissions.includes(meta.permission))) {
     return next('/user-info')
   } else {
     Nprogress.start()

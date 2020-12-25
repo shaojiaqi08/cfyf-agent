@@ -10,22 +10,21 @@
                         :showFilter="false"
                         :listData="list"
                         v-loading="loading"
-                        @change="handleSelProduct"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
           <div class="flex-between pb16">
             <el-input style="width: 100%;"
                       placeholder="搜索保险商品"
                       size="small"
-                      v-model="searchModel.title"
+                      v-model.trim="searchModel.title"
+                      :readonly="loading"
                       clearable
                       @input="debounceAjaxListData">
               <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>
             </el-input>
           </div>
-          <div>
+          <div class="ml20">
             <filter-shell v-model="searchModel.first_product_category_id"
-                          autoFocus
                           autoClose
                           :collapse="false"
                           :textOverflow="false"
@@ -48,20 +47,6 @@
                 @change="ajaxListData"
                 clearable
               ></el-cascader>
-              <!-- <el-select class="block"
-                        v-model="searchModel.first_product_category_id"
-                        clearable
-                        filterable
-                        multiple
-                        @change="ajaxListData"
-                        placeholder="请选择">
-                <el-option
-                        v-for="item in productCategoryData"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                ></el-option>
-              </el-select> -->
               <template v-slot:label>
                 <span>
                     {{ hasValue(searchModel.first_product_category_id) ? getChildName(searchModel.first_product_category_id) : '险种' }}
@@ -124,49 +109,51 @@
           </div>
         </div>
         <template v-slot:list="{row}">
-          <div class="list-item-wrap">
-            <div>{{row.title}}</div>
-            <div class="flex mb16 mt8">
-              <div v-for="(item, index) in row.subtitles" :key="index" style="flex: 1; font-weight: 400;">
-                <text-hidden-ellipsis :width="180" :popoverTip="item">{{item}}</text-hidden-ellipsis>
+          <div class="list-item-content pl16 pr16 pt16 pb16 mb16">
+            <div class="flex-between company-base-info mb16">
+              <img :src="row.company_logo">
+              <div>
+                {{row.title}}
+                <el-row class="mb16 mt8" :gutter="20">
+                  <el-col :span="8" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;">
+                    <text-hidden-ellipsis width="100%" :popoverTip="item"><i class="iconfont iconxiao16_duigou mr4"></i>{{item}}</text-hidden-ellipsis>
+                  </el-col>
+                </el-row>
               </div>
             </div>
             <div class="flex-between">
-              <span>{{row.isCpsData ? '' : `${row.min_price} 元起`}}&nbsp;</span>
-              <div class="flex">
+              <div>
                 <el-link v-if="$checkAuth('/insure-goods/liability') && row.duty_pic_url"
                          type="primary"
                          :underline="false"
+                         class="mr20"
                          @click="handleViewPic(row.duty_pic_url)">
                   <i class="iconfont iconxiao16_baoxianzeren mr4"></i>保险责任
                 </el-link>
                 <el-link v-if="$checkAuth('/insure-goods/sale_notify') && row.inquiry_info"
                          type="primary"
                          :underline="false"
-                         class="ml20"
-                        @click="handleNotify(row.inquiry_info)">
+                         class="mr20"
+                         @click="handleNotify(row.inquiry_info)">
                   <i class="iconfont iconxiao16_shouqiangaozhi  mr4"></i>售前告知
                 </el-link>
+                <el-link v-if="$checkAuth('/insure-goods/product_docs') && row.is_has_docs"
+                         type="primary"
+                         :underline="false"
+                         class="mr20"
+                         @click="handleViewMaterial(row)">
+                  <i class="iconfont iconxiao16_ziliao mr4"></i>产品资料
+                </el-link>
+              </div>
+              <div>
+                <span class="ml16 span-price">{{row.isCpsData ? '' : `${row.min_price} 元起`}}</span>
+                <el-button @click="viewProductDetail(row)" class="ml16" size="small" type="primary" plain><i class="iconfont iconxiao16_xiangqing mr4"></i>产品详情</el-button>
+                <el-button @click="share(row)" type="primary" size="small"><i class="iconfont iconxiao16_fasong mr4"></i>转发客户</el-button>
               </div>
             </div>
           </div>
         </template>
       </side-filter-list>
-      <div class="right">
-        <div class="product-button-group" v-if="productObj.product_type === 'cps'">
-          <el-button type="primary"
-                     size="small"
-                     v-clipboard:success="onCopy"
-                     v-clipboard:error="onError"
-                     v-clipboard:copy="productObj.share_link"
-                     plain
-                     round>复制链接</el-button>
-          <el-button @click="share" type="primary" size="small" round>转发客户</el-button>
-        </div>
-        <iframe v-if="productUrl"
-                :style="{ height: productObj.product_type === 'cps' ? `94%` : `100%` }"
-                :src="`${productUrl}&user_token=${$store.state.users.userInfo.agent_token}&platform=crm_web`"></iframe>
-      </div>
     </div>
     <el-dialog title="售前告知" :visible.sync="notifyVisible" width="480px">
       <div class="pb20 fs14" style="line-height: 1.45" ref="notifyContent">
@@ -178,53 +165,78 @@
                    v-clipboard:copy="notifyText"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="保险责任" :visible.sync="picVisible" width="480px" class="pic-dialog">
+    <el-dialog title="保险责任" :visible.sync="picVisible" width="1200px" class="pic-dialog">
       <el-image :src="picUrl" class="mb20"></el-image>
       <div slot="footer" class="flex-center">
-        <el-button type="primary"
-             @click="download"><i class="iconfont iconxiao16_xiazai mr4"></i>下载保险责任图片</el-button>
+        <el-button type="primary" @click="download"><i class="iconfont iconxiao16_xiazai mr4"></i>下载保险责任图片</el-button>
       </div>
     </el-dialog>
     <el-dialog
-        title="正在分享"
+        title="转发客户"
         :visible.sync="dialogVisible"
-        width="30%"
-        class="dark-dialog"
-        style="text-align: center;">
-          <div class="share-title-tips">正在分享</div>
-          <div style="margin-bottom: 20px !important;
-      color: #333 !important;
-      font-size: 18px !important;
-      font-weight: 500 !important;">{{ productObj.title }}</div>
-          <img v-if="productObj.share_link"
-              :src="qrcodeUrl"
-              width="200"
-              height="200">
-          <p style="color: #999;">请使用微信扫描上方二维码后分享给客户</p>
-      </el-dialog>
+        width="480px"
+        class="dark-dialog">
+      <div style="margin-bottom: 10px !important;
+        color: #333 !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;">{{ productObj.title }}</div>
+        <el-image
+          :src="qrcodeUrl"
+          style="width: 200px;height: 200px">
+          <div slot="error" style="width:200px;height:200px" class="flex-center">
+            <i class="el-icon-loading fs28"></i>
+          </div>
+        </el-image>
+        <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
+    </el-dialog>
+    <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px" destroy-on-close>
+      <div v-loading="docsLoading" style="min-height: 200px;max-height: 600px;">
+        <div class="category-wrap" v-for="(category, index) in productDocsData" :key="index">
+          <p>{{category.name}}</p>
+          <div class="docs-wrap flex flex-between" v-for="(doc, idx) in category.docs" :key="idx">
+            <div class="flex">
+              <i class="iconfont iconxiao16_ziliao mr4"></i>
+              <span>{{doc.name}}</span>
+              <span>{{'.' + doc.ext_name}}</span>
+            </div>
+            <el-link type="primary" @click="downloadDocs(doc)">下载</el-link>
+          </div>
+        </div>
+        <div v-if="productDocsData.length === 0" class="flex-center">
+          暂无数据
+        </div>
+      </div>
+    </el-dialog>
+    <product-detail-dialog :visible.sync="detaiDialoglVisible" :product-obj="productObj"  @share="share" @close="detailDialogClose"></product-detail-dialog>
   </div>
 </template>
 
 <script>
-import { getInsureApiList, getInsureCpsList} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
 import SideFilterList from '@/components/side-filter-list'
 import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
-import { debounce, downloadFrameA} from "@/utils";
+import { debounce, downloadFrameA } from "@/utils";
+import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
+import qs from 'qs'
 export default {
   name: 'insure-goods',
   components: {
     FilterShell,
     SideFilterList,
-    TextHiddenEllipsis
+    TextHiddenEllipsis,
+    ProductDetailDialog
   },
   data() {
     return {
+      docsLoading: false,
+      detaiDialoglVisible: false,
       dialogVisible: false,
       picVisible: false,
+      materialVisible: false,
       qrcodeUrl: '',
       picUrl: '',
       productUrl: '',
@@ -247,10 +259,21 @@ export default {
       supplierData: [],
       productCategoryData: [],
       productAgeData: [],
-      value: []
+      value: [],
+      productDocsData: []
     };
   },
   methods: {
+    downloadDocs({ download_file_url }) {
+      window.open(download_file_url)
+    },
+    detailDialogClose() {
+      this.productObj = {}
+    },
+    viewProductDetail(obj) {
+      this.productObj = obj
+      this.detaiDialoglVisible = true
+    },
     getChildName(id) {
       const [firstId, secondId] = id
       const firstName = this.productCategoryData.find(i => i.id === firstId).name
@@ -270,13 +293,56 @@ export default {
       this.notifyText = text
       this.notifyVisible = true
     },
+    // 查看产品资料
+    handleViewMaterial(row) {
+      this.materialVisible = true
+      const { product_id, product_type, id } = row
+      this.getProductDocs(product_type === 'cps' ? id : product_id, product_type)
+    },
+    getProductDocs(product_id, product_type) {
+      this.docsLoading = true
+      this.productDocsData = []
+      getProductDocs({
+        product_id,
+        product_type
+      }).then(res => {
+        // 处理文件名和后缀
+        res.forEach(cate => {
+          cate.docs.forEach(doc => {
+            const { name } = doc
+            doc.ext_name = ''
+            const match = name.match(/.([a-zA-Z]+)$/)
+            if (match) {
+              doc.ext_name = match[1].toLowerCase()
+              doc.name = doc.name = name.replace(/.[a-zA-Z]+$/, '')
+            }
+          })
+        })
+        this.productDocsData = res
+      }).finally(() => {
+        this.docsLoading = false
+      })
+    },
     copy() {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
-    copyProductLink() {
-
-    },
-    share() {
+    share(obj) {
+      const { product_id, product_type } = obj
+      if (product_type === 'cps') {
+        QRCode.toDataURL(obj.share_link).then(result => {
+          this.qrcodeUrl = result
+        })
+      } else {
+        getProductShareLink({ product_id, product_type }).then(res => {
+          const urlObj = new URL(res.share_link)
+          const params = qs.parse(urlObj.search.slice(1))
+          const url = `${urlObj.origin}/vue/@@/product/api-share/?scode=${params.scode}`
+          QRCode.toDataURL(url).then(result => {
+            this.qrcodeUrl = result
+          })
+        })
+      }
+      this.productObj = obj
       this.dialogVisible = true
     },
     handleSelProduct(obj) {
@@ -320,7 +386,6 @@ export default {
           this.list = [...apiData, ...cpsData.map(i => ({
             ...i,
             title: i.title,
-            duty_pic_url: i.share_cover,
             web_url: i.link,
             isCpsData: true
           }))]
@@ -355,17 +420,8 @@ export default {
       }
     },
     dialogVisible(v) {
-      if (v) {
-        const { target_share_link, agent_id, share_at, cps_product_id } = this.productObj
-        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}`
-        // const code = this.product.share_link.replace(/target_url=[\w%.-]*&/, '').replace(/product_name=[^&]*&/, '')
-        QRCode.toDataURL(url)
-        .then(result => {
-          this.qrcodeUrl = result
-        })
-        .catch(err => {
-          console.error(err)
-        })
+      if (!v) {
+        this.qrcodeUrl = ''
       }
     }
   },
@@ -382,9 +438,16 @@ export default {
     font-size: 14px;
     color: #999;
   }
+  ::v-deep .el-dialog__body {
+    text-align: center;
+  }
 }
 .insure-goods-container {
   padding: 0 20px 0 20px;
+  ::v-deep .text-hidden-ellipsis-component .icon{
+    color: #999;
+  }
+
   .header {
     font-size: 16px;
     font-weight: bold;
@@ -392,7 +455,7 @@ export default {
     height: 56px;
     background: #f5f5f5;
     border-radius: 4px 4px 0px 0px;
-    border: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -405,73 +468,63 @@ export default {
     display: flex;
     background: #fff;
     ::v-deep .side-filter-container {
-      .filter-wrap{
+      .filter-wrap {
         padding: 16px;
-        // display: flex;
-        // justify-content: space-between;
-        // align-items: center;
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .el-scrollbar{
-        padding-top: 0;
-      }
-      .list-item{
-        overflow: visible;
-        &.active{
-          border-left: 3px solid #1F78FF;
+        display: flex;
+        align-items: center;
+
+        .flex-between {
+          padding: 0 !important;
+          input {
+            width: 400px;
+          }
         }
       }
-      .list-item-wrap{
+
+      .el-scrollbar {
+        padding-top: 0;
+      }
+
+      .list-item {
+        overflow: visible;
+        border-bottom: transparent !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        cursor: initial !important;
+
+        .list-item-content {
+          border: 1px solid #E6E6E6;
+          border-radius: 4px;
+        }
+
+        &:hover, &.active {
+          background-color: #fff !important;
+        }
+      }
+
+      .list-item-content {
         width: 100%;
-        &>div:first-of-type{
+        border: transparent;
+
+        & > div:first-of-type {
           line-height: 24px;
           font-size: 16px;
           color: #1A1A1A;
           font-weight: bold;
           /*margin-bottom: 8px;*/
         }
-        &>div:nth-of-type(2){
-          line-height: 20px;
-          color:#999;
+
+        .span-price {
+          color: #FF4C4C;
+          font-size: 16px;
+          font-weight: bold;
+          line-height: 24px;
         }
-        &>div:nth-of-type(3){
-          &>span{
-            color:#FF4C4C;
-            font-size: 16px;
-            font-weight: bold;
-            line-height: 24px;
-          }
-        }
-      }
-    }
-    .right{
-      position: relative;
-      flex: 1;
-      height: 100%;
-      border-left: 1px solid #E6E6E6;
-      padding: 16px 0;
-      .product-button-group {
-        position: absolute;
-        padding: 8px 0;
-        bottom: 15px;
-        left: calc(50% - 180px);
-        width: 360px;
-        height: 48px;
-        text-align: center;
-        background-color: #fff;
-      }
-      &>iframe{
-        height: 100%;
-        width: 360px;
-        border-radius:4px;
-        border:1px solid #e6e6e6;
-        margin: auto;
-        display: block;
       }
     }
   }
   .left-filter-list {
-    width: 620px;
+    width: 100%;
     ::v-deep .el-scrollbar {
       .list-item-wrap{
         padding: 0;
@@ -490,7 +543,6 @@ export default {
         }
       }
     }
-
   }
   & ::v-deep .el-scrollbar {
     height: calc(100vh - 78px);
@@ -499,9 +551,23 @@ export default {
     & .el-scrollbar__wrap {
       overflow-x: hidden !important;
     }
-
     .el-scrollbar__bar {
       z-index: 999;
+    }
+    .company-base-info {
+      align-items: center;
+      & > img {
+        width: 59px;
+      }
+      & > div {
+        height: 59px;
+        flex: 1;
+        margin-left: 20px;
+        span {
+          line-height: 20px;
+          color: #999;
+        }
+      }
     }
   }
 
@@ -572,5 +638,41 @@ export default {
 }
 ::v-deep.filter-popover{
   padding: 0;
+}
+::v-deep.docs-dialog {
+  .category-wrap {
+    padding-top: 8px;
+    &:first-of-type {
+      padding-top: 0;
+    }
+    & > p {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1A1A1A;
+      margin: 0 0 12px 0;
+      padding-bottom: 12px;
+      display: block;
+      border-bottom: 1px solid #e6e6e6;
+    }
+    .docs-wrap {
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #e6e6e6;
+      color: #1A1A1A;
+      font-size: 14px;
+      & > div:first-of-type {
+        overflow: hidden;
+        flex: 1;
+        padding-right: 24px;
+      }
+      .doc-name {
+        flex: 1;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
 }
 </style>

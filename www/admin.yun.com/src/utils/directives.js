@@ -58,7 +58,7 @@ Vue.directive('table-infinite-scroll', {
     const scrollHandle = debounce(() => {
       const {scrollHeight, scrollTop, offsetHeight} = scrollWrap
       if (scrollHeight > offsetHeight && offsetHeight + scrollTop >= scrollHeight) {
-        binding.value()
+        binding.value(binding.arg)
       }
     }, 300)
     scrollWrap.addEventListener('scroll', scrollHandle)
