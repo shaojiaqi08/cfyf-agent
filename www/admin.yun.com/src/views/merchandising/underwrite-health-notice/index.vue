@@ -9,9 +9,7 @@
             </el-tabs>
         </div>
         <div class="content">
-            <keep-alive>
-                <Component :is="tabIndex||'none'"></Component>
-            </keep-alive>
+            <Component :is="tabIndex||'none'"></Component>
         </div>
     </div>
 </template>

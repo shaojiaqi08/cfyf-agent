@@ -29,16 +29,16 @@
     <div class="detail-wrap health-search" v-loading="detailLoading">
       <template v-if="tableData && tableData.length">
         <div class="head flex-between">
-          <p>产品健告</p>
+          <p>&nbsp;</p>
           <div class="flex-center">
             调整字号
             <el-input-number class="ml16" :min="12" :max="24" v-model="fontSize" size="small"></el-input-number>
             <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary" @click="createImg" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
           </div>
         </div>
-        <el-scrollbar style="height: 100%">
+        <el-scrollbar style="height: 100%" class="table-box">
           <div ref="imageDom">
-            <el-table :data="detailTableData" border :style="{ fontSize: fontSize + 'px' }">
+            <el-table :data="detailTableData" border :style="{ fontSize: fontSize + 'px' }" :height="tableHeight">
               <el-table-column class-name="p16">
                 <template #header>
                   <h3 style="color: #333333; margin: 0; line-height: 38px">{{ selVal }}</h3>
@@ -115,6 +115,8 @@ export default {
         }
       ],
       fontSize: 14,
+      isCreateImgLock: false,
+      tableHeight: 0
     };
   },
   computed: {
@@ -130,7 +132,13 @@ export default {
       if (this.isCreateImgLock) {
         return false
       }
+      this.detailLoading = true
       this.isCreateImgLock = true
+      let dom = this.$refs.imageDom
+      let eltableHeight = dom.getElementsByClassName('el-table__body-wrapper')[0].style.height
+      dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = dom.getElementsByClassName('el-table__body-wrapper')[0].getElementsByClassName('el-table__body')[0].scrollHeight + 'px'
+      let parentHeight = dom.getElementsByClassName('el-table')[0].style.height
+      dom.getElementsByClassName('el-table')[0].style.height = (dom.getElementsByClassName('el-table__header-wrapper')[0].clientHeight + dom.getElementsByClassName('el-table__body-wrapper')[0].clientHeight) + 'px'
       this.$nextTick(() => {
         let self = this
         console.log(this)
@@ -141,6 +149,8 @@ export default {
           let eleLink = document.createElement('a')
           eleLink.href = self.imgUrl // 转换后的图片地址
           eleLink.download = self.curProduct.product_name
+          dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = eltableHeight
+          dom.getElementsByClassName('el-table')[0].style.height = parentHeight
           // 触发点击
           document.body.appendChild(eleLink)
           eleLink.click()
@@ -148,6 +158,7 @@ export default {
           document.body.removeChild(eleLink)
         })
         self.isCreateImgLock = false
+        self.loadingDetail = false
       })
     },
     selectItem(item) {
@@ -200,7 +211,10 @@ export default {
       })
         .then((res) => {
           this.detailTableData = res
-          console.log(this.detailTableData)
+          this.$nextTick(() => {
+            this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight
+            // this.tableHeight = 800
+          })
         })
         .finally(() => {
           this.loadingDetail = false

@@ -134,7 +134,7 @@
                 </div>
                 <span class="dropdown-link" slot="reference">
                   <template>
-                    <!-- {{(searchText) ? searchText : '筛选'}} 
+                    <!-- {{(searchText) ? searchText : '筛选'}}
                     <el-button
                       slot="reference"
                       :class="['button-small-select', { hasValue: searchText }]"
@@ -160,7 +160,7 @@
         </div>
       </div>
     </side-filter-list>
-    <div class="detail-wrap underwrite-search" v-loading="detailLoading" ref="detailWrap">
+    <div class="detail-wrap underwrite-search" v-loading="detailLoading || loadingDetail" ref="detailWrap">
       <template v-if="tableData.length > 0">
         <div class="head flex-between">
           <p>{{ selVal }}</p>
@@ -183,9 +183,8 @@
           <el-table
             border
             :data="detailTableData"
-            height="81vh"
-            class="not-select"
-            v-loading="loadingDetail"
+            height="80vh"
+            class="not-select main-table"
             :style="{fontSize: setFontSize + 'px'}"
           >
             <el-table-column label="序号" prop="sequence_number" align="center" width="100px"></el-table-column>
@@ -256,7 +255,7 @@
             @keyup.enter.native="supperRequestList()"
             class="supper-search-input">
           </el-input>
-          
+
           <el-radio-group
             size="mini"
             v-model="supperFormData.isReverse"
@@ -592,7 +591,7 @@ export default {
         this.maxHeight = wrap.offsetHeight - 64;
       }
     }, 300),
-    // new 
+    // new
      conditionText() {
       let str = ''
       if (this.formData.product_name) {
@@ -660,8 +659,10 @@ export default {
         let dom
         if (ref === 'imageDom') {
           dom = this.$refs.imageDom
+          this.loadingDetail = true
         } else {
           dom = this.$refs.supperImageDom
+          this.supperLoading = true
         }
         let lastWidth = dom.clientWidth
         let lastHeight = dom.clientHeight
@@ -672,7 +673,7 @@ export default {
         dom.getElementsByClassName('el-table')[0].style.height = (dom.getElementsByClassName('el-table__body')[0].clientHeight + dom.getElementsByClassName('el-table__header-wrapper')[0].clientHeight) + 'px'
         dom.style.height = (dom.getElementsByClassName('el-table__body')[0].clientHeight + dom.getElementsByClassName('el-table__header-wrapper')[0].clientHeight) + 'px'
         dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = (dom.getElementsByClassName('el-table__body')[0].clientHeight) + 'px'
-        html2canvas(dom).then(canvas => {
+        html2canvas(dom).then(canvas => { // eslint-disable-line
           // 转成图片，生成图片地址
           self.imgUrl = canvas.toDataURL('image/jpeg', 0.5)
           // 创建隐藏的可下载链接
@@ -689,6 +690,8 @@ export default {
           // 然后移除
           document.body.removeChild(eleLink)
           self.isCreateImgLock = false
+          self.loadingDetail = false
+          self.supperLoading = false
         })
       })
     },
@@ -1404,4 +1407,9 @@ export default {
 .ml16{
   margin-left: 16px;
 }
+::v-deep .main-table {
+    .el-loading-mask {
+      height: 80vh;
+    }
+  }
 </style>
