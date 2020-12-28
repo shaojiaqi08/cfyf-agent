@@ -179,11 +179,11 @@
             </div>
           </div>
         </div>
-        <div ref="imageDom">
+        <div ref="imageDom" style="height: calc(100% - 32px)">
           <el-table
             border
             :data="detailTableData"
-            height="80vh"
+            height="100%"
             class="not-select main-table"
             :style="{fontSize: setFontSize + 'px'}"
           >
@@ -664,8 +664,7 @@ export default {
           dom = this.$refs.supperImageDom
           this.supperLoading = true
         }
-        let lastWidth = dom.clientWidth
-        let lastHeight = dom.clientHeight
+        let lastStyleTxt = dom.style.cssText
         let eltableHeight = dom.getElementsByClassName('el-table')[0].style.height
         let eltablewrapperHeight = dom.getElementsByClassName('el-table__body-wrapper')[0].style.height
         console.log(eltablewrapperHeight)
@@ -681,8 +680,8 @@ export default {
           eleLink.href = self.imgUrl // 转换后的图片地址
           eleLink.download = (self.curProduct && self.curProduct.product_name) || 'img'
           // 触发点击
-          dom.style.width = lastWidth + 'px'
-          dom.style.height = lastHeight + 'px'
+          // 还原容器style
+          dom.style.cssText = lastStyleTxt
           dom.getElementsByClassName('el-table')[0].style.height = eltableHeight
           dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = eltablewrapperHeight
           document.body.appendChild(eleLink)

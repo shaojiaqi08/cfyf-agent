@@ -127,6 +127,9 @@ export default {
     }
   },
   methods: {
+    setTableHeight() {
+      this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight
+    },
     // 生成图片
     createImg() {
       if (this.isCreateImgLock) {
@@ -158,7 +161,7 @@ export default {
           document.body.removeChild(eleLink)
         })
         self.isCreateImgLock = false
-        self.loadingDetail = false
+        self.detailLoading = false
       })
     },
     selectItem(item) {
@@ -199,7 +202,7 @@ export default {
     },
     requestDetail() {
       this.detailTableData = []
-      this.loadingDetail = true
+      this.detailLoading = true
       var notice = this.formData.notice.filter(function (item) {
         return item && item.trim()
       })
@@ -212,12 +215,12 @@ export default {
         .then((res) => {
           this.detailTableData = res
           this.$nextTick(() => {
-            this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight
+            this.setTableHeight()
             // this.tableHeight = 800
           })
         })
         .finally(() => {
-          this.loadingDetail = false
+          this.detailLoading = false
         })
     },
     search() {
@@ -288,6 +291,12 @@ export default {
   created() {
     this.requestList()
   },
+  mounted() {
+    window.addEventListener('resize', this.setTableHeight)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setTableHeight)
+  }
 };
 </script>
 
