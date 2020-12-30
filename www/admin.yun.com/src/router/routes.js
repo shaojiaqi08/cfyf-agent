@@ -159,6 +159,30 @@ export const routers = [
           permission: '/interactive-logs'
         },
         component: () => import('views/merchandising/interactive-logs')
+      },
+      {
+        path: '/product-compare',
+        name: 'product-compare',
+        component: () => import('views/underwriting-health-notice/product-compare'),
+        meta: {
+          permission: '/product_compare/entry',
+          title: '产品对比',
+          header: true,
+          menu: true,
+          show: true,
+        }
+      },
+      {
+        path: '/product-compare-lab',
+        name: 'product-compare-lab',
+        component: () => import('views/underwriting-health-notice/product-compare/product-compare-lab'),
+        meta: {
+          permission: '/product_compare/entry',
+          title: '产品对比',
+          header: false,
+          menu: false,
+          show: false,
+        }
       }
     ]
   },

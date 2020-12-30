@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta name="format-detection" content="telephone=no">
+    <title></title>
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    html {
+      background-color: #f4f7fd;
+    }
+    .container {
+      position: relative;
+      margin-top: 100px;
+      margin-left: 30px;
+      margin-bottom: 50px;
+    }
+    .watermark {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url(watermark.jpg);
+      background-size: 45%;
+      background-position-x: -20%;
+      opacity: 1;
+      z-index: 99;
+    }
+    .table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      /* width: 600px; */
+      text-align: center;
+    }
+    .table-caption {
+      padding: 16px 0;
+      text-align: center;
+      background-color: #FAFAFA;
+      border: 1px solid #E6E6E6;
+    }
+    .table-header {
+      background-color: #FFF9F2;
+    }
+    .table-header-left {
+      width: 480px;
+      height: 156px;
+      color: #333333;
+      font-size: 16px;
+      border: 1px solid rgba(255, 144, 0, 0.2);
+      border-top: 0;
+    }
+    .table-header-right {
+      padding: 20px;
+      width: 280px;
+      height: 156px;
+      color: #333333;
+      font-size: 16px;
+      border: 1px solid rgba(255, 144, 0, 0.2);
+      border-left: 0;
+      border-top: 0;
+    }
+    .company-name {
+      margin-top: 6px;
+      color: #333333;
+      font-size: 14px;
+      font-weight: 400;
+    }
+    .table-row {
+      height: 46px;
+    }
+    .table-row.head {
+      background-color: #FAFAFA;
+      border: 1px solid #E6E6E6;
+      border-top: 0;
+      font-size: 16px;
+      color: #FF9000;
+    }
+    .table-row.head .left-item {
+      border-right: 1px solid #E6E6E6;
+    }
+    .table-row.body .left-item {
+      padding: 10px;
+      background-color: #FFF9F2;
+      border: 1px solid rgba(255,144,0,0.2);
+      border-top: 0;
+      font-weight: 400;
+      color: #FF9000;
+    }
+    .table-row.body .left-item.split {
+      width: 240px;
+    }
+    .table-row.body .left-item.has-children {
+      /* display: flex;
+      align-items: center; */
+      position: relative;
+    }
+    .has-children .title {
+      /* flex: 1 50%; */
+      float: left;
+      width: 50%;
+      /* height: 138px; */
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .table-row.body .childrens {
+      display: inline-block;
+      width: 50%;
+      top: 0;
+      right: 0;
+      position: absolute;
+    }
+    .table-row.body .childrens .child-item {
+      height: 46px;
+      padding: 10px 16px;
+      border-left: 1px solid rgba(255,144,0,0.2);
+      border-bottom: 1px solid rgba(255,144,0,0.2);
+    }
+    .table-row.body .childrens .child-item:last-child {
+      border-bottom: 0;
+    }
+    .table-row.body .right-item {
+      padding: 10px;
+      background-color: #fff;
+      font-weight: 400;
+      border-right: 1px solid #E6E6E6;
+      border-bottom: 1px solid #E6E6E6;
+    }
+    .table-row.body:nth-child(2n - 1) .right-item {
+      background-color: #FAFAFA;
+    }
+    .right-item .child-item {
+      height: 46px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #E6E6E6;
+    }
+    .right-item .child-item:nth-child(2n) {
+      background-color: #FAFAFA;
+    }
+    .right-item .child-item:nth-child(2n - 1) {
+      background-color: #fff;
+    }
+    .right-item .child-item:last-child {
+      border-bottom: 0;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <!-- <div class="watermark"></div>  -->
+      <table style="border-collapse: collapse; border-spacing: 0;">
+        <caption class="table-caption" align="top">产品对比</caption>
+        <thead class="table-header">
+          <tr>
+            <th class="table-header-left" colspan="2">
+              产品名称
+            </th>
+            <th class="table-header-right">
+              健康保（多倍版）重大疾病保险商品超长字段
+              <div class="company-name">
+                复星联合健康
+              </div>
+            </th>
+            <th class="table-header-right">
+              健康保（多倍版）重大疾病保险商品超长字段
+              <div class="company-name">
+                复星联合健康
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-row head">
+            <th class="left-item" colspan="2">
+              保费测算（被保人参数：30岁，男性，有社保）
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item" colspan="2">产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item" colspan="2">产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item" colspan="2">产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item split" rowspan="2">产品标签</th>
+            <th class="left-item split">产品标签产品标签,产品标签产品标签,产品标签产品标签,产品标签产品标签产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item split">产品标签产品标签,产品标签产品标签,产品标签产品标签,产品标签产品标签产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <!-- <tr class="table-row body">
+            <th class="left-item" rowspan="2">产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr> -->
+        </tbody>
+      </table>
+      <table class="table">
+        <caption class="table-caption" align="top">产品对比</caption>
+        <thead class="table-header">
+          <tr>
+            <th class="table-header-left">
+              产品名称
+            </th>
+            <th class="table-header-right">
+              健康保（多倍版）重大疾病保险商品超长字段
+              <div class="company-name">
+                复星联合健康
+              </div>
+            </th>
+            <th class="table-header-right">
+              健康保（多倍版）重大疾病保险商品超长字段
+              <div class="company-name">
+                复星联合健康
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-row head">
+            <th class="left-item">
+              保费测算（被保人参数：30岁，男性，有社保）
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">产品标签</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">缴费期限</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">保障期限</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">基本保额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">首年保费</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">备注说明</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              疾病保障内容
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                重疾保障
+              </div>
+              <div class="childrens">
+                <div class="child-item">重疾种类</div>
+                <div class="child-item">病种分组</div>
+                <div class="child-item">病种分组详情</div>
+                <div class="child-item">赔付次数</div>
+                <div class="child-item">赔付间隔期</div>
+                <div class="child-item">赔付比例</div>
+                <div class="child-item">赔付比例被保人重症豁免</div>
+                <div class="child-item">额外赔付</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                恶性肿瘤额外赔付
+              </div>
+              <div class="childrens">
+                <div class="child-item">是否涵盖</div>
+                <div class="child-item">赔付次数</div>
+                <div class="child-item">赔付比例</div>
+                <div class="child-item">赔付间隔期</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                中症保障
+              </div>
+              <div class="childrens">
+                <div class="child-item">中症类型</div>
+                <div class="child-item">病种分组</div>
+                <div class="child-item">病种分组详情</div>
+                <div class="child-item">赔付次数</div>
+                <div class="child-item">赔付间隔期</div>
+                <div class="child-item">赔付比例</div>
+                <div class="child-item">被保人中症豁免</div>
+                <div class="child-item">高发中症</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                轻症保障
+              </div>
+              <div class="childrens">
+                <div class="child-item">轻症类型</div>
+                <div class="child-item">病种分组</div>
+                <div class="child-item">病种分组详情</div>
+                <div class="child-item">赔付次数</div>
+                <div class="child-item">赔付间隔期</div>
+                <div class="child-item">赔付比例</div>
+                <div class="child-item">被保人轻症豁免</div>
+                <div class="child-item">高发轻症</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                特定疾病
+              </div>
+              <div class="childrens">
+                <div class="child-item">少儿特定疾病</div>
+                <div class="child-item">男性特定疾病</div>
+                <div class="child-item">女性特定疾病</div>
+                <div class="child-item">特定高龄疾病</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">被保人豁免（轻症/中症/重症/疾病终末）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item has-children">
+              <div class="title">
+                投保人豁免
+              </div>
+              <div class="childrens">
+                <div class="child-item">投保人豁免</div>
+                <div class="child-item">轻症豁免&疾病种类</div>
+                <div class="child-item">中症豁免&疾病种类</div>
+                <div class="child-item">重症豁免&疾病种类</div>
+                <div class="child-item">身故/全残/疾病终末期豁免</div>
+                <div class="child-item">占用风险保额</div>
+                <div class="child-item">计算公式</div>
+              </div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+            <th class="right-item">
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+              <div class="child-item">-</div>
+            </th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              身故/全残/终末保障内容
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">身故保障（18岁后）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">全残保障（18岁后）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">疾病终末期保障</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否可附加两全险</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">两全险返还收益率IRR</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外身故及伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">附加意外身故及伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              意外医疗保障内容
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外医疗最高保额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外医疗免赔额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外医疗机构</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">社保范围内（经社保报销）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">社保范围外（经社保报销）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">社保范围内（未经社保报销）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">社保范围外（未经社保报销）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">自费药</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外住院津贴赔付额度</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外住院津贴免赔天数</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">意外住院津贴最长可赔付天数</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              其他交通工具身故/伤残
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">公共交通意外是否和普通意外身故或伤残责任叠加赔付</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">水运公共交通意外身故或伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">轨道交通意外身故或伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">航空意外身故或伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">营运汽车（客运汽车/公共汽车/出租车等）意外身故及伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">网约车意外身故或伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">非运营汽车意外身故或伤残</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              医疗保障责任
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">医院范围</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">住院医疗</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">特殊门诊</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">门诊手术</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">住院前后门急诊</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">住院津贴</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">其他医疗</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">质子重离子</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">既往病症</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">免赔额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">报销比例</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">保单到期仍未结束治疗 最多可承担自合同到期日后多少天的医疗</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">其他</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              其他保障 
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">特色保障责任</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">猝死责任保额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              等待期信息
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期内的描述</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">首次确诊描述</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期内确诊轻症</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期内确诊中症</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期内确诊重症</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              投保规则
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">产品销售区域（香港大陆）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">可投保年龄（被保人）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">可投保年龄（投保人）</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">最高保额</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">保障期限</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">缴费期限</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">犹豫期</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">等待期</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">职业类型</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">生效日</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              其他信息
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否有智能核保</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否有邮件核保</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否有风控系统</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否有人工核保</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">支持投保的证件</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">备注</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              增值服务
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">特色服务</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">住院垫付/直付</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">就医绿通</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              续保信息
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">是否保证续保</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">可续保至</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">续保条件</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row head">
+            <th class="left-item">
+              免责条款健康告知
+            </th>
+            <th colspan="2"></th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">免责条款</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+          <tr class="table-row body">
+            <th class="left-item">健康告知</th>
+            <th class="right-item">-</th>
+            <th class="right-item">-</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

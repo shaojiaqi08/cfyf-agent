@@ -34,3 +34,5 @@ export const getCalculatePremium = params => post('/agent/proxy/product_evaluati
 export const getProductsCompareInfo = params => post('/agent/proxy/product_evaluation/get_products_compare_info', params)
 // 生成产品对比图
 export const getProductEvaluationImage = params => post('/agent/proxy/product_evaluation/show_image', params)
+// 获取产品对比常用模板 web/v1/product_evaluation/compare_check_list?insurance_class=stricken&client=adviser
+export const getProductEvaluationTemplateConf = params => get('/agent/proxy/product_evaluation/compare_check_list', params)
