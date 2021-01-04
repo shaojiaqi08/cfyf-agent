@@ -1,4 +1,5 @@
 import { policyStatus } from '@/enums/common'
+import { debounce } from '@/utils'
 
 export default {
   methods: {
@@ -14,6 +15,17 @@ export default {
         default:
           return { color: `#000` }
       }
-    }
+    },
+    calcTableHeight: debounce(function() {
+      const bodyHeight = document.body.clientHeight
+      const { top } = this.$refs.table.$el.getBoundingClientRect()
+      this.tableMaxHeight = bodyHeight - top - 10
+    }, 300)
   },
+  mounted() {
+    window.addEventListener('resize', this.calcTableHeight)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.calcTableHeight)
+  }
 }

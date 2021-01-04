@@ -333,11 +333,12 @@
         ></el-button>
       </div>
       <el-table :data="list"
-                height="calc(100% - 122px)"
+                :max-height="tableMaxHeight"
                 border
                 stripe
                 v-table-infinite-scroll="scroll2Bottom"
                 v-loading="tableLoading"
+                ref="table"
                 :row-style="rowStyleFormat">
         <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
         <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
@@ -441,7 +442,8 @@ export default {
         product_insurance_class: [],
         date_range: [+new Date(), +new Date()],
         visit_status: []
-      }
+      },
+      tableMaxHeight: null
     };
   },
   methods: {
@@ -497,9 +499,10 @@ export default {
       this.tableLoading = true
       this.statisticLoading = true
       this.page = 1
-      this.list = []
       this.total = 0
       this.statisticInfo = {}
+      // 重置滚动条
+      this.$refs.table.$el.querySelector('.el-table__body-wrapper').scrollTo(0, 0)
       this.getTeamPolicyList()
       this.getTeamPolicyStatistics()
     }, 300),
@@ -528,11 +531,15 @@ export default {
       const {page, page_size, list} = this
       getTeamPolicyList({...this.searchModelFormat(), page, page_size}).then(res => {
         this.tableLoading = false
-        this.list = [...list, ...res.data]
+        this.list = this.page === 1 ? res.data : [...list, ...res.data]
         this.total = res.total
       })
       .catch(() => {
         this.page = Math.max(1, page - 1)
+        if (this.page === 1) {
+          this.list = []
+          this.total = 0
+        }
         this.tableLoading = false
       })
     },
@@ -566,6 +573,8 @@ export default {
     getDateRange() {
       getDateRange().then(res => {
         this.dateRange = res
+        // 确定表格top值, 可以计算表格最高度
+        this.$nextTick(() => this.calcTableHeight())
       })
     }
   },
