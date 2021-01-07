@@ -6,7 +6,7 @@ import './utils/directives';
 import Element from 'element-ui';
 import VueClipboard from 'vue-clipboard2'
 import './element-variables.scss';
-import './assets/scss/iconfont/iconfont.css'
+// import './assets/scss/iconfont/iconfont.css'
 import './assets/scss/index.scss';
 import 'xe-utils'
 import VXETable from 'vxe-table'

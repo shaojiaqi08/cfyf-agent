@@ -353,6 +353,18 @@ const necessaryRoutes = [
     component: getView('group')
   },
   {
+    path: '/dev-interface',
+    name: 'devInterface',
+    meta: {
+      title: '开发对接',
+      header: true,
+      menu: true,
+      show: true,
+      permission: '/self_and_child_teams'
+    },
+    component: getView('dev-interface')
+  },
+  {
     path: "/404",
     name: "404",
     meta: {
