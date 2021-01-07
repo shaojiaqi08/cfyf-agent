@@ -8,7 +8,9 @@
       :class="['text', hiddenEllipsis ? 'text-hidden-ellipsis' : '']"
       :style="{ paddingRight: hiddenEllipsis ? '16px' : '' }"
     >
-      <span ref="text"><slot></slot></span>
+      <span ref="text">
+        <slot>{{popoverTip}}</slot>
+      </span>
     </div>
     <el-popover
       :placement="placement"

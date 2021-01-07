@@ -7,42 +7,57 @@
       <div class="body">
         <div class="item">
           <div class="label">机构 ACCESS KEY</div>
-          <div class="value"></div>
+          <div class="value">{{data.access_key}}</div>
         </div>
         <div class="item">
           <div class="label">机构 ACCESS SECRET</div>
           <div class="value">
-            <el-popconfirm title="是否刷新？" @onConfirm="refreshSecret">
+            <text-hidden-ellipsis width="100%" :popoverTip="data.access_secret"></text-hidden-ellipsis>
+            <el-popconfirm v-if="data.access_secret" title="是否刷新？" @onConfirm="refreshSecret">
               <el-button
                 slot="reference"
                 type="text"
                 :disabled="loadingSecret"
-                icon="iconfont iconxiao16_shuaxin"></el-button>
+                icon="iconfont iconxiao16_shuaxin ml8"></el-button>
             </el-popconfirm>
           </div>
         </div>
         <div class="item">
           <div class="label">机构DES秘钥</div>
           <div class="value">
-            <el-popconfirm title="是否刷新？" @onConfirm="refreshDes">
+            <text-hidden-ellipsis width="100%" :popoverTip="data.des_sign_key"></text-hidden-ellipsis>
+            <el-popconfirm v-if="data.des_sign_key" title="是否刷新？" @onConfirm="refreshDes">
               <el-button
                 slot="reference"
                 type="text"
                 :disabled="loadingDes"
-                icon="iconfont iconxiao16_shuaxin"></el-button>
+                icon="iconfont iconxiao16_shuaxin ml8"></el-button>
             </el-popconfirm>
           </div>
         </div>
         <div class="item">
           <div class="label">机构接收订单URL</div>
           <div class="value">
-            <el-input placeholder="请输入机构订单URL" size="small"></el-input>
+            <el-input
+              placeholder="请输入机构订单URL"
+              size="small"
+              @input="save"
+              clearable
+              v-model.trim="data.notify_url"></el-input>
           </div>
         </div>
         <div class="item textarea-item">
           <div class="label">白名单IP</div>
           <div class="value">
-            <el-input placeholder="请输入白名单IP" size="small" type="textarea" :rows="1" style="min-height: 32px"></el-input>
+            <el-input
+              v-model.trim="data.allow_ip"
+              @input="save"
+              placeholder="请输入白名单IP"
+              size="small"
+              type="textarea"
+              :rows="1"
+              clearable
+              style="min-height: 32px"></el-input>
           </div>
         </div>
       </div>
@@ -51,9 +66,13 @@
 </template>
 
 <script>
-  import { getDetail, refreshSecret, refreshDes } from '@/apis/modules/dev-interface'
+  import { getDetail, refreshSecret, refreshDes, saveConfig } from '@/apis/modules/dev-interface'
+  import { debounce } from '@/utils'
+  import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
+  let requestId = 0
   export default {
     name: 'dev-interface',
+    components: { TextHiddenEllipsis },
     data() {
       return {
         loading: false,
@@ -73,16 +92,32 @@
       },
       refreshSecret() {
         this.loadingSecret = true
-        refreshSecret().finally(() => {
+        refreshSecret().then(res => {
+          this.data.access_secret = res.access_secret
+        }).finally(() => {
           this.loadingSecret = false
         })
       },
       refreshDes() {
         this.loadingDes = true
-        refreshDes().finally(() => {
+        refreshDes().then(res => {
+          this.data.des_sign_key = res.des_sign_key
+        }).finally(() => {
           this.loadingDes = false
         })
-      }
+      },
+      save: debounce(function() {
+        let { allow_ip, notify_url } = this.data
+        allow_ip = allow_ip || ''
+        notify_url = notify_url || ''
+        const reqId = requestId + 1
+        saveConfig({
+          allow_ip: allow_ip.split(/\n/),
+          notify_url
+        }).then(() => {
+          reqId === requestId && this.$message.success('配置保存成功!')
+        })
+      }, 2000)
     },
     created() {
       this.getData()
