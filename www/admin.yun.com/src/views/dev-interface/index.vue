@@ -12,16 +12,24 @@
         <div class="item">
           <div class="label">机构 ACCESS SECRET</div>
           <div class="value">
-            <el-popconfirm title="是否刷新？">
-              <i slot="reference" class="iconfont iconxiao16_shuaxin"></i>
+            <el-popconfirm title="是否刷新？" @onConfirm="refreshSecret">
+              <el-button
+                slot="reference"
+                type="text"
+                :disabled="loadingSecret"
+                icon="iconfont iconxiao16_shuaxin"></el-button>
             </el-popconfirm>
           </div>
         </div>
         <div class="item">
           <div class="label">机构DES秘钥</div>
           <div class="value">
-            <el-popconfirm title="是否刷新？">
-              <i slot="reference" class="iconfont iconxiao16_shuaxin"></i>
+            <el-popconfirm title="是否刷新？" @onConfirm="refreshDes">
+              <el-button
+                slot="reference"
+                type="text"
+                :disabled="loadingDes"
+                icon="iconfont iconxiao16_shuaxin"></el-button>
             </el-popconfirm>
           </div>
         </div>
@@ -43,17 +51,38 @@
 </template>
 
 <script>
-  import {} from '@/apis/modules'
+  import { getDetail, refreshSecret, refreshDes } from '@/apis/modules/dev-interface'
   export default {
     name: 'dev-interface',
     data() {
       return {
         loading: false,
+        loadingSecret: false,
+        loadingDes: false,
         data: {}
       }
     },
     methods: {
-      getData() {}
+      getData() {
+        this.loading = true
+        getDetail().then(res => {
+          this.data = res
+        }).finally(() => {
+          this.loading = false
+        })
+      },
+      refreshSecret() {
+        this.loadingSecret = true
+        refreshSecret().finally(() => {
+          this.loadingSecret = false
+        })
+      },
+      refreshDes() {
+        this.loadingDes = true
+        refreshDes().finally(() => {
+          this.loadingDes = false
+        })
+      }
     },
     created() {
       this.getData()
@@ -106,7 +135,6 @@
           align-items: center;
           & .iconfont {
             color: #1F78FF;
-            cursor: pointer;
             font-size: 16px;
           }
         }
