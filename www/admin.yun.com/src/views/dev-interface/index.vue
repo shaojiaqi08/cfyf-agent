@@ -42,7 +42,6 @@
               placeholder="请输入机构订单URL"
               size="small"
               @input="save"
-              clearable
               v-model.trim="data.notify_url"></el-input>
           </div>
         </div>
@@ -50,12 +49,12 @@
           <div class="label">白名单IP</div>
           <div class="value">
             <el-input
-              v-model.trim="data.allow_ip"
-              @input="save"
+              v-model="data.allow_ip"
+              @input="handleIpInput"
               placeholder="请输入白名单IP"
               size="small"
               type="textarea"
-              :rows="1"
+              :rows="rows"
               clearable
               style="min-height: 32px"></el-input>
           </div>
@@ -78,13 +77,16 @@
         loading: false,
         loadingSecret: false,
         loadingDes: false,
-        data: {}
+        data: {},
+        rows: 1
       }
     },
     methods: {
       getData() {
         this.loading = true
         getDetail().then(res => {
+          this.rows = res.allow_ip.length
+          res.allow_ip = res.allow_ip.join('\n')
           this.data = res
         }).finally(() => {
           this.loading = false
@@ -106,18 +108,25 @@
           this.loadingDes = false
         })
       },
+      handleIpInput() {
+        this.rows = this.formatIpList(this.data.allow_ip).length
+        this.save()
+      },
       save: debounce(function() {
         let { allow_ip, notify_url } = this.data
         allow_ip = allow_ip || ''
         notify_url = notify_url || ''
-        const reqId = requestId + 1
+        const reqId = requestId += 1
         saveConfig({
-          allow_ip: allow_ip.split(/\n/),
+          allow_ip: this.formatIpList(allow_ip),
           notify_url
         }).then(() => {
           reqId === requestId && this.$message.success('配置保存成功!')
         })
-      }, 2000)
+      }, 2000),
+      formatIpList(ipStr) {
+        return ipStr.split(/\n/)
+      }
     },
     created() {
       this.getData()

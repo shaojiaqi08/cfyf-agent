@@ -90,7 +90,7 @@ export default {
   .icon {
     position: absolute;
     right: 0;
-    top: 0;
+    top: -1px;
     color: #1F78FF;
     line-height: 24px;
   }
