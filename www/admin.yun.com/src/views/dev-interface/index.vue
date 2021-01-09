@@ -125,7 +125,7 @@
         })
       }, 2000),
       formatIpList(ipStr) {
-        return ipStr.split(/\n/)
+        return ipStr.split(/\n/).map(i => i.trim())
       }
     },
     created() {
