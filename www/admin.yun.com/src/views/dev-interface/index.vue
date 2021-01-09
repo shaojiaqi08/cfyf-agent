@@ -12,7 +12,7 @@
         <div class="item">
           <div class="label">机构 ACCESS SECRET</div>
           <div class="value">
-            <text-hidden-ellipsis width="100%" :popoverTip="data.access_secret"></text-hidden-ellipsis>
+            <text-hidden-ellipsis width="294px" :popoverTip="data.access_secret"></text-hidden-ellipsis>
             <el-popconfirm v-if="data.access_secret" title="是否刷新？" @onConfirm="refreshSecret">
               <el-button
                 slot="reference"
@@ -25,7 +25,7 @@
         <div class="item">
           <div class="label">机构DES秘钥</div>
           <div class="value">
-            <text-hidden-ellipsis width="100%" :popoverTip="data.des_sign_key"></text-hidden-ellipsis>
+            <text-hidden-ellipsis width="294px" :popoverTip="data.des_sign_key"></text-hidden-ellipsis>
             <el-popconfirm v-if="data.des_sign_key" title="是否刷新？" @onConfirm="refreshDes">
               <el-button
                 slot="reference"
