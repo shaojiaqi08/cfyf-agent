@@ -158,7 +158,7 @@
         justify-content: space-between;
         align-items: center;
         height: 52px;
-        padding: 0 16px 8px 16px;
+        padding: 0 16px 16px 16px;
         font-weight: 400;
         .label {
           color: #999999;
