@@ -50,11 +50,12 @@
           <div class="value">
             <el-input
               v-model="data.allow_ip"
-              @input="handleIpInput"
-              placeholder="请输入白名单IP"
+              @input="save"
+              resize="none"
+              :autosize="{minRows: 1, maxRows: 15}"
+              placeholder="多个IP地址用回车隔开"
               size="small"
               type="textarea"
-              :rows="rows"
               clearable
               style="min-height: 32px"></el-input>
           </div>
@@ -77,15 +78,13 @@
         loading: false,
         loadingSecret: false,
         loadingDes: false,
-        data: {},
-        rows: 1
+        data: {}
       }
     },
     methods: {
       getData() {
         this.loading = true
         getDetail().then(res => {
-          this.rows = res.allow_ip.length
           res.allow_ip = res.allow_ip.join('\n')
           this.data = res
         }).finally(() => {
@@ -107,10 +106,6 @@
         }).finally(() => {
           this.loadingDes = false
         })
-      },
-      handleIpInput() {
-        this.rows = this.formatIpList(this.data.allow_ip).length
-        this.save()
       },
       save: debounce(function() {
         let { allow_ip, notify_url } = this.data
@@ -188,6 +183,16 @@
           align-items: flex-start;
           & .label {
             line-height: 32px;
+          }
+          ::v-deep textarea {
+            &::-webkit-scrollbar {
+              width: 12px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: rgba(0, 0, 0, .1);
+              border-radius: 6px;
+              border: 3px solid #fff;
+            }
           }
         }
       }
