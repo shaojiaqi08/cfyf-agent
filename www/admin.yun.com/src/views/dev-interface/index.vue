@@ -12,7 +12,7 @@
         <div class="item">
           <div class="label">机构 ACCESS SECRET</div>
           <div class="value" v-if="data.access_secret">
-            <text-hidden-ellipsis width="294px" :popoverTip="data.access_secret"></text-hidden-ellipsis>
+            <text-hidden-ellipsis width="380px" :popoverTip="data.access_secret"></text-hidden-ellipsis>
             <el-popconfirm title="是否刷新？" @confirm="refreshSecret">
               <el-button
                 slot="reference"
@@ -25,7 +25,7 @@
         <div class="item">
           <div class="label">机构DES秘钥</div>
           <div class="value" v-if="data.des_sign_key">
-            <text-hidden-ellipsis width="294px" :popoverTip="data.des_sign_key"></text-hidden-ellipsis>
+            <text-hidden-ellipsis width="380px" :popoverTip="data.des_sign_key"></text-hidden-ellipsis>
             <el-popconfirm title="是否刷新？" @confirm="refreshDes">
               <el-button
                 slot="reference"
@@ -52,7 +52,7 @@
               v-model="data.allow_ip"
               @input="save"
               resize="none"
-              :autosize="{minRows: 1, maxRows: 15}"
+              :autosize="{minRows: 1, maxRows: 5}"
               placeholder="多个IP地址用回车隔开"
               size="small"
               type="textarea"
@@ -165,16 +165,20 @@
         }
         .value {
           color: #1A1A1A;
-          width: 320px;
+          width: 100%;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
           justify-content: flex-end;
           display: flex;
           align-items: center;
+          flex: 1;
           & .iconfont {
             color: #1F78FF;
             font-size: 16px;
+          }
+          .el-input, .el-textarea {
+            width: 320px;
           }
         }
         &.textarea-item{
