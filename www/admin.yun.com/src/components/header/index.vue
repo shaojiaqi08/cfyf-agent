@@ -2,7 +2,7 @@
   <div class="header">
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
-      <el-tooltip effect="dark" content="开发对接" placement="bottom">
+      <el-tooltip v-if="$checkAuth('/edit_api_configure')" effect="dark" content="开发对接" placement="bottom">
         <div class="function-botton" @click="$router.push('/dev-interface')">
           <i class="iconfont iconda24_kaifaduijie fs24"></i>
         </div>
