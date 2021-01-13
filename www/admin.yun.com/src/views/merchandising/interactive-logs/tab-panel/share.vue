@@ -20,7 +20,7 @@
                             wrapClass="scroll-bar-wap-other"
                             viewClass="prospectus-list"
                             class="scroll-bar"
-                            style="height: 100%; overflow: hidden">
+                            style="height: calc(100% - 68px); overflow: hidden">
                         <div v-infinite-scroll="nextPage" :infinite-scroll-delay="400">
                             <div v-for="(item,index) in otherDateArr"
                                  :key="index"
