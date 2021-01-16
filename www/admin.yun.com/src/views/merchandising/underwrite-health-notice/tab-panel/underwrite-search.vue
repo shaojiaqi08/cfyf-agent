@@ -603,7 +603,7 @@ export default {
     handleEnter(e) {
       e.preventDefault()
       if (e.keyCode === 13) {
-        this.search()
+        this.canSearch && this.search()
       }
     },
     closeSuperSearchDialog() {
