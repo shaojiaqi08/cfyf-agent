@@ -16,7 +16,7 @@
           <el-input
             clearable
             placeholder="搜索产品名称"
-            v-model="formData.product_name"
+            v-model.trim="formData.product_name"
             prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
             @input="search"
           ></el-input>
@@ -153,6 +153,21 @@
                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
               </span>
             </div>
+            <div style="display: inline-flex;">
+              <div class="flex-center mr16">
+                <span style="white-space: nowrap" class="mr4">病种:</span>
+                <el-input placeholder="输入病种，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentSick"></el-input>
+              </div>
+              <div class="flex-center mr16">
+                <span style="white-space: nowrap" class="mr4">条件: </span>
+                <el-input placeholder="输入条件，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentCondition"></el-input>
+              </div>
+              <div class="flex-center">
+                <span style="white-space: nowrap" class="mr4">结论: </span>
+                <el-input placeholder="输入结论，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentConclusion"></el-input>
+              </div>
+              <el-button class="ml16" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
+            </div>
           </el-form>
         </div>
         <div class="classify-box">
@@ -174,6 +189,7 @@
               size="small"
             ></el-input-number>
             <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary"  @click="createImg('imageDom')" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
+            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary"  @click="createImg('imageDom', true)" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 预览图片</el-button>
             <div class="supper-search-button-box">
               <el-button class="supper-search ml16" type="primary" @click="supperSearch" size="small"><i class="el-icon-search"></i>高级搜索</el-button>
             </div>
@@ -183,15 +199,16 @@
           <el-table
             border
             :data="detailTableData"
-            height="100%"
+            height="calc(100vh - 165px)"
+            stripe
             class="not-select main-table"
             :style="{fontSize: setFontSize + 'px'}"
           >
-            <el-table-column label="序号" prop="sequence_number" align="center" width="100px"></el-table-column>
+            <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
             <template v-for="(item,index) in maxCategorysLength">
               <el-table-column
                 v-if="allConditionShow[index]"
-                width="250px"
+                width="200px"
                 :prop="`illness_categorys[${index}]`"
                 :label="`病种分类${index+1}`"
                 align="center"
@@ -201,17 +218,17 @@
             <template v-for="(item,index) in maxConditionLength">
               <el-table-column
                 v-if="allListShow[index]"
-                width="250px"
+                width="200px"
                 :prop="`conditions[${index}]`"
                 :label="`条件${index+1}`"
                 align="center"
                 :key="'conditions' + index"
               ></el-table-column>
             </template>
-            <el-table-column label="结论" prop="conclusion" width="250px" align="center"></el-table-column>
+            <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
             <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
-            <el-table-column label="产品名称" prop="product_name" width="250px" align="center"></el-table-column>
+            <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
+            <el-table-column label="产品名称" prop="product_name" width="200px" align="center"></el-table-column>
           </el-table>
         </div>
       </template>
@@ -221,9 +238,10 @@
       v-if="isShowSupperSearch"
       :visible.sync="isShowSupperSearch"
       title="高级搜索"
-      width="75%"
-      top="5vh"
+      fullscreen
+      height="100vh"
       center
+      @cancel="closeSuperSearchDialog"
       class="supper-search-box"
     >
       <template slot="title">
@@ -238,7 +256,7 @@
               v-model="supperSetFontSize"
               class="ml10"
               :step="2"
-              :min="14"
+              :min="12"
               :step-strictly="true"
               :max="24"
             ></el-input-number>
@@ -247,11 +265,12 @@
         </div>
       </template>
       <div class="flex-between">
-        <el-form inline :modal="formData" @submit.native.prevent label-position="right" class="supper-form">
+        <el-form inline :modal="formData" @submit.native.prevent label-position="left" class="supper-form">
           <el-input
             placeholder="搜索产品名称"
+            clearable
             prefix-icon="el-icon-search"
-            v-model="supperFormData.product_name"
+            v-model.trim="supperFormData.product_name"
             @keyup.enter.native="supperRequestList()"
             class="supper-search-input">
           </el-input>
@@ -334,7 +353,7 @@
               </div>
               <span class="dropdown-link" slot="reference">
                 <template>
-                  <div class="filter-item el-popover__reference ml16">
+                  <div class="filter-item el-popover__reference ml16 mr16">
                     <div :class="['content', {'active': supperSearchText}]">
                       <span class="filter-label">筛选</span>
                       <i class="iconfont iconxiao16_xiajiantou ml4"></i>
@@ -346,6 +365,21 @@
             <span class="close-btn" @click="resetSupper" v-if="supperSearchText">
               <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
             </span>
+          </div>
+          <div style="display: inline-flex;">
+            <div class="flex-center mr16">
+              <span style="white-space: nowrap" class="mr4">病种:</span>
+              <el-input placeholder="输入病种，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputSick"></el-input>
+            </div>
+            <div class="flex-center mr16">
+              <span style="white-space: nowrap" class="mr4">条件: </span>
+              <el-input placeholder="输入条件，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputCondition"></el-input>
+            </div>
+            <div class="flex-center">
+              <span style="white-space: nowrap" class="mr4">结论: </span>
+              <el-input placeholder="输入结论，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputConclusion"></el-input>
+            </div>
+            <el-button class="ml16" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
           </div>
         </el-form>
       </div>
@@ -360,12 +394,12 @@
             class="not-select"
             :style="{fontSize: supperSetFontSize + 'px'}"
           >
-            <el-table-column label="保险产品" prop="product_name" fixed align="center" width="100px"></el-table-column>
-            <el-table-column label="序号" prop="sequence_number" align="center" width="100px"></el-table-column>
+            <el-table-column label="保险产品" prop="product_name" fixed align="center" width="60px"></el-table-column>
+            <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
             <template v-for="(item,index) in maxCategorysLength">
               <el-table-column
                 v-if="allConditionShow[index]"
-                width="250px"
+                width="200px"
                 :prop="`illness_categorys[${index}]`"
                 :label="`病种分类${index+1}`"
                 align="center"
@@ -375,16 +409,16 @@
             <template v-for="(item,index) in maxConditionLength">
               <el-table-column
                 v-if="allListShow[index]"
-                width="250px"
+                width="200px"
                 :prop="`conditions[${index}]`"
                 :label="`条件${index+1}`"
                 align="center"
                 :key="'conditions' + index"
               ></el-table-column>
             </template>
-            <el-table-column label="结论" prop="conclusion" width="250px" align="center"></el-table-column>
+            <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
             <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="250px" align="center"></el-table-column>
+            <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -413,6 +447,12 @@ export default {
   },
   data() {
     return {
+      inputCondition: '',
+      inputConclusion: '',
+      inputSick: '',
+      inputParentSick: '',
+      inputParentCondition: '',
+      inputParentConclusion: '',
       loading: false,
       detailLoading: false,
       selVal: "", // 选中的产品
@@ -432,8 +472,8 @@ export default {
         conclusion: "",
       },
       illnessCategoryLength: 0,
-      setFontSize: 14,
-      supperSetFontSize: 14,
+      setFontSize: 12,
+      supperSetFontSize: 12,
       isReverseData: [
         { label: "正向条件", value: "0" },
         { label: "反向条件", value: "1" },
@@ -533,9 +573,65 @@ export default {
       nowIndex: 0
     };
   },
+  // created() {
+  //   this.requestList()
+  //   document.addEventListener('keyup', this.handleEnter)
+  // },
+  // beforeDestroy() {
+  //   document.removeEventListener('keyup', this.handleEnter)
+  // },
   methods: {
     clearValue,
     hasValue,
+    handleEnter(e) {
+      e.preventDefault()
+      if (e.keyCode === 13) {
+        this.search()
+      }
+    },
+    closeSuperSearchDialog() {
+      this.inputSick = ''
+      this.inputCondition = ''
+      this.inputConclusion = ''
+      this.supperFormData = {
+        product_name: '',
+        illness_categorys_search: {
+          value: ['', '', '', '', '', '', '', '', '', ''],
+          query_rule: 'and'
+        },
+        condition_search: {
+          value: ['', '', '', '', '', '', '', '', '', ''],
+          query_rule: 'and'
+        },
+        conclusion_search: {
+          value: ['', '', '', '', '', '', '', '', '', ''],
+          query_rule: 'and'
+        },
+        isReverse: 0
+      }
+      this.supperDetailTableData = []
+      this.supperLoading = false
+    },
+    // 外层筛选
+    handleParentInputChange(doSearch = true) {
+      const { inputParentSick, inputParentCondition, inputParentConclusion, formData } = this
+      const { illness_categorys_search, condition_search, conclusion_search } = formData
+      const defValues = ['', '', '', '', '', '', '', '', '', '']
+      illness_categorys_search.value = inputParentSick.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      condition_search.value = inputParentCondition.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      conclusion_search.value = inputParentConclusion.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      doSearch && this.search()
+    },
+    // 高级搜索
+    handleInputChange(doSearch = true) {
+      const { inputSick, inputCondition, inputConclusion, supperFormData } = this
+      const { illness_categorys_search, condition_search, conclusion_search } = supperFormData
+      const defValues = ['', '', '', '', '', '', '', '', '', '']
+      illness_categorys_search.value = inputSick.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      condition_search.value = inputCondition.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      conclusion_search.value = inputConclusion.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
+      doSearch && this.search()
+    },
     clearFilters() {
       this.searchModel.illness = "";
       this.searchModel.condition_search = "";
@@ -648,7 +744,7 @@ export default {
       }
       return str
     },
-    createImg(ref) {
+    createImg(ref, isShow) {
       if (this.isCreateImgLock) {
         return false
       }
@@ -684,15 +780,50 @@ export default {
           dom.style.cssText = lastStyleTxt
           dom.getElementsByClassName('el-table')[0].style.height = eltableHeight
           dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = eltablewrapperHeight
-          document.body.appendChild(eleLink)
-          eleLink.click()
-          // 然后移除
-          document.body.removeChild(eleLink)
+          if (!isShow) {
+            document.body.appendChild(eleLink)
+            eleLink.click()
+            // 然后移除
+            document.body.removeChild(eleLink)
+          } else {
+            var blob = this.dataURLtoBlob(self.imgUrl)
+            var file = this.blobToFile(blob, (self.curProduct && self.curProduct.product_name) || 'img')
+            let url = this.getObjectURL(file)
+            window.open(url)
+          }
           self.isCreateImgLock = false
           self.loadingDetail = false
           self.supperLoading = false
         })
       })
+    },
+    dataURLtoBlob(dataurl) {
+      var arr = dataurl.split(',')
+      var mime = arr[0].match(/:(.*?);/)[1]
+      var bstr = atob(arr[1])
+      var n = bstr.length
+      var u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new Blob([u8arr], { type: mime })
+    },
+    blobToFile(theBlob, fileName) {
+      theBlob.lastModifiedDate = new Date()
+      theBlob.name = fileName
+      return theBlob
+    },
+    getObjectURL(file) {
+      var url = null
+      if (window.createObjectURL !== undefined) { // basic
+        url = window.createObjectURL(file)
+      } else if (window.URL !== undefined) { // mozilla(firefox)
+        url = window.URL.createObjectURL(file)
+      } else
+      if (window.webkitURL !== undefined) { // webkit or chrome
+        url = window.webkitURL.createObjectURL(file)
+      }
+      return url
     },
     selectItem(item) {
       item.isSelect = !item.isSelect
@@ -1107,7 +1238,7 @@ export default {
     },
     closeDetailModal() {
       this.isShowSupperSearch = false
-      this.setFontSize = 14
+      this.setFontSize = 12
     },
     closeSearchConditionTips() {
       this.searchConditionData = {}
@@ -1121,9 +1252,11 @@ export default {
     // this.ajaxProductData();
     this.requestList()
     window.addEventListener("resize", this.setMaxHeight);
+    document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.setMaxHeight);
+    document.removeEventListener('keyup', this.handleEnter)
   },
   mounted() {
     this.setMaxHeight();
@@ -1348,19 +1481,21 @@ export default {
 }
 
 .supper-search-box{
-  .el-dialog {
-    height: 90vh;
-    overflow-y: scroll;
+  ::v-deep .el-dialog {
+    height: 100vh;
+    overflow-y: auto;
     overflow-x: hidden;
-    .el-dialog__body{
-      max-height: calc(89vh - 115px);
+    max-height: initial;
+    .el-dialog__header {
+      padding: 14px 20px !important;
+      line-height: 40px;
+    }
+    .el-dialog__body {
+      height: calc(100% - 92px);
     }
   }
   .supper-table{
     margin-top: 20px;
-    .el-table{
-      height: 67vh!important;
-    }
   }
   .supper-form{
     width: 100%;
@@ -1408,7 +1543,18 @@ export default {
 }
 ::v-deep .main-table {
     .el-loading-mask {
-      height: 80vh;
+      // height: 80vh;
     }
   }
+::v-deep .el-table {
+  td .cell {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+.pos-rel {
+  .mr16{
+    margin-right: 16px;
+  }
+}
 </style>
