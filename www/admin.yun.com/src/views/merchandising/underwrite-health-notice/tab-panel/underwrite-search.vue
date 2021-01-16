@@ -21,118 +21,119 @@
             @input="search"
           ></el-input>
         </div>
-        <div class="filter-container flex-between">
-          <el-radio-group
-            size="mini"
-            v-model="formData.isReverse"
-            @change="search"
-            class="radio-group-wrap"
-          >
-            <el-radio-button
-              style="height: 28px"
-              v-for="(item, index) in isReverseData"
-              :key="'normal' + index"
-              :label="item.value"
-              >{{ item.label }}</el-radio-button
+        <div class="filter-container">
+          <div class="flex-between">
+            <el-radio-group
+                    size="mini"
+                    v-model="formData.isReverse"
+                    @change="search"
+                    class="radio-group-wrap"
             >
-          </el-radio-group>
-          <el-form class="search-form common-form no-border-bottom">
-            <div class="pos-rel">
-              <el-popover
-                placement="bottom-start"
-                class="formData-illness-box"
-                v-model="isShowList.all"
-                trigger="click"
+              <el-radio-button
+                      style="height: 28px"
+                      v-for="(item, index) in isReverseData"
+                      :key="'normal' + index"
+                      :label="item.value"
+              >{{ item.label }}</el-radio-button
               >
-                <div class="filter-bar">
-                  <div class="formData-select">
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio
-                          v-model="formData.illness_categorys_search.query_rule"
-                          label="and"
+            </el-radio-group>
+            <el-form class="search-form common-form no-border-bottom">
+              <div class="pos-rel">
+                <el-popover
+                        placement="bottom-start"
+                        class="formData-illness-box"
+                        v-model="isShowList.all"
+                        trigger="click"
+                >
+                  <div class="filter-bar">
+                    <div class="formData-select">
+                      <div class="formData-select-list">
+                        <div class="formData-select-list-header">
+                          <el-radio
+                                  v-model="formData.illness_categorys_search.query_rule"
+                                  label="and"
                           >同时满足</el-radio
-                        >
-                        <el-radio
-                          v-model="formData.illness_categorys_search.query_rule"
-                          label="or"
+                          >
+                          <el-radio
+                                  v-model="formData.illness_categorys_search.query_rule"
+                                  label="or"
                           >满足其一</el-radio
-                        >
-                      </div>
-                      <el-form-item
-                        class="formData-select-list-list"
-                        :label="'病种' + (index + 1)"
-                        v-for="(item, index) in formData.illness_categorys_search
+                          >
+                        </div>
+                        <el-form-item
+                                class="formData-select-list-list"
+                                :label="'病种' + (index + 1)"
+                                v-for="(item, index) in formData.illness_categorys_search
                           .value"
-                        :key="index"
-                      >
-                        <el-input
-                          v-model="formData.illness_categorys_search.value[index]"
-                          placeholder="请输入病种"
-                        ></el-input>
-                      </el-form-item>
-                    </div>
-                    <div class="formData-select-list-info">同时满足</div>
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio
-                          v-model="formData.condition_search.query_rule"
-                          label="and"
-                          >同时满足</el-radio
+                                :key="index"
                         >
-                        <el-radio
-                          v-model="formData.condition_search.query_rule"
-                          label="or"
-                          >满足其一</el-radio
-                        >
+                          <el-input
+                                  v-model="formData.illness_categorys_search.value[index]"
+                                  placeholder="请输入病种"
+                          ></el-input>
+                        </el-form-item>
                       </div>
-                      <el-form-item
-                        class="formData-select-list-list"
-                        :label="'条件' + (index + 1)"
-                        v-for="(item, index) in formData.condition_search.value"
-                        :key="index"
-                      >
-                        <el-input
-                          v-model="formData.condition_search.value[index]"
-                          placeholder="请输入条件"
-                        ></el-input>
-                      </el-form-item>
-                    </div>
-                    <div class="formData-select-list-info">同时满足</div>
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio
-                          v-model="formData.conclusion_search.query_rule"
-                          label="and"
+                      <div class="formData-select-list-info">同时满足</div>
+                      <div class="formData-select-list">
+                        <div class="formData-select-list-header">
+                          <el-radio
+                                  v-model="formData.condition_search.query_rule"
+                                  label="and"
                           >同时满足</el-radio
-                        >
-                        <el-radio
-                          v-model="formData.conclusion_search.query_rule"
-                          label="or"
+                          >
+                          <el-radio
+                                  v-model="formData.condition_search.query_rule"
+                                  label="or"
                           >满足其一</el-radio
+                          >
+                        </div>
+                        <el-form-item
+                                class="formData-select-list-list"
+                                :label="'条件' + (index + 1)"
+                                v-for="(item, index) in formData.condition_search.value"
+                                :key="index"
                         >
+                          <el-input
+                                  v-model="formData.condition_search.value[index]"
+                                  placeholder="请输入条件"
+                          ></el-input>
+                        </el-form-item>
                       </div>
-                      <el-form-item
-                        class="formData-select-list-list"
-                        :label="'结论' + (index + 1)"
-                        v-for="(item, index) in formData.conclusion_search.value"
-                        :key="index"
-                      >
-                        <el-input
-                          v-model="formData.conclusion_search.value[index]"
-                          placeholder="请输入结论"
-                        ></el-input>
-                      </el-form-item>
+                      <div class="formData-select-list-info">同时满足</div>
+                      <div class="formData-select-list">
+                        <div class="formData-select-list-header">
+                          <el-radio
+                                  v-model="formData.conclusion_search.query_rule"
+                                  label="and"
+                          >同时满足</el-radio
+                          >
+                          <el-radio
+                                  v-model="formData.conclusion_search.query_rule"
+                                  label="or"
+                          >满足其一</el-radio
+                          >
+                        </div>
+                        <el-form-item
+                                class="formData-select-list-list"
+                                :label="'结论' + (index + 1)"
+                                v-for="(item, index) in formData.conclusion_search.value"
+                                :key="index"
+                        >
+                          <el-input
+                                  v-model="formData.conclusion_search.value[index]"
+                                  placeholder="请输入结论"
+                          ></el-input>
+                        </el-form-item>
+                      </div>
                     </div>
-                  </div>
-                  <el-button
-                    type="warning"
-                    class="button-all-select"
-                    @click="search"
+                    <el-button
+                            type="warning"
+                            class="button-all-select"
+                            @click="search"
                     >确定</el-button
-                  >
-                </div>
-                <span class="dropdown-link" slot="reference">
+                    >
+                  </div>
+                  <span class="dropdown-link" slot="reference">
                   <template>
                     <!-- {{(searchText) ? searchText : '筛选'}}
                     <el-button
@@ -148,27 +149,13 @@
                     </div>
                   </template>
                 </span>
-              </el-popover>
-              <span class="close-btn" @click="resetNormal" v-if="searchText">
+                </el-popover>
+                <span class="close-btn" @click="resetNormal" v-if="searchText">
                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
               </span>
-            </div>
-            <div style="display: inline-flex;">
-              <div class="flex-center mr16">
-                <span style="white-space: nowrap" class="mr4">病种:</span>
-                <el-input placeholder="输入病种，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentSick"></el-input>
               </div>
-              <div class="flex-center mr16">
-                <span style="white-space: nowrap" class="mr4">条件: </span>
-                <el-input placeholder="输入条件，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentCondition"></el-input>
-              </div>
-              <div class="flex-center">
-                <span style="white-space: nowrap" class="mr4">结论: </span>
-                <el-input placeholder="输入结论，以逗号隔开" clearable @change="handleParentInputChange(false)" @keyup.enter.native.prevent="handleParentInputChange" v-model.trim="inputParentConclusion"></el-input>
-              </div>
-              <el-button class="ml16" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
-            </div>
-          </el-form>
+            </el-form>
+          </div>
         </div>
         <div class="classify-box">
           <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
@@ -188,18 +175,26 @@
               v-model="setFontSize"
               size="small"
             ></el-input-number>
-            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary"  @click="createImg('imageDom')" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
-            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary"  @click="createImg('imageDom', true)" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 预览图片</el-button>
-            <div class="supper-search-button-box">
-              <el-button class="supper-search ml16" type="primary" @click="supperSearch" size="small"><i class="el-icon-search"></i>高级搜索</el-button>
-            </div>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg('imageDom')"
+              size="small"><i class="iconfont iconxiao16_shengcheng mr4"></i> 生成图片</el-button>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg('imageDom', true)"
+              size="small"><i class="iconfont iconxiao16_dangqianchakan mr4"></i> 预览图片</el-button>
+            <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 高级搜索</el-button>
           </div>
         </div>
         <div ref="imageDom" style="height: calc(100% - 32px)">
           <el-table
             border
             :data="detailTableData"
-            height="calc(100vh - 165px)"
+            height="calc(100vh - 180px)"
             stripe
             class="not-select main-table"
             :style="{fontSize: setFontSize + 'px'}"
@@ -241,7 +236,7 @@
       fullscreen
       height="100vh"
       center
-      @cancel="closeSuperSearchDialog"
+      @close="closeSuperSearchDialog"
       class="supper-search-box"
     >
       <template slot="title">
@@ -260,7 +255,6 @@
               :step-strictly="true"
               :max="24"
             ></el-input-number>
-            <!-- <el-button type="primary" size="small" class="ml10" @click="createImg('supperImageDom')">生成图片</el-button> -->
           </span>
         </div>
       </template>
@@ -272,22 +266,21 @@
             prefix-icon="el-icon-search"
             v-model.trim="supperFormData.product_name"
             @keyup.enter.native="supperRequestList()"
+            size="small"
             class="supper-search-input">
           </el-input>
-
           <el-radio-group
             size="mini"
             v-model="supperFormData.isReverse"
             @change="supperRequestList"
             class="radio-group-wrap"
           >
-            <el-radio-button
-              style="height: 28px"
-              v-for="(item, index) in supperIsReverseData"
-              :key="'supper' + index"
-              :label="item.value"
-              >{{ item.label }}</el-radio-button
-            >
+          <el-radio-button
+            style="height: 28px"
+            v-for="(item, index) in supperIsReverseData"
+            :key="'supper' + index"
+            :label="item.value"
+            >{{ item.label }}</el-radio-button>
           </el-radio-group>
           <div class="pos-rel">
             <el-popover
@@ -311,7 +304,7 @@
               </span>
             </el-popover>
           </div>
-          <div class="pos-rel">
+          <div class="pos-rel mr16">
             <el-popover
               placement="bottom"
               class="formData-illness-box"
@@ -345,7 +338,7 @@
                       <el-radio v-model="supperFormData.conclusion_search.query_rule" label="or">满足其一</el-radio>
                     </div>
                     <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData.conclusion_search.value" :key="index">
-                      <el-input v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
+                      <el-input size="small" v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
                     </el-form-item>
                   </div>
                 </div>
@@ -353,7 +346,7 @@
               </div>
               <span class="dropdown-link" slot="reference">
                 <template>
-                  <div class="filter-item el-popover__reference ml16 mr16">
+                  <div class="filter-item el-popover__reference ml16">
                     <div :class="['content', {'active': supperSearchText}]">
                       <span class="filter-label">筛选</span>
                       <i class="iconfont iconxiao16_xiajiantou ml4"></i>
@@ -368,33 +361,51 @@
           </div>
           <div style="display: inline-flex;">
             <div class="flex-center mr16">
-              <span style="white-space: nowrap" class="mr4">病种:</span>
-              <el-input placeholder="输入病种，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputSick"></el-input>
+              <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
+              <el-input
+                size="small"
+                placeholder="输入病种，以逗号隔开"
+                clearable
+                @change="handleInputChange(false)"
+                @keyup.enter.native.prevent="handleInputChange"
+                v-model.trim="inputSick"></el-input>
             </div>
             <div class="flex-center mr16">
-              <span style="white-space: nowrap" class="mr4">条件: </span>
-              <el-input placeholder="输入条件，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputCondition"></el-input>
+              <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
+              <el-input
+                size="small"
+                placeholder="输入条件，以逗号隔开"
+                clearable
+                @change="handleInputChange(false)"
+                @keyup.enter.native.prevent="handleInputChange"
+                v-model.trim="inputCondition"></el-input>
             </div>
             <div class="flex-center">
-              <span style="white-space: nowrap" class="mr4">结论: </span>
-              <el-input placeholder="输入结论，以逗号隔开" clearable @change="handleInputChange(false)" @keyup.enter.native.prevent="handleInputChange" v-model.trim="inputConclusion"></el-input>
+              <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
+              <el-input
+                size="small"
+                placeholder="输入结论，以逗号隔开"
+                clearable
+                @change="handleInputChange(false)"
+                @keyup.enter.native.prevent="handleInputChange"
+                v-model.trim="inputConclusion"></el-input>
             </div>
-            <el-button class="ml16" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
+            <el-button size="small" class="ml16" type="primary" @click="search" :disabled="canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
           </div>
         </el-form>
       </div>
-      <div class="supper-table">
-        <div ref="supperImageDom" v-loading="supperLoading">
+      <div class="supper-table" style="height: calc(100% - 75px)">
+        <div ref="supperImageDom" v-loading="supperLoading" style="height: 100%">
           <el-table
             border
             :data="supperDetailTableData"
             :span-method="margeInfo"
-            height="73vh"
+            height="100%"
             stripe
             class="not-select"
             :style="{fontSize: supperSetFontSize + 'px'}"
           >
-            <el-table-column label="保险产品" prop="product_name" fixed align="center" width="60px"></el-table-column>
+            <el-table-column label="保险产品" prop="product_name" :fixed="!supperLoading" align="center" width="150px"></el-table-column>
             <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
             <template v-for="(item,index) in maxCategorysLength">
               <el-table-column
@@ -573,6 +584,12 @@ export default {
       nowIndex: 0
     };
   },
+  computed: {
+    canSearch() {
+      const { inputCondition, inputConclusion, inputSick, supperFormData } = this
+      return !(inputCondition || inputConclusion || inputSick || supperFormData.product_name)
+    }
+  },
   // created() {
   //   this.requestList()
   //   document.addEventListener('keyup', this.handleEnter)
@@ -607,7 +624,7 @@ export default {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
         },
-        isReverse: 0
+        isReverse: '0'
       }
       this.supperDetailTableData = []
       this.supperLoading = false
@@ -763,7 +780,6 @@ export default {
         let lastStyleTxt = dom.style.cssText
         let eltableHeight = dom.getElementsByClassName('el-table')[0].style.height
         let eltablewrapperHeight = dom.getElementsByClassName('el-table__body-wrapper')[0].style.height
-        console.log(eltablewrapperHeight)
         dom.style.width = dom.getElementsByClassName('el-table__header')[0].clientWidth + 'px'
         dom.getElementsByClassName('el-table')[0].style.height = (dom.getElementsByClassName('el-table__body')[0].clientHeight + dom.getElementsByClassName('el-table__header-wrapper')[0].clientHeight) + 'px'
         dom.style.height = (dom.getElementsByClassName('el-table__body')[0].clientHeight + dom.getElementsByClassName('el-table__header-wrapper')[0].clientHeight) + 'px'
@@ -934,10 +950,9 @@ export default {
         this.supperSearchText = this.supperConditionText()
         if (res.length > 0) {
           this.loopDetail(this.nowIndex)
+        } else {
+          this.supperLoading = false
         }
-      })
-      .finally(() => {
-        this.supperLoading = false
       })
     },
     loopDetail(nowIndex) {
@@ -960,10 +975,12 @@ export default {
           isReverse: 0
         }
         this.supperDetailTableData = []
+        this.supperLoading = false
         return
       }
       if (nowIndex !== this.nowIndex) {
         this.supperDetailTableData = []
+        this.supperLoading = false
         return
       }
       var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
@@ -1076,14 +1093,12 @@ export default {
           setTimeout(() => {
             let dom = this.$refs.supperImageDom // el-table
             dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = (dom.getElementsByClassName('el-table')[0].clientHeight - 44) + 'px'
-          }, 2000)
+            this.supperLoading = false
+          }, 1000)
         } else {
           this.loopDetail(nowIndex)
         }
         // this.detailTableData = Object.freeze(res)
-      })
-      .finally(() => {
-        this.supperLoading = false
       })
     },
     supperSearch () {
@@ -1444,7 +1459,7 @@ export default {
 
 .detail-wrap{
   ::v-deep .el-table__body-wrapper{
-    height: 76vh;
+    /*height: 76vh;*/
   }
 }
 
@@ -1487,11 +1502,19 @@ export default {
     overflow-x: hidden;
     max-height: initial;
     .el-dialog__header {
-      padding: 14px 20px !important;
-      line-height: 40px;
+      padding: 10px 20px !important;
+      line-height: 40px !important;
+      height: auto !important;
+      .el-dialog__headerbtn {
+        top: 16px;
+      }
     }
     .el-dialog__body {
-      height: calc(100% - 92px);
+      height: calc(100vh - 62px);
+      max-height: initial;
+    }
+    .el-dialog__footer {
+      display: none;
     }
   }
   .supper-table{
@@ -1502,7 +1525,7 @@ export default {
   }
   .supper-search-input{
     margin-right: 20px;
-    width: 20%;
+    width: 200px;
   }
   .float-r{
     float: right;

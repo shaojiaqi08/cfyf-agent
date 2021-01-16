@@ -33,8 +33,20 @@
           <div class="flex-center">
             调整字号
             <el-input-number class="ml16" :min="12" :max="24" v-model="fontSize" size="small"></el-input-number>
-            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary" @click="createImg()" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
-            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary" @click="createImg(true)" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 预览图片</el-button>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg()"
+              size="small"
+            ><i class="iconfont iconxiao16_shengcheng mr4"></i> 生成图片</el-button>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg(true)"
+              size="small"
+            ><i class="iconfont iconxiao16_dangqianchakan mr4"></i> 预览图片</el-button>
           </div>
         </div>
         <el-scrollbar style="height: 100%" class="table-box">
@@ -160,7 +172,7 @@ export default {
             document.body.appendChild(eleLink)
             eleLink.click()
             // 然后移除
-            document.body.removeChild(eleLink) 
+            document.body.removeChild(eleLink)
           } else {
             var blob = this.dataURLtoBlob(self.imgUrl)
             var file = this.blobToFile(blob, (self.curProduct && self.curProduct.product_name) || 'img')
