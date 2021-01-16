@@ -138,7 +138,7 @@
                    width="1000px" top="4vh"
                    @close="resetScrollbar"
                    :close-on-click-modal="false">
-            <el-scrollbar ref="permissionScrollWrap" wrap-class="permission-scroll-wrap" style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
+            <el-scrollbar class="tree-wrap" ref="permissionScrollWrap" wrap-class="permission-scroll-wrap" style="width: 100%;height: calc(89vh - 150px);" v-loading="treeLoading">
                 <permission-tree v-model="editTreeDetail" :editable="true"></permission-tree>
             </el-scrollbar>
             <span slot="footer">
@@ -683,6 +683,9 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    ::v-deep .tree-wrap .is-vertical{
+        width: 8px;
     }
 </style>
 <style lang="scss">
