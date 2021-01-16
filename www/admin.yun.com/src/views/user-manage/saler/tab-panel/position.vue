@@ -93,7 +93,7 @@
                 </el-table>
             </div>
             <div class="content" v-if="selPosVal && curTabIdx === 'permission'">
-                <el-scrollbar :style="{ height: `${maxHeight - 50}px` }">
+                <el-scrollbar wrap-class="permission-scroll-wrap" :style="{ height: `${maxHeight - 50}px` }">
                     <permission-tree v-if="detailData.length" v-model="detailData"></permission-tree>
                     <div class="empty-tips" v-else>无配置权限</div>
                 </el-scrollbar>

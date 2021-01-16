@@ -189,7 +189,7 @@
         .tree-permission-container {
             position: relative;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             &::after{
                 display: none;
             }
@@ -224,15 +224,11 @@
             &>.tree-node-container::after{
                 content: '';
                 display: inline-block;
-                width: 48px;
+                width: 32px;
                 position: absolute;
                 top: 14px;
-                left: 0;
-                border-top: 1px dashed #ccc;
-            }
-            &>.tree-node-container:first-of-type::after{
                 left: 14px;
-                width: 32px;
+                border-top: 1px dashed #ccc;
             }
             &:hover {
                 background: #f5f5f5;
