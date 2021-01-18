@@ -390,7 +390,7 @@
                 @keyup.enter.native.prevent="handleInputChange"
                 v-model.trim="inputConclusion"></el-input>
             </div>
-            <el-button size="small" class="ml16" type="primary" @click="search" :disabled="canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+            <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
           </div>
         </el-form>
       </div>
@@ -587,16 +587,9 @@ export default {
   computed: {
     canSearch() {
       const { inputCondition, inputConclusion, inputSick, supperFormData } = this
-      return !(inputCondition || inputConclusion || inputSick || supperFormData.product_name)
+      return inputCondition || inputConclusion || inputSick || supperFormData.product_name
     }
   },
-  // created() {
-  //   this.requestList()
-  //   document.addEventListener('keyup', this.handleEnter)
-  // },
-  // beforeDestroy() {
-  //   document.removeEventListener('keyup', this.handleEnter)
-  // },
   methods: {
     clearValue,
     hasValue,
