@@ -55,23 +55,26 @@
                 @cell-click="handleCelClick"
                 :row-class-name="policyRowClassName"
                 style="width: 100%" >
+                <el-table-column prop="__row_index" label="客户编号" align="center" fixed="left" width="80px"></el-table-column>
                 <el-table-column prop="recognizee_policy_name" label="被保人" align="center" fixed="left" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="holder_name" label="投保人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="product_insurance_class_name" label="险种类型" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="product_name" label="产品名称" align="center" width="260px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="payment_period_desc" label="缴费期间" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="guarantee_period_desc" label="保障期间" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="guarantee_quota_str" label="基本保险金额" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="premium" label="年交保费(元)" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="proposal_at_str" label="投保日期" align="center" width="120px">
+                <el-table-column prop="proposal_at" label="投保日期" align="center" width="120px">
                     <template v-slot="{ row }">{{row.proposal_at ? formatDate(row.proposal_at * 1000, 'yyyy-MM-dd') : '-'}}</template>
                 </el-table-column>
                 <el-table-column prop="wait_days" label="等待期" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="beneficiaries" label="受益人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="account_bank_name" label="缴费银行" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="account_bank_number" label="银行卡号" align="center" width="220px" :formatter="cellFormatter"></el-table-column>
-                <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="beneficiaries" label="身故受益人" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="supplier_name" label="保险公司" align="center" width="250px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="supplier_hotline" label="保险公司客服电话" align="center" width="220px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="account_bank_name" label="续期缴费银行" align="center" width="120px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="account_bank_number" label="续期缴费银行卡号" align="center" width="200px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="policy_sn" label="保单号" align="center"  width="220px" :formatter="cellFormatter"></el-table-column>
+                <el-table-column prop="holder_mobile" label="投保人手机号" align="center" width="250px" :formatter="cellFormatter"></el-table-column>
                 <el-table-column prop="remark" label="备注" align="center" width="260px">
                     <template v-slot="{row}">
                         <div v-if="row === editRow" class="flex edit-remark-wrap">
@@ -195,6 +198,7 @@
                     res.policies.forEach((policy, index) => {
                         const len = policy.length
                         policy[0].rowSpan = len
+                        policy[0].__row_index = index + 1
                         if (index % 2 !== 0) {
                             policy.forEach(i => {
                                 // 标记斑马行
