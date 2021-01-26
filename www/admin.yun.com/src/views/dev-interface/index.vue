@@ -38,6 +38,10 @@
           </div>
         </div>
         <div class="item">
+          <div class="label">推送开关</div>
+          <el-switch @change="save" v-model="data.is_enable_notify" :active-value="0" :inactive-value="1"></el-switch>
+        </div>
+        <div class="item">
           <div class="label">机构接收订单URL</div>
           <div class="value">
             <el-input
