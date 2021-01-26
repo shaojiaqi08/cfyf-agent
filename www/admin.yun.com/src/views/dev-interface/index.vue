@@ -39,7 +39,7 @@
         </div>
         <div class="item">
           <div class="label">推送开关</div>
-          <el-switch @change="save" v-model="data.is_enable_notify" :active-value="0" :inactive-value="1"></el-switch>
+          <el-switch @change="save" v-model="data.is_enable_notify" :active-value="1" :inactive-value="0"></el-switch>
         </div>
         <div class="item">
           <div class="label">机构接收订单URL</div>
@@ -114,13 +114,14 @@
         })
       },
       save: debounce(function() {
-        let { allow_ip, notify_url } = this.data
+        let { allow_ip, notify_url, is_enable_notify } = this.data
         allow_ip = allow_ip || ''
         notify_url = notify_url || ''
         const reqId = requestId += 1
         saveConfig({
           allow_ip: this.formatIpList(allow_ip),
-          notify_url
+          notify_url,
+          is_enable_notify
         }).then(() => {
           reqId === requestId && this.$message.success('配置保存成功!')
         })
