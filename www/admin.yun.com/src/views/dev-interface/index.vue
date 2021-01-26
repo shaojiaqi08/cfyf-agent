@@ -7,7 +7,9 @@
       <div class="body">
         <div class="item">
           <div class="label">机构 ACCESS KEY</div>
-          <div class="value">{{data.access_key}}</div>
+          <div class="value">
+            <text-hidden-ellipsis width="380px" :popoverTip="data.access_key"></text-hidden-ellipsis>
+          </div>
         </div>
         <div class="item">
           <div class="label">机构 ACCESS SECRET</div>
