@@ -25,7 +25,12 @@
           <span>{{ policyInfo.product_name  || '-'}}</span>
         </div>
       </div>
-      <h4>保单信息</h4>
+      <div class="order-flex">
+		<h4 >保单信息</h4>
+		<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top">
+			<i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18"></i>
+		</el-tooltip>
+	  </div>
       <div class="row">
         <div>
           保单号
@@ -165,11 +170,25 @@ export default {
       }).finally(() => {
         this.loading = false
       })
-    }
+    },
+	copy(){
+		this.$message.success('支付链接已复制到粘贴板')
+	}
   }
 };
 </script>
 
 <style scoped lang="scss">
 @import '../../detail.scss';
+.order-flex{
+	display: flex; 
+	line-height: 24px;
+	h4{
+		margin-right: 5px;
+	}
+	i{
+		cursor: pointer;
+		color: #40aaff;
+	}
+}
 </style>
