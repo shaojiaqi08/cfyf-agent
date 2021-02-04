@@ -118,16 +118,21 @@
         allow_ip = allow_ip || ''
         notify_url = notify_url || ''
         const reqId = requestId += 1
+        const ips = this.formatIpList(allow_ip)
         saveConfig({
-          allow_ip: this.formatIpList(allow_ip),
+          allow_ip: ips,
           notify_url,
           is_enable_notify
         }).then(() => {
-          reqId === requestId && this.$message.success('配置保存成功!')
+          if (reqId === requestId) {
+            this.$message.success('配置保存成功!')
+            // 重置ip框格式
+            this.data.allow_ip = ips.join('\n')
+          }
         })
       }, 2000),
       formatIpList(ipStr) {
-        return ipStr.split(/\n/).map(i => i.trim())
+        return ipStr.split(/\n/).map(i => i.trim()).filter(i => i)
       }
     },
     created() {
