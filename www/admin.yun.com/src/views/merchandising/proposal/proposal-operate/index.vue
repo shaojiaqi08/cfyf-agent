@@ -330,36 +330,48 @@
                               >无社保</el-radio>
                             </el-col>
                             <el-col :span="2" style="text-align: left;padding: 10px 0;">
-                              <el-checkbox-group
-                                v-model="productsState[index][idx].insurance_ids"
-                                class="insurance-checkboxs"
-                              >
-                                <div
-                                  v-for="(option, kk) in product.product_insurances"
-                                  :key="option.id"
-                                >
-                                  <el-checkbox
-                                    :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
-                                    :value="option.id"
-                                    :label="option.id"
-                                    @change="changeCheckbox($event, index, idx, option)"
-                                  >{{ option.name }}</el-checkbox>
-                                  <el-select
-                                    v-model="productsState[index][idx].insurances[kk].coverage"
-                                    size="mini"
-                                    style="width: 80px;margin-top: 4px;margin-left: 6px;"
-                                    @change="changeAccidentCheckbox($event, index, idx)"
-                                    v-if="productsState[index][idx].insurances[kk] && productsState[index][idx].insurances[kk].id && option.type === 'accident'"
-                                  >
-                                    <el-option
-                                      v-for="a in option.coverages"
-                                      :key="a.value"
-                                      :value="a.value"
-                                      :label="a.value_text"
-                                    >{{ a.value_text }}</el-option>
-                                  </el-select>
-                                </div>
-                              </el-checkbox-group>
+                                <el-popover
+                                    placement="right"
+                                    width="200"
+                                    trigger="hover"
+                                    v-for="(option, kk) in product.product_insurance_group"
+                                    :key="option.id"
+                                    >
+                                      <el-radio-group v-model="productsState[index][idx].default_ids[kk]">
+                                        <template v-for="radioItem in product.product_insurance_group[kk].insurances">
+                                          <el-radio
+                                            :key="radioItem.id"
+                                            @change="changeRadioCheckbox($event, index, idx)"
+                                            :value="radioItem.id"
+                                            :label="radioItem.id">{{radioItem.name}}</el-radio>
+                                            <el-select
+                                              :key="radioItem.id+'select'"
+                                              v-model="productsState[index][idx].insurances[kk].coverage"
+                                              size="mini"
+                                              style="width: 80px;margin-top: 4px;margin-left: 6px;"
+                                              @change="changeAccidentCheckbox($event, index, idx)"
+                                              v-if="productsState[index][idx].insurances[kk] && radioItem && radioItem.id && radioItem.type === 'accident'"
+                                            >
+                                              <el-option
+                                                v-for="a in radioItem.coverages"
+                                                :key="a.value"
+                                                :value="a.value"
+                                                :label="a.value_text"
+                                              >{{ a.value_text }}</el-option>
+                                            </el-select>
+                                          </template>
+                                      </el-radio-group>
+                                  <div slot="reference">
+                                    <el-checkbox
+                                      :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
+                                      :label="option.id"
+                                      @click.native="changeClickCheckbox($event, index, idx, kk)"
+                                      :value="productsState[index][idx].default_ids[kk] ? true : false"
+                                    >
+                                      {{ productsState[index][idx].default_ids[kk] ? product.product_insurance_group[kk].insurances.filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name : option.name }}
+                                    </el-checkbox>
+                                  </div>
+                                </el-popover>
                             </el-col>
                             <el-col :span="4" style="text-align: left;" class="insurance-col">
                               <template v-if="!isTextHidden">
@@ -1451,6 +1463,47 @@ export default {
 
       this.getCost(value, index, idx)
     },
+	changeClickCheckbox(value, index, idx, kk){
+	if(this.productsState[index][idx].default_ids[kk] == ''){
+		return;
+	}
+	this.$set( this.productsState[index][idx].default_ids, kk, '' );
+	this.changeRadioCheckbox('', index, idx);
+	},
+	changeRadioCheckbox(value, index, idx){
+		let product_insurances = [];
+		for (let i = 0; i < this.products[index][idx].product_insurance_group.length; i++) {
+			for (let j = 0; j < this.products[index][idx].product_insurance_group[i].insurances.length; j++) {
+				product_insurances.push(this.products[index][idx].product_insurance_group[i].insurances[j])
+			}
+		}
+		const f = product_insurances.map((i, kk) => {
+		if (this.productsState[index][idx].default_ids.indexOf(i.id) !== -1) {
+			if (i.type === 'accident') {
+				return Object.assign({}, i, {
+					coverage:
+						(this.productsState[index][idx].insurances[kk]
+						&& this.productsState[index][idx].insurances[kk].coverage)
+						|| product_insurances[kk].coverages[0].value
+					})
+			}
+			return Object.assign({}, i, {
+			coverage:
+				(this.productsState[index][idx].insurances[kk] &&
+					this.productsState[index][idx].insurances[kk].coverage) ||
+					''
+			})
+		} else {
+			return {
+				id: null,
+				coverage: null,
+				type: i.type
+			}
+		}
+		})
+		this.productsState[index][idx].insurances = f;
+		this.getCost(value, index, idx)
+	},
     getCost(value, index, idx) {
       const relation = this.relationsSelected[index]
       const productState = this.productsState[index][idx]
@@ -1473,7 +1526,7 @@ export default {
         insurances: productState.insurances
           .filter(x => x.id)
           .map(i => ({ id: i.id, coverage: i.coverage })),
-        insurance_ids: productState.insurance_ids
+        insurance_ids: productState.default_ids.filter(i => i != '')
       }
 
       getCost(data)
@@ -1643,34 +1696,33 @@ export default {
       const relation = this.relationsSelected[index]
 
       let data = res.map(item => {
-        return {
-          common_terms: item.common_terms,
-          first_product_category_name: item.first_product_category_name,
-          supplier_name: item.supplier_name,
-          product_name: item.proposal_product_name,
-          pay_period: `${item.pay_period[0].value}_${item.pay_period[0].unit}`,
-          guarantee_period: `${item.guarantee_period[0].value}_${item.guarantee_period[0].unit}`,
-          base_coverage_value: `${item.base_coverage_value[0].value}`,
-          product_id: item.id,
-          has_social_security: '1',
-          insurances: item.product_insurances
-            .filter(i => i.is_main === 1)
-            .map(i => ({
-              id: i.id,
-              coverage: i.coverages.length ? i.coverages[0].value : '',
-              name: i.name,
-              type: i.type,
-              coverageText: i.coverages.length ? i.coverages[0].value_text : ''
-            })),
-          insurance_ids: item.product_insurances
-            .filter(i => i.is_main === 1)
-            .map(i => i.id),
-          // insurance_ids: item.product_insurances.map(i => i.id),
-          insurance_premium: null,
-          guarantee_responsibilities: [],
-          total_premium: null,
-          isLoading: true,
-          isError: false
+			return {
+			common_terms: item.common_terms,
+			first_product_category_name: item.first_product_category_name,
+			supplier_name: item.supplier_name,
+			product_name: item.proposal_product_name,
+			pay_period: `${item.pay_period[0].value}_${item.pay_period[0].unit}`,
+			guarantee_period: `${item.guarantee_period[0].value}_${item.guarantee_period[0].unit}`,
+			base_coverage_value: `${item.base_coverage_value[0].value}`,
+			product_id: item.id,
+			has_social_security: '1',
+			insurances: item.product_insurance_group
+			.filter(i => i.is_main === 1)[0].insurances
+			.filter(i => i.is_default === 1)
+			.map(i => ({
+				id: i.id,
+				coverage: i.coverages.length ? i.coverages[0].value : '',
+				name: i.name,
+				type: i.type,
+				coverageText: i.coverages.length ? i.coverages[0].value_text : ''
+			})),
+			insurance_ids:item.product_insurance_group.map(i => i.is_main === 1 ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
+			default_ids:item.product_insurance_group.map(i => i.is_main === 1 ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
+			insurance_premium: null,
+			guarantee_responsibilities: [],
+			total_premium: null,
+			isLoading: true,
+			isError: false
         }
       })
 
@@ -1704,12 +1756,13 @@ export default {
           policy_holder_id: relation.policy_holder_member.id,
           policy_holder_sex: relation.policy_holder_member.sex,
           policy_holder_birthday: relation.policy_holder_member.birthday,
-          insurances: item.product_insurances
-            .filter(i => i.is_main === 1)
-            .map(i => ({
-              id: i.id,
-              coverage: i.coverages.length ? i.coverages[0].value : ''
-            }))
+          insurances: item.product_insurance_group
+			.filter(i => i.is_main === 1)[0].insurances
+			.filter(i => i.is_default === 1)
+			.map(i => ({
+				id: i.id,
+				coverage: i.coverages.length ? i.coverages[0].value : '',
+			}))
           // insurances: item.product_insurances.map(i => ({ id: i.id, coverage: i.coverages.length ? i.coverages[0].value : '' }))
           // insurance_ids: item.product_insurances.map(i => i.id),
         }
