@@ -240,7 +240,7 @@
                         <el-col :span="2">保障期限</el-col>
                         <el-col :span="2">保额</el-col>
                         <el-col :span="2">社保</el-col>
-                        <el-col :span="2">附加险</el-col>
+                        <el-col :span="2">组与附加险</el-col>
                         <el-col :span="4" class="proposal-list-header-col" title="收起">
                           <span @click="listTextHidden">
                             保障内容
@@ -1706,18 +1706,28 @@ export default {
 			base_coverage_value: `${item.base_coverage_value[0].value}`,
 			product_id: item.id,
 			has_social_security: '1',
-			insurances: item.product_insurance_group
-			.filter(i => i.is_main === 1)[0].insurances
-			.filter(i => i.is_default === 1)
-			.map(i => ({
-				id: i.id,
-				coverage: i.coverages.length ? i.coverages[0].value : '',
-				name: i.name,
-				type: i.type,
-				coverageText: i.coverages.length ? i.coverages[0].value_text : ''
-			})),
-			insurance_ids:item.product_insurance_group.map(i => i.is_main === 1 ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
-			default_ids:item.product_insurance_group.map(i => i.is_main === 1 ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
+			insurances: item.product_insurance_group.map((i)=>{
+				let isHasDefault = i.insurances.filter(ii=> ii.is_default === 1).length;
+					if(isHasDefault){
+						return{
+							id:i.insurances.filter(ii=> ii.is_default === 1)[0].id,
+							name:i.insurances.filter(ii=> ii.is_default === 1)[0].name,
+							coverage:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value : '',
+							type:i.insurances.filter(ii=> ii.is_default === 1)[0].type,
+							coverageText:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value_text : ''
+						}
+					}else{
+						return {
+							id:'',
+							name:'',
+							coverage:'',
+							type:'',
+							coverageText:''
+						}
+					}
+			}),
+			insurance_ids:item.product_insurance_group.map(i => i.insurances.filter(ii=> ii.is_default === 1).length ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
+			default_ids:item.product_insurance_group.map(i => i.insurances.filter(ii=> ii.is_default === 1).length ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
 			insurance_premium: null,
 			guarantee_responsibilities: [],
 			total_premium: null,
@@ -1756,13 +1766,18 @@ export default {
           policy_holder_id: relation.policy_holder_member.id,
           policy_holder_sex: relation.policy_holder_member.sex,
           policy_holder_birthday: relation.policy_holder_member.birthday,
-          insurances: item.product_insurance_group
-			.filter(i => i.is_main === 1)[0].insurances
-			.filter(i => i.is_default === 1)
-			.map(i => ({
-				id: i.id,
-				coverage: i.coverages.length ? i.coverages[0].value : '',
-			}))
+          insurances: item.product_insurance_group.map((i)=>{
+			let isHasDefault = i.insurances.filter(ii=> ii.is_default === 1).length;
+				if(isHasDefault){
+					return{
+						id:i.insurances.filter(ii=> ii.is_default === 1)[0].id,
+						name:i.insurances.filter(ii=> ii.is_default === 1)[0].name,
+						coverage:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value : '',
+						type:i.insurances.filter(ii=> ii.is_default === 1)[0].type,
+						coverageText:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value_text : ''
+					}
+				}
+			}),
           // insurances: item.product_insurances.map(i => ({ id: i.id, coverage: i.coverages.length ? i.coverages[0].value : '' }))
           // insurance_ids: item.product_insurances.map(i => i.id),
         }
