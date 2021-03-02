@@ -365,7 +365,7 @@
                                     <el-checkbox
                                       :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
                                       :label="option.id"
-                                      @click.native="changeClickCheckbox($event, index, idx, kk)"
+                                      @change="changeClickCheckbox($event, index, idx, kk)"
                                       :value="productsState[index][idx].default_ids[kk] ? true : false"
                                     >
                                       {{ productsState[index][idx].default_ids[kk] ? product.product_insurance_group[kk].insurances.filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name : option.name }}
