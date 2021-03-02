@@ -348,6 +348,8 @@
                                               :key="radioItem.id+'select'"
                                               v-model="productsState[index][idx].insurances[kk].coverage"
                                               size="mini"
+												:popper-append-to-body="false"
+												popper-class="el-select-default"
                                               style="width: 80px;margin-top: 4px;margin-left: 6px;"
                                               @change="changeAccidentCheckbox($event, index, idx)"
                                               v-if="productsState[index][idx].insurances[kk] && radioItem && radioItem.id && radioItem.type === 'accident'"
@@ -368,7 +370,11 @@
                                       @change="changeClickCheckbox($event, index, idx, kk)"
                                       :value="productsState[index][idx].default_ids[kk] ? true : false"
                                     >
-                                      {{ productsState[index][idx].default_ids[kk] ? product.product_insurance_group[kk].insurances.filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name : option.name }}
+                                      {{ productsState[index][idx].default_ids[kk] ?
+                                      product.product_insurance_group[kk].insurances
+                                      .filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name
+                                      +(!!productsState[index][idx].insurances[kk].coverage === false ? '' : '/'+productsState[index][idx].insurances[kk].coverage )
+                                      : option.name }}
                                     </el-checkbox>
                                   </div>
                                 </el-popover>
@@ -1987,5 +1993,10 @@ export default {
 .proposal-tabs .el-tabs__item{
   display: inline-flex;
   align-items: center;
+}
+.el-select-default{
+  .popper__arrow{
+    display: none !important;
+  }
 }
 </style>
