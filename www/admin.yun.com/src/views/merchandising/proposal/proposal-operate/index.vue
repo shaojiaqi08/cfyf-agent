@@ -332,7 +332,6 @@
                             <el-col :span="2" style="text-align: left;padding: 10px 0;">
                                 <el-popover
                                     placement="right"
-                                    width="200"
                                     trigger="hover"
                                     v-for="(option, kk) in product.product_insurance_group"
                                     :key="option.id"
