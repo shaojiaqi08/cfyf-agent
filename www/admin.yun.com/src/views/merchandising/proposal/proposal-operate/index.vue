@@ -364,7 +364,7 @@
 											</div>
                                           </template>
                                       </el-radio-group>
-                                  <div slot="reference">
+                                  <div slot="reference" class="insurance-checkboxs">
                                     <el-checkbox
                                       :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
                                       :label="option.id"
