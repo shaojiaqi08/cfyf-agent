@@ -339,8 +339,8 @@
                                     >
                                       <el-radio-group v-model="productsState[index][idx].default_ids[kk]">
                                         <template v-for="radioItem in product.product_insurance_group[kk].insurances">
+										<div :key="radioItem.id">
                                           <el-radio
-                                            :key="radioItem.id"
                                             @change="changeRadioCheckbox($event, index, idx)"
                                             :value="radioItem.id"
                                             :label="radioItem.id">{{radioItem.name}}</el-radio>
@@ -361,6 +361,7 @@
                                                 :label="a.value_text"
                                               >{{ a.value_text }}</el-option>
                                             </el-select>
+											</div>
                                           </template>
                                       </el-radio-group>
                                   <div slot="reference">
@@ -375,6 +376,7 @@
                                       .filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name
                                       +(!!productsState[index][idx].insurances[kk].coverage === false ? '' : '/'+productsState[index][idx].insurances[kk].coverage )
                                       : option.name }}
+										<i class="el-icon-arrow-right"></i>
                                     </el-checkbox>
                                   </div>
                                 </el-popover>
