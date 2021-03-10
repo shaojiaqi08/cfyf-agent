@@ -266,7 +266,7 @@
                         >
                           <el-row :gutter="10" class="proposal-list-item-row">
                             <el-col :span="2">{{ product.first_product_category_name }}</el-col>
-                            <el-col :span="2">{{ product.supplier_name }}</el-col>
+                            <el-col :span="2" style="word-break: break-all">{{ product.supplier_name }}</el-col>
                             <el-col :span="2">
                               {{ product.proposal_product_name }}
                               <div
@@ -464,7 +464,7 @@
                         >
                           <el-row :gutter="10" class="proposal-list-item-row">
                             <el-col :span="2">{{ item.first_product_category_name }}</el-col>
-                            <el-col :span="2">{{ item.supplier_name || '-' }}</el-col>
+                            <el-col :span="2" style="word-break: break-all">{{ item.supplier_name || '-' }}</el-col>
                             <el-col :span="2">
                               {{ item.product_name }}
                               <div
