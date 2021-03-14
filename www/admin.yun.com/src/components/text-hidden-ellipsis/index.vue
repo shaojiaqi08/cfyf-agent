@@ -6,9 +6,11 @@
   >
     <div
       :class="['text', hiddenEllipsis ? 'text-hidden-ellipsis' : '']"
-      :style="{ paddingRight: hiddenEllipsis ? '16px' : '' }"
+      :style="{ paddingRight: hiddenEllipsis ? '16px' : '', 'text-align': align }"
     >
-      <span ref="text"><slot></slot></span>
+      <span ref="text">
+        <slot>{{popoverTip}}</slot>
+      </span>
     </div>
     <el-popover
       :placement="placement"
@@ -41,6 +43,10 @@ export default {
     maxWidth: {
       type: [String, Number],
       default: ''
+    },
+    align: {
+      type: String,
+      default: 'left'
     }
   },
   computed: {
@@ -88,7 +94,7 @@ export default {
   .icon {
     position: absolute;
     right: 0;
-    top: 0;
+    top: -2px;
     color: #1F78FF;
     line-height: 24px;
   }

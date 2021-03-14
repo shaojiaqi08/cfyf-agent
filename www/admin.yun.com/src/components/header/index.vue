@@ -2,6 +2,11 @@
   <div class="header">
     <div class="logo normal-transition"></div>
     <div class="right-function-button-group">
+      <el-tooltip v-if="$checkAuth('/edit_api_configure')" effect="dark" content="开发对接" placement="bottom">
+        <div class="function-botton" @click="$router.push('/dev-interface')">
+          <i class="iconfont iconda24_kaifaduijie fs24"></i>
+        </div>
+      </el-tooltip>
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
           <div class="function-botton" @click="$router.push('/company')">
             <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
