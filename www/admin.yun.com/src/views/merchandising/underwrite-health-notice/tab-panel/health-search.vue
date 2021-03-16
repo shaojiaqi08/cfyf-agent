@@ -33,7 +33,20 @@
           <div class="flex-center">
             调整字号
             <el-input-number class="ml16" :min="12" :max="24" v-model="fontSize" size="small"></el-input-number>
-            <el-button v-if="$checkAuth('/underwrite-health-notice/generate_pictures')" class="ml16" type="primary" @click="createImg" size="small"><i class="iconfont iconxiao16_shengcheng"></i> 生成图片</el-button>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg()"
+              size="small"
+            ><i class="iconfont iconxiao16_shengcheng mr4"></i> 生成图片</el-button>
+            <el-button
+              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+              class="ml16"
+              type="primary"
+              @click="createImg(true)"
+              size="small"
+            ><i class="iconfont iconxiao16_dangqianchakan mr4"></i> 预览图片</el-button>
           </div>
         </div>
         <el-scrollbar style="height: 100%" class="table-box">
@@ -43,7 +56,7 @@
                 <template #header>
                   <h3 style="color: #333333; margin: 0; line-height: 38px">{{ selVal }}</h3>
                 </template>
-                <el-table-column label="序号" type="index" align="center" width="100px"></el-table-column>
+                <el-table-column label="序号" type="index" align="center" width="60px"></el-table-column>
                 <el-table-column label="健康告知内容" prop="notice" class-name="tj"></el-table-column>
               </el-table-column>
             </el-table>
@@ -114,7 +127,7 @@ export default {
           isSelect: false
         }
       ],
-      fontSize: 14,
+      fontSize: 12,
       isCreateImgLock: false,
       tableHeight: 0
     };
@@ -131,7 +144,7 @@ export default {
       this.tableHeight = document.getElementsByClassName('table-box')[0].clientHeight
     },
     // 生成图片
-    createImg() {
+    createImg(isShow) {
       if (this.isCreateImgLock) {
         return false
       }
@@ -154,15 +167,50 @@ export default {
           eleLink.download = self.curProduct.product_name
           dom.getElementsByClassName('el-table__body-wrapper')[0].style.height = eltableHeight
           dom.getElementsByClassName('el-table')[0].style.height = parentHeight
-          // 触发点击
-          document.body.appendChild(eleLink)
-          eleLink.click()
-          // 然后移除
-          document.body.removeChild(eleLink)
+          if (!isShow) {
+            // 触发点击
+            document.body.appendChild(eleLink)
+            eleLink.click()
+            // 然后移除
+            document.body.removeChild(eleLink)
+          } else {
+            var blob = this.dataURLtoBlob(self.imgUrl)
+            var file = this.blobToFile(blob, (self.curProduct && self.curProduct.product_name) || 'img')
+            let url = this.getObjectURL(file)
+            window.open(url)
+          }
         })
         self.isCreateImgLock = false
         self.detailLoading = false
       })
+    },
+    dataURLtoBlob(dataurl) {
+      var arr = dataurl.split(',')
+      var mime = arr[0].match(/:(.*?);/)[1]
+      var bstr = atob(arr[1])
+      var n = bstr.length
+      var u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+      return new Blob([u8arr], { type: mime })
+    },
+    blobToFile(theBlob, fileName) {
+      theBlob.lastModifiedDate = new Date()
+      theBlob.name = fileName
+      return theBlob
+    },
+    getObjectURL(file) {
+      var url = null
+      if (window.createObjectURL !== undefined) { // basic
+        url = window.createObjectURL(file)
+      } else if (window.URL !== undefined) { // mozilla(firefox)
+        url = window.URL.createObjectURL(file)
+      } else
+      if (window.webkitURL !== undefined) { // webkit or chrome
+        url = window.webkitURL.createObjectURL(file)
+      }
+      return url
     },
     selectItem(item) {
       item.isSelect = !item.isSelect
@@ -241,7 +289,7 @@ export default {
     },
     closeDetailModal() {
       this.showProductDetail = false
-      this.setFontSize = 14
+      this.setFontSize = 12
     },
     closeSearchConditionTips() {
       this.searchConditionData = {}

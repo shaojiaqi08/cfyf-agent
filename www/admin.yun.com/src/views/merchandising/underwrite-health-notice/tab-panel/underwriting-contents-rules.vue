@@ -231,7 +231,6 @@ export default {
       this.requestList()
     },
     requestList() {
-      this.loading = true
       let insuranceList = this.classifyList.filter(item => {
         return item.isSelect
       })
@@ -242,6 +241,13 @@ export default {
           return item.name
         })
       }
+      let hasvalue = Object.values(this.formData).some(item => {
+        return item !== ''
+      })
+      if (insurance_class.length === 0 && !hasvalue) {
+        return
+      }
+      this.loading = true
       getInsuranceRuleList({
         ...this.formData,
         insurance_class: insurance_class ? insurance_class.join(',') : ''

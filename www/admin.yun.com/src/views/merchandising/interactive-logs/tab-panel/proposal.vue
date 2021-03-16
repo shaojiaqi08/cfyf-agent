@@ -20,7 +20,7 @@
                             wrapClass="scroll-bar-wap-pro"
                             viewClass="prospectus-list"
                             class="scroll-bar"
-                            style="height: 100%; overflow: hidden">
+                            style="height: calc(100% - 68px); overflow: hidden">
                         <div v-infinite-scroll="nextPage" :infinite-scroll-delay="400">
                             <div v-for="(item,index) in proposalDateArr" :key="index"
                                  class="scroll-bar-pro-item">
@@ -63,9 +63,9 @@
                     <div class="fs16 word-break mb12 bold">{{proposalDetail.proposal_name}}</div>
                     <div class="gray">共有{{proposalDetail.uv_read_count}}位微信好友浏览，平均时长{{proposalDetail.pv_read_time_text}}</div>
                 </div>
-                <div class="detail-personnel">
+                <div class="detail-personnel" style="overflow: hidden;">
                     <el-scrollbar
-                            class="scroll-bar">
+                            class="scroll-bar" style="overflow: hidden;">
                         <div class="list-personnel" v-for="item in proposalDetail.read_logs" :key="item.id">
                             <div class="flex-between">
                                 <el-avatar :size="48" :src="item.read_user_avatar_url"></el-avatar>

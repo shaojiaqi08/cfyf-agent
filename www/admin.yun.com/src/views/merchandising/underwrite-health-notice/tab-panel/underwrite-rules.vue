@@ -168,7 +168,7 @@
               <el-form-item label="是否有风控">
               <el-input v-model="formData.risk_management" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
-              <el-form-item label="代收保费">
+              <el-form-item label="首期保费收款方">
               <el-input v-model="formData.collect_premium" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
               <el-form-item label="支付认证（校验）">
@@ -240,7 +240,7 @@ export default {
           { name: 'BMI限制', key: 'bmi_restrict'},
           { name: '反洗钱处理（20万总保费）', key: 'aml'},
           { name: '是否有风控', key: 'risk_management'},
-          { name: '代收保费', key: 'collect_premium'},
+          { name: '首期保费收款方', key: 'collect_premium'},
           { name: '支付认证（校验）', key: 'check_wechat_real_name'},
           { name: '首期支付方式', key: 'first_payment_way'},
           { name: '续期支付方式', key: 'renewal_payment_way'},
@@ -362,7 +362,6 @@ export default {
       this.requestList()
     },
     requestList() {
-      this.loading = true
       let insuranceList = this.classifyList.filter(item => {
         return item.isSelect
       })
@@ -373,6 +372,13 @@ export default {
           return item.name
         })
       }
+      let hasvalue = Object.values(this.formData).some(item => {
+        return item !== ''
+      })
+      if (insurance_class.length === 0 && !hasvalue) {
+        return
+      }
+      this.loading = true
       getUnderwriteRuleList({
         ...this.formData,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
