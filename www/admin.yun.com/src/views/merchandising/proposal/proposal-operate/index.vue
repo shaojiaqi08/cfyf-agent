@@ -1224,6 +1224,7 @@ export default {
               product_id: 0,
               product_name: product.product_name,
               supplier_name: product.supplier_name,
+              source_supplier_id: product.source_supplier_id,
               source_category_id: product.source_category_id,
               proposal_product_guarantee_content: product.proposal_product_guarantee_content,
               category_icon: product.category_icon,
@@ -1244,6 +1245,7 @@ export default {
                 common_terms: product.common_terms || [], // 查看条款
                 first_product_category_name: product.first_product_category_name,
                 supplier_name: product.supplier_name,
+                source_supplier_id: product.source_supplier_id,
                 product_name: product.proposal_product_name,
                 pay_period: `${product.pay_period_value}_${product.pay_period_unit}`,
                 guarantee_period: `${product.guarantee_period_value}_${product.guarantee_period_unit}`,
@@ -1390,6 +1392,7 @@ export default {
                   guarantee_quota: y.base_coverage_value,
                   has_social_security: 0,
                   supplier_name: y.supplier_name,
+                  source_supplier_id: y.source_supplier_id,
                   insurances: []
                 }
               }
@@ -1597,6 +1600,7 @@ export default {
         product_id: 0,
         product_name: data.product_name,
         supplier_name: data.supplier_name,
+        source_supplier_id: data.source_supplier_id,
         total_premium: +data.premium,
         source_category_id: data.source_category_id || 0,
         proposal_product_guarantee_content: data.proposal_product_guarantee_content,
@@ -1707,6 +1711,7 @@ export default {
 			common_terms: item.common_terms,
 			first_product_category_name: item.first_product_category_name,
 			supplier_name: item.supplier_name,
+      source_supplier_id: item.source_supplier_id,
 			product_name: item.proposal_product_name,
 			pay_period: `${item.pay_period[0].value}_${item.pay_period[0].unit}`,
 			guarantee_period: `${item.guarantee_period[0].value}_${item.guarantee_period[0].unit}`,
