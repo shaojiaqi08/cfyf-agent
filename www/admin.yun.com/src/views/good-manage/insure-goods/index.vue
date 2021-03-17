@@ -327,9 +327,10 @@ export default {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
     share(obj) {
-      const { product_id, product_type } = obj
+      const { product_id, product_type, target_share_link, agent_id, share_at, cps_product_id, cps_branch_product_id } = obj
       if (product_type === 'cps') {
-        QRCode.toDataURL(obj.share_link).then(result => {
+        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
+        QRCode.toDataURL(url).then(result => {
           this.qrcodeUrl = result
         })
       } else {
