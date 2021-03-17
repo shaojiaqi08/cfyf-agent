@@ -334,9 +334,7 @@ export default {
         })
       } else {
         getProductShareLink({ product_id, product_type }).then(res => {
-          const urlObj = new URL(res.share_link)
-          const params = qs.parse(urlObj.search.slice(1))
-          const url = `${urlObj.origin}/vue/@@/product/api-share/?scode=${params.scode}`
+          const url = res.share_link
           QRCode.toDataURL(url).then(result => {
             this.qrcodeUrl = result
           })
