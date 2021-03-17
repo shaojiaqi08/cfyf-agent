@@ -335,7 +335,13 @@ export default {
         })
       } else {
         getProductShareLink({ product_id, product_type }).then(res => {
-          const url = res.share_link
+          const share_link = res.share_link
+          const query = {}
+          const host = share_link.substring(0, share_link.indexOf('/proposal'))
+          share_link.replace(/([^?&=]+)=([^&]+)/g, (_, key, value) => {
+            query[key] = value
+          });
+          const url = `${host}/proposal/#/product/api-share?scode=${query.scode}`
           QRCode.toDataURL(url).then(result => {
             this.qrcodeUrl = result
           })
