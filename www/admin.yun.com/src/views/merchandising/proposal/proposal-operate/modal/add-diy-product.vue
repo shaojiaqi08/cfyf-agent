@@ -32,7 +32,7 @@
 
         <!-- <el-form-item label="保险公司" prop="supplier_name">
           <el-input class="form-input" v-model="formdata.supplier_name"></el-input>
-        </el-form-item> -->
+        </el-form-item>-->
 
         <el-form-item label="保险公司" prop="source_supplier_id">
           <el-select
@@ -149,7 +149,10 @@
 </template>
 
 <script>
-import { getProductCategoryList, getProductCompanyList } from '@/apis/modules/product'
+import {
+  getProductCategoryList,
+  getProductCompanyList,
+} from '@/apis/modules/product'
 
 import { guaranteeTimeTypes, paytimeTypes, baseTypes } from '../config'
 
@@ -288,7 +291,7 @@ export default {
     this.getProductCompanyList()
   },
   methods: {
-    chnageGS (id) {
+    chnageGS(id) {
       for (let index = 0; index < this.companyList.length; index++) {
         if (this.companyList[index].id == id) {
           this.formdata.supplier_name = this.companyList[index].name
@@ -300,6 +303,10 @@ export default {
       this.formdata.product_name = this.diyData.product_name
       this.formdata.supplier_name = this.diyData.supplier_name
       this.formdata.source_supplier_id = this.diyData.source_supplier_id
+      if (this.formdata.source_supplier_id == 0) {
+        this.formdata.source_supplier_id = ''
+      }
+
       this.formdata.premium = this.diyData.total_premium
       this.formdata.proposal_product_guarantee_content = this.diyData.proposal_product_guarantee_content
       this.formdata.category_name = this.diyData.first_product_category_name
