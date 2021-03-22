@@ -50,3 +50,5 @@ export const deleteCompanyCommission = (data) => post('/agent/proxy/sales/positi
 export const getSupplierList = (data) => get('/common/product/supplier/list', data)
 // 获取佣金计算方式
 export const getCalculateWay = (data) => get('/agent/proxy/sales/position_commission/get_calculate_way', data)
+// 导出产品链接
+export const exportProductLink = `${process.env.VUE_APP_API_URL}/agent/proxy/product/distribution/export-product-link`

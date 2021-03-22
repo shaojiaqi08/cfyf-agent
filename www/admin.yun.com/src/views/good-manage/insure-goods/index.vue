@@ -107,7 +107,7 @@
               </template>
             </filter-shell>
           </div>
-          <el-button type="primary" class="export-btn" size="small" @click="exportList"><i class="iconfont iconxiao16_xiazai mr4"></i>批量导出</el-button>
+          <el-button type="primary" class="export-btn" :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>批量导出</el-button>
         </div>
         <template v-slot:list="{row}">
           <div class="list-item-content pl16 pr16 pt16 pb16 mb16">
@@ -213,7 +213,7 @@
 </template>
 
 <script>
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
@@ -222,7 +222,6 @@ import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
-import qs from 'qs'
 export default {
   name: 'insure-goods',
   components: {
@@ -261,11 +260,20 @@ export default {
       productCategoryData: [],
       productAgeData: [],
       value: [],
-      productDocsData: []
+      productDocsData: [],
+      exporting: false,
     };
   },
   methods: {
-    exportList() {},
+    exportProcuctList() {
+      const url = `${exportProductLink}`
+      this.exporting = true
+      downloadFrameA(url, `产品链接列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+        // this.$message.success('导出成功')
+      }).finally(() => {
+        this.exporting = false
+      })
+    },
     downloadDocs({ download_file_url }) {
       window.open(download_file_url)
     },
