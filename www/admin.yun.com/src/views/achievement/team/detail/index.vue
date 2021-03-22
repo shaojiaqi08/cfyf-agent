@@ -27,7 +27,7 @@
       </div>
       <div class="order-flex">
 		<h4 >保单信息</h4>
-		<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top">
+		<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top" v-if="policyInfo.pay_link">
 			<i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18"></i>
 		</el-tooltip>
       </div>

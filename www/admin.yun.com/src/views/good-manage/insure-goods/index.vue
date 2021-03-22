@@ -221,7 +221,6 @@ import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
-import qs from 'qs'
 export default {
   name: 'insure-goods',
   components: {
