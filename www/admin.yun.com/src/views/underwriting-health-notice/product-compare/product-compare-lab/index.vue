@@ -55,7 +55,7 @@
                     v-show="columns[orderKey] && columns[orderKey].is_show"
                   >
                     <!-- start 灰色块  第一层 columns中对应的 orderKey匹配数据 -->
-                    <div class="row item-header">
+                    <div class="row item-header" v-if="columns[orderKey]">
                       <el-checkbox
                         :indeterminate="columns[orderKey].isIndeterminate"
                         v-model="columns[orderKey].checkAll"
@@ -78,6 +78,7 @@
                     <el-checkbox-group
                       v-model="columns[orderKey].checked"
                       @change="handleCheckedChange($event, orderKey)"
+                      v-if="columns[orderKey]"
                     >
                       <div
                         class="row item-block"
