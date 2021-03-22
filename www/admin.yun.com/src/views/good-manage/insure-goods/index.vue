@@ -107,6 +107,7 @@
               </template>
             </filter-shell>
           </div>
+          <el-button type="primary" class="export-btn" size="small" @click="exportList"><i class="iconfont iconxiao16_xiazai mr4"></i>批量导出</el-button>
         </div>
         <template v-slot:list="{row}">
           <div class="list-item-content pl16 pr16 pt16 pb16 mb16">
@@ -264,6 +265,7 @@ export default {
     };
   },
   methods: {
+    exportList() {},
     downloadDocs({ download_file_url }) {
       window.open(download_file_url)
     },
@@ -679,5 +681,8 @@ export default {
       }
     }
   }
+}
+.export-btn{
+  margin-left: auto;
 }
 </style>
