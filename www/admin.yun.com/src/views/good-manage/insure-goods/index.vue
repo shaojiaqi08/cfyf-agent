@@ -327,16 +327,21 @@ export default {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
     share(obj) {
-      const { product_id, product_type } = obj
+      const { product_id, product_type, target_share_link, agent_id, share_at, cps_product_id, cps_branch_product_id } = obj
       if (product_type === 'cps') {
-        QRCode.toDataURL(obj.share_link).then(result => {
+        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
+        QRCode.toDataURL(url).then(result => {
           this.qrcodeUrl = result
         })
       } else {
         getProductShareLink({ product_id, product_type }).then(res => {
-          const urlObj = new URL(res.share_link)
-          const params = qs.parse(urlObj.search.slice(1))
-          const url = `${urlObj.origin}/vue/@@/product/api-share/?scode=${params.scode}`
+          const share_link = res.share_link
+          const query = {}
+          const host = share_link.substring(0, share_link.indexOf('/proposal'))
+          share_link.replace(/([^?&=]+)=([^&]+)/g, (_, key, value) => {
+            query[key] = value
+          });
+          const url = `${host}/proposal/#/product/api-share?scode=${query.scode}`
           QRCode.toDataURL(url).then(result => {
             this.qrcodeUrl = result
           })

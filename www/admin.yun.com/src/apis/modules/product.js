@@ -5,7 +5,7 @@ export const getProductApiList = (params) => get('/product/api/list', params)
 // pc产品 cps列表
 export const getProductCpsList = (params) => get('/product/cps/list', params)
 // pc产品 公司列表
-export const getProductCompanyList = (params) => get('/product/company/list', params)
+export const getProductCompanyList = (params) => get('/common/product/supplier/list', params)
 // pc产品 投保年龄列表
 export const getProductAgeList = (params) => get('/product/age/list', params)
 // pc产品 类别列表(旧版)
