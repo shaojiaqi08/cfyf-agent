@@ -326,38 +326,47 @@
           label="附加险"
           v-if="productInfoArray[adjustProductParamsIndex].isAttachProposal"
         >
-          <el-checkbox-group
-            v-model="productInfoArray[adjustProductParamsIndex].productInsurancesId"
-            @change="getCalculatePremium('special')"
-          >
-            <el-checkbox
-              class="insurance-checkbox"
-              v-for="(item, index) in productInfoArray[adjustProductParamsIndex].productInfoOptions.product_insurances"
-              :key="item.id"
-              :value="item.id"
-              :disabled="(String(item.select_status) !== void 0 && !item.select_status) || !!item.is_main"
-              :label="item.id"
-            >
-              {{ item.name }}
-              <template
-                v-if="item.type === 'accident' && item.coverages.length && productInfoArray[adjustProductParamsIndex].productInsurancesId.includes(item.id)"
-              >
-                <el-select
-                  style="margin-left: 10px;width: 100px;"
-                  size="small"
-                  v-model="productInfoArray[adjustProductParamsIndex].productInsurances[index].coverage"
-                  @change="getCalculatePremium('special')"
-                >
+          <el-popover
+            v-for='(option, idx) in productTableList[adjustProductParamsIndex].proposal_product.product_insurance_group'
+            :key='option.id'
+            placement='right'
+            trigger='hover'>
+            <el-radio-group v-model='productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]' @change="getCalculatePremium('special')">
+              <el-row v-for='radioItem in option.insurances' :key='radioItem.id'>
+                <el-radio :label='radioItem.id' :value='radioItem.id'>{{ radioItem.name }}</el-radio>
+                <el-select v-if='radioItem.type.includes("accident") && radioItem.coverages' v-model='productInfoArray[adjustProductParamsIndex].productInsurances[idx].coverage' :popper-append-to-body='false' placeholder='请选择' size='mini' style='width: 80px;' value='1' @change="getCalculatePremium('special')">
                   <el-option
-                    v-for="option in item.coverages"
-                    :key="option.value"
-                    :value="option.value"
-                    :label="option.value_text"
-                  >{{ option.value_text }}</el-option>
+                    v-for='item in radioItem.coverages'
+                    :key="item.value"
+                    :value="item.value"
+                    :label="item.value_text">
+                    {{ item.value_text }}
+                  </el-option>
                 </el-select>
-              </template>
-            </el-checkbox>
-          </el-checkbox-group>
+              </el-row>
+            </el-radio-group>
+
+            <div slot='reference' class='insurance-checkboxs'>
+              <!-- @change="changeCheckbox($event, index, idx, option)" -->
+
+              <el-checkbox
+                :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
+                :indeterminate='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
+                :label='option.id'
+                :value='option.id'
+                @change='changeClickCheckbox($event, option, idx)'
+              >
+                <!--                判断如果附加险子险的id在数组中，就选中checkbox。并判断当前此id在productInsurances数组对象中存在 coverage 字段，就拼接此字段-->
+                <!--                否则就直接显示附加险组的名称-->
+                {{ productInfoArray[adjustProductParamsIndex].productInsurancesId[idx] ?
+                productTableList[adjustProductParamsIndex].proposal_product.product_insurance_group[idx].insurances
+                  .find(i => i.id == productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]).name
+                + (!!productInfoArray[adjustProductParamsIndex].productInsurances.find(item2 => item2.id == productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]).coverage === false ? '' : '/' + productInfoArray[adjustProductParamsIndex].productInsurances[idx].coverage)
+                : option.name }}
+                <i class='el-icon-arrow-right'></i>
+              </el-checkbox>
+            </div>
+          </el-popover>
         </el-form-item>
         <el-form-item
           label="保额"
@@ -560,6 +569,13 @@ export default {
     this.scrollerUnlinkage()
   },
   methods: {
+    changeClickCheckbox($event, option, idx) {
+      if (!this.productInfoArray[this.adjustProductParamsIndex].productInsurancesId[idx]) {
+        return
+      }
+      this.$set(this.productInfoArray[this.adjustProductParamsIndex].productInsurancesId, idx, '')
+      this.getCalculatePremium('special')
+    },
     removeProduct(index) {
       this.removing = true
       let delId = this.productTableList[index].evaluation_product.id
@@ -620,8 +636,9 @@ export default {
               pay_period_unit: payPeriod.split('-')[1],
               coverage,
               insurances: productInsurancesId.map(i => {
+                if (!i) return
                 const target = productInsurances.find(y => y.id === i)
-                if (target.coverage) {
+                if (target && target.coverage) {
                   return { id: i, coverage: target.coverage }
                 }
                 return { id: i }
@@ -714,8 +731,9 @@ export default {
           pay_period_value: payPeriod.split('-')[0],
           pay_period_unit: payPeriod.split('-')[1],
           insurances: productInsurancesId.map(i => {
+            if (!i) return
             const target = productInsurances.find(y => y.id === i)
-            if (target.coverage) {
+            if (target && target.coverage) {
               return { id: i, coverage: target.coverage }
             }
             return { id: i }
@@ -1482,5 +1500,20 @@ export default {
   .tr{
     padding-bottom: 20px;
   }
+}
+
+/deep/ .el-row{
+  padding: 5px 0;
+}
+
+/deep/ .el-checkbox__label{
+  word-break: break-all;
+  white-space: initial;
+}
+
+/deep/ .el-form-item--medium .el-form-item__content{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 </style>
