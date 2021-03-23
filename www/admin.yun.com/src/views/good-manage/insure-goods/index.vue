@@ -266,13 +266,44 @@ export default {
   },
   methods: {
     exportProcuctList() {
-      const url = `${exportProductLink}`
+      let params = JSON.parse(JSON.stringify(this.searchModel))
+      if (params.first_product_category_id.length) {
+        const [first, second] = params.first_product_category_id
+        params.first_product_category_id = first
+        params.second_product_category_id = second
+      }
+      if (!params.first_product_category_id) {
+        params.first_product_category_id = ''
+        params.second_product_category_id = ''
+      }
+      let urlSearch = this.getParams(params)
+      const url = `${exportProductLink}?${urlSearch}`
       this.exporting = true
       downloadFrameA(url, `产品链接列表-${formatDate(new Date(), 'yyyy-MM-dd hh_mm')}.xlsx`, 'get', true).then(() => {
         // this.$message.success('导出成功')
       }).finally(() => {
         this.exporting = false
       })
+    },
+     //用&拼接对象成字符串
+    getParams(params) {
+      let paramStr = '';
+      Object.keys(params).forEach((item) => {
+        if (paramStr === '') {
+          if (Object.prototype.toString.call(params[item]) == '[object Object]' || Object.prototype.toString.call(params[item]) == '[object Array]') {
+            paramStr = `${item}=${JSON.stringify(params[item])}`;
+          } else {
+            paramStr = `${item}=${params[item]}`;
+          }
+        } else {
+          if (Object.prototype.toString.call(params[item]) == '[object Object]' || Object.prototype.toString.call(params[item]) == '[object Array]') {
+            paramStr = `${paramStr}&${item}=${JSON.stringify(params[item])}`;
+          } else {
+            paramStr = `${paramStr}&${item}=${params[item]}`;
+          }
+        }
+      });
+      return paramStr;
     },
     downloadDocs({ download_file_url }) {
       window.open(download_file_url)
@@ -396,6 +427,7 @@ export default {
         params.first_product_category_id = ''
         params.second_product_category_id = ''
       }
+      console.log(params)
       getInsureApiList(params).then(apiData => {
         getInsureCpsList(params).then(cpsData => {
           this.list = [...apiData, ...cpsData.map(i => ({
