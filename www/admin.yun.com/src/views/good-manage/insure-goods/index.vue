@@ -268,7 +268,7 @@ export default {
     exportProcuctList() {
       const url = `${exportProductLink}`
       this.exporting = true
-      downloadFrameA(url, `产品链接列表-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
+      downloadFrameA(url, `产品链接列表-${formatDate(new Date(), 'yyyy-MM-dd hh_mm')}.xlsx`, 'get', true).then(() => {
         // this.$message.success('导出成功')
       }).finally(() => {
         this.exporting = false
