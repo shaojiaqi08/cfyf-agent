@@ -253,7 +253,7 @@ export default {
       selProductVal: '',
       searchModel: {
         title: '',
-        first_product_category_id: [],
+        first_product_category_id: '',
         age_id: '',
         supplier_id: []
       },
