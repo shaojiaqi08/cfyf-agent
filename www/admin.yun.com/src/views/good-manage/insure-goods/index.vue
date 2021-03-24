@@ -291,17 +291,9 @@ export default {
       let paramStr = '';
       Object.keys(params).forEach((item) => {
         if (paramStr === '') {
-          if (Object.prototype.toString.call(params[item]) == '[object Object]' || Object.prototype.toString.call(params[item]) == '[object Array]') {
-            paramStr = `${item}=${JSON.stringify(params[item])}`;
-          } else {
-            paramStr = `${item}=${params[item]}`;
-          }
+          paramStr = `${item}=${params[item]}`;
         } else {
-          if (Object.prototype.toString.call(params[item]) == '[object Object]' || Object.prototype.toString.call(params[item]) == '[object Array]') {
-            paramStr = `${paramStr}&${item}=${JSON.stringify(params[item])}`;
-          } else {
-            paramStr = `${paramStr}&${item}=${params[item]}`;
-          }
+          paramStr = `${paramStr}&${item}=${params[item]}`;
         }
       });
       return paramStr;
