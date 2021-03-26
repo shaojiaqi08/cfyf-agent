@@ -833,9 +833,22 @@ export default {
               }
               return { id: i.id }
             })
-            this.productInfoArray[index].productInsurancesId = productInsurances
-              .filter(i => i.is_main)
-              .map(i => i.id)
+            // this.productInfoArray[index].productInsurancesId = productInsurances
+            //   .filter(i => i.is_main)
+            //   .map(i => i.id)
+            let insurancesList = this.productTableList[index].proposal_product.product_insurance_group
+            if(insurancesList){
+              this.productInfoArray[index].productInsurancesId = insurancesList.map(insurancesItem => {
+                let defaultItem = insurancesItem.insurances.filter(item => {
+                  if(item.is_default == 1){
+                    return item.id
+                  }
+                })[0]
+                if(defaultItem){
+                  return defaultItem.id
+                }
+              })
+            }
             this.productInfoArray[index].coverage = (coverages && coverages[0] && coverages[0].value) || ''
           }
           this.getCalculatePremium(id, index)
