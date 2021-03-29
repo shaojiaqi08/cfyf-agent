@@ -1546,4 +1546,8 @@ export default {
   flex-direction: column;
   align-items: flex-start;
 }
+
+/deep/ .el-dialog .el-dialog__body{
+  padding: 20px;
+}
 </style>
