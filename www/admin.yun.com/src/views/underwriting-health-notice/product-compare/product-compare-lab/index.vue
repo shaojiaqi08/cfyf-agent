@@ -352,7 +352,7 @@
 
               <el-checkbox
                 :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
-                :indeterminate='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
+                v-model='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
                 :label='option.id'
                 :value='option.id'
                 @change='changeClickCheckbox($event, option, idx)'
