@@ -243,7 +243,6 @@
       title="调整投被保人信息"
       :visible="adjustInsuredInfoModalShow"
       @close="adjustInsuredInfoModalShow = false"
-      class="product-params-form"
     >
       <el-form label-width="100px" label-position="left">
         <h3>被保人信息</h3>
