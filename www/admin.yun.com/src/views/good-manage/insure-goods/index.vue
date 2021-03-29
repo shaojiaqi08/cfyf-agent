@@ -107,6 +107,8 @@
               </template>
             </filter-shell>
           </div>
+          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link')"
+           :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>导出商品链接</el-button>
         </div>
         <template v-slot:list="{row}">
           <div class="list-item-content pl16 pr16 pt16 pb16 mb16">
@@ -212,7 +214,7 @@
 </template>
 
 <script>
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
@@ -221,7 +223,6 @@ import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
-import qs from 'qs'
 export default {
   name: 'insure-goods',
   components: {
@@ -252,7 +253,7 @@ export default {
       selProductVal: '',
       searchModel: {
         title: '',
-        first_product_category_id: [],
+        first_product_category_id: '',
         age_id: '',
         supplier_id: []
       },
@@ -260,10 +261,43 @@ export default {
       productCategoryData: [],
       productAgeData: [],
       value: [],
-      productDocsData: []
+      productDocsData: [],
+      exporting: false,
     };
   },
   methods: {
+    exportProcuctList() {
+      let params = JSON.parse(JSON.stringify(this.searchModel))
+      if (params.first_product_category_id.length) {
+        const [first, second] = params.first_product_category_id
+        params.first_product_category_id = first
+        params.second_product_category_id = second
+      }
+      if (!params.first_product_category_id) {
+        params.first_product_category_id = ''
+        params.second_product_category_id = ''
+      }
+      let urlSearch = this.getParams(params)
+      const url = `${exportProductLink}?${urlSearch}`
+      this.exporting = true
+      downloadFrameA(url, `产品链接列表-${formatDate(new Date(), 'yyyy-MM-dd hh_mm')}.xlsx`, 'get', true).then(() => {
+        // this.$message.success('导出成功')
+      }).finally(() => {
+        this.exporting = false
+      })
+    },
+     //用&拼接对象成字符串
+    getParams(params) {
+      let paramStr = '';
+      Object.keys(params).forEach((item) => {
+        if (paramStr === '') {
+          paramStr = `${item}=${params[item]}`;
+        } else {
+          paramStr = `${paramStr}&${item}=${params[item]}`;
+        }
+      });
+      return paramStr;
+    },
     downloadDocs({ download_file_url }) {
       window.open(download_file_url)
     },
@@ -386,6 +420,7 @@ export default {
         params.first_product_category_id = ''
         params.second_product_category_id = ''
       }
+      console.log(params)
       getInsureApiList(params).then(apiData => {
         getInsureCpsList(params).then(cpsData => {
           this.list = [...apiData, ...cpsData.map(i => ({
@@ -679,5 +714,8 @@ export default {
       }
     }
   }
+}
+.export-btn{
+  margin-left: auto;
 }
 </style>
