@@ -916,6 +916,7 @@ export default {
               coverage: i.coverage,
               insurances: i.productInsurancesId.map(y => {
                 const target = i.productInsurances.find(z => z.id === y)
+                if (!target) return
                 if (target.coverage) {
                   return { id: y, coverage: target.coverage }
                 }
@@ -1541,7 +1542,7 @@ export default {
   white-space: initial;
 }
 
-/deep/ .el-form-item--medium .el-form-item__content{
+/deep/.product-params-form .el-form-item--medium .el-form-item__content{
   display: flex;
   flex-direction: column;
   align-items: flex-start;
