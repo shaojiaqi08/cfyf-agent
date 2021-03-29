@@ -206,6 +206,7 @@
       title="添加产品"
       :visible="addProductModalShow"
       @close="addProductModalShow = false"
+      destroy-on-close
     >
       <el-form label-width="100px" label-position="left">
         <el-input placeholder="请输入产品名称" v-model="searchModel.product_name">
@@ -217,18 +218,20 @@
           v-loading="isLoading"
           class="scroll-bar"
         >
-          <div class="product-item" v-for="(item, index) in productList" :key="item.id">
-            <div class="title">{{ item.product_name }}</div>
-            <div class="content">
-              <div class="tags">
-                <div class="tag">{{ item.product_insurance_class_str }}</div>
-                <div class="tag" v-if="item.supplier_name">{{ item.supplier_name }}</div>
-              </div>
-              <div class="button">
-                <el-button type="primary" :loading="isAddProduct" plain @click="add2Compare(index)">
-                  <i class="el-icon-plus" v-if="!isAddProduct"></i>
-                  添加
-                </el-button>
+          <div v-infinite-scroll="grounding" :infinite-scroll-delay='400' :infinite-scroll-distance='50'>
+            <div class="product-item" v-for="(item, index) in productList" :key="item.id">
+              <div class="title">{{ item.product_name }}</div>
+              <div class="content">
+                <div class="tags">
+                  <div class="tag">{{ item.product_insurance_class_str }}</div>
+                  <div class="tag" v-if="item.supplier_name">{{ item.supplier_name }}</div>
+                </div>
+                <div class="button">
+                  <el-button type="primary" :loading="isAddProduct" plain @click="add2Compare(index)">
+                    <i class="el-icon-plus" v-if="!isAddProduct"></i>
+                    添加
+                  </el-button>
+                </div>
               </div>
             </div>
           </div>
@@ -675,10 +678,23 @@ export default {
         })
         .catch(err => console.log(err))
     },
+    grounding() {
+      // console.log(111)
+      if (this.isLoading) return
+      this.isLoading = true
+      this.searchModel.page++
+      getEvaluationProductPageList(this.searchModel)
+        .then(res => {
+          this.productList = this.productList.concat(res.data)
+          this.isLoading = false
+        })
+        .catch(err => console.log(err))
+    },
     addProduct() { // 表头添加商品按钮
       this.isFromAdd = true
       this.addProductModalShow = true
       this.searchModel.product_name = ''
+      this.searchModel.page = 1
       this.getEvaluationProductPageList()
     },
     moveOrder(index, type) {
