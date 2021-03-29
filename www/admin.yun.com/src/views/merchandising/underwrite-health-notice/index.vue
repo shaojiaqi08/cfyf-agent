@@ -1,15 +1,10 @@
 <template>
     <div class="health-notice-container page-container">
         <div class="header">
-            <el-tabs v-model="tabIndex">
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_rule')" name="underwrite-rules" label="投保规则"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/health_report_inquiry')" name="health-search" label="健告查询"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwriting')" name="underwrite-search" label="智核查询"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/underwrite-health-notice/underwrite_content_rule')" name="underwrite-content-rules" label="核保规则"></el-tab-pane>
-            </el-tabs>
+            <common-tabs-header v-model="tabIndex" :data="tabsData"></common-tabs-header>
         </div>
         <div class="content">
-            <Component :is="tabIndex||'none'"></Component>
+            <Component :is="tabIndex"></Component>
         </div>
     </div>
 </template>
@@ -18,39 +13,26 @@
     import HealthSearch from './tab-panel/health-search'
     import UnderwriteRules from './tab-panel/underwrite-rules'
     import UnderwriteContentRules from './tab-panel/underwriting-contents-rules'
-    import {mapState} from 'vuex'
+    import CommonTabsHeader from '../../../components/common-tabs-header'
     export default {
         name: 'underwrite-health-notice',
         components: {
+            CommonTabsHeader,
             UnderwriteSearch,
             HealthSearch,
             UnderwriteRules,
             UnderwriteContentRules
         },
-        computed: {
-            ...mapState('users', ['userInfo'])
-        },
         data() {
             return {
                 tabIndex: '',
+                tabsData: [
+                    { name: 'underwrite-rules', label: '投保规则', permission: '/underwrite-health-notice/underwrite_rule'},
+                    { name: 'health-search', label: '健告查询', permission: '/underwrite-health-notice/health_report_inquiry'},
+                    { name: 'underwrite-search', label: '智核查询', permission: '/underwrite-health-notice/underwriting'},
+                    { name: 'underwrite-content-rules', label: '核保规则', permission: '/underwrite-health-notice/underwrite_content_rule'}
+                ],
                 productName: ''
-            }
-        },
-        watch: {
-            'userInfo.permissions': {
-                handler() {
-                    // 初始化tab权限
-                    if (this.$checkAuth('/underwrite-health-notice/underwrite_rule')) {
-                        this.tabIndex = 'underwrite-rules'
-                    } else if (this.$checkAuth('/underwrite-health-notice/health_report_inquiry')) {
-                        this.tabIndex = 'health-search'
-                    } else if (this.$checkAuth('/underwrite-health-notice/underwriting')) {
-                        this.tabIndex = 'underwrite-search'
-                    } else if (this.$checkAuth('/underwrite-health-notice/underwrite_content_rule')) {
-                        this.tabIndex = 'underwrite-content-rules'
-                    }
-                },
-                immediate: true
             }
         }
     }
