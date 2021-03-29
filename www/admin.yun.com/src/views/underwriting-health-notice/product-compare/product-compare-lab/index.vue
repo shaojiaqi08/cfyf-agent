@@ -352,9 +352,8 @@
 
               <el-checkbox
                 :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
-                v-model='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
+                :value='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
                 :label='option.id'
-                :value='option.id'
                 @change='changeClickCheckbox($event, option, idx)'
               >
                 <!--                判断如果附加险子险的id在数组中，就选中checkbox。并判断当前此id在productInsurances数组对象中存在 coverage 字段，就拼接此字段-->
@@ -1216,6 +1215,7 @@ export default {
             coverage: i.coverage,
             insurances: i.productInsurancesId.map(x => {
               const target = i.productInsurances.find(y => y.id === x)
+              if(!target) return
               if (target.coverage) {
                 return { id: x, coverage: target.coverage }
               }
