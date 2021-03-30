@@ -345,7 +345,7 @@
                                             :label="radioItem.id">{{radioItem.name}}</el-radio>
                                             <el-select
                                               :key="radioItem.id+'select'"
-                                              v-model="productsState[index][idx].insurances[radioIndex].coverage"
+                                              v-model="productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].insurance_ids[kk])].coverage"
                                               size="mini"
                                               :popper-append-to-body="false"
                                               popper-class="el-select-default"
