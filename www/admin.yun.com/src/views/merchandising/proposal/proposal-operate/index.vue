@@ -337,21 +337,25 @@
                                     :key="option.id"
                                     >
                                       <el-radio-group v-model="productsState[index][idx].default_ids[kk]">
-                                        <template v-for="radioItem in product.product_insurance_group[kk].insurances">
-										<div :key="radioItem.id">
+                                        <template v-for="(radioItem, radioIndex) in product.product_insurance_group[kk].insurances">
+										<div :key="radioItem.id" style="height: 32px;display: flex;align-items: center">
                                           <el-radio
                                             @change="changeRadioCheckbox($event, index, idx)"
                                             :value="radioItem.id"
                                             :label="radioItem.id">{{radioItem.name}}</el-radio>
                                             <el-select
                                               :key="radioItem.id+'select'"
-                                              v-model="productsState[index][idx].insurances[kk].coverage"
+                                              v-model="productsState[index][idx].insurances[radioIndex].coverage"
                                               size="mini"
-												:popper-append-to-body="false"
-												popper-class="el-select-default"
-                                              style="width: 80px;margin-top: 4px;margin-left: 6px;"
+                                              :popper-append-to-body="false"
+                                              popper-class="el-select-default"
+                                              style="width: 80px;margin-left: 6px;"
                                               @change="changeAccidentCheckbox($event, index, idx)"
-                                              v-if="productsState[index][idx].insurances[kk] && radioItem && radioItem.id && radioItem.type === 'accident'"
+                                              v-if="productsState[index][idx].insurances[kk] &&
+                                                    radioItem &&
+                                                    radioItem.id &&
+                                                    radioItem.type === 'accident' &&
+                                                    productsState[index][idx].default_ids[kk] === radioItem.id"
                                             >
                                               <el-option
                                                 v-for="a in radioItem.coverages"
