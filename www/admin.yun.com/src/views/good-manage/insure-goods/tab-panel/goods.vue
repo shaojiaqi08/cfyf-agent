@@ -480,7 +480,7 @@
         }
     }
     .goods-container {
-        padding: 0 20px 0 20px;
+        padding: 0;
         ::v-deep .text-hidden-ellipsis-component .icon{
             color: #999;
         }
