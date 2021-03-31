@@ -1,13 +1,13 @@
 <template>
-    <el-tabs class="tabs" v-model="tabIndex" v-bind="$attrs">
+    <el-tabs class="tabs" v-model="tabIndex" v-bind="$attrs" v-on="$listeners">
         <el-tab-pane
             v-for="(item, index) in filterData"
             :key="index"
             :name="item.name"
             :label="item.label">
             <span slot="label">
-                <el-badge :is-dot="item.dot" v-if="item.dot" class="mr4"></el-badge>
                 <span>{{item.label}}</span>
+                <el-badge :is-dot="item.dot" v-if="item.dot" style="top: -7px"></el-badge>
             </span>
         </el-tab-pane>
     </el-tabs>

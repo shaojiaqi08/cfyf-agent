@@ -14,7 +14,10 @@
              :key="nav.name"
              v-allowed="[$route.meta.permission]"
              @click="jump(nav.name)">
-          {{ nav.meta.title }}
+          <el-badge
+            is-dot
+            v-if="nav.dotkey && checkIsShowDot(nav.dotkey)"
+            class="mr8"></el-badge>{{ nav.meta.title }}
         </div>
       </div>
     </el-scrollbar>
@@ -23,6 +26,7 @@
 
 <script>
   import { routers } from '@/router/routes'
+  import { getDotsData } from '@/apis/modules'
   import { mapState } from 'vuex'
   export default {
     data() {
@@ -32,14 +36,25 @@
     },
     computed: {
       ...mapState('users', ['userInfo']),
+      ...mapState('dotManage', ['dots']),
       permission() {
         return this.userInfo.permissions || []
       }
     },
     mounted() {
+      // 获取全局红点
+      this.getDotsData()
       this.menuInit()
     },
     methods: {
+      getDotsData() {
+        getDotsData().then(res => {
+          this.$store.dispatch('dotManage/updateDots', res)
+        })
+      },
+      checkIsShowDot(dots) {
+        return Array.isArray(dots) ? dots.some(key => this.dots[key] > 0) : this.dots[dots] > 0
+      },
       filterRoutes(routes) {
         return routes.filter(i => i.meta.show)
       },
@@ -113,6 +128,8 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       cursor: pointer;
+      display: flex;
+      align-items: center;
       &.actived {
         color: #1F78FF;
         font-weight: bold;
@@ -122,6 +139,9 @@
       }
       &:hover{
         background-color: rgba(0, 0, 0, .1);
+      }
+      ::v-deep .el-badge sup {
+        top: 0;
       }
     }
   }
