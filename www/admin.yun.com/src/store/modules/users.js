@@ -13,6 +13,7 @@ export default {
     },
     [LOGIN_OUT](state) {
       state.userInfo = {}
+      localStorage.clear()
     },
     [GETNOTIFICATION](state, data) {
       state.notificationInfo = data

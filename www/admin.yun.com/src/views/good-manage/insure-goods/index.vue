@@ -227,6 +227,7 @@ import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
+let reqId = 0
 export default {
   name: 'insure-goods',
   components: {
@@ -440,11 +441,11 @@ export default {
         params.first_product_category_id = ''
         params.second_product_category_id = ''
       }
-      const tIdx = this.tabIndex
-      if (tIdx === 'goods') {
+      const id = ++reqId
+      if (this.tabIndex === 'goods') {
         getInsureApiList(params).then(apiData => {
           getInsureCpsList(params).then(cpsData => {
-            if (tIdx === this.tabIndex) {
+            if (id === reqId) {
               this.list = [...apiData, ...cpsData.map(i => ({
                 ...i,
                 title: i.title,
@@ -453,21 +454,21 @@ export default {
               }))]
             }
           }).finally(() => {
-            if (tIdx === this.tabIndex) {
+            if (id === reqId) {
               this.loading = false
             }
           })
         })
       } else {
         getShelvesList({
-          notice_type: tIdx,
+          notice_type: this.tabIndex,
           ...params
         }).then(res => {
-          if (tIdx === this.tabIndex) {
+          if (id === reqId) {
             this.list = res
           }
         }).finally(() => {
-          if (tIdx === this.tabIndex) {
+          if (id === reqId) {
             this.loading = false
           }
         })
