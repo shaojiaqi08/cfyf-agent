@@ -1,8 +1,7 @@
 <template>
   <div class="insure-goods-container">
     <div class="header">
-      <common-tabs-header v-model="tabIndex" :data="tabsData" @tab-click="handleTabClick"></common-tabs-header>
-      <el-button v-if="$checkAuth('/rate/commission_management/batch_create') && tabIndex === 'commission-rate'" size="small" type="primary" @click="openRateDialog"><i class="iconfont iconxiao16_shezhi mr4"></i>批量设置佣金费率</el-button>
+      <common-tabs-header v-model="tabIndex" :data="tabsData"></common-tabs-header>
     </div>
     <div class="content">
       <side-filter-list v-model="selProductVal"
@@ -38,10 +37,10 @@
                       filterable
                       collapse-tags
                       :props="{
-                  value: 'id',
-                  label: 'name',
-                  children: 'child_categories'
-                }"
+                        value: 'id',
+                        label: 'name',
+                        children: 'child_categories'
+                      }"
                       :options="productCategoryData"
                       v-model="searchModel.first_product_category_id"
                       emitPath
@@ -108,11 +107,11 @@
               </template>
             </filter-shell>
           </div>
-          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link')"
+          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link') && tabIndex === 'all'"
                      :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>导出商品链接</el-button>
         </div>
         <template v-slot:list="{row}">
-          <div class="list-item-content pl16 pr16 pt16 pb16 mb16 off-shelves">
+          <div class="list-item-content pl16 pr16 pt16 pb16 mb16" :class="noticeTypeClassMap[row.notice_type]">
             <div class="flex-between company-base-info mb16">
               <img :src="row.company_logo">
               <div>
@@ -154,8 +153,8 @@
                 <el-button @click="share(row)" type="primary" size="small"><i class="iconfont iconxiao16_fasong mr4"></i>转发客户</el-button>
               </div>
             </div>
-            <div class="off-shelves-tips pt16">
-              距离下架还有<span>00天00时00分</span>
+            <div class="off-shelves-tips pt16" v-if="row.notice_type === 'off'">
+              距离下架还有<span>{{row.put_down_count_down}}</span>
             </div>
           </div>
         </template>
@@ -219,7 +218,7 @@
 
 <script>
 import commonTabsHeader from '../../../components/common-tabs-header'
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink, getShelvesList} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
@@ -239,11 +238,15 @@ export default {
   },
   data() {
     return {
+      noticeTypeClassMap: Object.freeze({
+        on: 'new-arrival',
+        off: 'off-shelves'
+      }),
       tabIndex: '',
       tabsData: [
         { name: 'goods', label: '全部商品'},
-        { name: 'up-shelves', label: '新品上架', permission: '', dot: true},
-        { name: 'down-shelves', label: '即将下架', permission: '', dot: false},
+        { name: 'on', label: '新品上架', permission: '', dot: 'new_product_quantity'},
+        { name: 'off', label: '即将下架', permission: '', dot: 'off_product_quantity'},
       ],
       docsLoading: false,
       detaiDialoglVisible: false,
@@ -283,12 +286,6 @@ export default {
     }
   },
   methods: {
-    handleTabClick({ name }) {
-      const tabObj = this.tabsData.find(i => i.name === name)
-      if (tabObj.dot) {
-        tabObj.dot = false
-      }
-    },
     exportProcuctList() {
       let params = JSON.parse(JSON.stringify(this.searchModel))
       if (params.first_product_category_id.length) {
@@ -443,18 +440,38 @@ export default {
         params.first_product_category_id = ''
         params.second_product_category_id = ''
       }
-      getInsureApiList(params).then(apiData => {
-        getInsureCpsList(params).then(cpsData => {
-          this.list = [...apiData, ...cpsData.map(i => ({
-            ...i,
-            title: i.title,
-            web_url: i.link,
-            isCpsData: true
-          }))]
-        }).finally(() => {
-          this.loading = false
+      const tIdx = this.tabIndex
+      if (tIdx === 'goods') {
+        getInsureApiList(params).then(apiData => {
+          getInsureCpsList(params).then(cpsData => {
+            if (tIdx === this.tabIndex) {
+              this.list = [...apiData, ...cpsData.map(i => ({
+                ...i,
+                title: i.title,
+                web_url: i.link,
+                isCpsData: true
+              }))]
+            }
+          }).finally(() => {
+            if (tIdx === this.tabIndex) {
+              this.loading = false
+            }
+          })
         })
-      })
+      } else {
+        getShelvesList({
+          notice_type: tIdx,
+          ...params
+        }).then(res => {
+          if (tIdx === this.tabIndex) {
+            this.list = res
+          }
+        }).finally(() => {
+          if (tIdx === this.tabIndex) {
+            this.loading = false
+          }
+        })
+      }
     },
     debounceAjaxListData: debounce(function() {
       this.ajaxListData()
@@ -476,6 +493,9 @@ export default {
     }
   },
   watch: {
+    tabIndex() {
+      this.ajaxListData()
+    },
     belongVisible(v) {
       if (!v) {
         this.belongData = {};
@@ -529,7 +549,7 @@ export default {
       }
     }
     .content{
-      height: calc(100% - 56px);
+      height: calc(100% - 80px);
       display: flex;
       background: #fff;
       ::v-deep .side-filter-container {
@@ -616,7 +636,7 @@ export default {
       }
     }
     & ::v-deep .el-scrollbar {
-      height: calc(100vh - 78px);
+      height: calc(100vh - 165px);
       padding-top: 16px;
       box-sizing: border-box;
       & .el-scrollbar__wrap {

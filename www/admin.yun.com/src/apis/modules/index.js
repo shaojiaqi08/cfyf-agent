@@ -61,4 +61,4 @@ export const checkVersion = params => get('/agent/proxy/common/check_version', p
 export const getNotification = params => get('/agent/proxy/common/notification_red_points', params)
 
 // 全局红点数据
-export const getDotsData = params => get('', params)
+export const getDotsData = params => get('/agent/proxy/product-notice/red-point', params)

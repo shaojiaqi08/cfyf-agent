@@ -7,7 +7,7 @@
             :label="item.label">
             <span slot="label">
                 <span>{{item.label}}</span>
-                <el-badge :is-dot="item.dot" v-if="item.dot" style="top: -7px"></el-badge>
+                <el-badge :is-dot="item.dot && checkIsShowDot(item.dot)" style="top: -7px"></el-badge>
             </span>
         </el-tab-pane>
     </el-tabs>
@@ -20,6 +20,7 @@
         name: 'common-tabs-header',
         computed: {
             ...mapState('users', ['userInfo']),
+            ...mapState('dotManage', ['dots']),
             filterData() {
                 return this.data.filter(i => i.permission ? this.$checkAuth(i.permission) : true)
             }
@@ -36,6 +37,11 @@
                 required: true
             },
             value: String
+        },
+        methods: {
+            checkIsShowDot(dots) {
+                return Array.isArray(dots) ? dots.some(key => this.dots[key] > 0) : this.dots[dots] > 0
+            },
         },
         watch: {
             tabIndex(v) {

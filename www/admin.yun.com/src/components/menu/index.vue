@@ -16,8 +16,8 @@
              @click="jump(nav.name)">
           <el-badge
             is-dot
-            v-if="nav.dotkey && checkIsShowDot(nav.dotkey)"
-            class="mr8"></el-badge>{{ nav.meta.title }}
+            v-if="nav.meta.dotkey && checkIsShowDot(nav.meta.dotkey)"
+            class="cust-dot"></el-badge>{{ nav.meta.title }}
         </div>
       </div>
     </el-scrollbar>
@@ -28,9 +28,11 @@
   import { routers } from '@/router/routes'
   import { getDotsData } from '@/apis/modules'
   import { mapState } from 'vuex'
+  let timer = null
   export default {
     data() {
       return {
+        timer: null,
         routers: []
       }
     },
@@ -48,8 +50,10 @@
     },
     methods: {
       getDotsData() {
+        clearTimeout(timer)
         getDotsData().then(res => {
           this.$store.dispatch('dotManage/updateDots', res)
+          timer = setTimeout(this.getDotsData, 60000)
         })
       },
       checkIsShowDot(dots) {
@@ -75,6 +79,9 @@
         if (this.$route.name === name) return
         this.$router.push({ name })
       }
+    },
+    beforeDestroy() {
+      clearTimeout(timer)
     },
     watch: {
       permission() {
@@ -130,6 +137,7 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      position: relative;
       &.actived {
         color: #1F78FF;
         font-weight: bold;
@@ -142,6 +150,10 @@
       }
       ::v-deep .el-badge sup {
         top: 0;
+      }
+      ::v-deep .cust-dot {
+        position: absolute;
+        left: 22px;
       }
     }
   }
