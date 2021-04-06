@@ -246,8 +246,8 @@ export default {
       tabIndex: '',
       tabsData: [
         { name: 'goods', label: '全部商品'},
-        { name: 'on', label: '新品上架', permission: '', dot: 'new_product_quantity'},
-        { name: 'off', label: '即将下架', permission: '', dot: 'off_product_quantity'},
+        { name: 'on', label: '新品上架', permission: '/insure-goods/new_product_notice', dot: 'new_product_quantity'},
+        { name: 'off', label: '即将下架', permission: '/insure-goods/product_off_notice', dot: 'off_product_quantity'},
       ],
       docsLoading: false,
       detaiDialoglVisible: false,
