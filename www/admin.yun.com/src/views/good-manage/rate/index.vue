@@ -48,7 +48,7 @@
         flex-direction: column;
         box-sizing: border-box;
         .header{
-            padding: 16px 0 0 18px;
+            padding-left: 16px;
             height: 56px;
             background: #F5F5F5;
             border-radius: 4px 4px 0px 0px;
