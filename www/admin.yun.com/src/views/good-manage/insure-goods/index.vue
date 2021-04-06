@@ -149,7 +149,7 @@
                 </el-link>
               </div>
               <div>
-                <span class="ml16 span-price">{{row.isCpsData ? '' : `${row.min_price} 元起`}}</span>
+                <span v-if="row.product_type === 'api'" class="ml16 span-price">{{`${row.min_price} 元起`}}</span>
                 <el-button @click="viewProductDetail(row)" class="ml16" size="small" type="primary" plain><i class="iconfont iconxiao16_xiangqing mr4"></i>产品详情</el-button>
                 <el-button @click="share(row)" type="primary" size="small"><i class="iconfont iconxiao16_fasong mr4"></i>转发客户</el-button>
               </div>
@@ -450,8 +450,7 @@ export default {
               this.list = [...apiData, ...cpsData.map(i => ({
                 ...i,
                 title: i.title,
-                web_url: i.link,
-                isCpsData: true
+                web_url: i.link
               }))]
             }
           }).finally(() => {
