@@ -243,7 +243,7 @@ export default {
         on: 'new-arrival',
         off: 'off-shelves'
       }),
-      tabIndex: '',
+      tabIndex: 'goods',
       tabsData: [
         { name: 'goods', label: '全部商品'},
         { name: 'on', label: '新品上架', permission: '/insure-goods/new_product_notice', dot: 'new_product_quantity'},

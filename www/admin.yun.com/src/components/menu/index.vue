@@ -44,11 +44,14 @@
       }
     },
     mounted() {
-      // 获取全局红点
-      this.getDotsData()
+      // 获取保险商品红点
+      if (['/insure-goods/new_product_notice', '/insure-goods/product_off_notice'].some(i => this.permission.includes(i))) {
+        this.getDotsData()
+      }
       this.menuInit()
     },
     methods: {
+      // 保险产品
       getDotsData() {
         clearTimeout(timer)
         getDotsData().then(res => {
