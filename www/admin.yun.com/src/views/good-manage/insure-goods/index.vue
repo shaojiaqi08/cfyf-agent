@@ -587,11 +587,42 @@ export default {
           border: transparent;
           background-repeat: no-repeat;
           background-position: right top;
+          position: relative;
           &.off-shelves {
             background-image: url(../../../assets/images/off-shelves.png);
+            &::after {
+              content: '即将下架';
+              color: #fff;
+              position: absolute;
+              right: 0;
+              top: 0;
+              width: 31px;
+              height: 28px;
+              line-height: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10px;
+              word-break: break-word;
+            }
           }
           &.new-arrival {
             background-image: url(../../../assets/images/new-arrival.png);
+            &::after {
+              content: '新品';
+              color: #fff;
+              position: absolute;
+              right: 2px;
+              top: 0;
+              width: 31px;
+              height: 28px;
+              line-height: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10px;
+              word-break: break-word;
+            }
           }
           & > div:first-of-type {
             line-height: 24px;

@@ -57,7 +57,13 @@
         })
       },
       checkIsShowDot(dots) {
-        return Array.isArray(dots) ? dots.some(key => this.dots[key] > 0) : this.dots[dots] > 0
+        if (dots !== null &&
+              typeof dots === 'object' &&
+              dots.permission &&
+              [].concat(dots.permission).every(i => !this.permission.includes(i))) {
+          return false
+        }
+        return [].concat(dots.value || dots).some(key => this.dots[key] > 0)
       },
       filterRoutes(routes) {
         return routes.filter(i => i.meta.show)

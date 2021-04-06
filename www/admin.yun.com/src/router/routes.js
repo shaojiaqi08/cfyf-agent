@@ -15,7 +15,10 @@ export const routers = [
           menu: true,
           show: true,
           permission: '/insure-goods',
-          dotkey: ['off_product_quantity', 'new_product_quantity']
+          dotkey: {
+            value: ['off_product_quantity', 'new_product_quantity'],
+            permission: ['/insure-goods/new_product_notice', '/insure-goods/product_off_notice']
+          }
         },
         component: getView('good-manage/insure-goods')
       },

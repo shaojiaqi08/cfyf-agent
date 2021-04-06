@@ -56,3 +56,8 @@
         }
     }
 </script>
+<style lang="scss" scoped>
+    ::v-deep .el-tabs__nav-wrap, ::v-deep .el-tabs__nav-scroll {
+        overflow: visible;
+    }
+</style>
