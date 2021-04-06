@@ -10,6 +10,7 @@
                         :showFilter="false"
                         :listData="filterList"
                         v-loading="loading"
+                        disabled
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
           <div class="flex-between pb16">
