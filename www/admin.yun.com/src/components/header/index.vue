@@ -44,7 +44,7 @@
                 {{userInfo.real_name}}
                 <span style="color: #C2C2C2;"> | </span>
                 {{userInfo.sales_position && userInfo.sales_position.name}}</div>
-              <div class="departmant">{{ userInfo.company.name }}</div>
+              <div class="departmant">{{ (userInfo.company || {}).name }}</div>
             </div>
             <i class="iconfont iconxiao16_xiajiantou ml4"></i>
           </div>

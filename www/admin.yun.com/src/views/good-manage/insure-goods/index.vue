@@ -1,15 +1,16 @@
 <template>
-  <div class="insure-goods-container page-container">
+  <div class="insure-goods-container">
     <div class="header">
-      保险商品
+      <common-tabs-header v-model="tabIndex" :data="tabsData"></common-tabs-header>
     </div>
     <div class="content">
       <side-filter-list v-model="selProductVal"
                         labelKey="title"
                         valueKey="id"
                         :showFilter="false"
-                        :listData="list"
+                        :listData="filterList"
                         v-loading="loading"
+                        disabled
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
           <div class="flex-between pb16">
@@ -31,21 +32,21 @@
                           :width="240"
                           @input="ajaxListData">
               <el-cascader
-                ref="focusRef"
-                popper-class="address-picker"
-                placeholder="请选择"
-                filterable
-                collapse-tags
-                :props="{
-                  value: 'id',
-                  label: 'name',
-                  children: 'child_categories'
-                }"
-                :options="productCategoryData"
-                v-model="searchModel.first_product_category_id"
-                emitPath
-                @change="ajaxListData"
-                clearable
+                      ref="focusRef"
+                      popper-class="address-picker"
+                      placeholder="请选择"
+                      filterable
+                      collapse-tags
+                      :props="{
+                        value: 'id',
+                        label: 'name',
+                        children: 'child_categories'
+                      }"
+                      :options="productCategoryData"
+                      v-model="searchModel.first_product_category_id"
+                      emitPath
+                      @change="ajaxListData"
+                      clearable
               ></el-cascader>
               <template v-slot:label>
                 <span>
@@ -53,19 +54,19 @@
                 </span>
               </template>
               <template v-slot:close>
-                  <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                    v-if="hasValue(searchModel.first_product_category_id)"
-                    @click="searchModel.first_product_category_id = ''"></i>
+                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                   v-if="hasValue(searchModel.first_product_category_id)"
+                   @click="searchModel.first_product_category_id = ''"></i>
               </template>
             </filter-shell>
             <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
               <el-select class="block"
-                        v-model="searchModel.age_id"
-                        clearable
-                        filterable
-                        @change="ajaxListData"
-                        ref="focusRef"
-                        placeholder="请选择">
+                         v-model="searchModel.age_id"
+                         clearable
+                         filterable
+                         @change="ajaxListData"
+                         ref="focusRef"
+                         placeholder="请选择">
                 <el-option
                         v-for="item in productAgeData"
                         :key="item.id"
@@ -81,13 +82,13 @@
             </filter-shell>
             <filter-shell v-model="searchModel.supplier_id" autoFocus @input="ajaxListData">
               <el-select class="block"
-                        v-model="searchModel.supplier_id"
-                        clearable
-                        filterable
-                        multiple
-                        @change="ajaxListData"
-                        ref="focusRef"
-                        placeholder="请选择">
+                         v-model="searchModel.supplier_id"
+                         clearable
+                         filterable
+                         multiple
+                         @change="ajaxListData"
+                         ref="focusRef"
+                         placeholder="请选择">
                 <el-option
                         v-for="item in supplierData"
                         :key="item.id"
@@ -101,17 +102,17 @@
               </span>
               </template>
               <template v-slot:close>
-                  <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
-                    v-if="hasValue(searchModel.supplier_id)"
-                    @click="searchModel.supplier_id=''"></i>
+                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"
+                   v-if="hasValue(searchModel.supplier_id)"
+                   @click="searchModel.supplier_id=''"></i>
               </template>
             </filter-shell>
           </div>
-          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link')"
-           :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>导出商品链接</el-button>
+          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link') && tabIndex === 'all'"
+                     :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>导出商品链接</el-button>
         </div>
         <template v-slot:list="{row}">
-          <div class="list-item-content pl16 pr16 pt16 pb16 mb16">
+          <div class="list-item-content pl16 pr16 pt16 pb16 mb16" :class="noticeTypeClassMap[row.notice_type]">
             <div class="flex-between company-base-info mb16">
               <img :src="row.company_logo">
               <div>
@@ -148,10 +149,13 @@
                 </el-link>
               </div>
               <div>
-                <span class="ml16 span-price">{{row.isCpsData ? '' : `${row.min_price} 元起`}}</span>
+                <span v-if="row.product_type === 'api'" class="ml16 span-price">{{`${row.min_price} 元起`}}</span>
                 <el-button @click="viewProductDetail(row)" class="ml16" size="small" type="primary" plain><i class="iconfont iconxiao16_xiangqing mr4"></i>产品详情</el-button>
                 <el-button @click="share(row)" type="primary" size="small"><i class="iconfont iconxiao16_fasong mr4"></i>转发客户</el-button>
               </div>
+            </div>
+            <div class="off-shelves-tips pt16" v-if="row.notice_type === 'off'">
+              距离下架还有<span>{{row.put_down_count_down}}</span>
             </div>
           </div>
         </template>
@@ -174,22 +178,22 @@
       </div>
     </el-dialog>
     <el-dialog
-        title="转发客户"
-        :visible.sync="dialogVisible"
-        width="480px"
-        class="dark-dialog">
+            title="转发客户"
+            :visible.sync="dialogVisible"
+            width="480px"
+            class="dark-dialog">
       <div style="margin-bottom: 10px !important;
         color: #333 !important;
         font-size: 16px !important;
         font-weight: 500 !important;">{{ productObj.title }}</div>
-        <el-image
-          :src="qrcodeUrl"
-          style="width: 200px;height: 200px">
-          <div slot="error" style="width:200px;height:200px" class="flex-center">
-            <i class="el-icon-loading fs28"></i>
-          </div>
-        </el-image>
-        <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
+      <el-image
+              :src="qrcodeUrl"
+              style="width: 200px;height: 200px">
+        <div slot="error" style="width:200px;height:200px" class="flex-center">
+          <i class="el-icon-loading fs28"></i>
+        </div>
+      </el-image>
+      <p style="margin-top: 0;font-size: 14px" class="mb20">请使用微信扫描上方二维码后分享给客户</p>
     </el-dialog>
     <el-dialog class="docs-dialog" title="产品资料" :visible.sync="materialVisible" width="480px" destroy-on-close>
       <div v-loading="docsLoading" style="min-height: 200px;max-height: 600px;">
@@ -214,7 +218,8 @@
 </template>
 
 <script>
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink} from '@/apis/modules/good-manage'
+import commonTabsHeader from '../../../components/common-tabs-header'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink, getShelvesList} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
@@ -223,9 +228,11 @@ import TextHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import { debounce, downloadFrameA } from "@/utils";
 import ProductDetailDialog from './modal/product-detail-dialog'
 import QRCode from 'qrcode'
+let reqId = 0
 export default {
   name: 'insure-goods',
   components: {
+    commonTabsHeader,
     FilterShell,
     SideFilterList,
     TextHiddenEllipsis,
@@ -233,6 +240,20 @@ export default {
   },
   data() {
     return {
+      noticeTypeClassMap: Object.freeze({
+        on: 'new-arrival',
+        off: 'off-shelves'
+      }),
+      tabIndex: 'goods',
+      tabsData: [
+        { name: 'goods', label: '全部商品'},
+        { name: 'on', label: '新品上架', permission: '/insure-goods/new_product_notice', dot: 'new_product_quantity'},
+        { name: 'off', label: '即将下架', permission: '/insure-goods/product_off_notice', dot: 'off_product_quantity'},
+      ],
+      dotKeyMap: Object.freeze({
+        on: 'new_product_quantity',
+        off: 'off_product_quantity'
+      }),
       docsLoading: false,
       detaiDialoglVisible: false,
       dialogVisible: false,
@@ -265,6 +286,11 @@ export default {
       exporting: false,
     };
   },
+  computed: {
+    filterList() {
+      return this.list.filter(i => i)
+    }
+  },
   methods: {
     exportProcuctList() {
       let params = JSON.parse(JSON.stringify(this.searchModel))
@@ -286,7 +312,7 @@ export default {
         this.exporting = false
       })
     },
-     //用&拼接对象成字符串
+    //用&拼接对象成字符串
     getParams(params) {
       let paramStr = '';
       Object.keys(params).forEach((item) => {
@@ -312,7 +338,7 @@ export default {
       const [firstId, secondId] = id
       const firstName = this.productCategoryData.find(i => i.id === firstId).name
       const secondName = this.productCategoryData.find(i => i.id === firstId).child_categories
-                                            .find(i => i.id === secondId).name
+              .find(i => i.id === secondId).name
       return `${firstName}/${secondName}`
     },
     download() {
@@ -420,19 +446,44 @@ export default {
         params.first_product_category_id = ''
         params.second_product_category_id = ''
       }
-      console.log(params)
-      getInsureApiList(params).then(apiData => {
-        getInsureCpsList(params).then(cpsData => {
-          this.list = [...apiData, ...cpsData.map(i => ({
-            ...i,
-            title: i.title,
-            web_url: i.link,
-            isCpsData: true
-          }))]
-        }).finally(() => {
-          this.loading = false
+      const id = ++reqId
+      if (this.tabIndex === 'goods') {
+        getInsureApiList(params).then(apiData => {
+          getInsureCpsList(params).then(cpsData => {
+            if (id === reqId) {
+              this.list = [...apiData, ...cpsData.map(i => ({
+                ...i,
+                title: i.title,
+                web_url: i.link
+              }))]
+            }
+          }).finally(() => {
+            if (id === reqId) {
+              this.loading = false
+            }
+          })
         })
-      })
+      } else {
+        getShelvesList({
+          notice_type: this.tabIndex,
+          ...params
+        }).then(res => {
+          if (id === reqId) {
+            this.list = res
+            // 更新红点信息
+            const dotObj = this.$store.state.dotManage.dots
+            const key = this.dotKeyMap[this.tabIndex]
+            if (dotObj[key] !== res.length) {
+              dotObj[key] = res.length
+              this.$store.dispatch('dotManage/updateDots', dotObj)
+            }
+          }
+        }).finally(() => {
+          if (id === reqId) {
+            this.loading = false
+          }
+        })
+      }
     },
     debounceAjaxListData: debounce(function() {
       this.ajaxListData()
@@ -454,6 +505,9 @@ export default {
     }
   },
   watch: {
+    tabIndex() {
+      this.ajaxListData()
+    },
     belongVisible(v) {
       if (!v) {
         this.belongData = {};
@@ -472,250 +526,291 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.dark-dialog {
-  .share-title-tips {
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #999;
-  }
-  ::v-deep .el-dialog__body {
-    text-align: center;
-  }
-}
-.insure-goods-container {
-  padding: 0 20px 0 20px;
-  ::v-deep .text-hidden-ellipsis-component .icon{
-    color: #999;
-  }
-
-  .header {
-    font-size: 16px;
-    font-weight: bold;
-    padding: 0 16px;
-    height: 56px;
-    background: #f5f5f5;
-    border-radius: 4px 4px 0px 0px;
-    border-bottom: 1px solid #e6e6e6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .el-input {
-      width: 360px;
+  .dark-dialog {
+    .share-title-tips {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #999;
+    }
+    ::v-deep .el-dialog__body {
+      text-align: center;
     }
   }
-  .content{
-    height: calc(100% - 56px);
-    display: flex;
-    background: #fff;
-    ::v-deep .side-filter-container {
-      .filter-wrap {
-        padding: 16px;
-        display: flex;
-        align-items: center;
-
-        .flex-between {
-          padding: 0 !important;
-          input {
-            width: 400px;
-          }
-        }
-      }
-
-      .el-scrollbar {
-        padding-top: 0;
-      }
-
-      .list-item {
-        overflow: visible;
-        border-bottom: transparent !important;
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-        cursor: initial !important;
-
-        .list-item-content {
-          border: 1px solid #E6E6E6;
-          border-radius: 4px;
-        }
-
-        &:hover, &.active {
-          background-color: #fff !important;
-        }
-      }
-
-      .list-item-content {
-        width: 100%;
-        border: transparent;
-
-        & > div:first-of-type {
-          line-height: 24px;
-          font-size: 16px;
-          color: #1A1A1A;
-          font-weight: bold;
-          /*margin-bottom: 8px;*/
-        }
-
-        .span-price {
-          color: #FF4C4C;
-          font-size: 16px;
-          font-weight: bold;
-          line-height: 24px;
-        }
-      }
+  .insure-goods-container {
+    padding: 0 20px 0 20px;
+    ::v-deep .text-hidden-ellipsis-component .icon{
+      color: #999;
     }
-  }
-  .left-filter-list {
-    width: 100%;
-    ::v-deep .el-scrollbar {
-      .list-item-wrap{
-        padding: 0;
-      }
-      .list-item{
-        border-bottom: 1px solid #e6e6e6;
-        padding: 16px;
-        border-radius: 0;
-        box-sizing: border-box;
-        &:hover{
-          background: #e6e6e6;
-        }
-        &.active{
-          background: #f5f5f5;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-  & ::v-deep .el-scrollbar {
-    height: calc(100vh - 78px);
-    padding-top: 16px;
-    box-sizing: border-box;
-    & .el-scrollbar__wrap {
-      overflow-x: hidden !important;
-    }
-    .el-scrollbar__bar {
-      z-index: 999;
-    }
-    .company-base-info {
-      align-items: center;
-      & > img {
-        width: 59px;
-      }
-      & > div {
-        height: 59px;
-        flex: 1;
-        margin-left: 20px;
-        span {
-          line-height: 20px;
-          color: #999;
-        }
-      }
-    }
-  }
 
-  ::v-deep .pic-dialog .el-dialog__body{
-    text-align: center;
-  }
-
-  .el-dialog__wrapper ::v-deep .belong-dialog {
-    width: 200px;
-    .el-dialog__body {
-      .card {
-        background: #f5f5f5;
-        border: 1px solid #e6e6e6;
-        padding: 20px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        & > .el-row:nth-of-type(1) {
-          .el-col:first-of-type {
-            font-weight: bold;
-            color: #1a1a1a;
-          }
-        }
-        & > .el-row:nth-of-type(2) {
-          margin-top: 16px;
-          .el-col {
-            display: flex;
-            flex-direction: column;
-            line-height: 20px;
-            color: #999999;
-            font-size: 14px;
-            span {
-              margin-top: 4px;
-              color: #1a1a1a;
-              font-weight: bold;
-            }
-          }
-        }
-        .el-divider {
-          margin: 16px 0;
-        }
-        & > .el-row:nth-of-type(4) {
-          margin-top: 16px;
-          .el-col {
-            display: flex;
-            line-height: 20px;
-            color: #999999;
-            font-size: 14px;
-            align-items: center;
-            span {
-              color: #1a1a1a;
-              font-weight: 400;
-              margin-left: 8px;
-            }
-          }
-        }
-      }
-    }
-    .el-dialog__footer {
-      padding-top: 0;
-    }
-    .el-form-item .el-select {
-      width: 100%;
-    }
-  }
-}
-::v-deep.el-popover{
-  padding: 16px 20px;
-}
-::v-deep.filter-popover{
-  padding: 0;
-}
-::v-deep.docs-dialog {
-  .category-wrap {
-    padding-top: 8px;
-    &:first-of-type {
-      padding-top: 0;
-    }
-    & > p {
+    .header {
       font-size: 16px;
       font-weight: bold;
-      color: #1A1A1A;
-      margin: 0 0 12px 0;
-      padding-bottom: 12px;
-      display: block;
+      padding: 0 16px;
+      height: 56px;
+      background: #f5f5f5;
+      border-radius: 4px 4px 0px 0px;
       border-bottom: 1px solid #e6e6e6;
-    }
-    .docs-wrap {
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #e6e6e6;
-      color: #1A1A1A;
-      font-size: 14px;
-      & > div:first-of-type {
-        overflow: hidden;
-        flex: 1;
-        padding-right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .el-input {
+        width: 360px;
       }
-      .doc-name {
-        flex: 1;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      ::v-deep .el-tabs__header {
+        margin: 0;
+      }
+    }
+    .content{
+      height: calc(100% - 80px);
+      display: flex;
+      background: #fff;
+      ::v-deep .side-filter-container {
+        .filter-wrap {
+          padding: 16px;
+          display: flex;
+          align-items: center;
+          .flex-between {
+            padding: 0 !important;
+            input {
+              width: 400px;
+            }
+          }
+        }
+        .el-scrollbar {
+          padding-top: 0;
+        }
+        .list-item {
+          overflow: visible;
+          border-bottom: transparent !important;
+          padding-top: 0 !important;
+          padding-bottom: 0 !important;
+          cursor: initial !important;
+          .list-item-content {
+            border: 1px solid #E6E6E6;
+            border-radius: 4px;
+          }
+          &:hover, &.active {
+            background-color: #fff !important;
+          }
+        }
+        .list-item-content {
+          width: 100%;
+          border: transparent;
+          background-repeat: no-repeat;
+          background-position: right top;
+          position: relative;
+          &.off-shelves {
+            background-image: url(../../../assets/images/off-shelves.png);
+            &::after {
+              content: '即将下架';
+              color: #fff;
+              position: absolute;
+              right: 0;
+              top: 0;
+              width: 31px;
+              height: 28px;
+              line-height: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10px;
+              word-break: break-word;
+            }
+          }
+          &.new-arrival {
+            background-image: url(../../../assets/images/new-arrival.png);
+            &::after {
+              content: '新品';
+              color: #fff;
+              position: absolute;
+              right: 2px;
+              top: 0;
+              width: 31px;
+              height: 28px;
+              line-height: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 10px;
+              word-break: break-word;
+            }
+          }
+          & > div:first-of-type {
+            line-height: 24px;
+            font-size: 16px;
+            color: #1A1A1A;
+            font-weight: bold;
+          }
+          .span-price {
+            color: #FF4C4C;
+            font-size: 16px;
+            font-weight: bold;
+            line-height: 24px;
+          }
+          .off-shelves-tips {
+            font-size: 14px;
+            color: #1A1A1A;
+            & > span {
+              color: #FF4C4C;
+            }
+          }
+        }
+      }
+    }
+    .left-filter-list {
+      width: 100%;
+      ::v-deep .el-scrollbar {
+        .list-item-wrap{
+          padding: 0;
+        }
+        .list-item{
+          border-bottom: 1px solid #e6e6e6;
+          padding: 16px;
+          border-radius: 0;
+          box-sizing: border-box;
+          &:hover{
+            background: #e6e6e6;
+          }
+          &.active{
+            background: #f5f5f5;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    & ::v-deep .el-scrollbar {
+      height: calc(100vh - 165px);
+      padding-top: 16px;
+      box-sizing: border-box;
+      & .el-scrollbar__wrap {
+        overflow-x: hidden !important;
+      }
+      .el-scrollbar__bar {
+        z-index: 999;
+      }
+      .company-base-info {
+        align-items: center;
+        & > img {
+          width: 59px;
+        }
+        & > div {
+          height: 59px;
+          flex: 1;
+          margin-left: 20px;
+          span {
+            line-height: 20px;
+            color: #999;
+          }
+        }
+      }
+    }
+
+    ::v-deep .pic-dialog .el-dialog__body{
+      text-align: center;
+    }
+
+    .el-dialog__wrapper ::v-deep .belong-dialog {
+      width: 200px;
+      .el-dialog__body {
+        .card {
+          background: #f5f5f5;
+          border: 1px solid #e6e6e6;
+          padding: 20px;
+          border-radius: 4px;
+          margin-bottom: 20px;
+          & > .el-row:nth-of-type(1) {
+            .el-col:first-of-type {
+              font-weight: bold;
+              color: #1a1a1a;
+            }
+          }
+          & > .el-row:nth-of-type(2) {
+            margin-top: 16px;
+            .el-col {
+              display: flex;
+              flex-direction: column;
+              line-height: 20px;
+              color: #999999;
+              font-size: 14px;
+              span {
+                margin-top: 4px;
+                color: #1a1a1a;
+                font-weight: bold;
+              }
+            }
+          }
+          .el-divider {
+            margin: 16px 0;
+          }
+          & > .el-row:nth-of-type(4) {
+            margin-top: 16px;
+            .el-col {
+              display: flex;
+              line-height: 20px;
+              color: #999999;
+              font-size: 14px;
+              align-items: center;
+              span {
+                color: #1a1a1a;
+                font-weight: 400;
+                margin-left: 8px;
+              }
+            }
+          }
+        }
+      }
+      .el-dialog__footer {
+        padding-top: 0;
+      }
+      .el-form-item .el-select {
+        width: 100%;
       }
     }
   }
-}
-.export-btn{
-  margin-left: auto;
-}
+  ::v-deep.el-popover{
+    padding: 16px 20px;
+  }
+  ::v-deep.filter-popover{
+    padding: 0;
+  }
+  ::v-deep.docs-dialog {
+    .category-wrap {
+      padding-top: 8px;
+      &:first-of-type {
+        padding-top: 0;
+      }
+      & > p {
+        font-size: 16px;
+        font-weight: bold;
+        color: #1A1A1A;
+        margin: 0 0 12px 0;
+        padding-bottom: 12px;
+        display: block;
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .docs-wrap {
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e6e6e6;
+        color: #1A1A1A;
+        font-size: 14px;
+        & > div:first-of-type {
+          overflow: hidden;
+          flex: 1;
+          padding-right: 24px;
+        }
+        .doc-name {
+          flex: 1;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+  .export-btn{
+    margin-left: auto;
+  }
+
 </style>

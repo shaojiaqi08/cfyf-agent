@@ -14,7 +14,10 @@
              :key="nav.name"
              v-allowed="[$route.meta.permission]"
              @click="jump(nav.name)">
-          {{ nav.meta.title }}
+          <el-badge
+            is-dot
+            v-if="nav.meta.dotkey && checkIsShowDot(nav.meta.dotkey)"
+            class="cust-dot"></el-badge>{{ nav.meta.title }}
         </div>
       </div>
     </el-scrollbar>
@@ -23,23 +26,48 @@
 
 <script>
   import { routers } from '@/router/routes'
+  import { getDotsData } from '@/apis/modules'
   import { mapState } from 'vuex'
+  let timer = null
   export default {
     data() {
       return {
+        timer: null,
         routers: []
       }
     },
     computed: {
       ...mapState('users', ['userInfo']),
+      ...mapState('dotManage', ['dots']),
       permission() {
         return this.userInfo.permissions || []
       }
     },
     mounted() {
+      // 获取保险商品红点
+      if (['/insure-goods/new_product_notice', '/insure-goods/product_off_notice'].some(i => this.permission.includes(i))) {
+        this.getDotsData()
+      }
       this.menuInit()
     },
     methods: {
+      // 保险产品
+      getDotsData() {
+        clearTimeout(timer)
+        getDotsData().then(res => {
+          this.$store.dispatch('dotManage/updateDots', res)
+          timer = setTimeout(this.getDotsData, 60000)
+        })
+      },
+      checkIsShowDot(dots) {
+        if (dots !== null &&
+              typeof dots === 'object' &&
+              dots.permission &&
+              [].concat(dots.permission).every(i => !this.permission.includes(i))) {
+          return false
+        }
+        return [].concat(dots.value || dots).some(key => this.dots[key] > 0)
+      },
       filterRoutes(routes) {
         return routes.filter(i => i.meta.show)
       },
@@ -60,6 +88,9 @@
         if (this.$route.name === name) return
         this.$router.push({ name })
       }
+    },
+    beforeDestroy() {
+      clearTimeout(timer)
     },
     watch: {
       permission() {
@@ -113,6 +144,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      position: relative;
       &.actived {
         color: #1F78FF;
         font-weight: bold;
@@ -122,6 +156,13 @@
       }
       &:hover{
         background-color: rgba(0, 0, 0, .1);
+      }
+      ::v-deep .el-badge sup {
+        top: 0;
+      }
+      ::v-deep .cust-dot {
+        position: absolute;
+        left: 22px;
       }
     }
   }

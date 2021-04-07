@@ -1,10 +1,7 @@
 <template>
     <div class="sale-container page-container">
         <div class="header">
-            <el-tabs v-model="curTabIdx">
-                <el-tab-pane v-if="$checkAuth('/sale/list')" name="sale-pane" label="团队"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/sale/position_and_authority')" name="position-pane" label="职位及权限"></el-tab-pane>
-            </el-tabs>
+            <common-tabs-header v-model="curTabIdx" :data="tabsData"></common-tabs-header>
         </div>
         <div class="content">
             <keep-alive>
@@ -17,29 +14,20 @@
 <script>
     import SalePane from './tab-panel/sale'
     import PositionPane from './tab-panel/position'
-    import {mapState} from 'vuex'
+    import CommonTabsHeader from '../../../components/common-tabs-header'
     export default {
         name: 'sale',
-        components: {SalePane, PositionPane},
+        components: {
+            CommonTabsHeader,
+            SalePane,
+            PositionPane},
         data() {
             return {
-                curTabIdx: ''
-            }
-        },
-        computed: {
-            ...mapState('users', ['userInfo'])
-        },
-        watch: {
-            'userInfo.permissions': {
-                handler() {
-                    // 初始化tab权限
-                    if (this.$checkAuth('/sale/list')) {
-                        this.curTabIdx = 'sale-pane'
-                    } else if (this.$checkAuth('/sale/position_and_authority')) {
-                        this.curTabIdx = 'position-pane'
-                    }
-                },
-                immediate: true
+                curTabIdx: '',
+                tabsData: [
+                    { name: 'sale-pane', label: '团队', permission: '/sale/list'},
+                    { name: 'position-pane', label: '职位及权限', permission: '/sale/position_and_authority'}
+                ]
             }
         }
     }

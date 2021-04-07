@@ -1,46 +1,32 @@
 <template>
     <div class="health-notice-container page-container">
         <div class="header">
-            <el-tabs v-model="tabIndex">
-                <el-tab-pane v-if="$checkAuth('/interactive-logs/proposal')" name="proposal" label="计划书"></el-tab-pane>
-                <el-tab-pane v-if="$checkAuth('/interactive-logs/product')" name="share" label="产品分享"></el-tab-pane>
-            </el-tabs>
+            <common-tabs-header v-model="tabIndex" :data="tabsData"></common-tabs-header>
         </div>
         <div class="content">
-            <Component :is="tabIndex ||'none'"></Component>
+            <Component :is="tabIndex"></Component>
         </div>
     </div>
 </template>
 <script>
     import Proposal from './tab-panel/proposal'
     import Share from './tab-panel/share'
-    import {mapState} from 'vuex'
+    import CommonTabsHeader from '../../../components/common-tabs-header'
     export default {
         name: 'underwrite-health-notice',
         components: {
+            CommonTabsHeader,
             Proposal,
             Share
         },
         data() {
             return {
                 tabIndex: '',
+                tabsData: [
+                    { name: 'proposal', label: '计划书', permission: '/interactive-logs/proposal'},
+                    { name: 'share', label: '产品分享', permission: '/interactive-logs/product'}
+                ],
                 productName: ''
-            }
-        },
-        computed: {
-            ...mapState('users', ['userInfo'])
-        },
-        watch: {
-            'userInfo.permissions': {
-                handler() {
-                    // 初始化tab权限
-                    if (this.$checkAuth('/interactive-logs/proposal')) {
-                        this.tabIndex = 'proposal'
-                    } else if (this.$checkAuth('/interactive-logs/product')) {
-                        this.tabIndex = 'share'
-                    }
-                },
-                immediate: true
             }
         }
     }
@@ -60,7 +46,7 @@
             width: 360px;
         }
         .header{
-            padding: 16px 0 0 16px;
+            padding-left: 16px;
             height: 56px;
             background: #F5F5F5;
             border-radius: 4px 4px 0px 0px;
