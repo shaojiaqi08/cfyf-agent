@@ -250,6 +250,10 @@ export default {
         { name: 'on', label: '新品上架', permission: '/insure-goods/new_product_notice', dot: 'new_product_quantity'},
         { name: 'off', label: '即将下架', permission: '/insure-goods/product_off_notice', dot: 'off_product_quantity'},
       ],
+      dotKeyMap: Object.freeze({
+        on: 'new_product_quantity',
+        off: 'off_product_quantity'
+      }),
       docsLoading: false,
       detaiDialoglVisible: false,
       dialogVisible: false,
@@ -466,6 +470,13 @@ export default {
         }).then(res => {
           if (id === reqId) {
             this.list = res
+            // 更新红点信息
+            const dotObj = this.$store.state.dotManage.dots
+            const key = this.dotKeyMap[this.tabIndex]
+            if (dotObj[key] !== res.length) {
+              dotObj[key] = res.length
+              this.$store.dispatch('dotManage/updateDots', dotObj)
+            }
           }
         }).finally(() => {
           if (id === reqId) {

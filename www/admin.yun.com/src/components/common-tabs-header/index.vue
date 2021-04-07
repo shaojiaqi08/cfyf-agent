@@ -7,7 +7,7 @@
             :label="item.label">
             <span slot="label">
                 <span>{{item.label}}</span>
-                <el-badge :is-dot="item.dot && checkIsShowDot(item.dot)" style="top: -7px"></el-badge>
+                <el-badge :is-dot="item.dot && checkIsShowDot(item.dot)"></el-badge>
             </span>
         </el-tab-pane>
     </el-tabs>
@@ -59,5 +59,10 @@
 <style lang="scss" scoped>
     ::v-deep .el-tabs__nav-wrap, ::v-deep .el-tabs__nav-scroll {
         overflow: visible;
+    }
+
+    ::v-deep .el-badge {
+        position: absolute;
+        top: -6px;
     }
 </style>
