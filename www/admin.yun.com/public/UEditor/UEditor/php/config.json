@@ -92,8 +92,8 @@
     ], /* 列出的文件类型 */
 
     /*上传图片至服务器URL*/
-    "fileUploadApiUrl": "http://image.service.alpha.2239.com/api/images/grab",
+    "fileUploadApiUrl": "https://image.service.2239.com/api/images/grab",
     /*显示远程图片URL*/
-    "showImageUrl": "http://image.service.alpha.2239.com/%s/%s"
+    "showImageUrl": "https://image.service.2239.com/%s/%s"
 
 }
