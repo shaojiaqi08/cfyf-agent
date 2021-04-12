@@ -108,7 +108,7 @@
               </template>
             </filter-shell>
           </div>
-          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link') && tabIndex === 'all'"
+          <el-button type="primary" class="export-btn" v-if="$checkAuth('/insure-goods/export_product_link') && tabIndex === tabsData[0].name"
                      :loading="exporting" size="small" @click="exportProcuctList"><i class="iconfont iconxiao16_xiazai mr4"></i>导出商品链接</el-button>
         </div>
         <template v-slot:list="{row}">
