@@ -374,6 +374,16 @@
     .body {
       min-height: 200px;
 
+      .el-scrollbar{
+        height: 80vh !important;
+      }
+
+      @media screen and (max-width: 1366px) {
+        .el-scrollbar{
+          height: 77vh !important;
+        }
+      }
+
       .item {
         display: flex;
         align-items: center;

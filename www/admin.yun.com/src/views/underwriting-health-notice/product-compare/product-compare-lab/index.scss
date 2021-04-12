@@ -121,6 +121,10 @@
         /deep/ .el-scrollbar__wrap {
           overflow-x: scroll !important;
         }
+        /deep/ .el-scrollbar__view{
+          width: 1394px;
+          overflow: hidden;
+        }
         .table-header {
           position: absolute;
           top: 0;

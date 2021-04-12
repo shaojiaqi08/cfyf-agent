@@ -55,7 +55,7 @@
                     v-show="columns[orderKey] && columns[orderKey].is_show"
                   >
                     <!-- start 灰色块  第一层 columns中对应的 orderKey匹配数据 -->
-                    <div class="row item-header">
+                    <div class="row item-header" v-if="columns[orderKey]">
                       <el-checkbox
                         :indeterminate="columns[orderKey].isIndeterminate"
                         v-model="columns[orderKey].checkAll"
@@ -78,6 +78,7 @@
                     <el-checkbox-group
                       v-model="columns[orderKey].checked"
                       @change="handleCheckedChange($event, orderKey)"
+                      v-if="columns[orderKey]"
                     >
                       <div
                         class="row item-block"
@@ -205,6 +206,7 @@
       title="添加产品"
       :visible="addProductModalShow"
       @close="addProductModalShow = false"
+      destroy-on-close
     >
       <el-form label-width="100px" label-position="left">
         <el-input placeholder="请输入产品名称" v-model="searchModel.product_name">
@@ -216,18 +218,20 @@
           v-loading="isLoading"
           class="scroll-bar"
         >
-          <div class="product-item" v-for="(item, index) in productList" :key="item.id">
-            <div class="title">{{ item.product_name }}</div>
-            <div class="content">
-              <div class="tags">
-                <div class="tag">{{ item.product_insurance_class_str }}</div>
-                <div class="tag" v-if="item.supplier_name">{{ item.supplier_name }}</div>
-              </div>
-              <div class="button">
-                <el-button type="primary" :loading="isAddProduct" plain @click="add2Compare(index)">
-                  <i class="el-icon-plus" v-if="!isAddProduct"></i>
-                  添加
-                </el-button>
+          <div v-infinite-scroll="grounding" :infinite-scroll-delay='400' :infinite-scroll-distance='50'>
+            <div class="product-item" v-for="(item, index) in productList" :key="item.id">
+              <div class="title">{{ item.product_name }}</div>
+              <div class="content">
+                <div class="tags">
+                  <div class="tag">{{ item.product_insurance_class_str }}</div>
+                  <div class="tag" v-if="item.supplier_name">{{ item.supplier_name }}</div>
+                </div>
+                <div class="button">
+                  <el-button type="primary" :loading="isAddProduct" plain @click="add2Compare(index)">
+                    <i class="el-icon-plus" v-if="!isAddProduct"></i>
+                    添加
+                  </el-button>
+                </div>
               </div>
             </div>
           </div>
@@ -239,7 +243,6 @@
       title="调整投被保人信息"
       :visible="adjustInsuredInfoModalShow"
       @close="adjustInsuredInfoModalShow = false"
-      class="product-params-form"
     >
       <el-form label-width="100px" label-position="left">
         <h3>被保人信息</h3>
@@ -326,38 +329,46 @@
           label="附加险"
           v-if="productInfoArray[adjustProductParamsIndex].isAttachProposal"
         >
-          <el-checkbox-group
-            v-model="productInfoArray[adjustProductParamsIndex].productInsurancesId"
-            @change="getCalculatePremium('special')"
-          >
-            <el-checkbox
-              class="insurance-checkbox"
-              v-for="(item, index) in productInfoArray[adjustProductParamsIndex].productInfoOptions.product_insurances"
-              :key="item.id"
-              :value="item.id"
-              :disabled="(String(item.select_status) !== void 0 && !item.select_status) || !!item.is_main"
-              :label="item.id"
-            >
-              {{ item.name }}
-              <template
-                v-if="item.type === 'accident' && item.coverages.length && productInfoArray[adjustProductParamsIndex].productInsurancesId.includes(item.id)"
-              >
-                <el-select
-                  style="margin-left: 10px;width: 100px;"
-                  size="small"
-                  v-model="productInfoArray[adjustProductParamsIndex].productInsurances[index].coverage"
-                  @change="getCalculatePremium('special')"
-                >
+          <el-popover
+            v-for='(option, idx) in productTableList[adjustProductParamsIndex].proposal_product.product_insurance_group'
+            :key='option.id'
+            placement='right'
+            trigger='hover'>
+            <el-radio-group v-model='productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]' @change="getCalculatePremium('special')">
+              <el-row v-for='radioItem in option.insurances' :key='radioItem.id'>
+                <el-radio :label='radioItem.id' :value='radioItem.id'>{{ radioItem.name }}</el-radio>
+                <el-select v-if='radioItem.type.includes("accident") && radioItem.coverages' v-model='productInfoArray[adjustProductParamsIndex].productInsurances[idx].coverage' :popper-append-to-body='false' placeholder='请选择' size='mini' style='width: 80px;' value='1' @change="getCalculatePremium('special')">
                   <el-option
-                    v-for="option in item.coverages"
-                    :key="option.value"
-                    :value="option.value"
-                    :label="option.value_text"
-                  >{{ option.value_text }}</el-option>
+                    v-for='item in radioItem.coverages'
+                    :key="item.value"
+                    :value="item.value"
+                    :label="item.value_text">
+                    {{ item.value_text }}
+                  </el-option>
                 </el-select>
-              </template>
-            </el-checkbox>
-          </el-checkbox-group>
+              </el-row>
+            </el-radio-group>
+
+            <div slot='reference' class='insurance-checkboxs'>
+              <!-- @change="changeCheckbox($event, index, idx, option)" -->
+
+              <el-checkbox
+                :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
+                :value='!!productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]'
+                :label='option.id'
+                @change='changeClickCheckbox($event, option, idx)'
+              >
+                <!--                判断如果附加险子险的id在数组中，就选中checkbox。并判断当前此id在productInsurances数组对象中存在 coverage 字段，就拼接此字段-->
+                <!--                否则就直接显示附加险组的名称-->
+                {{ productInfoArray[adjustProductParamsIndex].productInsurancesId[idx] ?
+                productTableList[adjustProductParamsIndex].proposal_product.product_insurance_group[idx].insurances
+                  .find(i => i.id == productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]).name
+                + (!!productInfoArray[adjustProductParamsIndex].productInsurances.find(item2 => item2.id == productInfoArray[adjustProductParamsIndex].productInsurancesId[idx]).coverage === false ? '' : '/' + productInfoArray[adjustProductParamsIndex].productInsurances[idx].coverage)
+                : option.name }}
+                <i class='el-icon-arrow-right'></i>
+              </el-checkbox>
+            </div>
+          </el-popover>
         </el-form-item>
         <el-form-item
           label="保额"
@@ -560,6 +571,13 @@ export default {
     this.scrollerUnlinkage()
   },
   methods: {
+    changeClickCheckbox($event, option, idx) {
+      if (!this.productInfoArray[this.adjustProductParamsIndex].productInsurancesId[idx]) {
+        return
+      }
+      this.$set(this.productInfoArray[this.adjustProductParamsIndex].productInsurancesId, idx, '')
+      this.getCalculatePremium('special')
+    },
     removeProduct(index) {
       this.removing = true
       let delId = this.productTableList[index].evaluation_product.id
@@ -620,8 +638,9 @@ export default {
               pay_period_unit: payPeriod.split('-')[1],
               coverage,
               insurances: productInsurancesId.map(i => {
+                if (!i) return
                 const target = productInsurances.find(y => y.id === i)
-                if (target.coverage) {
+                if (target && target.coverage) {
                   return { id: i, coverage: target.coverage }
                 }
                 return { id: i }
@@ -658,10 +677,23 @@ export default {
         })
         .catch(err => console.log(err))
     },
+    grounding() {
+      // console.log(111)
+      if (this.isLoading) return
+      this.isLoading = true
+      this.searchModel.page++
+      getEvaluationProductPageList(this.searchModel)
+        .then(res => {
+          this.productList = this.productList.concat(res.data)
+          this.isLoading = false
+        })
+        .catch(err => console.log(err))
+    },
     addProduct() { // 表头添加商品按钮
       this.isFromAdd = true
       this.addProductModalShow = true
       this.searchModel.product_name = ''
+      this.searchModel.page = 1
       this.getEvaluationProductPageList()
     },
     moveOrder(index, type) {
@@ -714,8 +746,9 @@ export default {
           pay_period_value: payPeriod.split('-')[0],
           pay_period_unit: payPeriod.split('-')[1],
           insurances: productInsurancesId.map(i => {
+            if (!i) return
             const target = productInsurances.find(y => y.id === i)
-            if (target.coverage) {
+            if (target && target.coverage) {
               return { id: i, coverage: target.coverage }
             }
             return { id: i }
@@ -814,9 +847,22 @@ export default {
               }
               return { id: i.id }
             })
-            this.productInfoArray[index].productInsurancesId = productInsurances
-              .filter(i => i.is_main)
-              .map(i => i.id)
+            // this.productInfoArray[index].productInsurancesId = productInsurances
+            //   .filter(i => i.is_main)
+            //   .map(i => i.id)
+            let insurancesList = this.productTableList[index].proposal_product.product_insurance_group
+            if(insurancesList){
+              this.productInfoArray[index].productInsurancesId = insurancesList.map(insurancesItem => {
+                let defaultItem = insurancesItem.insurances.filter(item => {
+                  if(item.is_default == 1){
+                    return item.id
+                  }
+                })[0]
+                if(defaultItem){
+                  return defaultItem.id
+                }
+              })
+            }
             this.productInfoArray[index].coverage = (coverages && coverages[0] && coverages[0].value) || ''
           }
           this.getCalculatePremium(id, index)
@@ -869,6 +915,7 @@ export default {
               coverage: i.coverage,
               insurances: i.productInsurancesId.map(y => {
                 const target = i.productInsurances.find(z => z.id === y)
+                if (!target) return
                 if (target.coverage) {
                   return { id: y, coverage: target.coverage }
                 }
@@ -1184,6 +1231,7 @@ export default {
             coverage: i.coverage,
             insurances: i.productInsurancesId.map(x => {
               const target = i.productInsurances.find(y => y.id === x)
+              if(!target) return
               if (target.coverage) {
                 return { id: x, coverage: target.coverage }
               }
@@ -1482,5 +1530,24 @@ export default {
   .tr{
     padding-bottom: 20px;
   }
+}
+
+/deep/ .el-row{
+  padding: 5px 0;
+}
+
+/deep/ .el-checkbox__label{
+  word-break: break-all;
+  white-space: initial;
+}
+
+/deep/.product-params-form .el-form-item--medium .el-form-item__content{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/deep/ .el-dialog .el-dialog__body{
+  padding: 20px;
 }
 </style>
