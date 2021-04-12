@@ -337,7 +337,7 @@
                                     :key="option.id"
                                     >
                                       <el-radio-group v-model="productsState[index][idx].default_ids[kk]">
-                                        <template v-for="(radioItem, radioIndex) in product.product_insurance_group[kk].insurances">
+                                        <template v-for="radioItem in product.product_insurance_group[kk].insurances">
 										<div :key="radioItem.id" style="height: 32px;display: flex;align-items: center">
                                           <el-radio
                                             @change="changeRadioCheckbox($event, index, idx)"

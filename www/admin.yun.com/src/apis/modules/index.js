@@ -62,3 +62,12 @@ export const getNotification = params => get('/agent/proxy/common/notification_r
 
 // 全局红点数据
 export const getDotsData = params => get('/agent/proxy/product-notice/red-point', params)
+
+// 公告列表
+export const getAnnouncementList = params => post('/agent/proxy/announcement/get-announcement-page-list', params)
+
+// 公告标记已读
+export const setAnnouncementReadAll = params => post('/agent/proxy/announcement/read-all', params)
+
+// 获取单个公告详情
+export const getAnnouncementDetail = params => post('/agent/proxy/announcement/detail', params)

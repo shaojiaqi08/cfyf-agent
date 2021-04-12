@@ -20,11 +20,52 @@
         </div>
       </el-tooltip>
       <el-popover
-              placement="bottom"
-              width="120"
-              v-model="isPopoverShow"
-              popper-class="popper-box"
-              trigger="click">
+        placement="bottom"
+        width="420"
+        v-model="isAnnouncementShow"
+        class="ml16"
+        popper-class="popper-box"
+        trigger="click">
+        <div class="function-botton" slot="reference">
+          <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="消息通知" placement="bottom">
+            <i class="iconfont iconda24_tongzhi fs24"></i>
+          </el-tooltip>
+        </div>
+        <div class="announcement-container">
+          <div class="ann-container-header">
+            <span>通知</span>
+            <el-button type="text" :loading="readAllSubmitting" :disabled="submitting" @click="readAll">全部已读</el-button>
+          </div>
+          <el-scrollbar ref="annScrollbar"
+                        class="announcement-scroll-bar scroll-bar"
+                        wrapClass="scroll-bar-wap"
+                        viewClass="body-list"
+                        v-loading="annLoading">
+            <div
+              class="announcement-block"
+              :key="item.id" v-for="item in annList"
+              @click="showAnnouncement(item)">
+              <div class="ann-title">
+                <span class="text-wrap">{{item.title}}</span>
+                <div>
+                  <el-badge is-dot>
+                    <span class="date">{{formatNoticeAt(item.notice_at * 1000)}}</span>
+                  </el-badge>
+                  <i class="el-icon-arrow-right"></i>
+                </div>
+              </div>
+              <p class="content text-wrap">{{item.content}}</p>
+            </div>
+            <div v-if="annList.length <= 0" class="tc p20 gray">暂无数据</div>
+          </el-scrollbar>
+        </div>
+      </el-popover>
+      <el-popover
+          placement="bottom"
+          width="120"
+          v-model="isPopoverShow"
+          popper-class="popper-box"
+          trigger="click">
         <div class="menu-list">
           <div class="menu-list-item"
               @click="jump2UserInfo">
@@ -59,13 +100,22 @@
 </template>
 
 <script>
-  import {loginOut} from '@/apis/modules'
-  import {mapState, mapActions} from 'vuex'
+  import { loginOut, getAnnouncementList, setAnnouncementReadAll } from '@/apis/modules'
+  import { mapState, mapActions } from 'vuex'
+  import { formatDate } from '@/utils/formatTime'
   export default {
     data() {
       return {
         isPopoverShow: false,
-        submitting: false
+        isAnnouncementShow: false,
+        submitting: false,
+        annList: [],
+        annPage: 1,
+        annTotal: 0,
+        annLoading: false,
+        annId: '',
+        annDetailShow: false,
+        readAllSubmitting: false
       }
     },
     computed: {
@@ -73,6 +123,19 @@
     },
     methods: {
       ...mapActions('users', ['getNotification']),
+      readAll() {
+        setAnnouncementReadAll().then(() => {
+          this.annPage = 1
+          this.getAnnouncementList()
+        })
+      },
+      showAnnouncement({ id }) {
+        this.annId = id
+        this.annDetailShow = true
+      },
+      formatNoticeAt(timestamp) {
+        return formatDate(timestamp, `${new Date().toDateString() === new Date(timestamp).toDateString() ? '' : 'yyyy-MM-dd '}hh:mm`)
+      },
       jump2UserInfo() {
         this.$router.push({ path: '/user-info' })
         this.isPopoverShow = false
@@ -82,10 +145,23 @@
         this.submitting = true
         loginOut().finally(() => this.$store.dispatch('users/logout'))
         this.$router.replace({ path: '/login' })
+      },
+      getAnnouncementList() {
+        this.annLoading = true
+        getAnnouncementList({
+          page: this.annPage,
+          page_size: 20
+        }).then(res => {
+          this.annList = this.annPage === 1 ? res.data : this.annList.concat(res.data)
+          this.annTotal = res.total
+        }).finally(() => {
+          this.annLoading = false
+        })
       }
     },
     created() {
       this.getNotification()
+      this.getAnnouncementList()
     }
   }
 </script>
@@ -181,6 +257,108 @@
   right: 6px;
   width: 10px;
   height: 10px;
+}
+.announcement-container{
+  padding: 0 !important;
+  .announcement-scroll-bar{
+    height: 409px;
+    padding-bottom: 8px;
+    ::v-deep .el-scrollbar__wrap {
+      overflow-x: hidden;
+    }
+  }
+  .ann-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 0 20px;
+    span {
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  .announcement-block{
+    cursor: pointer;
+    position: relative;
+    padding:12px 20px;
+    &:after{
+      content: '';
+      display: inline-block;
+      position: absolute;
+      height: 1px;
+      left:20px;
+      right:20px;
+      bottom: 0;
+      background: #e6e6e6;
+    }
+    &:last-of-type:after{
+      height: 0;
+    }
+    &:hover{
+      background:rgba(245,245,245,1);
+    }
+    .text-wrap{
+      display: inline-block;
+      overflow:hidden;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; /* 控制显示的行数 */
+      line-height: 24px;        /* 对不支持浏览器的 */
+      max-height: 48px;
+    }
+    .ann-title{
+      display: flex;
+      justify-content: space-between;
+      line-height: 24px;
+      align-items: flex-start;
+      &>span{
+        font-size:16px;
+        font-family:PingFang-SC-Bold,PingFang-SC;
+        font-weight:bold;
+        color:rgba(51,51,51,1);
+        margin-right:10px;
+      }
+      &>div{
+        display: flex;
+        align-items: center;
+        height: 24px;
+        i{
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .el-icon-arrow-right{
+        color:#D8D8D8;
+        font-size: 9px;
+        margin-left: 15px;
+      }
+      .date{
+        font-size:12px;
+        font-weight:400;
+        color:rgba(153,153,153,1);
+      }
+      ::v-deep .el-badge__content {
+        right: 0;
+        top: 3px;
+        width: 10px;
+        height: 10px;
+      }
+    }
+    &>p{
+      margin: 4px 0 0 0;
+      line-height: 20px;
+    }
+    .content{
+      font-size:14px;
+      font-weight:400;
+      color:#999;
+    }
+  }
 }
 </style>
 
