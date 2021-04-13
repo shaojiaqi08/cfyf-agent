@@ -29,7 +29,9 @@
         trigger="click">
         <div class="function-botton" slot="reference">
           <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="消息通知" placement="bottom">
-            <i class="iconfont iconda24_tongzhi fs24"></i>
+            <el-badge>
+              <i class="iconfont iconda24_tongzhi fs24"></i>
+            </el-badge>
           </el-tooltip>
         </div>
         <div class="announcement-container">
@@ -51,7 +53,7 @@
                 <div class="ann-title">
                   <span class="text-wrap">{{item.title}}</span>
                   <div>
-                    <el-badge :is-dot="item.one_sales_read_log.status === readMap.unread.value">
+                    <el-badge is-dot :hidden="item.one_sales_read_log.status !== readMap.unread.value">
                       <span class="date">{{formatNoticeAt(item.notice_at * 1000)}}</span>
                     </el-badge>
                     <i class="el-icon-arrow-right"></i>
@@ -109,6 +111,7 @@
   import { mapState, mapActions } from 'vuex'
   import { formatDate } from '@/utils/formatTime'
   import AnnouncementDialog from '@/components/announcement-dialog'
+  import { socketConnection } from '../../scoket'
   export default {
     components: {
       AnnouncementDialog
@@ -135,7 +138,8 @@
         annLoading: false,
         annId: '',
         annDialogShow: false,
-        readAllSubmitting: false
+        readAllSubmitting: false,
+        socket: null,
       }
     },
     computed: {
@@ -196,6 +200,19 @@
     },
     created() {
       this.getNotification()
+    },
+    mounted() {
+      if (this.hasAnnAuth) {
+        this.socket = socketConnection()
+        console.log(this.socket)
+        this.socket.on('connect', function(){
+          console.log('连接成功了！');
+        })
+        this.socket.on('error', function(){
+          console.log('连接失败了！');
+        })
+      }
+
     },
     watch: {
       isAnnouncementShow(v) {
@@ -347,7 +364,6 @@
     .text-wrap{
       display: inline-block;
       overflow:hidden;
-      overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-box-orient: vertical;
@@ -379,7 +395,7 @@
       .el-icon-arrow-right{
         color:#D8D8D8;
         font-size: 9px;
-        margin-left: 15px;
+        margin-left: 10px;
       }
       .date{
         font-size:12px;
@@ -394,8 +410,8 @@
       }
     }
     &>p{
-      margin: 4px 0 0 0;
-      line-height: 20px;
+      margin: 6px 0 0 0;
+      line-height: 20px !important;
     }
     .content{
       font-size:14px;
