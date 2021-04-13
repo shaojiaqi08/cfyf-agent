@@ -20,6 +20,7 @@
         </div>
       </el-tooltip>
       <el-popover
+        v-if="hasAnnAuth"
         placement="bottom"
         width="420"
         v-model="isAnnouncementShow"
@@ -34,27 +35,30 @@
         <div class="announcement-container">
           <div class="ann-container-header">
             <span>通知</span>
-            <el-button type="text" :loading="readAllSubmitting" :disabled="submitting" @click="readAll">全部已读</el-button>
+            <el-button type="text" :loading="readAllSubmitting" :disabled="readAllSubmitting" @click="readAll" v-if="hasAnnUnread">全部已读</el-button>
           </div>
           <el-scrollbar ref="annScrollbar"
                         class="announcement-scroll-bar scroll-bar"
                         wrapClass="scroll-bar-wap"
                         viewClass="body-list"
                         v-loading="annLoading">
-            <div
-              class="announcement-block"
-              :key="item.id" v-for="item in annList"
-              @click="showAnnouncement(item)">
-              <div class="ann-title">
-                <span class="text-wrap">{{item.title}}</span>
-                <div>
-                  <el-badge is-dot>
-                    <span class="date">{{formatNoticeAt(item.notice_at * 1000)}}</span>
-                  </el-badge>
-                  <i class="el-icon-arrow-right"></i>
+            <div v-infinite-scroll="annScroll2Bottom">
+              <div
+                class="announcement-block"
+                :key="item.id"
+                v-for="item in annList"
+                @click="showAnnouncement(item)">
+                <div class="ann-title">
+                  <span class="text-wrap">{{item.title}}</span>
+                  <div>
+                    <el-badge :is-dot="item.one_sales_read_log.status === readMap.unread.value">
+                      <span class="date">{{formatNoticeAt(item.notice_at * 1000)}}</span>
+                    </el-badge>
+                    <i class="el-icon-arrow-right"></i>
+                  </div>
                 </div>
+                <p class="content text-wrap">{{item.content}}</p>
               </div>
-              <p class="content text-wrap">{{item.content}}</p>
             </div>
             <div v-if="annList.length <= 0" class="tc p20 gray">暂无数据</div>
           </el-scrollbar>
@@ -96,6 +100,7 @@
         </div>
       </el-popover>
     </div>
+    <announcement-dialog :visible.sync="annDialogShow" :id="annId"></announcement-dialog>
   </div>
 </template>
 
@@ -103,35 +108,65 @@
   import { loginOut, getAnnouncementList, setAnnouncementReadAll } from '@/apis/modules'
   import { mapState, mapActions } from 'vuex'
   import { formatDate } from '@/utils/formatTime'
+  import AnnouncementDialog from '@/components/announcement-dialog'
   export default {
+    components: {
+      AnnouncementDialog
+    },
     data() {
       return {
+        readMap: Object.freeze({
+          unread: {
+            label: '未读',
+            value: 'unread'
+          },
+          read: {
+            label: '已读',
+            value: 'read'
+          }
+        }),
         isPopoverShow: false,
         isAnnouncementShow: false,
         submitting: false,
         annList: [],
         annPage: 1,
+        annPageSize: 20,
         annTotal: 0,
         annLoading: false,
         annId: '',
-        annDetailShow: false,
+        annDialogShow: false,
         readAllSubmitting: false
       }
     },
     computed: {
-      ...mapState('users', ['userInfo', 'notificationInfo'])
+      ...mapState('users', ['userInfo', 'notificationInfo']),
+      // 是否有公告列表权限
+      hasAnnAuth() {
+        return this.$checkAuth('/company_announcement/read')
+      },
+      hasAnnUnread() {
+        return this.annList.some(i => i.one_sales_read_log.status === this.readMap.unread.value)
+      }
     },
     methods: {
       ...mapActions('users', ['getNotification']),
+      annScroll2Bottom() {
+        if (this.annPage * this.annPageSize < this.annTotal) {
+          this.annPage += 1
+          this.getAnnouncementList()
+        }
+      },
       readAll() {
         setAnnouncementReadAll().then(() => {
           this.annPage = 1
           this.getAnnouncementList()
         })
       },
-      showAnnouncement({ id }) {
-        this.annId = id
-        this.annDetailShow = true
+      showAnnouncement(row) {
+        this.annId = row.id
+        // 修改为已读
+        row.one_sales_read_log.status = this.readMap.read.value
+        this.annDialogShow = true
       },
       formatNoticeAt(timestamp) {
         return formatDate(timestamp, `${new Date().toDateString() === new Date(timestamp).toDateString() ? '' : 'yyyy-MM-dd '}hh:mm`)
@@ -150,7 +185,7 @@
         this.annLoading = true
         getAnnouncementList({
           page: this.annPage,
-          page_size: 20
+          page_size: this.annPageSize
         }).then(res => {
           this.annList = this.annPage === 1 ? res.data : this.annList.concat(res.data)
           this.annTotal = res.total
@@ -161,7 +196,16 @@
     },
     created() {
       this.getNotification()
-      this.getAnnouncementList()
+    },
+    watch: {
+      isAnnouncementShow(v) {
+        if (v) {
+          this.annPage = 1
+          this.getAnnouncementList()
+        } else {
+          this.annList = []
+        }
+      }
     }
   }
 </script>
