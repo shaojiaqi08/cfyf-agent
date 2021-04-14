@@ -28,7 +28,7 @@
         popper-class="popper-box"
         trigger="click">
         <div class="function-botton" slot="reference">
-          <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="消息通知" placement="bottom">
+          <el-tooltip effect="dark" content="消息通知" placement="bottom">
             <el-badge is-dot :hidden="!showRedDot">
               <i class="iconfont iconda24_tongzhi fs24"></i>
             </el-badge>
