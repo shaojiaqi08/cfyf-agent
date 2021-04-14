@@ -378,6 +378,7 @@
       -webkit-line-clamp: 2; /* 控制显示的行数 */
       line-height: 24px;        /* 对不支持浏览器的 */
       max-height: 48px;
+      flex: 1
     }
     .ann-title{
       display: flex;
