@@ -162,9 +162,12 @@
         }
       },
       readAll() {
+        this.readAllSubmitting = true
         setAnnouncementReadAll().then(() => {
-          this.annPage = 1
+          this.annList.forEach(i => i.one_sales_read_log.status = this.readMap.read.value)
           this.showRedDot = false
+        }).finally(() => {
+          this.readAllSubmitting = false
         })
       },
       showAnnouncement(row) {
