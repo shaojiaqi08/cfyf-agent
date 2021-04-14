@@ -200,9 +200,7 @@
       },
       getAnnNoReadCnt() {
         getAnnNoReadCnt().then(res => {
-          if (res.not_read_count > 0) {
-            this.showRedDot = true
-          }
+          this.showRedDot = res.not_read_count > 0
         })
       }
     },
