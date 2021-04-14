@@ -64,6 +64,7 @@
                 this.loading = true
                 getAnnouncementDetail({announcement_id: this.id}).then(res => {
                     this.data = res
+                    this.$emit('load', res)
                 }).finally(() => {
                     this.loading = false
                 })

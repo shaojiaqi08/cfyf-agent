@@ -102,7 +102,7 @@
         </div>
       </el-popover>
     </div>
-    <announcement-dialog :visible.sync="annDialogShow" :id="annId"></announcement-dialog>
+    <announcement-dialog :visible.sync="annDialogShow" :id="annId" @load="getAnnNoReadCnt"></announcement-dialog>
   </div>
 </template>
 
@@ -165,7 +165,6 @@
         setAnnouncementReadAll().then(() => {
           this.annPage = 1
           this.showRedDot = false
-          this.getAnnouncementList()
         })
       },
       showAnnouncement(row) {
@@ -173,9 +172,6 @@
         // 修改为已读
         row.one_sales_read_log.status = this.readMap.read.value
         this.annDialogShow = true
-        if (!this.hasAnnUnread) {
-          this.showRedDot = false
-        }
       },
       formatNoticeAt(timestamp) {
         return formatDate(timestamp, `${new Date().toDateString() === new Date(timestamp).toDateString() ? '' : 'yyyy-MM-dd '}hh:mm`)
@@ -201,6 +197,13 @@
         }).finally(() => {
           this.annLoading = false
         })
+      },
+      getAnnNoReadCnt() {
+        getAnnNoReadCnt().then(res => {
+          if (res.not_read_count > 0) {
+            this.showRedDot = true
+          }
+        })
       }
     },
     created() {
@@ -216,12 +219,7 @@
           this.socket.disconnect()
           this.socket = null
         })
-
-        getAnnNoReadCnt().then(res => {
-          if (res.not_read_count > 0) {
-            this.showRedDot = true
-          }
-        })
+        this.getAnnNoReadCnt()
       }
     },
     watch: {
