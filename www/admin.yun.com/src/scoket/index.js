@@ -6,7 +6,8 @@ let socket = null
 export const socketConnection = () => {
     return socket || (socket = io(
         process.env.VUE_APP_SOCKET_URL,
-    {
+        {
+            transports: ['websocket', 'polling'],
             path: '/websocket',
             query:{
                 'Agent-Authorization': agent_token,

@@ -83,6 +83,7 @@
             timestampToCommonDate,
             formatTime,
             getCreateDateStr(str) {
+                if (!str) return
                 const d = new Date(str)
                 const curD = new Date()
                 const timeGay = (curD - d) / 1000 / 3600 / 24

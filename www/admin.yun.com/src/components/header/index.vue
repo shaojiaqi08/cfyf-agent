@@ -29,7 +29,7 @@
         trigger="click">
         <div class="function-botton" slot="reference">
           <el-tooltip v-if="$checkAuth('/self_and_child_teams')" effect="dark" content="消息通知" placement="bottom">
-            <el-badge>
+            <el-badge is-dot :hidden="!showRedDot">
               <i class="iconfont iconda24_tongzhi fs24"></i>
             </el-badge>
           </el-tooltip>
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-  import { loginOut, getAnnouncementList, setAnnouncementReadAll } from '@/apis/modules'
+  import { loginOut, getAnnouncementList, setAnnouncementReadAll, getAnnNoReadCnt } from '@/apis/modules'
   import { mapState, mapActions } from 'vuex'
   import { formatDate } from '@/utils/formatTime'
   import AnnouncementDialog from '@/components/announcement-dialog'
@@ -140,6 +140,7 @@
         annDialogShow: false,
         readAllSubmitting: false,
         socket: null,
+        showRedDot: false
       }
     },
     computed: {
@@ -163,6 +164,7 @@
       readAll() {
         setAnnouncementReadAll().then(() => {
           this.annPage = 1
+          this.showRedDot = false
           this.getAnnouncementList()
         })
       },
@@ -171,6 +173,9 @@
         // 修改为已读
         row.one_sales_read_log.status = this.readMap.read.value
         this.annDialogShow = true
+        if (!this.hasAnnUnread) {
+          this.showRedDot = false
+        }
       },
       formatNoticeAt(timestamp) {
         return formatDate(timestamp, `${new Date().toDateString() === new Date(timestamp).toDateString() ? '' : 'yyyy-MM-dd '}hh:mm`)
@@ -204,15 +209,20 @@
     mounted() {
       if (this.hasAnnAuth) {
         this.socket = socketConnection()
-        console.log(this.socket)
-        this.socket.on('connect', function(){
-          console.log('连接成功了！');
+        this.socket.on('sales:receive-announcement', () => {
+          this.showRedDot = true
         })
-        this.socket.on('error', function(){
-          console.log('连接失败了！');
+        this.socket.on('sales:remove', () => {
+          this.socket.disconnect()
+          this.socket = null
+        })
+
+        getAnnNoReadCnt().then(res => {
+          if (res.not_read_count > 0) {
+            this.showRedDot = true
+          }
         })
       }
-
     },
     watch: {
       isAnnouncementShow(v) {
