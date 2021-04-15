@@ -91,6 +91,9 @@
                 if (!str) return
                 const d = new Date(str)
                 const curD = new Date()
+                curD.setHours(23)
+                curD.setMinutes(59)
+                curD.setSeconds(59)
                 const timeGay = (curD - d) / 1000 / 3600 / 24
                 const timeStr = timestampToCommonDate(str)
                 if (timeGay > 3) {
