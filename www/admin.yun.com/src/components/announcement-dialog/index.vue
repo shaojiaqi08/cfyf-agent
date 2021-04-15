@@ -18,7 +18,11 @@
             <p class="date">{{getCreateDateStr(data.notice_at * 1000)}}</p>
             <div class="content" v-html="data.content"></div>
             <div class="imgs-container" v-if="data.image && data.image.length > 0">
-                <el-image fit="cover" :preview-src-list="getPreviewList(item, data.image)" v-for="item in data.image" :key="item.id" :src="item.image_url"></el-image>
+                <el-image fit="cover" :preview-src-list="getPreviewList(item, data.image)" v-for="item in data.image" :key="item.id" :src="item.image_url">
+                    <div slot="placeholder" class="image-slot">
+                        <i class="el-icon-loading"></i><span class="ml8">加载中</span>
+                    </div>
+                </el-image>
             </div>
             <div class="file-container" v-if="data.file_id">
                 <el-button icon="el-icon-document" type="text">{{data.file_name}}</el-button>
@@ -113,7 +117,7 @@
         font-family:PingFang-SC-Bold,PingFang-SC;
         ::v-deep .el-dialog {
             top: 9vh;
-            transform: translateY(0px);
+            transform: none;
             .el-dialog__header {
                 background-color: #fff;
             }
@@ -286,6 +290,18 @@
     .hide-close-btn{
         .el-dialog__headerbtn{
             display: none;
+        }
+    }
+    .image-slot {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        span {
+            font-size: 14px;
+            color: #999;
         }
     }
 </style>
