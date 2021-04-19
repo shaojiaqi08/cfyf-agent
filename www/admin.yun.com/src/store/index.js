@@ -11,7 +11,9 @@ Vue.use(Vuex)
 const persistedState = createPersistedState({
   storage: window.localStorage,
   paths: [
-    'users.userInfo'
+    'users.userInfo',
+    'dotManage.dots',
+    'announcement.announcementList'
   ]
 })
 
