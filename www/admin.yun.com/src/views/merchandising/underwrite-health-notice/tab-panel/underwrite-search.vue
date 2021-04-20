@@ -1256,6 +1256,11 @@ export default {
           all: false,
           supperAll: false
         }
+        const fd = this.supperFormData
+        this.selVal = ''
+        this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
+        this.inputCondition = fd.condition_search.value.filter(i => i).join(',')
+        this.inputConclusion = fd.conclusion_search.value.filter(i => i).join(',')
         this.supperRequestList()
       }
     },
