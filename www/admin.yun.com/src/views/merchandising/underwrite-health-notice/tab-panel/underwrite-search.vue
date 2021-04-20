@@ -32,7 +32,7 @@
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentConclusion"></el-input>
         </div>
-        <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canParentSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+        <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
       </div>
       <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 高级搜索</el-button>
     </div>
@@ -625,10 +625,6 @@ export default {
     canSearch() {
       const { inputCondition, inputConclusion, inputSick, supperFormData } = this
       return inputCondition || inputConclusion || inputSick || supperFormData.product_name
-    },
-    canParentSearch(){
-      const {inputParentSick, inputParentCondition, inputParentConclusion, formData} = this
-      return inputParentSick || inputParentCondition || inputParentConclusion || formData.product_name
     }
   },
   methods: {
