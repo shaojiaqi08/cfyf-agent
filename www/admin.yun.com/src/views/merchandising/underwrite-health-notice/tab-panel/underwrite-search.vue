@@ -76,7 +76,7 @@
               <el-form class="search-form common-form no-border-bottom">
                 <div class="pos-rel">
                   <el-popover
-                    placement="bottom-start"
+                    placement="left-start"
                     class="formData-illness-box"
                     v-model="isShowList.all"
                     trigger="click"
