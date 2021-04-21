@@ -363,7 +363,7 @@
             setMaxHeight: debounce(function() {
                 const container = this.$refs.container
                 if (container) {
-                    this.maxHeight = this.$refs.container.offsetHeight - 64
+                    this.maxHeight = Math.min(this.$refs.container.offsetHeight - 64, 1040)
                 }
             }, 300),
             handleSelPosition(v) {
