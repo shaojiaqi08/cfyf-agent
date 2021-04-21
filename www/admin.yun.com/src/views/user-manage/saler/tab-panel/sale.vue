@@ -684,7 +684,10 @@
             setMaxHeight: debounce(function() {
                 const container = this.$refs.container
                 if (container) {
-                    this.maxHeight = Math.min(this.$refs.container.offsetHeight - 64, 970)
+                    this.maxHeight = this.$refs.container.offsetHeight - 64
+                    if (this.maxHeight > 800) {
+                        this.page_size = 40
+                    }
                 }
             }, 300)
         },
