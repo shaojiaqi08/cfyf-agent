@@ -1,139 +1,175 @@
 <template>
-  <div class="underwrite-search-container">
-    <side-filter-list
-      v-loading="loading"
-      label-key="product_name"
-      value-key="product_name"
-      :showFilter="false"
-      v-model="selVal"
-      @change="showDetail"
-      :disabled="detailLoading"
-      style="width: 280px"
-      :listData="tableData"
-    >
-      <div slot="extraFilter" class="underwrite-search-left">
-        <div class="search-input-container">
+  <div v-loading="loading" style="height: 95%">
+    <div class="search-bar">
+      <div style="display: inline-flex;" class="search-bar-condition">
+        <div class="flex-center mr16">
+          <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
           <el-input
+            size="small"
+            placeholder="输入病种，以逗号隔开"
             clearable
-            placeholder="搜索产品名称"
-            v-model.trim="formData.product_name"
-            prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-            @input="search"
-          ></el-input>
+            @change="handleParentInputChange(false)"
+            @keyup.enter.native.prevent="handleParentInputChange"
+            v-model.trim="inputParentSick"></el-input>
         </div>
-        <div class="filter-container">
-          <div class="flex-between">
-            <el-radio-group
-                    size="mini"
-                    v-model="formData.isReverse"
-                    @change="search"
-                    class="radio-group-wrap"
-            >
-              <el-radio-button
-                      style="height: 28px"
-                      v-for="(item, index) in isReverseData"
-                      :key="'normal' + index"
-                      :label="item.value"
-              >{{ item.label }}</el-radio-button
+        <div class="flex-center mr16">
+          <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
+          <el-input
+            size="small"
+            placeholder="输入条件，以逗号隔开"
+            clearable
+            @change="handleParentInputChange(false)"
+            @keyup.enter.native.prevent="handleParentInputChange"
+            v-model.trim="inputParentCondition"></el-input>
+        </div>
+        <div class="flex-center">
+          <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
+          <el-input
+            size="small"
+            placeholder="输入结论，以逗号隔开"
+            clearable
+            @change="handleParentInputChange(false)"
+            @keyup.enter.native.prevent="handleParentInputChange"
+            v-model.trim="inputParentConclusion"></el-input>
+        </div>
+        <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+      </div>
+      <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 高级搜索</el-button>
+    </div>
+    <div class="underwrite-search-container">
+      <side-filter-list
+        label-key="product_name"
+        value-key="product_name"
+        :showFilter="false"
+        v-model="selVal"
+        @change="showDetail"
+        :disabled="detailLoading"
+        style="width: 280px"
+        :listData="tableData"
+      >
+        <div slot="extraFilter" class="underwrite-search-left">
+          <div class="search-input-container">
+            <el-input
+              clearable
+              placeholder="搜索产品名称"
+              v-model.trim="formData.product_name"
+              prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+              @input="search"
+            ></el-input>
+          </div>
+          <div class="filter-container">
+            <div class="flex-between">
+              <el-radio-group
+                size="mini"
+                v-model="formData.isReverse"
+                @change="search"
+                class="radio-group-wrap"
               >
-            </el-radio-group>
-            <el-form class="search-form common-form no-border-bottom">
-              <div class="pos-rel">
-                <el-popover
-                        placement="bottom-start"
-                        class="formData-illness-box"
-                        v-model="isShowList.all"
-                        trigger="click"
+                <el-radio-button
+                  style="height: 28px"
+                  v-for="(item, index) in isReverseData"
+                  :key="'normal' + index"
+                  :label="item.value"
+                >{{ item.label }}</el-radio-button
                 >
-                  <div class="filter-bar">
-                    <div class="formData-select">
-                      <div class="formData-select-list">
-                        <div class="formData-select-list-header">
-                          <el-radio
-                                  v-model="formData.illness_categorys_search.query_rule"
-                                  label="and"
-                          >同时满足</el-radio
-                          >
-                          <el-radio
-                                  v-model="formData.illness_categorys_search.query_rule"
-                                  label="or"
-                          >满足其一</el-radio
-                          >
-                        </div>
-                        <el-form-item
-                                class="formData-select-list-list"
-                                :label="'病种' + (index + 1)"
-                                v-for="(item, index) in formData.illness_categorys_search
+              </el-radio-group>
+              <el-form class="search-form common-form no-border-bottom">
+                <div class="pos-rel">
+                  <el-popover
+                    placement="left-start"
+                    class="formData-illness-box"
+                    v-model="isShowList.all"
+                    trigger="click"
+                  >
+                    <div class="filter-bar">
+                      <div class="formData-select">
+                        <div class="formData-select-list">
+                          <div class="formData-select-list-header">
+                            <el-radio
+                              v-model="formData.illness_categorys_search.query_rule"
+                              label="and"
+                            >同时满足</el-radio
+                            >
+                            <el-radio
+                              v-model="formData.illness_categorys_search.query_rule"
+                              label="or"
+                            >满足其一</el-radio
+                            >
+                          </div>
+                          <el-form-item
+                            class="formData-select-list-list"
+                            :label="'病种' + (index + 1)"
+                            v-for="(item, index) in formData.illness_categorys_search
                           .value"
-                                :key="index"
-                        >
-                          <el-input
-                                  v-model="formData.illness_categorys_search.value[index]"
-                                  placeholder="请输入病种"
-                          ></el-input>
-                        </el-form-item>
-                      </div>
-                      <div class="formData-select-list-info">同时满足</div>
-                      <div class="formData-select-list">
-                        <div class="formData-select-list-header">
-                          <el-radio
-                                  v-model="formData.condition_search.query_rule"
-                                  label="and"
-                          >同时满足</el-radio
+                            :key="index"
                           >
-                          <el-radio
-                                  v-model="formData.condition_search.query_rule"
-                                  label="or"
-                          >满足其一</el-radio
-                          >
+                            <el-input
+                              v-model="formData.illness_categorys_search.value[index]"
+                              placeholder="请输入病种"
+                            ></el-input>
+                          </el-form-item>
                         </div>
-                        <el-form-item
-                                class="formData-select-list-list"
-                                :label="'条件' + (index + 1)"
-                                v-for="(item, index) in formData.condition_search.value"
-                                :key="index"
-                        >
-                          <el-input
-                                  v-model="formData.condition_search.value[index]"
-                                  placeholder="请输入条件"
-                          ></el-input>
-                        </el-form-item>
-                      </div>
-                      <div class="formData-select-list-info">同时满足</div>
-                      <div class="formData-select-list">
-                        <div class="formData-select-list-header">
-                          <el-radio
-                                  v-model="formData.conclusion_search.query_rule"
-                                  label="and"
-                          >同时满足</el-radio
+                        <div class="formData-select-list-info">同时满足</div>
+                        <div class="formData-select-list">
+                          <div class="formData-select-list-header">
+                            <el-radio
+                              v-model="formData.condition_search.query_rule"
+                              label="and"
+                            >同时满足</el-radio
+                            >
+                            <el-radio
+                              v-model="formData.condition_search.query_rule"
+                              label="or"
+                            >满足其一</el-radio
+                            >
+                          </div>
+                          <el-form-item
+                            class="formData-select-list-list"
+                            :label="'条件' + (index + 1)"
+                            v-for="(item, index) in formData.condition_search.value"
+                            :key="index"
                           >
-                          <el-radio
-                                  v-model="formData.conclusion_search.query_rule"
-                                  label="or"
-                          >满足其一</el-radio
-                          >
+                            <el-input
+                              v-model="formData.condition_search.value[index]"
+                              placeholder="请输入条件"
+                            ></el-input>
+                          </el-form-item>
                         </div>
-                        <el-form-item
-                                class="formData-select-list-list"
-                                :label="'结论' + (index + 1)"
-                                v-for="(item, index) in formData.conclusion_search.value"
-                                :key="index"
-                        >
-                          <el-input
-                                  v-model="formData.conclusion_search.value[index]"
-                                  placeholder="请输入结论"
-                          ></el-input>
-                        </el-form-item>
+                        <div class="formData-select-list-info">同时满足</div>
+                        <div class="formData-select-list">
+                          <div class="formData-select-list-header">
+                            <el-radio
+                              v-model="formData.conclusion_search.query_rule"
+                              label="and"
+                            >同时满足</el-radio
+                            >
+                            <el-radio
+                              v-model="formData.conclusion_search.query_rule"
+                              label="or"
+                            >满足其一</el-radio
+                            >
+                          </div>
+                          <el-form-item
+                            class="formData-select-list-list"
+                            :label="'结论' + (index + 1)"
+                            v-for="(item, index) in formData.conclusion_search.value"
+                            :key="index"
+                          >
+                            <el-input
+                              v-model="formData.conclusion_search.value[index]"
+                              placeholder="请输入结论"
+                            ></el-input>
+                          </el-form-item>
+                        </div>
                       </div>
+                      <el-button
+                        type="warning"
+                        class="button-all-select"
+                        @click="search"
+                      >确定</el-button
+                      >
                     </div>
-                    <el-button
-                            type="warning"
-                            class="button-all-select"
-                            @click="search"
-                    >确定</el-button
-                    >
-                  </div>
-                  <span class="dropdown-link" slot="reference">
+                    <span class="dropdown-link" slot="reference">
                   <template>
                     <!-- {{(searchText) ? searchText : '筛选'}}
                     <el-button
@@ -149,102 +185,102 @@
                     </div>
                   </template>
                 </span>
-                </el-popover>
-                <span class="close-btn" @click="resetNormal" v-if="searchText">
+                  </el-popover>
+                  <span class="close-btn" @click="resetNormal" v-if="searchText">
                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
               </span>
-              </div>
-            </el-form>
+                </div>
+              </el-form>
+            </div>
+          </div>
+          <div class="classify-box">
+            <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
           </div>
         </div>
-        <div class="classify-box">
-          <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
-        </div>
+      </side-filter-list>
+      <div class="detail-wrap underwrite-search" v-loading="detailLoading || loadingDetail" ref="detailWrap">
+        <template v-if="tableData.length > 0">
+          <div class="head flex-between">
+            <p>{{ selVal }}</p>
+            <div>
+              调整字号
+              <el-input-number
+                class="ml16"
+                :min="12"
+                :max="24"
+                v-model="setFontSize"
+                size="small"
+              ></el-input-number>
+              <el-button
+                v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+                class="ml16"
+                type="primary"
+                @click="createImg('imageDom')"
+                size="small"><i class="iconfont iconxiao16_shengcheng mr4"></i> 生成图片</el-button>
+              <el-button
+                v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
+                class="ml16"
+                type="primary"
+                @click="createImg('imageDom', true)"
+                size="small"><i class="iconfont iconxiao16_dangqianchakan mr4"></i> 预览图片</el-button>
+
+            </div>
+          </div>
+          <div ref="imageDom" style="height: calc(100% - 32px)">
+            <el-table
+              border
+              :data="detailTableData"
+              height="calc(100vh - 250px)"
+              stripe
+              class="not-select main-table"
+              :style="{fontSize: setFontSize + 'px'}"
+            >
+              <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
+              <template v-for="(item,index) in maxCategorysLength">
+                <el-table-column
+                  v-if="allConditionShow[index]"
+                  width="200px"
+                  :prop="`illness_categorys[${index}]`"
+                  :label="`病种分类${index+1}`"
+                  align="center"
+                  :key="'illness_categorys' + index"
+                ></el-table-column>
+              </template>
+              <template v-for="(item,index) in maxConditionLength">
+                <el-table-column
+                  v-if="allListShow[index]"
+                  width="200px"
+                  :prop="`conditions[${index}]`"
+                  :label="`条件${index+1}`"
+                  align="center"
+                  :key="'conditions' + index"
+                ></el-table-column>
+              </template>
+              <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
+              <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
+              <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
+              <el-table-column label="产品名称" prop="product_name" width="200px" align="center"></el-table-column>
+            </el-table>
+          </div>
+        </template>
+        <div class="empty-tips" v-else>请选择左侧列表</div>
       </div>
-    </side-filter-list>
-    <div class="detail-wrap underwrite-search" v-loading="detailLoading || loadingDetail" ref="detailWrap">
-      <template v-if="tableData.length > 0">
-        <div class="head flex-between">
-          <p>{{ selVal }}</p>
-          <div>
-            调整字号
-            <el-input-number
-              class="ml16"
-              :min="12"
-              :max="24"
-              v-model="setFontSize"
-              size="small"
-            ></el-input-number>
-            <el-button
-              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
-              class="ml16"
-              type="primary"
-              @click="createImg('imageDom')"
-              size="small"><i class="iconfont iconxiao16_shengcheng mr4"></i> 生成图片</el-button>
-            <el-button
-              v-if="$checkAuth('/underwrite-health-notice/generate_pictures')"
-              class="ml16"
-              type="primary"
-              @click="createImg('imageDom', true)"
-              size="small"><i class="iconfont iconxiao16_dangqianchakan mr4"></i> 预览图片</el-button>
-            <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 高级搜索</el-button>
-          </div>
-        </div>
-        <div ref="imageDom" style="height: calc(100% - 32px)">
-          <el-table
-            border
-            :data="detailTableData"
-            height="calc(100vh - 180px)"
-            stripe
-            class="not-select main-table"
-            :style="{fontSize: setFontSize + 'px'}"
-          >
-            <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
-            <template v-for="(item,index) in maxCategorysLength">
-              <el-table-column
-                v-if="allConditionShow[index]"
-                width="200px"
-                :prop="`illness_categorys[${index}]`"
-                :label="`病种分类${index+1}`"
-                align="center"
-                :key="'illness_categorys' + index"
-              ></el-table-column>
-            </template>
-            <template v-for="(item,index) in maxConditionLength">
-              <el-table-column
-                v-if="allListShow[index]"
-                width="200px"
-                :prop="`conditions[${index}]`"
-                :label="`条件${index+1}`"
-                align="center"
-                :key="'conditions' + index"
-              ></el-table-column>
-            </template>
-            <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
-            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
-            <el-table-column label="产品名称" prop="product_name" width="200px" align="center"></el-table-column>
-          </el-table>
-        </div>
-      </template>
-      <div class="empty-tips" v-else>请选择左侧列表</div>
-    </div>
-    <el-dialog
-      v-if="isShowSupperSearch"
-      :visible.sync="isShowSupperSearch"
-      title="高级搜索"
-      fullscreen
-      height="100vh"
-      center
-      @close="closeSuperSearchDialog"
-      class="supper-search-box"
-    >
-      <template slot="title">
-        <div class="flex-between">
-          <div>
-            <h3>高级搜索</h3>
-          </div>
-          <span class="mr50">
+      <el-dialog
+        v-if="isShowSupperSearch"
+        :visible.sync="isShowSupperSearch"
+        title="高级搜索"
+        fullscreen
+        height="100vh"
+        center
+        @close="closeSuperSearchDialog"
+        class="supper-search-box"
+      >
+        <template slot="title">
+          <div class="flex-between">
+            <div>
+              <h3>高级搜索</h3>
+            </div>
+            <span class="mr50">
             调整字号
             <el-input-number
               size="small"
@@ -256,43 +292,43 @@
               :max="24"
             ></el-input-number>
           </span>
-        </div>
-      </template>
-      <div class="flex-between">
-        <el-form inline :modal="formData" @submit.native.prevent label-position="left" class="supper-form">
-          <el-input
-            placeholder="搜索产品名称"
-            clearable
-            prefix-icon="el-icon-search"
-            v-model.trim="supperFormData.product_name"
-            @keyup.enter.native="supperRequestList()"
-            size="small"
-            class="supper-search-input">
-          </el-input>
-          <el-radio-group
-            size="mini"
-            v-model="supperFormData.isReverse"
-            @change="supperRequestList"
-            class="radio-group-wrap"
-          >
-          <el-radio-button
-            style="height: 28px"
-            v-for="(item, index) in supperIsReverseData"
-            :key="'supper' + index"
-            :label="item.value"
-            >{{ item.label }}</el-radio-button>
-          </el-radio-group>
-          <div class="pos-rel">
-            <el-popover
-              placement="bottom"
-              class="formData-classify-box"
-              trigger="click">
-              <div class="formData-classify-dialog formData-classify">
-                <div class="classify-box">
-                  <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+          </div>
+        </template>
+        <div class="flex-between">
+          <el-form inline :modal="formData" @submit.native.prevent label-position="left" class="supper-form">
+            <el-input
+              placeholder="搜索产品名称"
+              clearable
+              prefix-icon="el-icon-search"
+              v-model.trim="supperFormData.product_name"
+              @keyup.enter.native="supperRequestList()"
+              size="small"
+              class="supper-search-input">
+            </el-input>
+            <el-radio-group
+              size="mini"
+              v-model="supperFormData.isReverse"
+              @change="supperRequestList"
+              class="radio-group-wrap"
+            >
+              <el-radio-button
+                style="height: 28px"
+                v-for="(item, index) in supperIsReverseData"
+                :key="'supper' + index"
+                :label="item.value"
+              >{{ item.label }}</el-radio-button>
+            </el-radio-group>
+            <div class="pos-rel">
+              <el-popover
+                placement="bottom"
+                class="formData-classify-box"
+                trigger="click">
+                <div class="formData-classify-dialog formData-classify">
+                  <div class="classify-box">
+                    <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+                  </div>
                 </div>
-              </div>
-              <span class="dropdown-link" slot="reference">
+                <span class="dropdown-link" slot="reference">
                 <template>
                   <div class="filter-item el-popover__reference ml16">
                     <div :class="['content']">
@@ -302,49 +338,49 @@
                   </div>
                 </template>
               </span>
-            </el-popover>
-          </div>
-          <div class="pos-rel mr16">
-            <el-popover
-              placement="bottom"
-              class="formData-illness-box"
-              v-model="isShowList.supperAll"
-              trigger="click">
-              <div>
-                <div class="formData-select">
-                  <div class="formData-select-list">
-                    <div class="formData-select-list-header">
-                      <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="or">满足其一</el-radio>
+              </el-popover>
+            </div>
+            <div class="pos-rel mr16">
+              <el-popover
+                placement="bottom"
+                class="formData-illness-box"
+                v-model="isShowList.supperAll"
+                trigger="click">
+                <div>
+                  <div class="formData-select">
+                    <div class="formData-select-list">
+                      <div class="formData-select-list-header">
+                        <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="and">同时满足</el-radio>
+                        <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="or">满足其一</el-radio>
+                      </div>
+                      <el-form-item class="formData-select-list-list" :label="'病种'+ (index+1)" v-for="(item, index) in supperFormData.illness_categorys_search.value" :key="index">
+                        <el-input v-model="supperFormData.illness_categorys_search.value[index]" placeholder="请输入病种"></el-input>
+                      </el-form-item>
                     </div>
-                    <el-form-item class="formData-select-list-list" :label="'病种'+ (index+1)" v-for="(item, index) in supperFormData.illness_categorys_search.value" :key="index">
-                      <el-input v-model="supperFormData.illness_categorys_search.value[index]" placeholder="请输入病种"></el-input>
-                    </el-form-item>
-                  </div>
-                  <div class="formData-select-list-info">同时满足</div>
-                  <div class="formData-select-list">
-                    <div class="formData-select-list-header">
-                      <el-radio v-model="supperFormData.condition_search.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData.condition_search.query_rule" label="or">满足其一</el-radio>
+                    <div class="formData-select-list-info">同时满足</div>
+                    <div class="formData-select-list">
+                      <div class="formData-select-list-header">
+                        <el-radio v-model="supperFormData.condition_search.query_rule" label="and">同时满足</el-radio>
+                        <el-radio v-model="supperFormData.condition_search.query_rule" label="or">满足其一</el-radio>
+                      </div>
+                      <el-form-item class="formData-select-list-list" :label="'条件'+ (index+1)" v-for="(item, index) in supperFormData.condition_search.value" :key="index">
+                        <el-input v-model="supperFormData.condition_search.value[index]" placeholder="请输入条件"></el-input>
+                      </el-form-item>
                     </div>
-                    <el-form-item class="formData-select-list-list" :label="'条件'+ (index+1)" v-for="(item, index) in supperFormData.condition_search.value" :key="index">
-                      <el-input v-model="supperFormData.condition_search.value[index]" placeholder="请输入条件"></el-input>
-                    </el-form-item>
-                  </div>
-                  <div class="formData-select-list-info">同时满足</div>
-                  <div class="formData-select-list">
-                    <div class="formData-select-list-header">
-                      <el-radio v-model="supperFormData.conclusion_search.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData.conclusion_search.query_rule" label="or">满足其一</el-radio>
+                    <div class="formData-select-list-info">同时满足</div>
+                    <div class="formData-select-list">
+                      <div class="formData-select-list-header">
+                        <el-radio v-model="supperFormData.conclusion_search.query_rule" label="and">同时满足</el-radio>
+                        <el-radio v-model="supperFormData.conclusion_search.query_rule" label="or">满足其一</el-radio>
+                      </div>
+                      <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData.conclusion_search.value" :key="index">
+                        <el-input size="small" v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
+                      </el-form-item>
                     </div>
-                    <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData.conclusion_search.value" :key="index">
-                      <el-input size="small" v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
-                    </el-form-item>
                   </div>
+                  <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
                 </div>
-                <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
-              </div>
-              <span class="dropdown-link" slot="reference">
+                <span class="dropdown-link" slot="reference">
                 <template>
                   <div class="filter-item el-popover__reference ml16">
                     <div :class="['content', {'active': supperSearchText}]">
@@ -354,87 +390,88 @@
                   </div>
                 </template>
               </span>
-            </el-popover>
-            <span class="close-btn" @click="resetSupper" v-if="supperSearchText">
+              </el-popover>
+              <span class="close-btn" @click="resetSupper" v-if="supperSearchText">
               <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
             </span>
-          </div>
-          <div style="display: inline-flex;">
-            <div class="flex-center mr16">
-              <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
-              <el-input
-                size="small"
-                placeholder="输入病种，以逗号隔开"
-                clearable
-                @change="handleInputChange(false)"
-                @keyup.enter.native.prevent="handleInputChange"
-                v-model.trim="inputSick"></el-input>
             </div>
-            <div class="flex-center mr16">
-              <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
-              <el-input
-                size="small"
-                placeholder="输入条件，以逗号隔开"
-                clearable
-                @change="handleInputChange(false)"
-                @keyup.enter.native.prevent="handleInputChange"
-                v-model.trim="inputCondition"></el-input>
+            <div style="display: inline-flex;">
+              <div class="flex-center mr16">
+                <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
+                <el-input
+                  size="small"
+                  placeholder="输入病种，以逗号隔开"
+                  clearable
+                  @change="handleInputChange(false)"
+                  @keyup.enter.native.prevent="handleInputChange"
+                  v-model.trim="inputSick"></el-input>
+              </div>
+              <div class="flex-center mr16">
+                <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
+                <el-input
+                  size="small"
+                  placeholder="输入条件，以逗号隔开"
+                  clearable
+                  @change="handleInputChange(false)"
+                  @keyup.enter.native.prevent="handleInputChange"
+                  v-model.trim="inputCondition"></el-input>
+              </div>
+              <div class="flex-center">
+                <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
+                <el-input
+                  size="small"
+                  placeholder="输入结论，以逗号隔开"
+                  clearable
+                  @change="handleInputChange(false)"
+                  @keyup.enter.native.prevent="handleInputChange"
+                  v-model.trim="inputConclusion"></el-input>
+              </div>
+              <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
-            <div class="flex-center">
-              <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
-              <el-input
-                size="small"
-                placeholder="输入结论，以逗号隔开"
-                clearable
-                @change="handleInputChange(false)"
-                @keyup.enter.native.prevent="handleInputChange"
-                v-model.trim="inputConclusion"></el-input>
-            </div>
-            <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
-          </div>
-        </el-form>
-      </div>
-      <div class="supper-table" style="height: calc(100% - 75px)">
-        <div ref="supperImageDom" v-loading="supperLoading" style="height: 100%">
-          <el-table
-            border
-            :data="supperDetailTableData"
-            :span-method="margeInfo"
-            height="100%"
-            stripe
-            class="not-select"
-            :style="{fontSize: supperSetFontSize + 'px'}"
-          >
-            <el-table-column label="保险产品" prop="product_name" :fixed="!supperLoading" align="center" width="150px"></el-table-column>
-            <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
-            <template v-for="(item,index) in maxCategorysLength">
-              <el-table-column
-                v-if="allConditionShow[index]"
-                width="200px"
-                :prop="`illness_categorys[${index}]`"
-                :label="`病种分类${index+1}`"
-                align="center"
-                :key="'illness_categorys' + index"
-              ></el-table-column>
-            </template>
-            <template v-for="(item,index) in maxConditionLength">
-              <el-table-column
-                v-if="allListShow[index]"
-                width="200px"
-                :prop="`conditions[${index}]`"
-                :label="`条件${index+1}`"
-                align="center"
-                :key="'conditions' + index"
-              ></el-table-column>
-            </template>
-            <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
-            <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
-            <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
-          </el-table>
+          </el-form>
         </div>
-      </div>
-      <div slot="footer"></div>
-    </el-dialog>
+        <div class="supper-table" style="height: calc(100% - 75px)">
+          <div ref="supperImageDom" v-loading="supperLoading" style="height: 100%">
+            <el-table
+              border
+              :data="supperDetailTableData"
+              :span-method="margeInfo"
+              height="100%"
+              stripe
+              class="not-select"
+              :style="{fontSize: supperSetFontSize + 'px'}"
+            >
+              <el-table-column label="保险产品" prop="product_name" :fixed="!supperLoading" align="center" width="150px"></el-table-column>
+              <el-table-column label="序号" prop="sequence_number" align="center" width="60px"></el-table-column>
+              <template v-for="(item,index) in maxCategorysLength">
+                <el-table-column
+                  v-if="allConditionShow[index]"
+                  width="200px"
+                  :prop="`illness_categorys[${index}]`"
+                  :label="`病种分类${index+1}`"
+                  align="center"
+                  :key="'illness_categorys' + index"
+                ></el-table-column>
+              </template>
+              <template v-for="(item,index) in maxConditionLength">
+                <el-table-column
+                  v-if="allListShow[index]"
+                  width="200px"
+                  :prop="`conditions[${index}]`"
+                  :label="`条件${index+1}`"
+                  align="center"
+                  :key="'conditions' + index"
+                ></el-table-column>
+              </template>
+              <el-table-column label="结论" prop="conclusion" width="200px" align="center"></el-table-column>
+              <el-table-column label="保险公司" prop="company" width="150px" align="center"></el-table-column>
+              <el-table-column label="产品类别" prop="insurance_class" width="200px" align="center"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <div slot="footer"></div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -1208,12 +1245,22 @@ export default {
           supperAll: false
         }
         this.page = 1
+        const fd = this.formData
+        this.selVal = ''
+        this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
+        this.inputParentCondition = fd.condition_search.value.filter(i => i).join(',')
+        this.inputParentConclusion = fd.conclusion_search.value.filter(i => i).join(',')
         this.requestList()
       } else {
         this.isShowList = {
           all: false,
           supperAll: false
         }
+        const fd = this.supperFormData
+        this.selVal = ''
+        this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
+        this.inputCondition = fd.condition_search.value.filter(i => i).join(',')
+        this.inputConclusion = fd.conclusion_search.value.filter(i => i).join(',')
         this.supperRequestList()
       }
     },
@@ -1273,6 +1320,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .search-bar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+
+    .search-bar-condition{
+      flex: 1;
+    }
+  }
 .underwrite-search-container {
   height: 100%;
   overflow: hidden;
