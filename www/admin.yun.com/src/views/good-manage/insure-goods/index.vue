@@ -151,8 +151,8 @@
                          type="primary"
                          :underline="false"
                          class="mr20"
-                         @click="downQrcode(row)"
-                         icon="el-icon-download">投保二维码
+                         @click="downQrcode(row)">
+                  <i class="iconfont iconxiao16_xiazai mr4"></i>投保二维码
                 </el-link>
               </div>
               <div>
