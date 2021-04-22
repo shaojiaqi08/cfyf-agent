@@ -57,7 +57,11 @@
                   <h3 style="color: #333333; margin: 0; line-height: 38px">{{ selVal }}</h3>
                 </template>
                 <el-table-column label="序号" type="index" align="center" width="60px"></el-table-column>
-                <el-table-column label="健康告知内容" prop="notice" class-name="tj"></el-table-column>
+                <el-table-column label="健康告知内容" class-name="tj">
+                  <template v-slot="{row}">
+                    <span style="white-space: pre-line;">{{row.notice}}</span>
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table>
           </div>
