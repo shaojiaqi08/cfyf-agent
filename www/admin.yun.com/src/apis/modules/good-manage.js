@@ -54,3 +54,5 @@ export const getSupplierList = (data) => get('/common/product/supplier/list', da
 export const getCalculateWay = (data) => get('/agent/proxy/sales/position_commission/get_calculate_way', data)
 // 导出产品链接
 export const exportProductLink = `${process.env.VUE_APP_API_URL}/agent/proxy/product/distribution/export-product-link`
+// 获取产品二维码链接
+export const genApiShareLink = (data) => get('/agent/proxy/product/distribution/generate-api-forward-link', data)
