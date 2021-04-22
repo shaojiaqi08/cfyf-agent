@@ -147,12 +147,18 @@
                          @click="handleViewMaterial(row)">
                   <i class="iconfont iconxiao16_ziliao mr4"></i>产品资料
                 </el-link>
+                <el-link v-if="$checkAuth('/insure-goods/generate-api-forward-link')"
+                         type="primary"
+                         :underline="false"
+                         class="mr20"
+                         @click="downQrcode(row)"
+                         icon="el-icon-download">投保二维码
+                </el-link>
               </div>
               <div>
                 <span v-if="row.product_type === 'api'" class="ml16 span-price">{{`${row.min_price} 元起`}}</span>
                 <el-button @click="viewProductDetail(row)" class="ml16" size="small" type="primary" plain><i class="iconfont iconxiao16_xiangqing mr4"></i>产品详情</el-button>
                 <el-button @click="share(row)" type="primary" size="small"><i class="iconfont iconxiao16_fasong mr4"></i>转发客户</el-button>
-                <el-button v-if="$checkAuth('/insure-goods/generate-api-forward-link')" @click="downQrcode(row)" type="primary" size="small" icon="el-icon-download">下载投保页面二维码</el-button>
               </div>
             </div>
             <div class="off-shelves-tips pt16" v-if="row.notice_type === 'off'">
