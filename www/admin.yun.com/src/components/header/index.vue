@@ -9,7 +9,7 @@
       </el-tooltip>
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
           <div class="function-botton" @click="$router.push('/company')">
-            <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
+            <el-badge is-dot :hidden="!notificationInfo.company_profile || !notificationInfo.company_profile.is_show">
               <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
             </el-badge>
           </div>
@@ -209,25 +209,6 @@
     },
     created() {
       this.getNotification()
-    },
-    mounted() {
-      this.socket = socketConnection()
-      console.log(this.socket)
-      this.socket.on('connect', () => {
-        console.log('socket连接成功')
-      })
-
-      this.socket.on('disconnect', () => {
-        console.log('连接关闭了！');
-      })
-
-      this.socket.on('sales:receive-announcement', () => {
-        this.showRedDot = true
-      })
-      this.socket.on('sales:remove', () => {
-        this.socket.disconnect()
-        this.socket = null
-      })
     },
     watch: {
       isAnnouncementShow(v) {
