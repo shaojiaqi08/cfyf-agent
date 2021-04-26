@@ -9,7 +9,7 @@
       </el-tooltip>
       <el-tooltip v-if="$checkAuth('/company_info') || $checkAuth('/company_finance_info') || $checkAuth('/company_brand_info')" effect="dark" content="公司资料" placement="bottom">
           <div class="function-botton" @click="$router.push('/company')">
-            <el-badge is-dot :hidden="notificationInfo && notificationInfo.company_profile && !notificationInfo.company_profile.is_show">
+            <el-badge is-dot :hidden="!notificationInfo.company_profile || !notificationInfo.company_profile.is_show">
               <i class="iconfont iconda24_gongsiziliao1 fs24"></i>
             </el-badge>
           </div>
@@ -20,11 +20,58 @@
         </div>
       </el-tooltip>
       <el-popover
-              placement="bottom"
-              width="120"
-              v-model="isPopoverShow"
-              popper-class="popper-box"
-              trigger="click">
+        v-if="hasAnnAuth"
+        placement="bottom"
+        width="420"
+        v-model="isAnnouncementShow"
+        class="ml16"
+        popper-class="popper-box"
+        trigger="click">
+        <div class="function-botton" slot="reference">
+          <el-tooltip effect="dark" content="消息通知" placement="bottom">
+            <el-badge is-dot :hidden="!showRedDot">
+              <i class="iconfont iconda24_tongzhi fs24"></i>
+            </el-badge>
+          </el-tooltip>
+        </div>
+        <div class="announcement-container">
+          <div class="ann-container-header">
+            <span>通知</span>
+            <el-button type="text" :loading="readAllSubmitting" :disabled="readAllSubmitting" @click="readAll" v-if="hasAnnUnread">全部已读</el-button>
+          </div>
+          <el-scrollbar ref="annScrollbar"
+                        class="announcement-scroll-bar scroll-bar"
+                        wrapClass="scroll-bar-wap"
+                        viewClass="body-list"
+                        v-loading="annLoading">
+            <div v-infinite-scroll="annScroll2Bottom">
+              <div
+                class="announcement-block"
+                :key="item.id"
+                v-for="item in annList"
+                @click="showAnnouncement(item)">
+                <div class="ann-title">
+                  <span class="text-wrap">{{item.title}}</span>
+                  <div>
+                    <el-badge is-dot :hidden="item.one_sales_read_log.status !== readMap.unread.value">
+                      <span class="date">{{formatNoticeAt(item.notice_at * 1000)}}</span>
+                    </el-badge>
+                    <i class="el-icon-arrow-right"></i>
+                  </div>
+                </div>
+                <p class="content text-wrap">{{item.content}}</p>
+              </div>
+            </div>
+            <div v-if="annList.length <= 0" class="tc p20 gray">暂无数据</div>
+          </el-scrollbar>
+        </div>
+      </el-popover>
+      <el-popover
+          placement="bottom"
+          width="120"
+          v-model="isPopoverShow"
+          popper-class="popper-box"
+          trigger="click">
         <div class="menu-list">
           <div class="menu-list-item"
               @click="jump2UserInfo">
@@ -55,24 +102,83 @@
         </div>
       </el-popover>
     </div>
+    <announcement-dialog :visible.sync="annDialogShow" :id="annId" @load="getAnnNoReadCnt"></announcement-dialog>
   </div>
 </template>
 
 <script>
-  import {loginOut} from '@/apis/modules'
-  import {mapState, mapActions} from 'vuex'
+  import { loginOut, getAnnouncementList, setAnnouncementReadAll, getAnnNoReadCnt } from '@/apis/modules'
+  import { mapState, mapActions } from 'vuex'
+  import { formatDate } from '@/utils/formatTime'
+  import AnnouncementDialog from '@/components/announcement-dialog'
+  import { socketConnection } from '../../scoket'
   export default {
+    components: {
+      AnnouncementDialog
+    },
     data() {
       return {
+        readMap: Object.freeze({
+          unread: {
+            label: '未读',
+            value: 'unread'
+          },
+          read: {
+            label: '已读',
+            value: 'read'
+          }
+        }),
         isPopoverShow: false,
-        submitting: false
+        isAnnouncementShow: false,
+        submitting: false,
+        annList: [],
+        annPage: 1,
+        annPageSize: 20,
+        annTotal: 0,
+        annLoading: false,
+        annId: '',
+        annDialogShow: false,
+        readAllSubmitting: false,
+        socket: null,
+        showRedDot: false
       }
     },
     computed: {
-      ...mapState('users', ['userInfo', 'notificationInfo'])
+      ...mapState('users', ['userInfo', 'notificationInfo']),
+      // 是否有公告列表权限
+      hasAnnAuth() {
+        return this.userInfo.permissions.includes('/company_announcement/read')
+      },
+      hasAnnUnread() {
+        return this.annList.some(i => i.one_sales_read_log.status === this.readMap.unread.value)
+      }
     },
     methods: {
       ...mapActions('users', ['getNotification']),
+      annScroll2Bottom() {
+        if (this.annPage * this.annPageSize < this.annTotal) {
+          this.annPage += 1
+          this.getAnnouncementList()
+        }
+      },
+      readAll() {
+        this.readAllSubmitting = true
+        setAnnouncementReadAll().then(() => {
+          this.annList.forEach(i => i.one_sales_read_log.status = this.readMap.read.value)
+          this.showRedDot = false
+        }).finally(() => {
+          this.readAllSubmitting = false
+        })
+      },
+      showAnnouncement(row) {
+        this.annId = row.id
+        // 修改为已读
+        row.one_sales_read_log.status = this.readMap.read.value
+        this.annDialogShow = true
+      },
+      formatNoticeAt(timestamp) {
+        return formatDate(timestamp, `${new Date().toDateString() === new Date(timestamp).toDateString() ? '' : 'yyyy-MM-dd '}hh:mm`)
+      },
       jump2UserInfo() {
         this.$router.push({ path: '/user-info' })
         this.isPopoverShow = false
@@ -82,10 +188,60 @@
         this.submitting = true
         loginOut().finally(() => this.$store.dispatch('users/logout'))
         this.$router.replace({ path: '/login' })
+      },
+      getAnnouncementList() {
+        this.annLoading = true
+        getAnnouncementList({
+          page: this.annPage,
+          page_size: this.annPageSize
+        }).then(res => {
+          this.annList = this.annPage === 1 ? res.data : this.annList.concat(res.data)
+          this.annTotal = res.total
+        }).finally(() => {
+          this.annLoading = false
+        })
+      },
+      getAnnNoReadCnt() {
+        getAnnNoReadCnt().then(res => {
+          this.showRedDot = res.not_read_count > 0
+        })
       }
     },
     created() {
       this.getNotification()
+    },
+    watch: {
+      isAnnouncementShow(v) {
+        if (v) {
+          this.annPage = 1
+          this.getAnnouncementList()
+        } else {
+          this.annList = []
+        }
+      },
+      hasAnnAuth: {
+        immediate: true,
+        handler(v) {
+          if (v) {
+            this.socket = socketConnection()
+            this.socket.on('connect', () => {
+              console.log('socket连接成功...')
+            })
+            this.socket.on('disconnect', () => {
+              console.log('socket连接关闭了...');
+            })
+            this.socket.on('sales:receive-announcement', () => {
+              this.showRedDot = true
+            })
+            this.socket.on('sales:remove', () => {
+              this.socket.disconnect()
+              this.socket = null
+            })
+
+            this.getAnnNoReadCnt()
+          }
+        }
+      }
     }
   }
 </script>
@@ -181,6 +337,108 @@
   right: 6px;
   width: 10px;
   height: 10px;
+}
+.announcement-container{
+  padding: 0 !important;
+  .announcement-scroll-bar{
+    height: 409px;
+    padding-bottom: 8px;
+    ::v-deep .el-scrollbar__wrap {
+      overflow-x: hidden;
+    }
+  }
+  .ann-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 0 20px;
+    span {
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  .announcement-block{
+    cursor: pointer;
+    position: relative;
+    padding:12px 20px;
+    &:after{
+      content: '';
+      display: inline-block;
+      position: absolute;
+      height: 1px;
+      left:20px;
+      right:20px;
+      bottom: 0;
+      background: #e6e6e6;
+    }
+    &:last-of-type:after{
+      height: 0;
+    }
+    &:hover{
+      background:rgba(245,245,245,1);
+    }
+    .text-wrap{
+      display: inline-block;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; /* 控制显示的行数 */
+      line-height: 24px;        /* 对不支持浏览器的 */
+      max-height: 48px;
+      flex: 1
+    }
+    .ann-title{
+      display: flex;
+      justify-content: space-between;
+      line-height: 24px;
+      align-items: flex-start;
+      &>span{
+        font-size:16px;
+        font-family:PingFang-SC-Bold,PingFang-SC;
+        font-weight:bold;
+        color:rgba(51,51,51,1);
+        margin-right:10px;
+      }
+      &>div{
+        display: flex;
+        align-items: center;
+        height: 24px;
+        i{
+          font-size: 16px;
+          font-weight: bold;
+        }
+      }
+      .el-icon-arrow-right{
+        color:#D8D8D8;
+        font-size: 9px;
+        margin-left: 10px;
+      }
+      .date{
+        font-size:12px;
+        font-weight:400;
+        color:rgba(153,153,153,1);
+      }
+      ::v-deep .el-badge__content {
+        right: 0;
+        top: 3px;
+        width: 10px;
+        height: 10px;
+      }
+    }
+    &>p{
+      margin: 6px 0 0 0;
+      line-height: 20px !important;
+    }
+    .content{
+      font-size:14px;
+      font-weight:400;
+      color:#999;
+    }
+  }
 }
 </style>
 
