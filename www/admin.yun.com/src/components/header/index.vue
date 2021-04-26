@@ -147,7 +147,7 @@
       ...mapState('users', ['userInfo', 'notificationInfo']),
       // 是否有公告列表权限
       hasAnnAuth() {
-        return this.$checkAuth('/company_announcement/read')
+        return this.userInfo.permissions.includes('/company_announcement/read')
       },
       hasAnnUnread() {
         return this.annList.some(i => i.one_sales_read_log.status === this.readMap.unread.value)
@@ -211,17 +211,23 @@
       this.getNotification()
     },
     mounted() {
-      if (this.hasAnnAuth) {
-        this.socket = socketConnection()
-        this.socket.on('sales:receive-announcement', () => {
-          this.showRedDot = true
-        })
-        this.socket.on('sales:remove', () => {
-          this.socket.disconnect()
-          this.socket = null
-        })
-        this.getAnnNoReadCnt()
-      }
+      this.socket = socketConnection()
+      console.log(this.socket)
+      this.socket.on('connect', () => {
+        console.log('socket连接成功')
+      })
+
+      this.socket.on('disconnect', () => {
+        console.log('连接关闭了！');
+      })
+
+      this.socket.on('sales:receive-announcement', () => {
+        this.showRedDot = true
+      })
+      this.socket.on('sales:remove', () => {
+        this.socket.disconnect()
+        this.socket = null
+      })
     },
     watch: {
       isAnnouncementShow(v) {
@@ -230,6 +236,29 @@
           this.getAnnouncementList()
         } else {
           this.annList = []
+        }
+      },
+      hasAnnAuth: {
+        immediate: true,
+        handler(v) {
+          if (v) {
+            this.socket = socketConnection()
+            this.socket.on('connect', () => {
+              console.log('socket连接成功...')
+            })
+            this.socket.on('disconnect', () => {
+              console.log('socket连接关闭了...');
+            })
+            this.socket.on('sales:receive-announcement', () => {
+              this.showRedDot = true
+            })
+            this.socket.on('sales:remove', () => {
+              this.socket.disconnect()
+              this.socket = null
+            })
+
+            this.getAnnNoReadCnt()
+          }
         }
       }
     }
