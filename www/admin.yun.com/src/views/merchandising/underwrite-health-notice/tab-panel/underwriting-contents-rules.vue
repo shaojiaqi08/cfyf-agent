@@ -631,8 +631,8 @@ export default {
   z-index: 999999;
   transform: translateX(-50%);
   background-color: #ffffff;
-  color: #ff9000;
-  border: 1px solid #ff9000;
+  color: #1F78FF;
+  border: 1px solid #1F78FF;
   border-radius: 50%;
   width: 28px;
   height: 28px;

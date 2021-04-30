@@ -501,6 +501,9 @@
             },
             setMaxHeight: debounce(function() {
                 this.maxHeight = this.$refs.content.offsetHeight - 129
+                if (this.maxHeight > 800) {
+                    this.page_size = 40
+                }
             }, 300)
         },
         mounted() {

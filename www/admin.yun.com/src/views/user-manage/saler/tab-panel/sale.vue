@@ -685,6 +685,9 @@
                 const container = this.$refs.container
                 if (container) {
                     this.maxHeight = this.$refs.container.offsetHeight - 64
+                    if (this.maxHeight > 800) {
+                        this.page_size = 40
+                    }
                 }
             }, 300)
         },

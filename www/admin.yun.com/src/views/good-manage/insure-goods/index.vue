@@ -147,6 +147,13 @@
                          @click="handleViewMaterial(row)">
                   <i class="iconfont iconxiao16_ziliao mr4"></i>产品资料
                 </el-link>
+                <el-link v-if="$checkAuth('/insure-goods/generate-api-forward-link')"
+                         type="primary"
+                         :underline="false"
+                         class="mr20"
+                         @click="downQrcode(row)">
+                  <i class="iconfont iconxiao16_xiazai mr4"></i>投保二维码
+                </el-link>
               </div>
               <div>
                 <span v-if="row.product_type === 'api'" class="ml16 span-price">{{`${row.min_price} 元起`}}</span>
@@ -219,7 +226,7 @@
 
 <script>
 import commonTabsHeader from '../../../components/common-tabs-header'
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink, getShelvesList} from '@/apis/modules/good-manage'
+import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink, getShelvesList, genApiShareLink} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
@@ -292,6 +299,45 @@ export default {
     }
   },
   methods: {
+    // 下载图片
+    downloadImg(fileName, content) {
+      let aLink = document.createElement('a')
+      let blob = this.base64ToBlob(content) // new Blob([content]);
+      let evt = document.createEvent('HTMLEvents')
+      evt.initEvent('click', true, true)// initEvent 不加后两个参数在FF下会报错  事件类型，是否冒泡，是否阻止浏览器的默认行为
+      aLink.download = fileName
+      aLink.href = URL.createObjectURL(blob)
+      aLink.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}))// 兼容火狐
+    },
+    // base64转blob
+    base64ToBlob(code) {
+      let parts = code.split(';base64,')
+      let contentType = parts[0].split(':')[1]
+      let raw = window.atob(parts[1])
+      let rawLength = raw.length
+
+      let uInt8Array = new Uint8Array(rawLength)
+
+      for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i)
+      }
+      return new Blob([uInt8Array], {type: contentType})
+    },
+    downQrcode(row){
+      if (row.product_type.includes('api')) {
+        genApiShareLink({type: 'api', product_id: row.id}).then(res => {
+          QRCode.toDataURL(res.link).then(result => {
+            // this.qrcodeUrl = result
+            this.downloadImg(row.share_title + '二维码.jpg', result)
+          })
+        })
+      } else {
+        QRCode.toDataURL(row.share_link).then(result => {
+          // this.qrcodeUrl = result
+          this.downloadImg(row.title + '二维码.jpg', result)
+        })
+      }
+    },
     exportProcuctList() {
       let params = JSON.parse(JSON.stringify(this.searchModel))
       if (params.first_product_category_id.length) {
