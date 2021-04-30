@@ -175,9 +175,10 @@
                 color:rgba(153,153,153,1);
             }
             .content{
-                font-size:14px;
-                font-weight:400;
-                color:#333;
+              font-size:14px;
+              font-weight:400;
+              color:#333;
+              white-space: pre-line;
             }
             .imgs-container{
                 display: flex;
