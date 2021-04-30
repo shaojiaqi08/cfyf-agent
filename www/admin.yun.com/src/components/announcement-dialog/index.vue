@@ -178,7 +178,7 @@
               font-size:14px;
               font-weight:400;
               color:#333;
-              white-space: pre-line;
+              white-space: pre-wrap;
             }
             .imgs-container{
                 display: flex;
