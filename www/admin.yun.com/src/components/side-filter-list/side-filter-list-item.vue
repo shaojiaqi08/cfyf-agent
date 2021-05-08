@@ -33,9 +33,6 @@
         },
         mounted() {
             this.check()
-            this.$refs.listItem.addEventListener('resize', () => {
-                this.check()
-            })
         }
     }
 </script>

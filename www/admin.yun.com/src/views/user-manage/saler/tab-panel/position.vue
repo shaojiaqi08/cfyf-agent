@@ -18,7 +18,7 @@
                     :class="{'list-item': true, active: selPosVal === item.value}"
                     >
                     <list-item class="list-label" :tips-content="item.label">
-                        <div>{{item.label}}</div>
+                      <span>{{item.label}}</span>
                     </list-item>
                     <el-tooltip effect="dark"
                                 :content="`当前在职 ${item.sales_count || 0} 人` "
@@ -701,7 +701,8 @@
         }
     }
     .list-people-count {
-        color: #999;
+      color: #999;
+      white-space: nowrap;
     }
     .active {
         .list-people-count {

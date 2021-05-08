@@ -19,9 +19,7 @@
             >
                 <template v-slot:list="{row}">
                     <div class="flex-between" style="width: 100%">
-                        <list-item class="list-label" :tips-content="row.name">
-                            <div>{{row.name}}</div>
-                        </list-item>
+                        <list-item class="list-label" :tips-content="row.name">{{row.name}}</list-item>
                         <el-tooltip effect="dark"
                                     :content="`当前在职 ${row.sales_count || 0} 人` "
                                     placement="top">
@@ -795,7 +793,8 @@
     }
 }
 .list-people-count {
-    color: #999;
+  color: #999;
+  white-space: nowrap;
 }
 .active {
     .list-people-count {
