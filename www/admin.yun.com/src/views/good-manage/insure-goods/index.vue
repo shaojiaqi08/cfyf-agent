@@ -584,6 +584,7 @@ export default {
   }
   .insure-goods-container {
     padding: 0 20px 0 20px;
+    height: 100%;
     ::v-deep .text-hidden-ellipsis-component .icon{
       color: #999;
     }
@@ -607,7 +608,7 @@ export default {
       }
     }
     .content{
-      height: calc(100% - 80px);
+      height: calc(100% - 56px);
       display: flex;
       background: #fff;
       ::v-deep .side-filter-container {
@@ -725,7 +726,7 @@ export default {
       }
     }
     & ::v-deep .el-scrollbar {
-      height: calc(100vh - 165px);
+      flex: 1;
       padding-top: 16px;
       box-sizing: border-box;
       & .el-scrollbar__wrap {
