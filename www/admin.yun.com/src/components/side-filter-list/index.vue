@@ -11,7 +11,7 @@
         </div>
         <!-- 自定义搜索条件 -->
         <slot name="extraFilter"></slot>
-        <el-scrollbar>
+        <el-scrollbar ref="scrollbar">
             <div v-infinite-scroll="scroll2Bottom" class="list-item-wrap">
                 <div class="list-item"
                      v-for="(item, index) in filterList"
@@ -96,6 +96,9 @@
             },
             scroll2Bottom () {
                 this.$emit('scrollToBottom')
+            },
+            resetScrollbar() {
+              this.$refs.scrollbar.$el.querySelector('.el-scrollbar__wrap').scrollTo(0, 0)
             }
         }
     }

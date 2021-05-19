@@ -11,6 +11,7 @@
                         :listData="filterList"
                         v-loading="loading"
                         disabled
+                        ref="list"
                         customClass="left-filter-list">
         <div slot="extraFilter" class="filter-wrap">
           <div class="flex-between pb16">
@@ -20,8 +21,10 @@
                       v-model.trim="searchModel.title"
                       :readonly="loading"
                       clearable
-                      @input="debounceAjaxListData">
+                      @clear="ajaxListData"
+                      @keyup.enter.native="ajaxListData">
               <i slot="prefix" class="ml4 fw400 iconfont iconxiao16_sousuo el-input__icon"></i>
+              <el-button slot="append" @click="ajaxListData">搜索</el-button>
             </el-input>
           </div>
           <div class="ml20">
@@ -30,7 +33,7 @@
                           :collapse="false"
                           :textOverflow="false"
                           :width="240"
-                          @input="ajaxListData">
+                          @input="debounceAjaxListData">
               <el-cascader
                       ref="focusRef"
                       popper-class="address-picker"
@@ -45,7 +48,7 @@
                       :options="productCategoryData"
                       v-model="searchModel.first_product_category_id"
                       emitPath
-                      @change="ajaxListData"
+                      @change="debounceAjaxListData"
                       clearable
               ></el-cascader>
               <template v-slot:label>
@@ -59,12 +62,12 @@
                    @click="searchModel.first_product_category_id = ''"></i>
               </template>
             </filter-shell>
-            <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="ajaxListData">
+            <filter-shell v-model="searchModel.age_id" autoFocus autoClose @input="debounceAjaxListData">
               <el-select class="block"
                          v-model="searchModel.age_id"
                          clearable
                          filterable
-                         @change="ajaxListData"
+                         @change="debounceAjaxListData"
                          ref="focusRef"
                          placeholder="请选择">
                 <el-option
@@ -80,13 +83,13 @@
               </span>
               </template>
             </filter-shell>
-            <filter-shell v-model="searchModel.supplier_id" autoFocus @input="ajaxListData">
+            <filter-shell v-model="searchModel.supplier_id" autoFocus @input="debounceAjaxListData">
               <el-select class="block"
                          v-model="searchModel.supplier_id"
                          clearable
                          filterable
                          multiple
-                         @change="ajaxListData"
+                         @change="debounceAjaxListData"
                          ref="focusRef"
                          placeholder="请选择">
                 <el-option
@@ -502,6 +505,7 @@ export default {
                 title: i.title,
                 web_url: i.link
               }))]
+              this.$nextTick(() => this.$refs.list.resetScrollbar())
             }
           }).finally(() => {
             if (id === reqId) {
@@ -523,6 +527,7 @@ export default {
               dotObj[key] = res.length
               this.$store.dispatch('dotManage/updateDots', dotObj)
             }
+            this.$nextTick(() => this.$refs.list.resetScrollbar())
           }
         }).finally(() => {
           if (id === reqId) {
@@ -706,6 +711,13 @@ export default {
     }
     .left-filter-list {
       width: 100%;
+      ::v-deep .el-input-group__append {
+        background-color: #1F78FF;
+        border-color: #1F78FF;
+        .el-button {
+          color: #fff;
+        }
+      }
       ::v-deep .el-scrollbar {
         .list-item-wrap{
           padding: 0;
