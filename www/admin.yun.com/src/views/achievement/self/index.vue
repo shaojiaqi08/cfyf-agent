@@ -11,7 +11,7 @@
                    v-if="$checkAuth('/my_performance/export')"
                    @click="policyExport">导出数据</el-button>
         <el-input v-model="searchModel.keyword"
-                  placeholder="搜索单号或投被保人信息"
+                  placeholder="搜索单号或投被保人信息或投保人手机号"
                   size="small"
                   class="fw400"
                   clearable

@@ -7,7 +7,7 @@
         <el-tab-pane name="statistics" label="商品统计" v-if="$checkAuth('/team_performance/insurance_class_rank') || $checkAuth('/team_performance/product_rank')"></el-tab-pane>
       </el-tabs>
       <el-input v-model="searchModel.keyword"
-                placeholder="搜索单号或投被保人信息"
+                placeholder="搜索单号或投被保人信息或投保人手机号"
                 size="small"
                 class="fw400"
                 clearable
