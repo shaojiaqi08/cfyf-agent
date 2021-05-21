@@ -41,12 +41,12 @@
           <span>{{ policyInfo.proposal_sn || '-'}}</span>
         </div>
         <div>
-          缴费期限
-          <span>{{ policyInfo.payment_period_desc || '-'}}</span>
+          订单号
+          <span>{{ policyInfo.order_no || '-'}}</span>
         </div>
         <div>
-          保障期限
-          <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
+          保单状态
+          <span>{{ policyInfo.policy_status_str  || '-'}}</span>
         </div>
         <div>
           保额(元)
@@ -58,8 +58,12 @@
           <span>{{ policyInfo.actually_premium  || '-'}}</span>
         </div>
         <div>
-          保单状态
-          <span>{{ policyInfo.policy_status_str  || '-'}}</span>
+          缴费期限
+          <span>{{ policyInfo.payment_period_desc || '-'}}</span>
+        </div>
+        <div>
+          保障期限
+          <span>{{ policyInfo.guarantee_period_desc || '-' }}</span>
         </div>
         <div>
           投保时间
