@@ -360,7 +360,7 @@
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
-        <el-table-column label="投保单号" prop="order_no" align="center" width="200px"></el-table-column>
+        <el-table-column label="订单号" prop="order_no" align="center" width="200px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
         <el-table-column label="回访状态" prop="visit_status_str" align="center"></el-table-column>
         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
