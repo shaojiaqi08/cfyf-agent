@@ -3,32 +3,46 @@
     <div class="header">
       <el-tabs class="tabs" v-model="tabIndex" @tab-click="tabChange">
         <el-tab-pane name="order" label="订单"></el-tab-pane>
-        <el-tab-pane name="rank" label="业绩排行" v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"></el-tab-pane>
-        <el-tab-pane name="statistics" label="商品统计" v-if="$checkAuth('/company_performance/company/insurance_class_rank') || $checkAuth('/company_performance/company/product_rank')"></el-tab-pane>
+        <el-tab-pane
+          name="rank"
+          label="业绩排行"
+          v-if="$checkAuth('/company_performance/company/personal_rank') || $checkAuth('/company_performance/team_rank')"
+        ></el-tab-pane>
+        <el-tab-pane
+          name="statistics"
+          label="商品统计"
+          v-if="$checkAuth('/company_performance/company/insurance_class_rank') || $checkAuth('/company_performance/company/product_rank')"
+        ></el-tab-pane>
       </el-tabs>
-      <el-input v-model="searchModel.keyword"
-                placeholder="搜索单号或投被保人信息或投保人手机号"
-                size="small"
-                class="fw400"
-                clearable
-                v-if="tabIndex === 'order'"
-                @input="searchModelChange">
+      <el-input
+        v-model="searchModel.keyword"
+        placeholder="搜索单号或投被保人信息或投保人手机号"
+        size="small"
+        class="fw400"
+        clearable
+        v-if="tabIndex === 'order'"
+        @input="searchModelChange"
+      >
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
       </el-input>
-      <el-input v-model="rankKeywords"
-                placeholder="搜索团队名或出单人姓名"
-                size="small"
-                class="fw400"
-                clearable
-                v-if="tabIndex === 'rank'">
+      <el-input
+        v-model="rankKeywords"
+        placeholder="搜索团队名或出单人姓名"
+        size="small"
+        class="fw400"
+        clearable
+        v-if="tabIndex === 'rank'"
+      >
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
       </el-input>
-      <el-input v-model="statisticsKeywords"
-                placeholder="搜索保险产品名"
-                size="small"
-                class="fw400"
-                clearable
-                v-if="tabIndex === 'statistics'">
+      <el-input
+        v-model="statisticsKeywords"
+        placeholder="搜索保险产品名"
+        size="small"
+        class="fw400"
+        clearable
+        v-if="tabIndex === 'statistics'"
+      >
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
       </el-input>
       <!-- 公司业绩
@@ -48,19 +62,21 @@
                   @input="searchModelChange">
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
         </el-input>
-      </div> -->
+      </div>-->
     </div>
     <div class="scroll-box p16" v-if="tabIndex === 'order'" ref="content">
       <div>
         <!--全部出单日期-->
-        <filter-shell v-model="searchModel.date_range"
-                      :width="300"
-                      :textOverflow="false"
-                      :collapse="false"
-                      autoClose
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
+        <filter-shell
+          v-model="searchModel.date_range"
+          :width="300"
+          :textOverflow="false"
+          :collapse="false"
+          autoClose
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
           <el-date-picker
             v-model="searchModel.date_range"
             type="daterange"
@@ -69,187 +85,218 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :clearable="false"
-            @change="searchModelChange">
-          </el-date-picker>
-          <template v-slot:label>
-            {{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}
-          </template>
+            @change="searchModelChange"
+          ></el-date-picker>
+          <template
+            v-slot:label
+          >{{ searchModel.date_range.length ? `${formatDate(searchModel.date_range[0], 'yyyyMMdd')} ~ ${formatDate(searchModel.date_range[1], 'yyyyMMdd')}` : '投退保日期' }}</template>
           <template v-slot:link>
             <div class="link-content">
-              <span v-for="(date, index) in dateRange"
-                    :key="index"
-                    class="date-item"
-                    :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
-                    @click.stop="dateSelect(date)">
-                {{ date.name }}
-              </span>
+              <span
+                v-for="(date, index) in dateRange"
+                :key="index"
+                class="date-item"
+                :class="{ active: date.start === formatDate(searchModel.date_range[0], 'yyyyMMdd') && date.end === formatDate(searchModel.date_range[1], 'yyyyMMdd') }"
+                @click.stop="dateSelect(date)"
+              >{{ date.name }}</span>
             </div>
           </template>
         </filter-shell>
         <!--全部销售-->
-        <filter-shell v-model="searchModel.sales_id"
-                      autoFocus
-                      class="mb16"
-                      placeholder="全部出单人"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.sales_id"
-                    clearable
-                    filterable
-                    multiple
-                    placeholder="请选择"
-                    @change="searchModelChange">
-              <el-option
-                  v-for="item in salesList"
-                  :key="item.id"
-                  :label="item.real_name"
-                  :value="item.id"
-              ></el-option>
+        <filter-shell
+          v-model="searchModel.sales_id"
+          autofocus
+          class="mb16"
+          placeholder="全部出单人"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.sales_id"
+            clearable
+            filterable
+            multiple
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
+            <el-option
+              v-for="item in salesList"
+              :key="item.id"
+              :label="item.real_name"
+              :value="item.id"
+            ></el-option>
           </el-select>
-          <template v-slot:label>
-            {{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}
-          </template>
+          <template
+            v-slot:label
+          >{{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}</template>
         </filter-shell>
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_team_id"
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.sales_team_id"
-                    multiple
-                    clearable
-                    filterable
-                    placeholder="请选择"
-                    @change="searchModelChange">
-              <el-option
-                  v-for="item in salesTeamList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-              ></el-option>
+        <filter-shell v-model="searchModel.sales_team_id" class="mb16" @input="searchModelChange">
+          <el-select
+            class="block"
+            v-model="searchModel.sales_team_id"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
+            <el-option
+              v-for="item in salesTeamList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
           </el-select>
           <div class="mt20 mb10 flex-between">
             包含子团队
-            <el-switch :disabled="searchModel.sales_team_id.length<=0"  style="float: right" inactive-value="0" active-value="1" v-model="searchModel.include_child_team" @change="searchModelChange"></el-switch>
+            <el-switch
+              :disabled="searchModel.sales_team_id.length<=0"
+              style="float: right"
+              inactive-value="0"
+              active-value="1"
+              v-model="searchModel.include_child_team"
+              @change="searchModelChange"
+            ></el-switch>
           </div>
-          <template v-slot:label>
-            {{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '全部团队' }}
-          </template>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '全部团队' }}</template>
         </filter-shell>
         <!--全部保单状态-->
-        <filter-shell v-model="searchModel.policy_status"
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.policy_status"
-                    multiple
-                    clearable
-                    filterable
-                    placeholder="请选择"
-                    @change="searchModelChange">
+        <filter-shell
+          v-model="searchModel.policy_status"
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.policy_status"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
             <el-option
-                    v-for="item in policyStatusArray"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+              v-for="item in policyStatusArray"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
-          <template v-slot:label>
-            {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
-          </template>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}</template>
         </filter-shell>
         <!--回访状态-->
-        <filter-shell v-model="searchModel.visit_status"
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                     v-model="searchModel.visit_status"
-                     multiple
-                     clearable
-                     filterable
-                     placeholder="请选择"
-                     @change="searchModelChange">
+        <filter-shell
+          v-model="searchModel.visit_status"
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.visit_status"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
             <el-option
-                    v-for="item in visitStatusArray"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+              v-for="item in visitStatusArray"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             ></el-option>
           </el-select>
-          <template v-slot:label>
-            {{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '全部回访状态' }}
-          </template>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '全部回访状态' }}</template>
         </filter-shell>
         <!--全部保险产品-->
-        <filter-shell v-model="searchModel.products"
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.products"
-                    multiple
-                    clearable
-                    filterable
-                    placeholder="请选择"
-                    @change="searchModelChange">
+        <filter-shell
+          v-model="searchModel.products"
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.products"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
             <el-option
-                    v-for="item in productList"
-                    :key="item.id_type"
-                    :label="item.name"
-                    :value="item.id_type"
+              v-for="item in productList"
+              :key="item.id_type"
+              :label="item.name"
+              :value="item.id_type"
             ></el-option>
           </el-select>
-          <template v-slot:label>
-              {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
-          </template>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}</template>
         </filter-shell>
         <!--全部保险公司-->
-        <filter-shell v-model="searchModel.supplier_id"
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.supplier_id"
-                    multiple
-                    clearable
-                    filterable
-                    placeholder="请选择"
-                    @change="searchModelChange">
-              <el-option
-                  v-for="item in supplierList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-              ></el-option>
-          </el-select>
-          <template v-slot:label>
-              {{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}
-          </template>
-        </filter-shell>
-        <!--全部险种分类-->
-        <filter-shell v-model="searchModel.product_insurance_class"
-                      autoFocus
-                      class="mb16"
-                      @input="searchModelChange">
-          <el-select class="block"
-                    v-model="searchModel.product_insurance_class"
-                    multiple
-                    clearable
-                    filterable
-                    placeholder="请选择"
-                    @change="filterListConfirm">
+        <filter-shell
+          v-model="searchModel.supplier_id"
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.supplier_id"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
             <el-option
-                    v-for="item in insuranceTypeArray"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+              v-for="item in supplierList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
-          <template v-slot:label>
-            {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
-          </template>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}</template>
+        </filter-shell>
+        <!--全部险种分类-->
+        <filter-shell
+          v-model="searchModel.product_insurance_class"
+          autofocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.product_insurance_class"
+            multiple
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="filterListConfirm"
+          >
+            <el-option
+              v-for="item in insuranceTypeArray"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <template
+            v-slot:label
+          >{{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}</template>
         </filter-shell>
       </div>
       <div class="data-row" ref="dataRow">
@@ -261,9 +308,11 @@
           v-if="scrol2Lvisible"
           @click="scrollTo(0)"
         ></el-button>
-        <div class="scroll-wrap"
-            :style="{transform: `translateX(${scrollTranslateX}px)`}"
-            v-loading="statisticLoading">
+        <div
+          class="scroll-wrap"
+          :style="{transform: `translateX(${scrollTranslateX}px)`}"
+          v-loading="statisticLoading"
+        >
           <div class="item-block">
             <div v-if="$checkAuth('/company_performance/company_commission')">
               服务费(元)
@@ -279,85 +328,59 @@
           <div class="item-block">
             <div>
               承保保费总计(元)
-              <span class="primary">
-                  {{ statisticInfo.actual_underwrite_total_premium }}
-                </span>
+              <span class="primary">{{ statisticInfo.actual_underwrite_total_premium }}</span>
             </div>
             <div>
               有效出单件数
-              <span>
-                {{ statisticInfo.actual_underwrite_total_count }}
-              </span>
+              <span>{{ statisticInfo.actual_underwrite_total_count }}</span>
             </div>
             <div>
               保费件均(元)
-              <span>
-                {{ statisticInfo.actual_underwrite_average_premium }}
-              </span>
+              <span>{{ statisticInfo.actual_underwrite_average_premium }}</span>
             </div>
           </div>
           <div class="item-block">
             <div>
               净收保费(元)
-              <span class="primary">
-                {{ statisticInfo.actual_premium }}
-              </span>
+              <span class="primary">{{ statisticInfo.actual_premium }}</span>
             </div>
             <div>
               投保保费总计(元)
-              <span class="primary">
-                {{ statisticInfo.total_premium }}
-              </span>
+              <span class="primary">{{ statisticInfo.total_premium }}</span>
             </div>
             <div>
               未支付保费总计(元)
-              <span class="warning">
-                {{ statisticInfo.unpaid_total_premium }}
-              </span>
+              <span class="warning">{{ statisticInfo.unpaid_total_premium }}</span>
             </div>
             <div>
               犹退保费总计(元)
-              <span class="danger">
-                {{ statisticInfo.hesitation_surrender_premium }}
-              </span>
+              <span class="danger">{{ statisticInfo.hesitation_surrender_premium }}</span>
             </div>
             <div>
               退保保费总计(元)
-              <span class="danger">
-                {{ statisticInfo.surrender_premium }}
-              </span>
+              <span class="danger">{{ statisticInfo.surrender_premium }}</span>
             </div>
           </div>
           <div class="item-block">
             <div>
               犹退件数
-              <span>
-                  {{ statisticInfo.hesitation_surrender_count }}
-                </span>
+              <span>{{ statisticInfo.hesitation_surrender_count }}</span>
             </div>
             <div>
               犹退件均(元)
-              <span>
-                  {{ statisticInfo.average_hesitation_surrender_premium }}
-                </span>
+              <span>{{ statisticInfo.average_hesitation_surrender_premium }}</span>
             </div>
             <div>
               非犹退保费(元)
-              <span>
-                  {{ statisticInfo.non_hesitation_surrender_premium }}
-                </span>
+              <span>{{ statisticInfo.non_hesitation_surrender_premium }}</span>
             </div>
             <div>
               非犹退件数
-              <span>
-                  {{ statisticInfo.non_hesitation_surrender_count }}
-                </span>
+              <span>{{ statisticInfo.non_hesitation_surrender_count }}</span>
             </div>
             <div>
               非犹退件均(元)
-              <span>
-                  {{ statisticInfo.average_non_hesitation_surrender_premium }}
-                </span>
+              <span>{{ statisticInfo.average_non_hesitation_surrender_premium }}</span>
             </div>
           </div>
         </div>
@@ -372,35 +395,56 @@
       </div>
       <div class="table-header">
         公司业绩
-        <el-button size="small"
-                   type="primary"
-                   class="fr"
-                   :loading="exporting"
-                   icon="iconfont iconxiao16_xiazai mr4"
-                   v-if="$checkAuth('/company_performance/export')"
-                   @click="policyExport">导出数据</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          class="fr"
+          :loading="exporting"
+          icon="iconfont iconxiao16_xiazai mr4"
+          v-if="$checkAuth('/company_performance/export')"
+          @click="policyExport"
+        >导出数据</el-button>
       </div>
-      <el-table :data="list"
-                :max-height="tableMaxHeight"
-                v-table-infinite-scroll="scroll2Bottom"
-                border
-                stripe
-                v-loading="tableLoading"
-                ref="table"
-                :row-style="rowStyleFormat">
-        <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
-        <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
+      <el-table
+        :data="list"
+        :max-height="tableMaxHeight"
+        v-table-infinite-scroll="scroll2Bottom"
+        border
+        stripe
+        v-loading="tableLoading"
+        ref="table"
+        :row-style="rowStyleFormat"
+      >
+        <el-table-column
+          label="团队"
+          prop="sales_team_name"
+          align="center"
+          width="150px"
+          fixed="left"
+        ></el-table-column>
+        <el-table-column
+          label="出单人"
+          prop="sales_real_name"
+          align="center"
+          width="150px"
+          fixed="left"
+        ></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="投保人" prop="policy_holder_basic_info_str" width="180px" align="center"></el-table-column>
+        <el-table-column
+          label="投保人"
+          prop="policy_holder_basic_info_str"
+          width="180px"
+          align="center"
+        ></el-table-column>
         <el-table-column label="被保人" prop="recognizee_basic_info" width="180px" align="center">
           <template slot-scope="{row}">
-            <div v-for="(item, index) in row.recognizee_basic_info"
-                  :key="index">
-              {{ item.basic_info }}
-            </div>
+            <div
+              v-for="(item, index) in row.recognizee_basic_info"
+              :key="index"
+            >{{ item.basic_info }}</div>
           </template>
         </el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
@@ -414,27 +458,58 @@
         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="是否犹退" prop="is_hesitate_surrender_str" align="center"></el-table-column>
-        <el-table-column label="服务费(元)" prop="company_actually_commission" align="center" width="100px" v-if="$checkAuth('/company_performance/company_commission')"></el-table-column>
-        <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px" v-if="$checkAuth('/company_performance/sales_commission')"></el-table-column>
+        <el-table-column
+          label="服务费(元)"
+          prop="company_actually_commission"
+          align="center"
+          width="100px"
+          v-if="$checkAuth('/company_performance/company_commission')"
+        ></el-table-column>
+        <el-table-column
+          label="佣金(元)"
+          prop="sales_position_commission"
+          align="center"
+          width="100px"
+          v-if="$checkAuth('/company_performance/sales_commission')"
+        ></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
-            <el-link v-if="$checkAuth('/achievement-company/detail')" type="primary" @click="showInfoDialog(row)" class="mr8">订单详情</el-link>
-            <el-link v-if="$checkAuth('/achievement-company/policy/transfer_policy')" type="primary" @click="showBelongDialog(row)">修改归属</el-link>
+            <el-link
+              v-if="$checkAuth('/achievement-company/detail')"
+              type="primary"
+              @click="showInfoDialog(row)"
+              class="mr8"
+            >订单详情</el-link>
+            <el-link
+              v-if="$checkAuth('/achievement-company/policy/transfer_policy')"
+              type="primary"
+              @click="showBelongDialog(row)"
+            >修改归属</el-link>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <Rank class="scroll-box" :keywords="rankKeywords" v-if="tabIndex === 'rank'" ref="content"></Rank>
-    <Statistics class="scroll-box" :keywords="statisticsKeywords" v-if="tabIndex === 'statistics'" ref="content"></Statistics>
-    <edit-modal :show.sync="belongVisible"
-                :belongData="belongData"
-                @update="searchModelChange"></edit-modal>
+    <Statistics
+      class="scroll-box"
+      :keywords="statisticsKeywords"
+      v-if="tabIndex === 'statistics'"
+      ref="content"
+    ></Statistics>
+    <edit-modal :show.sync="belongVisible" :belongData="belongData" @update="searchModelChange"></edit-modal>
   </div>
 </template>
 
 <script>
-import EditModal from './modal/edit';
-import { getCompanyPolicyList, getCompanyPolicyStatistics, getSalesData, getSalesTeamData, getDateRange, exportCompanyPolicy } from '@/apis/modules/achievement'
+import EditModal from './modal/edit'
+import {
+  getCompanyPolicyList,
+  getCompanyPolicyStatistics,
+  getSalesData,
+  getSalesTeamData,
+  getDateRange,
+  exportCompanyPolicy,
+} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -455,7 +530,7 @@ export default {
     EditModal,
     FilterShell,
     Rank,
-    Statistics
+    Statistics,
   },
   data() {
     return {
@@ -480,8 +555,7 @@ export default {
       supplierList: [],
       companyList: [],
       dateRange: [],
-      statisticInfo: {
-      },
+      statisticInfo: {},
       tableLoading: true,
       statisticLoading: true,
       scrol2Lvisible: false,
@@ -498,10 +572,10 @@ export default {
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0',
-        visit_status: []
+        visit_status: [],
       },
-      tableMaxHeight: null
-    };
+      tableMaxHeight: null,
+    }
   },
   methods: {
     tabChange() {
@@ -527,13 +601,22 @@ export default {
       }
     },
     policyExport() {
-      const url = `${exportCompanyPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
+      const url = `${exportCompanyPolicy}?${qs.stringify({
+        ...this.searchModelFormat(true),
+      })}`
       this.exporting = true
-      downloadFrameA(url, `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`, 'get', true).then(() => {
-        // this.$message.success('导出成功')
-      }).finally(() => {
-        this.exporting = false
-      })
+      downloadFrameA(
+        url,
+        `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`,
+        'get',
+        true
+      )
+        .then(() => {
+          // this.$message.success('导出成功')
+        })
+        .finally(() => {
+          this.exporting = false
+        })
     },
     dateSelect(date) {
       const start = dateStr2Timestamp(date.start)
@@ -541,12 +624,15 @@ export default {
       if (!start && !end) {
         this.searchModel.date_range = ''
       } else {
-        this.searchModel.date_range = [dateStr2Timestamp(date.start), dateStr2Timestamp(date.end)]
+        this.searchModel.date_range = [
+          dateStr2Timestamp(date.start),
+          dateStr2Timestamp(date.end),
+        ]
       }
       this.searchModelChange()
     },
     scroll2Bottom() {
-      const {page, page_size, total} = this
+      const { page, page_size, total } = this
       if (page * page_size < total) {
         this.tableLoading = true
         this.page += 1
@@ -565,7 +651,9 @@ export default {
         this.total = 0
         this.statisticInfo = {}
         // 重置滚动条
-        this.$refs.table.$el.querySelector('.el-table__body-wrapper').scrollTo(0, 0)
+        this.$refs.table.$el
+          .querySelector('.el-table__body-wrapper')
+          .scrollTo(0, 0)
         this.getCompanyPolicyList()
         this.getCompanyPolicyStatistics()
       }, 300)
@@ -574,23 +662,29 @@ export default {
     },
     hasValue,
     showInfoDialog(row) {
-      let routeUrl = this.$router.resolve(`/achievement-company/detail/${row.id}`)
+      // 20210525 LiuZicong 改为传订单号order_no
+      let routeUrl = this.$router.resolve(`/achievement-company/detail/${row.order_no}`)
       window.open(routeUrl.href, '_blank')
+
+      // let routeUrl = this.$router.resolve(
+      //   `/achievement-company/detail/${row.id}`
+      // )
+      // window.open(routeUrl.href, '_blank')
       // this.$router.push({ path: `/achievement-company/detail/${row.id}` })
     },
     showBelongDialog(row) {
-      this.belongData = row;
-      this.belongVisible = true;
+      this.belongData = row
+      this.belongVisible = true
     },
     searchModelFormat() {
-      const model = {...this.searchModel}
-      Object.keys(model).forEach(key => {
+      const model = { ...this.searchModel }
+      Object.keys(model).forEach((key) => {
         const cur = model[key]
         if (key === 'date_range') {
           const [start, end] = model.date_range
           model.proposal_at_start = start ? formatDate(start, 'yyyyMMdd') : ''
           model.proposal_at_end = end ? formatDate(end, 'yyyyMMdd') : ''
-        } else if(Array.isArray(cur)) {
+        } else if (Array.isArray(cur)) {
           model[key] = model[key].join(',')
         }
       })
@@ -602,72 +696,80 @@ export default {
       return model
     },
     getCompanyPolicyList() {
-      const {page, page_size, list} = this
-      getCompanyPolicyList({...this.searchModelFormat(), page, page_size}).then(res => {
-        this.tableLoading = false
-        this.list = this.page === 1 ? res.data : [...list, ...res.data]
-        this.total = res.total
-      })
-      .catch(() => {
-        this.page = Math.max(1, page - 1)
-        if (this.page === 1) {
-          this.list = []
-          this.total = 0
-        }
-        this.tableLoading = false
-      })
+      const { page, page_size, list } = this
+      getCompanyPolicyList({ ...this.searchModelFormat(), page, page_size })
+        .then((res) => {
+          this.tableLoading = false
+          this.list = this.page === 1 ? res.data : [...list, ...res.data]
+          this.total = res.total
+        })
+        .catch(() => {
+          this.page = Math.max(1, page - 1)
+          if (this.page === 1) {
+            this.list = []
+            this.total = 0
+          }
+          this.tableLoading = false
+        })
     },
     getCompanyPolicyStatistics() {
-      getCompanyPolicyStatistics(this.searchModelFormat()).then(res => {
-        this.statisticInfo = res
-        this.statisticLoading = false
-      })
-      .catch(err => {
-        console.log(err)
-        this.statisticLoading = false
-      })
+      getCompanyPolicyStatistics(this.searchModelFormat())
+        .then((res) => {
+          this.statisticInfo = res
+          this.statisticLoading = false
+        })
+        .catch((err) => {
+          console.log(err)
+          this.statisticLoading = false
+        })
     },
     getSalesData() {
-      getSalesData().then(res => {
-        this.salesList = res
-      }).catch(err => console.log(err))
+      getSalesData()
+        .then((res) => {
+          this.salesList = res
+        })
+        .catch((err) => console.log(err))
     },
     getSalesTeamData() {
-      getSalesTeamData().then(res => {
-        this.salesTeamList = res
-      }).catch(err => console.log(err))
+      getSalesTeamData()
+        .then((res) => {
+          this.salesTeamList = res
+        })
+        .catch((err) => console.log(err))
     },
     getAllProducts() {
-      getAllProducts().then(res => {
-        this.productList = res
-      })
-      .catch(err => console.log(err))
+      getAllProducts()
+        .then((res) => {
+          this.productList = res
+        })
+        .catch((err) => console.log(err))
     },
     getSupplierList() {
-      getSupplierList().then(res => {
-        this.supplierList = res
-      })
-      .catch(err => console.log(err))
+      getSupplierList()
+        .then((res) => {
+          this.supplierList = res
+        })
+        .catch((err) => console.log(err))
     },
     getDateRange() {
-      getDateRange().then(res => {
+      getDateRange().then((res) => {
         this.dateRange = res
         // 确定表格top值, 可以计算表格最高度
         this.$nextTick(() => this.calcTableHeight())
       })
-    }
+    },
   },
   watch: {
     belongVisible(v) {
       if (!v) {
-        this.belongData = {};
+        this.belongData = {}
       }
     },
     'searchModel.sales_team_id'(v) {
-      if(v.length <= 0) {
+      if (v.length <= 0) {
         this.searchModel.include_child_team = '0'
       }
-    }
+    },
   },
   created() {
     this.getCompanyPolicyList()
@@ -677,8 +779,8 @@ export default {
     this.getSalesTeamData()
     this.getAllProducts()
     this.getSupplierList()
-  }
-};
+  },
+}
 </script>
 <style lang="scss" scoped>
 @import '../index.scss';

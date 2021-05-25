@@ -67,3 +67,20 @@ export const exportTeamPersonalRank = `${process.env.VUE_APP_API_URL}/agent/prox
 export const exportTeamInsuranceClassRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/team/export_insurance_class_rank`
 // 团队保险产品统计
 export const exportTeamProductRank = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_statistics/team/export_product_rank`
+
+// 订单详情-保单基本信息
+export const getPolicyBase = (params) => get('/agent/proxy/policy_info/get_base', params)
+// 订单详情-客户信息
+export const getPolicyHolder = (params) => get('/agent/proxy/policy_info/get_policy_holder', params)
+// 订单详情-险种信息
+export const getPolicyInsurances = (params) => get('/agent/proxy/policy_info/get_insurances', params)
+// 订单详情-支付信息
+export const getPolicyPayment = (params) => get('/agent/proxy/policy_info/get_payment', params)
+// 订单详情-销售信息
+export const getPolicySales = (params) => get('/agent/proxy/policy_info/sales', params)
+// 订单详情-回访信息
+export const getPolicyVisit = (params) => get('/agent/proxy/policy_info/get_visit', params)
+// 订单详情-关联保单信息
+export const getPolicyChildren = (params) => get('/agent/proxy/policy_info/children', params)
+// 单详情-续期信息
+export const getPolicyRenewal = (params) => get('/agent/proxy/policy_info/get_renewal', params)
