@@ -508,8 +508,11 @@ export default {
     }, 300),
     hasValue,
     showInfoDialog(row) {
-      let routeUrl = this.$router.resolve(`/achievement-team/detail/${row.id}`)
+      // 20210525 LiuZicong 改为传订单号order_no
+      let routeUrl = this.$router.resolve(`/achievement-team/detail/${row.order_no}`)
       window.open(routeUrl.href, '_blank')
+      // let routeUrl = this.$router.resolve(`/achievement-team/detail/${row.id}`)
+      // window.open(routeUrl.href, '_blank')
       // this.$router.push({ path: `/achievement-team/detail/${row.id}` })
     },
     searchModelFormat() {
