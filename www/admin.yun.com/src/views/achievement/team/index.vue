@@ -240,30 +240,30 @@
             <div v-if="$checkAuth('/team_performance/company_commission')">
               服务费(元)
               <template>
-                <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
+                <span class="info">{{ statisticInfo.company_actually_commission }}</span>
               </template>
             </div>
             <div v-if="$checkAuth('/team_performance/sales_commission')">
               佣金(元)
-              <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+              <span class="info">{{ statisticInfo.sales_position_commission }}</span>
             </div>
           </div>
           <div class="item-block">
             <div>
               承保保费总计(元)
-              <span class="primary">
+              <span class="info">
                 {{ statisticInfo.actual_underwrite_total_premium }}
               </span>
             </div>
             <div>
               有效出单件数
-              <span class="primary">
+              <span class="info">
                 {{ statisticInfo.actual_underwrite_total_count }}
               </span>
             </div>
             <div>
               保费件均(元)
-              <span class="primary">
+              <span class="info">
                 {{ statisticInfo.actual_underwrite_average_premium }}
               </span>
             </div>
@@ -271,19 +271,19 @@
           <div class="item-block">
             <div>
               净收保费(元)
-              <span class="primary">
+              <span class="info">
                 {{ statisticInfo.actual_premium }}
               </span>
             </div>
             <div>
               投保保费总计(元)
-              <span class="primary">
+              <span class="info">
                 {{ statisticInfo.total_premium }}
               </span>
             </div>
             <div>
               未支付保费总计(元)
-              <span class="warning" style="color:#d5a208">
+              <span class="warning">
                 {{ statisticInfo.unpaid_total_premium }}
               </span>
             </div>
