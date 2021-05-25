@@ -283,7 +283,7 @@
             </div>
             <div>
               未支付保费总计(元)
-              <span class="warning">
+              <span class="warning" style="color:#d5a208">
                 {{ statisticInfo.unpaid_total_premium }}
               </span>
             </div>
