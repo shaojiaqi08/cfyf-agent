@@ -15,7 +15,7 @@
                 :underline="false"
                 target="_blank"
                 href="https://www.yuque.com/books/share/bbf1a392-e32d-4162-8572-24971e1c7be5?#">对接文档</el-link>
-            <span>
+            <span class="flex-center">
               密码：dokh<i
                 title="点击复制密码"
                 class="iconfont iconxiao16_fuzhi ml4"
@@ -191,6 +191,7 @@
       border-radius: 0px 0px 4px 4px;
       ::v-deep .el-divider {
         margin: 0 0 16px 0;
+        background-color: #efefef;
       }
       .item {
         display: flex;
