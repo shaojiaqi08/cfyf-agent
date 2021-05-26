@@ -79,6 +79,29 @@
             {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
           </template>
         </filter-shell>
+        <filter-shell v-model="searchModel.manpower_underwriting_status"
+                      autoFocus
+                      class="mb16"
+                      @input="searchModelChange">
+          <el-select class="block"
+                     v-model="searchModel.manpower_underwriting_status"
+                     clearable
+                     filterable
+                     placeholder="请选择"
+                     @change="searchModelChange">
+            <el-option
+                    v-for="item in manualReview"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            <span>
+                {{ hasValue(searchModel.manpower_underwriting_status) ? manualReview.find(i => i.value === searchModel.manpower_underwriting_status).label : '人核状态' }}
+            </span>
+          </template>
+        </filter-shell>
         <!--回访状态-->
         <filter-shell v-model="searchModel.visit_status"
                       autoFocus
@@ -308,6 +331,42 @@
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="订单号" prop="order_no" align="center" width="210px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
+        <el-table-column align="center" width="80" label="人核状态">
+        <template v-slot='{row}'>
+          <el-popover
+            v-if='row.policy_manpower_underwriting'
+            placement="top"
+            width="350"
+            trigger="hover">
+            <div class="mb5" v-if='row.policy_manpower_underwriting && row.policy_manpower_underwriting.status == 0'>
+              <b>人核状态</b>：审核中
+            </div>
+            <div class="mb5" v-else-if='row.policy_manpower_underwriting && row.policy_manpower_underwriting.status == 1'>
+              <b>人核状态</b>：审核通过
+            </div>
+            <div class="mb5" v-else-if='row.policy_manpower_underwriting && row.policy_manpower_underwriting.status == 2'>
+              <b>人核状态</b>：审核失败
+            </div>
+            <div class="mb5">
+              <b>人核结论</b>：{{row.policy_manpower_underwriting && row.policy_manpower_underwriting.result_str ? row.policy_manpower_underwriting.result_str : '-'}}
+            </div>
+            <div class="mb5">
+              <b>结论详情</b>：{{row.policy_manpower_underwriting && row.policy_manpower_underwriting.conclusion ? row.policy_manpower_underwriting.conclusion : '-'}}
+            </div>
+            <div class="mb5">
+              <b>申请时间</b>：{{row.policy_manpower_underwriting && row.policy_manpower_underwriting.add_time ? formatYYMMDD(row.policy_manpower_underwriting.add_time * 1000, '-') : '-'}}
+            </div>
+            <div class="mb5">
+              <b>结论时间</b>：{{row.policy_manpower_underwriting && row.policy_manpower_underwriting.verify_at ? formatYYMMDD(row.policy_manpower_underwriting.verify_at * 1000, '-') : '-'}}
+            </div>
+            <div class="mb5">
+              <b>过期时间</b>：{{row.policy_manpower_underwriting && row.policy_manpower_underwriting.expire_at ? formatYYMMDD(row.policy_manpower_underwriting.expire_at * 1000, '-') : '-'}}
+            </div>
+            <span slot="reference">{{row.policy_manpower_underwriting.status_str}}</span>
+          </el-popover>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
         <el-table-column label="回访状态" prop="visit_status_str" align="center"></el-table-column>
         <el-table-column label="回访日期" prop="visit_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="过犹日期" prop="over_hesitation_at_str" width="170px" align="center"> </el-table-column>
@@ -326,10 +385,10 @@
 <script>
 import { getSelfPolicyList, getSelfPolicyStatistics, getSalesData, getDateRange, exportSelfPolicy} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
-import { formatDate, dateStr2Timestamp } from '@/utils/formatTime'
+import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
 import qs from 'qs'
-import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
+import { policyStatusArray, insuranceTypeArray,manualReview } from '@/enums/common'
 import { visitStatus, visitStatusArray } from '@/enums/achievement'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import scrollMixin from '../scrollMixin' // 统计数据滚动事件混入
@@ -352,7 +411,7 @@ export default {
       policyStatusArray,
       insuranceTypeArray,
       visitStatus,
-      visitStatusArray,
+      visitStatusArray,manualReview,
       productList: [],
       supplierList: [],
       companyList: [],
@@ -374,12 +433,14 @@ export default {
         product_insurance_class: '',
         date_range: [+new Date(), +new Date()],
         sales_company_id: '',
-        visit_status: []
+        visit_status: [],
+        manpower_underwriting_status: ''
       },
       tableMaxHeight: null
     };
   },
   methods: {
+    formatYYMMDD,
     policyExport() {
       const url = `${exportSelfPolicy}?${qs.stringify({...this.searchModelFormat(true)})}`
       this.exporting = true
