@@ -15,7 +15,9 @@
     <div class="content" :style="{maxHeight: contentMaxHeight + 'px'}">
       <!--保单基本信息-->
       <template>
-        <h3>保单基本信息</h3>
+        <h3 style="display:flex;align-items:center;">保单基本信息<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top" v-if="baseInfo.pay_link">
+  <i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18" style="color: #1fa5ff;margin-left:3px;"></i>
+</el-tooltip></h3>
         <div class="item-block" v-loading="baseInfoLoading">
           <div class="item">
             <div class="label">保单号：</div>
@@ -66,7 +68,7 @@
           </div>
           <div class="item">
             <div class="label">订单号：</div>
-            <div class="content">{{baseInfo.order_sn || '-'}}</div>
+            <div class="content">{{baseInfo.order_no || '-'}}</div>
           </div>
           <div class="item">
             <div class="label">电子保单：</div>
