@@ -6,7 +6,7 @@ export default {
     rowStyleFormat(value) {
       switch (value.row.policy_status) {
         case policyStatus.UNPAID:
-          return { color: `#1F78FF` }
+          return { color: `#4497eb` }
         case policyStatus.INVALID:
         case policyStatus.CANCELED:
           return { color: `#999999` }

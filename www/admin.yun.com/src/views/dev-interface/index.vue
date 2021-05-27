@@ -5,6 +5,25 @@
         开发对接信息
       </div>
       <div class="body">
+        <div class="item" style="padding-bottom: 0">
+          <div class="label">创富云服技术对接文档</div>
+          <div class="value">
+            <el-link
+                icon="iconfont iconxiao16_lianjie mr4"
+                type="primary"
+                class="mr16"
+                :underline="false"
+                target="_blank"
+                href="https://www.yuque.com/books/share/bbf1a392-e32d-4162-8572-24971e1c7be5?#">对接文档</el-link>
+            <span class="flex-center">
+              密码：dokh<i
+                title="点击复制密码"
+                class="iconfont iconxiao16_fuzhi ml4"
+                style="cursor: pointer"
+                @click="copyDocPwd"></i></span>
+          </div>
+        </div>
+        <el-divider></el-divider>
         <div class="item">
           <div class="label">机构 ACCESS KEY</div>
           <div class="value">
@@ -88,6 +107,11 @@
       }
     },
     methods: {
+      copyDocPwd() {
+        this.$copyText('dokh').then(() => {
+          this.$message.success('技术文档密码已复制到粘贴板。')
+        })
+      },
       getData() {
         this.loading = true
         getDetail().then(res => {
@@ -165,10 +189,15 @@
     .body {
       background-color: #fff;
       border-radius: 0px 0px 4px 4px;
+      ::v-deep .el-divider {
+        margin: 0 0 16px 0;
+        background-color: #efefef;
+      }
       .item {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         height: 52px;
         padding: 0 16px 16px 16px;
         font-weight: 400;
