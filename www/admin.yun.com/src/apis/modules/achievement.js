@@ -32,18 +32,18 @@ export const getDateRange = (params) => get('/common/date_ranges', params)
 // 获取电子保单
 export const getPolicyFile = (params) => get('/agent/proxy/policy/policy_file_url', params)
 // 导出订单数据(公司)
-export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_company_policy` 
+export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_company_policy`
 // 导出订单数据(团队)
-export const exportTeamPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_team_policy` 
+export const exportTeamPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_team_policy`
 // 导出订单数据(个人)
-export const exportSelfPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_self_policy` 
+export const exportSelfPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy/export_self_policy`
 
 // 公司团队业绩排行
 export const getTeamRank = (params) => get('/agent/proxy/policy_statistics/company/team_rank', params)
 // 公司个人业绩排行榜
 export const getPersonalRank = (params) => get('/agent/proxy/policy_statistics/company/personal_rank', params)
 // 公司险种类别排行榜
-export const getInsuranceClassRank = (params) => get('/agent/proxy/policy_statistics/company/insurance_class_rank', params) 
+export const getInsuranceClassRank = (params) => get('/agent/proxy/policy_statistics/company/insurance_class_rank', params)
 // 公司保险产品排行榜
 export const getProductRank = (params) => get('/agent/proxy/policy_statistics/company/product_rank', params)
 // 团队个人业绩排行榜
@@ -74,13 +74,9 @@ export const getPolicyBase = (params) => get('/agent/proxy/policy_info/get_base'
 export const getPolicyHolder = (params) => get('/agent/proxy/policy_info/get_policy_holder', params)
 // 订单详情-险种信息
 export const getPolicyInsurances = (params) => get('/agent/proxy/policy_info/get_insurances', params)
-// 订单详情-支付信息
-export const getPolicyPayment = (params) => get('/agent/proxy/policy_info/get_payment', params)
 // 订单详情-销售信息
 export const getPolicySales = (params) => get('/agent/proxy/policy_info/sales', params)
 // 订单详情-回访信息
 export const getPolicyVisit = (params) => get('/agent/proxy/policy_info/get_visit', params)
-// 订单详情-关联保单信息
-export const getPolicyChildren = (params) => get('/agent/proxy/policy_info/children', params)
-// 单详情-续期信息
-export const getPolicyRenewal = (params) => get('/agent/proxy/policy_info/get_renewal', params)
+// 订单详情-人核信心
+export const getManPowerInfo = params => get('/agent/proxy/policy_info/manpower', params)

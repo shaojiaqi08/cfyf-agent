@@ -62,7 +62,7 @@ export const routers = [
           show: false,
           permission: '/achievement-company/detail'
         },
-        component: getView('achievement/company/detail')
+        component: getView('achievement/order-detail')
       },
       {
         path: '/achievement-team',
@@ -86,7 +86,7 @@ export const routers = [
           show: false,
           permission: '/achievement-team/detail'
         },
-        component: getView('achievement/team/detail')
+        component: getView('achievement/order-detail')
       },
       {
         path: '/achievement-self',
@@ -110,7 +110,7 @@ export const routers = [
           show: false,
           permission: '/achievement-self/detail'
         },
-        component: getView('achievement/self/detail')
+        component: getView('achievement/order-detail')
       }
     ]
   },

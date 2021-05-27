@@ -151,6 +151,7 @@ export default {
   width: 25%;
   display: flex;
   align-items: center;
+  margin: 10px 0;
 }
 .label {
   width: 120px;
@@ -162,7 +163,6 @@ export default {
   flex: 1;
   overflow: hidden;
   word-break: break-all;
-  padding: 15px;
   font-weight: 700;
 }
 </style>
