@@ -174,3 +174,11 @@ export const insuranceTypeArray = [
     value: insuranceTypes.TRAVEL
   }
 ]
+
+export const manualReview = [
+  { value: 0, label: '审核中' },
+  { value: 1, label: '审核通过' },
+  { value: 2, label: '审核失败' },
+  { value: 3, label: '待申请' },
+  { value: 4, label: '待补充' }
+]
