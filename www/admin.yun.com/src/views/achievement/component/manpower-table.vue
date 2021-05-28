@@ -1,10 +1,10 @@
 <template>
-  <div class="mb20">
+  <div>
     <el-table
           :data="data"
           border
           stripe
-          height="450px"
+          max-height="450px"
           style="width: 100%">
           <el-table-column
             prop="customer_type_str"

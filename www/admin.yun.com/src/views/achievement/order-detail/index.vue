@@ -372,8 +372,9 @@
     <el-dialog :title="manPowerDetail.title"
                :visible.sync="manPowerDialogVisible"
                :width="manPowerDetail.type === 'customer_info' ? '1200px' : '1200px'"
+               custom-class="manpower-dialog"
                :close-on-click-modal="false">
-      <el-tabs class="mb20" v-model="activeName" v-if="manPowerDetail.type === 'customer_info'">
+      <el-tabs v-model="activeName" v-if="manPowerDetail.type === 'customer_info'">
         <el-tab-pane :label="(item.role == 'recognizee' ? '被保人-' : '投保人-') + item.name" v-for="(item, index) in manPowerObj" :name="'' + index" :key="'recognizee' + index">
           <template>
             <div class="manpower-block block">
@@ -453,7 +454,7 @@
         </el-tab-pane>
       </el-tabs>
       <template v-else-if="manPowerDetail.type === 'manpower_result_ques'">
-        <div class="mb20" :key="index" v-for="(item, index) in manPowerObj">
+        <div :key="index" v-for="(item, index) in manPowerObj">
           <span class="flex"><span style="font-weight: bold">Q：</span>{{item.question}}</span>
           <el-divider v-if="index!==manPowerObj.length-1"></el-divider>
         </div>
@@ -465,10 +466,10 @@
 
       <template v-else-if="manPowerDetail.type === 'manpower_result'">
         <template v-if="typeof manPowerDetail.data === 'string'">
-          <span class="mb20">{{manPowerDetail.data}}</span>
+          <span>{{manPowerDetail.data}}</span>
         </template>
         <template v-else>
-          <div class="pb20" :key="index" v-for="(item, index) in manPowerDetail.data">
+          <div :key="index" v-for="(item, index) in manPowerDetail.data">
             <span>{{item.content}}</span>
             <el-divider v-if="index!==manPowerDetail.data.length - 1"></el-divider>
           </div>
@@ -840,6 +841,11 @@ export default {
   }
   .el-collapse-item__wrap{
     border-bottom: transparent;
+  }
+}
+::v-deep .manpower-dialog {
+  .el-dialog__body {
+    padding-bottom: 20px;
   }
 }
 </style>
