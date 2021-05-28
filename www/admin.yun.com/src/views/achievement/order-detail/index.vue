@@ -173,45 +173,8 @@
           </div>
           <el-divider class="mt4"></el-divider>
         </template>
-
-        <!--退款信息-->
-        <template v-if="payInfoRefund">
-          <h3>退款信息</h3>
-          <div class="item-block" v-loading="payInfoLoading">
-            <div class="item">
-              <div class="label">退款金额：</div>
-              <div class="content">{{payInfoRefund.refund_fee || '-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">商户退款单号：</div>
-              <div class="content">{{payInfoRefund.refund_sn||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">平台退款单号：</div>
-              <div class="content">{{payInfoRefund.third_refund_sn||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">退款状态：</div>
-              <div class="content">{{payInfoRefund.refund_status_str ||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">退款申请时间：</div>
-              <div class="content">{{payInfoRefund.apply_at_str || '-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">退款成功时间：</div>
-              <div class="content">{{payInfoRefund.success_at_str || '-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">退款失败原因：</div>
-              <div class="content">{{payInfoRefund.refund_err_reason||'-'}}</div>
-            </div>
-          </div>
-          <el-divider></el-divider>
-        </template>
-
         <!--人工核保信息-->
-        <template v-if="manPowerInfo || manPowerInfoLoading">
+        <template v-if="manPowerInfo">
           <h3>人工核保信息</h3>
           <div class="item-block" v-loading="manPowerInfoLoading">
             <div class="item">
@@ -535,7 +498,6 @@ export default {
         renewal_terms: [],
       },
       payInfoPayment: {},
-      payInfoRefund: {},
       visitInfo: {},
       manPowerInfoLoading: false,
       custInfoCollapse: false,

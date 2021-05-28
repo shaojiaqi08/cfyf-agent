@@ -67,7 +67,7 @@
       </div>
       <div class="item">
         <div class="label">手机号码：</div>
-        <div class="content">{{data.mobile || '-'}}</div>
+        <div class="content">{{(data.mobile && data.mobile != '0') ? data.mobile : '-'}}</div>
       </div>
       <div class="item" v-if="type==='2'">
         <div class="label">是投保人的：</div>
