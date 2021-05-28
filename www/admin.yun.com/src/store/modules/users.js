@@ -1,10 +1,11 @@
-import { UPDATE_USER_INFO, LOGIN_OUT, GETNOTIFICATION } from '../mutation-types'
+import { UPDATE_USER_INFO, LOGIN_OUT, GETNOTIFICATION, SETREADPERMISSION } from '../mutation-types'
 import { getNotification } from '@/apis/modules/index'
 
 export default {
   namespaced: true,
   state: {
     userInfo: {},
+    readPermission: {},
     notificationInfo: {}
   },
   mutations: {
@@ -17,9 +18,15 @@ export default {
     },
     [GETNOTIFICATION](state, data) {
       state.notificationInfo = data
+    },
+    [SETREADPERMISSION](state, { key, value }) {
+      state.readPermission[key] = value
     }
   },
   actions: {
+    setReadPermission({ commit }, key, val) {
+      commit(SETREADPERMISSION, key, val)
+    },
     updateUserInfo({ commit }, userInfo) {
       commit(UPDATE_USER_INFO, userInfo)
     },

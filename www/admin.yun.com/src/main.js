@@ -24,12 +24,17 @@ Vue.use(VueClipboard)
 Vue.prototype.$checkAuth = function(data) {
   const permissions = this.$store.state.users.userInfo.permissions
   if (!permissions) return false
+  // 已读取过的权限
+  const reads = this.$store.state.users.readPermission
+  if (data in reads) return reads[data]
+  let res = false
   if (typeof data === 'string') {
-    return permissions.includes(data)
-  }else if (Array.isArray(data) && data.length > 0 ) {
-    return !!~data.findIndex(i => permissions.includes(i))
+    res =  permissions.includes(data)
+  } else if (Array.isArray(data) && data.length > 0 ) {
+    res = !!~data.findIndex(i => permissions.includes(i))
   }
-  return false
+  this.$store.dispatch('users/setReadPermission', { key: data, value: res})
+  return res
 }
 
 new Vue({

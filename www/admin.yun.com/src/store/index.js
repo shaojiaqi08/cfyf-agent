@@ -12,6 +12,7 @@ const persistedState = createPersistedState({
   storage: window.localStorage,
   paths: [
     'users.userInfo',
+    'users.readPermission',
     'dotManage.dots',
     'announcement.announcementList'
   ]

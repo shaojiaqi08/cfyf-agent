@@ -24,6 +24,15 @@ router.beforeEach((to, from, next) => {
   // 刷新和登录跳转时获取权限
   if (userInfo.token && (from.path === '/' || from.name === 'login')) {
     getPermission().then(res => {
+      // 刷新权限
+      Object.keys(store.state.users.readPermission).forEach(key => {
+        const keys = key.split(',')
+        store.dispatch('users/setReadPermission', {
+          key,
+          value: res.some(i => keys.includes(i))
+        })
+      })
+
       store.dispatch('users/updateUserInfo', {
         ...userInfo,
         permissions: res
