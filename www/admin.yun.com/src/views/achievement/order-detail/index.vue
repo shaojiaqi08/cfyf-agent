@@ -3,11 +3,11 @@
     <div class="header">
       订单详情
       <el-button
-        type="primary"
-        :loading="downloading"
-        v-if="baseInfo.policy_file_url && $checkAuth('/order/download_policy_file')"
-        icon="iconfont iconxiao16_shouqiangaozhi"
-        @click="download(baseInfo.policy_file_url)"
+          type="primary"
+          :loading="downloading"
+          v-if="baseInfo.policy_file_url && $checkAuth('/order/download_policy_file')"
+          icon="iconfont iconxiao16_shouqiangaozhi"
+          @click="download(baseInfo.policy_file_url)"
       >
         <span class="ml4">下载电子保单</span>
       </el-button>
@@ -15,7 +15,7 @@
     <div id="detail-content" class="content" :style="{maxHeight: contentMaxHeight + 'px'}">
       <el-scrollbar>
         <!--保单基本信息-->
-        <template>
+        <template v-if="$checkAuth('get_base_info')">
           <h3 style="display:flex;align-items:center;">保单基本信息<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top" v-if="baseInfo.pay_link">
             <i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18" style="color: #1fa5ff;margin-left:3px;"></i>
           </el-tooltip></h3>
@@ -95,7 +95,7 @@
         </template>
 
         <!--客户信息-->
-        <template>
+        <template v-if="$checkAuth('get_customer_info')">
           <h3>客户信息</h3>
           <div v-loading="customerInfoLoading">
             <el-tabs v-model="tabIndex" lazy>
@@ -140,7 +140,7 @@
         </template>
 
         <!--险种信息-->
-        <template>
+        <template v-if="$checkAuth('get_insurance_list')">
           <h3>险种信息</h3>
           <div v-loading="insuranceInfoLoading">
             <div class="item-block">
@@ -174,7 +174,7 @@
           <el-divider class="mt4"></el-divider>
         </template>
         <!--人工核保信息-->
-        <template v-if="manPowerInfo">
+        <template v-if="$checkAuth('get_manpower_info') && manPowerInfo">
           <h3>人工核保信息</h3>
           <div class="item-block" v-loading="manPowerInfoLoading">
             <div class="item">
@@ -259,7 +259,7 @@
         </template>
 
         <!--销售信息-->
-        <template>
+        <template v-if="$checkAuth('get_sales_info')">
           <h3>销售信息</h3>
           <div class="item-block" v-loading="salesInfoLoading">
             <div class="item">
@@ -280,7 +280,7 @@
         </template>
 
         <!--回访信息-->
-        <template>
+        <template v-if="$checkAuth('get_visit_info')">
           <h3>回访信息</h3>
           <div class="item-block" v-loading="visitInfoLoading">
             <div class="item">
@@ -543,18 +543,17 @@ export default {
     },
     init() {
       // 获取保单基本信息
-      this.getPolicyBase_()
+      this.$checkAuth('get_base_info') && this.getPolicyBase_()
       // 获取客户信息
-      this.getPolicyHolder_()
+      this.$checkAuth('get_customer_info') && this.getPolicyHolder_()
       // 获取险种信息
-      this.getPolicyInsurances_()
+      this.$checkAuth('get_insurance_list') && this.getPolicyInsurances_()
       // 获取人核信息
-      this.getManPowerInfo_()
+      this.$checkAuth('get_manpower_info') && this.getManPowerInfo_()
       // 获取销售信息
-      this.getPolicySales_()
+      this.$checkAuth('get_sales_info') && this.getPolicySales_()
       // 获取回访信息
-      this.getPolicyVisit_()
-
+      this.$checkAuth('get_visit_info') && this.getPolicyVisit_()
       // 设置高度
       this.setHeight()
       window.addEventListener('resize', this.setHeight);
@@ -564,12 +563,12 @@ export default {
     },
     copyLink(link) {
       this.$copyText(link).then(
-        () => {
-          this.$message.success('已复制到粘贴板')
-        },
-        (e) => {
-          this.$message.error(e)
-        }
+          () => {
+            this.$message.success('已复制到粘贴板')
+          },
+          (e) => {
+            this.$message.error(e)
+          }
       )
     },
     getManPowerInfo_() {
