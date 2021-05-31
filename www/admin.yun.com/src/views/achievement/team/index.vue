@@ -429,7 +429,7 @@
         <el-table-column label="佣金(元)" prop="sales_position_commission" align="center" width="100px" v-if="$checkAuth('/team_performance/sales_commission')"></el-table-column>
         <el-table-column label="操作" prop fixed="right" width="100px" align="center">
           <template slot-scope="{row}">
-            <el-link v-if="$checkAuth('/achievement-team/detail')" type="primary" @click="showInfoDialog(row)">订单详情</el-link>
+            <el-link v-if="$checkAuth('/team_performance/detail')" type="primary" @click="showInfoDialog(row)">订单详情</el-link>
           </template>
         </el-table-column>
       </el-table>

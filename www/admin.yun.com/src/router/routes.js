@@ -60,7 +60,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/achievement-company/detail'
+          permission: '/company_performance/detail'
         },
         component: getView('achievement/order-detail')
       },
@@ -84,7 +84,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/achievement-team/detail'
+          permission: '/team_performance/detail'
         },
         component: getView('achievement/order-detail')
       },
@@ -108,7 +108,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/achievement-self/detail'
+          permission: '/my_performance/detail'
         },
         component: getView('achievement/order-detail')
       }

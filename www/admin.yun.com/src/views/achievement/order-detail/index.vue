@@ -15,7 +15,7 @@
     <div id="detail-content" class="content" :style="{maxHeight: contentMaxHeight + 'px'}">
       <el-scrollbar>
         <!--保单基本信息-->
-        <template v-if="$checkAuth('get_base_info')">
+        <template v-if="$checkAuth(`${perPreFix}base`)">
           <h3 style="display:flex;align-items:center;">保单基本信息<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top" v-if="baseInfo.pay_link">
             <i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18" style="color: #1fa5ff;margin-left:3px;"></i>
           </el-tooltip></h3>
@@ -95,7 +95,7 @@
         </template>
 
         <!--客户信息-->
-        <template v-if="$checkAuth('get_customer_info')">
+        <template v-if="$checkAuth(`${perPreFix}holder_recognize`)">
           <h3>客户信息</h3>
           <div v-loading="customerInfoLoading">
             <el-tabs v-model="tabIndex" lazy>
@@ -140,7 +140,7 @@
         </template>
 
         <!--险种信息-->
-        <template v-if="$checkAuth('get_insurance_list')">
+        <template v-if="$checkAuth(`${perPreFix}insurances`)">
           <h3>险种信息</h3>
           <div v-loading="insuranceInfoLoading">
             <div class="item-block">
@@ -174,7 +174,7 @@
           <el-divider class="mt4"></el-divider>
         </template>
         <!--人工核保信息-->
-        <template v-if="$checkAuth('get_manpower_info') && manPowerInfo">
+        <template v-if="$checkAuth(`${perPreFix}manpower`) && manPowerInfo">
           <h3>人工核保信息</h3>
           <div class="item-block" v-loading="manPowerInfoLoading">
             <div class="item">
@@ -259,7 +259,7 @@
         </template>
 
         <!--销售信息-->
-        <template v-if="$checkAuth('get_sales_info')">
+        <template v-if="$checkAuth(`${perPreFix}sales_info`)">
           <h3>销售信息</h3>
           <div class="item-block" v-loading="salesInfoLoading">
             <div class="item">
@@ -280,7 +280,7 @@
         </template>
 
         <!--回访信息-->
-        <template v-if="$checkAuth('get_visit_info')">
+        <template v-if="$checkAuth(`${perPreFix}visit_info`)">
           <h3>回访信息</h3>
           <div class="item-block" v-loading="visitInfoLoading">
             <div class="item">
@@ -522,6 +522,15 @@ export default {
     manPowerFileList() {
       const list = this.manPowerInfo.policy_manpower_underwriting_file || []
       return this.custInfoCollapse ? list : list.slice(0, this.collapseCount)
+    },
+    // 权限值前缀
+    perPreFix () {
+      const map = {
+        'achievement-company-detail': '/company_performance/',
+        'achievement-team-detail': '/team_performance/',
+        'achievement-self-detail': '/my_performance/'
+      }
+      return map[this.$route.name]
     }
   },
   mounted() {
@@ -542,18 +551,19 @@ export default {
       //   .finally(() => (this.downloading = false))
     },
     init() {
+      const { perPreFix } = this
       // 获取保单基本信息
-      this.$checkAuth('get_base_info') && this.getPolicyBase_()
+      this.$checkAuth(`${perPreFix}base`) && this.getPolicyBase_()
       // 获取客户信息
-      this.$checkAuth('get_customer_info') && this.getPolicyHolder_()
+      this.$checkAuth(`${perPreFix}holder_recognize`) && this.getPolicyHolder_()
       // 获取险种信息
-      this.$checkAuth('get_insurance_list') && this.getPolicyInsurances_()
+      this.$checkAuth(`${perPreFix}insurances`) && this.getPolicyInsurances_()
       // 获取人核信息
-      this.$checkAuth('get_manpower_info') && this.getManPowerInfo_()
+      this.$checkAuth(`${perPreFix}manpower`) && this.getManPowerInfo_()
       // 获取销售信息
-      this.$checkAuth('get_sales_info') && this.getPolicySales_()
+      this.$checkAuth(`${perPreFix}sales_info`) && this.getPolicySales_()
       // 获取回访信息
-      this.$checkAuth('get_visit_info') && this.getPolicyVisit_()
+      this.$checkAuth(`${perPreFix}visit_info`) && this.getPolicyVisit_()
       // 设置高度
       this.setHeight()
       window.addEventListener('resize', this.setHeight);

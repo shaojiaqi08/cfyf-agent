@@ -536,7 +536,7 @@
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
             <el-link
-              v-if="$checkAuth('/achievement-company/detail')"
+              v-if="$checkAuth('/company_performance/detail')"
               type="primary"
               @click="showInfoDialog(row)"
               class="mr8"
