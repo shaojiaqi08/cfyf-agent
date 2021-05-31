@@ -1,4 +1,4 @@
-import { UPDATE_USER_INFO, LOGIN_OUT, GETNOTIFICATION, SETREADPERMISSION } from '../mutation-types'
+import { UPDATE_USER_INFO, LOGIN_OUT, GETNOTIFICATION, SETREADPERMISSION,  CLEARREADPERMISSION} from '../mutation-types'
 import { getNotification } from '@/apis/modules/index'
 
 export default {
@@ -21,9 +21,15 @@ export default {
     },
     [SETREADPERMISSION](state, { key, value }) {
       state.readPermission[key] = value
+    },
+    [CLEARREADPERMISSION](state) {
+      state.readPermission = {}
     }
   },
   actions: {
+    clearReadPermission({ commit }) {
+      commit(CLEARREADPERMISSION)
+    },
     setReadPermission({ commit }, key, val) {
       commit(SETREADPERMISSION, key, val)
     },
