@@ -143,26 +143,10 @@
         <template v-if="$checkAuth(`${perPreFix}insurances`)">
           <h3>险种信息</h3>
           <div v-loading="insuranceInfoLoading">
-            <div class="item-block">
-              <div class="item">
-                <div class="label">计划方案：</div>
-                <div class="content">-</div>
-              </div>
-              <div class="item">
-                <div class="label">购买份数：</div>
-                <div class="content">{{insuranceInfo.copies || '-'}}</div>
-              </div>
-              <div class="item">
-                <div class="label">币种：</div>
-                <div class="content">人民币</div>
-              </div>
-            </div>
             <el-table class="mt20" border stripe :data="insuranceInfo.policy_product_insurances">
               <el-table-column label="险种名称" prop="name"></el-table-column>
               <el-table-column label="基本保额(元)" prop="guarantee_quota"></el-table-column>
               <el-table-column label="保费(元)" prop="premium"></el-table-column>
-              <!--            <el-table-column label="实收金额" prop="premium"></el-table-column>-->
-              <el-table-column label="份数" prop="copies"></el-table-column>
             </el-table>
             <div class="item-block" style="width: 40%;margin: 0 0 0 auto;justify-content: flex-end">
               <div class="item" style="width: auto;display: inline-flex;">
@@ -174,94 +158,88 @@
           <el-divider class="mt4"></el-divider>
         </template>
         <!--人工核保信息-->
-        <template v-if="$checkAuth(`${perPreFix}manpower`)">
+        <template v-if="$checkAuth(`${perPreFix}manpower`) && manPowerInfo">
           <h3>人工核保信息</h3>
-          <div v-loading="manPowerInfoLoading">
-            <p style="text-align: center" v-if="!manPowerInfo">暂无数据</p>
-            <template v-else>
-              <div class="item-block">
-                <div class="item">
-                  <div class="label">是否人核：</div>
-                  <div class="content">是</div>
-                </div>
-                <div class="item">
-                  <div class="label">申请时间：</div>
-                  <div class="content">{{manPowerInfo.base.add_time ? formatDate(manPowerInfo.base.add_time * 1000, 'yyyy-MM-dd') : '-'}}</div>
-                </div>
-                <div class="item">
-                  <div class="label">结论时间：</div>
-                  <div class="content">{{manPowerInfo.base.verify_at ? formatDate(manPowerInfo.base.verify_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
-                </div>
-                <div class="item">
-                  <div class="label">人核结论：</div>
-                  <div class="content">{{manPowerInfo.base.result||'-'}}</div>
-                </div>
-                <div class="item">
-                  <div class="label">人核状态：</div>
-                  <div class="content">{{manPowerInfo.base.status || '-'}}</div>
-                </div>
-                <div class="item">
-                  <div class="label">人核链接：</div>
-                  <div class="content">
-                    <el-link v-if="manPowerInfo.base.underwrite_url" type="primary" @click="copyLink(manPowerInfo.base.underwrite_url)">复制链接</el-link>
-                    <span v-else>-</span>
-                  </div>
-                </div>
-                <div class="item">
-                  <div class="label">人核过期时间：</div>
-                  <div class="content">{{manPowerInfo.base.expire_at ? formatDate(manPowerInfo.base.expire_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
-                </div>
+          <div class="item-block">
+            <div class="item">
+              <div class="label">是否人核：</div>
+              <div class="content">是</div>
+            </div>
+            <div class="item">
+              <div class="label">申请时间：</div>
+              <div class="content">{{manPowerInfo.base.add_time ? formatDate(manPowerInfo.base.add_time * 1000, 'yyyy-MM-dd') : '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">结论时间：</div>
+              <div class="content">{{manPowerInfo.base.verify_at ? formatDate(manPowerInfo.base.verify_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">人核结论：</div>
+              <div class="content">{{manPowerInfo.base.result||'-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">人核状态：</div>
+              <div class="content">{{manPowerInfo.base.status || '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">人核链接：</div>
+              <div class="content">
+                <el-link v-if="manPowerInfo.base.underwrite_url" type="primary" @click="copyLink(manPowerInfo.base.underwrite_url)">复制链接</el-link>
+                <span v-else>-</span>
               </div>
-              <!--客户资料-->
-              <div class="mb10">
-                <div class="flex-align-center mb10">
-                  <div class="label">客户资料：</div>
-                </div>
-                <div>
-                  <el-table border stripe :data="manPowerFileList">
-                    <el-table-column label="所属人" prop="owner"></el-table-column>
-                    <el-table-column label="文件名" prop="name"></el-table-column>
-                    <el-table-column label="提交时间">
-                      <template v-slot="{row}">{{formatDate(row.add_time * 1000, 'yyyy-MM-dd')}}</template>
-                    </el-table-column>
-                    <el-table-column label="操作">
-                      <template slot="header">
-                        <div class="flex flex-align-center">
-                          <span class="mr10">操作</span>
-                          <el-link v-if="manPowerFileList.length > 0" type="primary" @click="downloadAllFile" :disabled="manPowerDownloading"><i class="el-icon-loading" v-if="manPowerDownloading" style="margin-right: 4px;"></i>下载所有</el-link>
-                        </div>
-                      </template>
-                      <template v-slot="{row}">
-                        <el-link type="primary" class="mr10" @click="previewManPowerImg(row)">预览</el-link>
-                        <el-link type="primary" :href="row.full_url" target="_blank" download>下载</el-link>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <div :title="custInfoCollapse ? '折叠' : '展开'" v-if="this.manPowerInfo && manPowerInfo.policy_manpower_underwriting_file.length > collapseCount" class="cust-info-collapse-block" @click="custInfoCollapse=!custInfoCollapse">
-                    <i :class="`${custInfoCollapse ? 'el-icon-arrow-up' : 'el-icon-arrow-down'}`"></i>
-                  </div>
-                </div>
-              </div>
-              <!--人核轨迹-->
-              <div>
-                <div class="flex-align-center mb10">
-                  <div class="label">人核轨迹：</div>
-                </div>
-                <el-timeline>
-                  <el-timeline-item
-                      v-for="(item, index) in manPowerInfo.manpower_line"
-                      :key="index"
-                      :timestamp="item.do_at ? formatDate(item.do_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-'">
-                    <div class="timeline-item" :class="{pointer: item.data}" @click="showManPowerDetail(item)">
-                      <i v-if="item.data" class="el-icon-info" style="margin-right: 4px"></i>{{item.title}}<br>
-                    </div>
-                  </el-timeline-item>
-                </el-timeline>
-              </div>
-            </template>
-            <el-divider></el-divider>
+            </div>
+            <div class="item">
+              <div class="label">人核过期时间：</div>
+              <div class="content">{{manPowerInfo.base.expire_at ? formatDate(manPowerInfo.base.expire_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
+            </div>
           </div>
-
+          <!--客户资料-->
+          <div class="mb10">
+            <div class="flex-align-center mb10">
+              <div class="label">客户资料：</div>
+            </div>
+            <div>
+              <el-table border stripe :data="manPowerFileList">
+                <el-table-column label="所属人" prop="owner"></el-table-column>
+                <el-table-column label="文件名" prop="name"></el-table-column>
+                <el-table-column label="提交时间">
+                  <template v-slot="{row}">{{formatDate(row.add_time * 1000, 'yyyy-MM-dd')}}</template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot="header">
+                    <div class="flex flex-align-center">
+                      <span class="mr10">操作</span>
+                      <el-link v-if="manPowerFileList.length > 0" type="primary" @click="downloadAllFile" :disabled="manPowerDownloading"><i class="el-icon-loading" v-if="manPowerDownloading" style="margin-right: 4px;"></i>下载所有</el-link>
+                    </div>
+                  </template>
+                  <template v-slot="{row}">
+                    <el-link type="primary" class="mr10" @click="previewManPowerImg(row)">预览</el-link>
+                    <el-link type="primary" :href="row.full_url" target="_blank" download>下载</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div :title="custInfoCollapse ? '折叠' : '展开'" v-if="this.manPowerInfo && manPowerInfo.policy_manpower_underwriting_file.length > collapseCount" class="cust-info-collapse-block" @click="custInfoCollapse=!custInfoCollapse">
+                <i :class="`${custInfoCollapse ? 'el-icon-arrow-up' : 'el-icon-arrow-down'}`"></i>
+              </div>
+            </div>
+          </div>
+          <!--人核轨迹-->
+          <div>
+            <div class="flex-align-center mb10">
+              <div class="label">人核轨迹：</div>
+            </div>
+            <el-timeline>
+              <el-timeline-item
+                  v-for="(item, index) in manPowerInfo.manpower_line"
+                  :key="index"
+                  :timestamp="item.do_at ? formatDate(item.do_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-'">
+                <div class="timeline-item" :class="{pointer: item.data}" @click="showManPowerDetail(item)">
+                  <i v-if="item.data" class="el-icon-info" style="margin-right: 4px"></i>{{item.title}}<br>
+                </div>
+              </el-timeline-item>
+            </el-timeline>
+          </div>
+          <el-divider></el-divider>
         </template>
 
         <!--销售信息-->
