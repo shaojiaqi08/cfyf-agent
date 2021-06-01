@@ -22,20 +22,17 @@
                 v-if="policyInfo.pay_link"
                 v-clipboard:success="copy"
                 v-clipboard:copy="policyInfo.pay_link"
-                class="iconfont iconxiao16_fuzhi fs18 flex-center"
+                class="iconfont iconxiao16_fuzhi fs18 flex-center ml8"
                 style="color: #1fa5ff;margin-left:3px;font-weight: normal;cursor: pointer;">
               <span style="font-size: 14px;margin-left: 2px;">订单链接</span>
             </i>
           </h3>
           <div class="item-block" v-loading="baseInfoLoading">
             <div class="item">
-              <div class="label">保单号：</div>
-              <div class="content">{{baseInfo.policy_sn||'-'}}</div>
-            </div>
-            <div class="item">
               <div class="label">保险公司：</div>
               <div class="content">{{baseInfo.supplier_name||'-'}}</div>
             </div>
+
             <div class="item">
               <div class="label">产品名称：</div>
               <div class="content">{{baseInfo.product_name||'-'}}</div>
@@ -48,15 +45,35 @@
               </div>
             </div>
             <div class="item">
-              <div class="label">起保日期：</div>
-              <div
-                  class="content"
-              >{{(baseInfo.policy_plan && baseInfo.policy_plan.guarantee_start_at) ? formatDate(baseInfo.policy_plan.guarantee_start_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
+              <div class="label">订单号：</div>
+              <div class="content">{{baseInfo.order_no || '-'}}</div>
             </div>
+
+            <div class="item">
+              <div class="label">保单号：</div>
+              <div class="content">{{baseInfo.policy_sn||'-'}}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">投保单号：</div>
+              <div class="content">{{baseInfo.proposal_sn||'-'}}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">保单状态：</div>
+              <div class="content">{{baseInfo.policy_status_str||'-'}}</div>
+            </div>
+
+            <div class="item">
+              <div class="label">保费(元)：</div>
+              <div class="content">{{baseInfo.premium||'-'}}</div>
+            </div>
+
             <div class="item">
               <div class="label">基本保额(元)：</div>
               <div class="content">{{baseInfo.guarantee_quota||'-'}}</div>
             </div>
+
             <div class="item">
               <div class="label">保障期限：</div>
               <div class="content">{{baseInfo.guarantee_period_desc||'-'}}</div>
@@ -65,39 +82,19 @@
               <div class="label">缴费期间：</div>
               <div class="content">{{baseInfo.payment_period_desc||'-'}}</div>
             </div>
-            <div class="item">
-              <div class="label">保费(元)：</div>
-              <div class="content">{{baseInfo.premium||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">订单号：</div>
-              <div class="content">{{baseInfo.order_no || '-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">电子保单：</div>
-              <div class="content">
-                <el-link
-                    v-if="baseInfo.policy_file_url"
-                    type="primary"
-                    class="mr10"
-                    target="_blank"
-                    :href="baseInfo.policy_file_url"
-                    style="transform: translateY(-1.5px)"
-                >下载</el-link>
-              </div>
-            </div>
-            <div class="item">
-              <div class="label">投保单号：</div>
-              <div class="content">{{baseInfo.proposal_sn||'-'}}</div>
-            </div>
+
             <div class="item">
               <div class="label">投保时间：</div>
               <div class="content">{{baseInfo.proposal_at_str||'-'}}</div>
             </div>
+
             <div class="item">
-              <div class="label">保单状态：</div>
-              <div class="content">{{baseInfo.policy_status_str||'-'}}</div>
+              <div class="label">起保日期：</div>
+              <div
+                  class="content"
+              >{{(baseInfo.policy_plan && baseInfo.policy_plan.guarantee_start_at) ? formatDate(baseInfo.policy_plan.guarantee_start_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
             </div>
+            <el-divider></el-divider>
           </div>
           <el-divider></el-divider>
         </template>
@@ -252,20 +249,21 @@
 
         <!--回访信息-->
         <template v-if="$checkAuth(`${perPreFix}visit_info`)">
-          <h3>回访信息</h3>
+          <h3 style="display: flex; align-items: center">回访信息
+            <i
+              v-if="visitInfo.visit_link != ''"
+              type="primary"
+              @click="copyLink(visitInfo.visit_link)"
+              class="iconfont iconxiao16_fuzhi fs18 ml8"
+              style="color: #1fa5ff;cursor: pointer;font-weight: normal;display: inline-flex; align-items: center"
+            >
+              <span style="font-size: 14px;margin-left: 2px;">回访链接</span>
+            </i>
+          </h3>
           <div class="item-block" v-loading="visitInfoLoading">
-            <div class="item" style="align-items: flex-start">
+            <div class="item">
               <div class="label">回访状态：</div>
               <div class="content">{{visitInfo.visit_status||'-'}}</div>
-              <i
-                  v-if="visitInfo.visit_link != ''"
-                  type="primary"
-                  @click="copyLink(visitInfo.visit_link)"
-                  class="iconfont iconxiao16_fuzhi fs18 flex-center"
-                  style="color: #1fa5ff;cursor: pointer;line-height: 21px;"
-              >
-                <span style="font-size: 14px;margin-left: 2px;">回访链接</span>
-              </i>
             </div>
             <div class="item">
               <div class="label">回访时间：</div>
