@@ -242,26 +242,6 @@
           <el-divider></el-divider>
         </template>
 
-        <!--销售信息-->
-        <template v-if="$checkAuth(`${perPreFix}sales_info`)">
-          <h3>销售信息</h3>
-          <div class="item-block" v-loading="salesInfoLoading">
-            <div class="item">
-              <div class="label">所属公司：</div>
-              <div class="content">{{salesInfo.sales_company_name||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">所属团队：</div>
-              <div class="content">{{salesInfo.sales_team_name||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">出单人：</div>
-              <div class="content">{{salesInfo.sales_real_name||'-'}}</div>
-            </div>
-          </div>
-          <el-divider></el-divider>
-        </template>
-
         <!--回访信息-->
         <template v-if="$checkAuth(`${perPreFix}visit_info`)">
           <h3>回访信息</h3>
@@ -291,6 +271,26 @@
             </div>
             <el-divider></el-divider>
           </div>
+        </template>
+
+        <!--销售信息-->
+        <template v-if="$checkAuth(`${perPreFix}sales_info`)">
+          <h3>销售信息</h3>
+          <div class="item-block" v-loading="salesInfoLoading">
+            <div class="item">
+              <div class="label">所属公司：</div>
+              <div class="content">{{salesInfo.sales_company_name||'-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">所属团队：</div>
+              <div class="content">{{salesInfo.sales_team_name||'-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">出单人：</div>
+              <div class="content">{{salesInfo.sales_real_name||'-'}}</div>
+            </div>
+          </div>
+          <el-divider></el-divider>
         </template>
       </el-scrollbar>
     </div>
