@@ -16,9 +16,17 @@
       <el-scrollbar>
         <!--保单基本信息-->
         <template v-if="$checkAuth(`${perPreFix}base`)">
-          <h3 style="display:flex;align-items:center;">保单基本信息<el-tooltip class="item" effect="dark" content="复制支付链接" placement="top" v-if="baseInfo.pay_link">
-            <i v-clipboard:success="copy" v-clipboard:copy="policyInfo.pay_link" class="iconfont iconxiao16_fuzhi fs18" style="color: #1fa5ff;margin-left:3px;"></i>
-          </el-tooltip></h3>
+          <h3 style="display:flex;align-items:center;">
+            保单基本信息
+            <i
+                v-if="policyInfo.pay_link"
+                v-clipboard:success="copy"
+                v-clipboard:copy="policyInfo.pay_link"
+                class="iconfont iconxiao16_fuzhi fs18 flex-center"
+                style="color: #1fa5ff;margin-left:3px;font-weight: normal;cursor: pointer;">
+              <span style="font-size: 14px;margin-left: 2px;">订单链接</span>
+            </i>
+          </h3>
           <div class="item-block" v-loading="baseInfoLoading">
             <div class="item">
               <div class="label">保单号：</div>
@@ -249,11 +257,15 @@
             <div class="item">
               <div class="label">回访状态：</div>
               <div class="content">{{visitInfo.visit_status||'-'}}</div>
-              <el-link
+              <i
                   v-if="visitInfo.visit_link != ''"
                   type="primary"
                   @click="copyLink(visitInfo.visit_link)"
-              >复制回访链接</el-link>
+                  class="iconfont iconxiao16_fuzhi fs18 flex-center"
+                  style="color: #1fa5ff;cursor: pointer;"
+              >
+                <span style="font-size: 14px;margin-left: 2px;">回访链接</span>
+              </i>
             </div>
             <div class="item">
               <div class="label">回访时间：</div>

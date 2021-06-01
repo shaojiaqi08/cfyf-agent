@@ -76,7 +76,7 @@
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}
+            {{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '保单状态' }}
           </template>
         </filter-shell>
         <filter-shell v-model="searchModel.manpower_underwriting_status"
@@ -122,7 +122,7 @@
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '全部回访状态' }}
+            {{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '回访状态' }}
           </template>
         </filter-shell>
         <!--全部保险产品-->
@@ -145,7 +145,7 @@
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}
+            {{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '保险产品' }}
           </template>
         </filter-shell>
         <!--全部保险公司-->
@@ -168,7 +168,7 @@
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}
+            {{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}
           </template>
         </filter-shell>
         <!--全部险种分类-->
@@ -191,7 +191,7 @@
             ></el-option>
           </el-select>
           <template v-slot:label>
-            {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}
+            {{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '险种分类' }}
           </template>
         </filter-shell>
       </div>

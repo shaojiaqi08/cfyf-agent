@@ -128,7 +128,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '全部出单人'}}</template>
+          >{{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
         </filter-shell>
         <!--全部团队-->
         <filter-shell v-model="searchModel.sales_team_id" class="mb16" @input="searchModelChange">
@@ -161,7 +161,7 @@
           </div>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '全部团队' }}</template>
+          >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '团队' }}</template>
         </filter-shell>
         <!--全部保单状态-->
         <filter-shell
@@ -188,7 +188,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '全部保单状态' }}</template>
+          >{{ hasValue(searchModel.policy_status) ? policyStatusArray.find(i => i.value === searchModel.policy_status[0]).label : '保单状态' }}</template>
         </filter-shell>
 
         <filter-shell v-model="searchModel.manpower_underwriting_status"
@@ -240,7 +240,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '全部回访状态' }}</template>
+          >{{ hasValue(searchModel.visit_status) ? visitStatusArray.find(i => i.value === searchModel.visit_status[0]).label : '回访状态' }}</template>
         </filter-shell>
         <!--全部保险产品-->
         <filter-shell
@@ -267,7 +267,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '全部保险产品' }}</template>
+          >{{ hasValue(searchModel.products) ? productList.find(i => i.id_type === searchModel.products[0]).name : '保险产品' }}</template>
         </filter-shell>
         <!--全部保险公司-->
         <filter-shell
@@ -294,7 +294,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '全部保险公司' }}</template>
+          >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}</template>
         </filter-shell>
         <!--全部险种分类-->
         <filter-shell
@@ -321,7 +321,7 @@
           </el-select>
           <template
             v-slot:label
-          >{{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '全部险种分类' }}</template>
+          >{{ hasValue(searchModel.product_insurance_class) ? insuranceTypeArray.find(i => i.value === searchModel.product_insurance_class[0]).label : '险种分类' }}</template>
         </filter-shell>
       </div>
       <div class="data-row" ref="dataRow">
