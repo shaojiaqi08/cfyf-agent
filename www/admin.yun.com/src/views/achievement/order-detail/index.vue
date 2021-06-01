@@ -44,6 +44,7 @@
                   : (baseInfo.cps_product ? baseInfo.cps_product.cbirc_category_str : '-')}}
               </div>
             </div>
+            <div class="item"></div>
             <div class="item">
               <div class="label">订单号：</div>
               <div class="content">{{baseInfo.order_no || '-'}}</div>
@@ -679,7 +680,7 @@ export default {
 <style scoped lang="scss">
 .order-detail-container {
   background-color: #fff;
-  width: 1200px;
+  width: 1280px;
   margin: 20px auto;
   border: 1px solid #e6e6e6;
   .header {
