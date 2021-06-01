@@ -17,7 +17,7 @@
         <!--保单基本信息-->
         <template v-if="$checkAuth(`${perPreFix}base`)">
           <h3 style="display:flex;align-items:center;">
-            保单基本信息
+            基本信息
             <i
                 v-if="policyInfo.pay_link"
                 v-clipboard:success="copy"
