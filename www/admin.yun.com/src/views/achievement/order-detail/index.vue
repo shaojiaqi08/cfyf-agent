@@ -83,12 +83,10 @@
               <div class="label">缴费期间：</div>
               <div class="content">{{baseInfo.payment_period_desc||'-'}}</div>
             </div>
-
             <div class="item">
               <div class="label">投保时间：</div>
               <div class="content">{{baseInfo.proposal_at_str||'-'}}</div>
             </div>
-
             <div class="item">
               <div class="label">起保日期：</div>
               <div
@@ -97,7 +95,6 @@
             </div>
             <el-divider></el-divider>
           </div>
-          <el-divider></el-divider>
         </template>
 
         <!--客户信息-->
