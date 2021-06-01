@@ -743,7 +743,7 @@ export default {
     color: #40aaff;
   }
 }
-.item-block {
+.item-block, ::v-deep .el-tabs .block {
   display: flex !important;
   flex-wrap: wrap;
   margin-bottom: 16px;
@@ -770,6 +770,7 @@ export default {
       width: 100%;
     }
   }
+
   &.manpower-block .label{
     width: 145px;
   }
@@ -780,6 +781,7 @@ export default {
     display: none;
   }
 }
+
 ::v-deep .el-timeline {
   display: inline-block;
   .timeline-item.pointer{
