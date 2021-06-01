@@ -254,7 +254,7 @@
         <template v-if="$checkAuth(`${perPreFix}visit_info`)">
           <h3>回访信息</h3>
           <div class="item-block" v-loading="visitInfoLoading">
-            <div class="item">
+            <div class="item" style="align-items: flex-start">
               <div class="label">回访状态：</div>
               <div class="content">{{visitInfo.visit_status||'-'}}</div>
               <i
@@ -262,7 +262,7 @@
                   type="primary"
                   @click="copyLink(visitInfo.visit_link)"
                   class="iconfont iconxiao16_fuzhi fs18 flex-center"
-                  style="color: #1fa5ff;cursor: pointer;"
+                  style="color: #1fa5ff;cursor: pointer;line-height: 21px;"
               >
                 <span style="font-size: 14px;margin-left: 2px;">回访链接</span>
               </i>
