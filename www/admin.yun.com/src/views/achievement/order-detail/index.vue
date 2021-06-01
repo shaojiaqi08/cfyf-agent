@@ -453,12 +453,14 @@ import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
 import custInfo from '../component/cust-info'
 import manpowerTable from '../component/manpower-table.vue'
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 
 export default {
   name: 'order-detail',
   components: {
     custInfo,
-    manpowerTable
+    manpowerTable,
+    ElImageViewer
   },
   data() {
     return {
