@@ -37,14 +37,14 @@
               <div class="label">产品名称：</div>
               <div class="content">{{baseInfo.product_name||'-'}}</div>
             </div>
-            <div class="item">
-              <div class="label">监管分类：</div>
-              <div class="content">
-                {{baseInfo.product ? (baseInfo.product.cbirc_category_str||'-')
-                  : (baseInfo.cps_product ? baseInfo.cps_product.cbirc_category_str : '-')}}
-              </div>
-            </div>
-            <div class="item"></div>
+<!--            <div class="item">-->
+<!--              <div class="label">监管分类：</div>-->
+<!--              <div class="content">-->
+<!--                {{baseInfo.product ? (baseInfo.product.cbirc_category_str||'-')-->
+<!--                  : (baseInfo.cps_product ? baseInfo.cps_product.cbirc_category_str : '-')}}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="item"></div>-->
             <div class="item">
               <div class="label">订单号：</div>
               <div class="content">{{baseInfo.order_no || '-'}}</div>
