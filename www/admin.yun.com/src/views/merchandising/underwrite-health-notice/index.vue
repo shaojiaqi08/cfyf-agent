@@ -54,12 +54,12 @@ export default {
         {
           name: 'service-preservation',
           label: '保全售后',
-          permission: '/underwrite-health-notice/underwrite_content_rule',
+          permission: '/customer-service-product-list',
         },
         {
           name: 'claim-settlement',
           label: '理赔规则',
-          permission: '/underwrite-health-notice/underwrite_content_rule',
+          permission: '/claim-settlement-product-list',
         },
       ],
       productName: '',
