@@ -21,9 +21,9 @@
               <el-form-item label="保险公司">
                 <el-input v-model="formData.company" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
-              <el-form-item label="产品类别">
+              <!-- <el-form-item label="产品类别">
                 <el-input v-model="formData.insurance_class" placeholder="请输入搜索关键字"></el-input>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="对接渠道">
                 <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
@@ -178,23 +178,28 @@ export default {
       curProduct: {},
       showProductDetail: false,
       formData: {
-        product_name_like: '', // 产品名称
-        company: '', // 保险公司
-        intelligent_underwriting: '', // 智能核保
-        manual_underwriting: '', // 人工核保
-        manual_underwriting_way: '', // 人核方式
-        manual_underwriting_operation: '', // 人核具体条件
-        medicare_card_loan: '', // 是否可以支持医保卡外借
-        manual_underwriting_time_limit: '', // 人工核保时效
-        manual_underwriting_refuse_leave_trace: '', // 人核拒保是否留痕
-        manual_underwriting_conclusion_query_way: '', // 人核结论查询方式
-        manual_underwriting_conclusion_expire_date: '', // 人核结论有效期
-        manual_underwriting_pass_how_to_insure: '', // 人工核保通过后如何投保
-        manual_underwriting_birthday_order_premium: '', // 人核生日单保费计算
-        manual_underwriting_conclusion_on_policy: '', // 人核结论是否会体现在保单上
-        underwriting_endorsement_application: '', // 核保批单申请
-        applicant_issue_underwriting: '', // 是否支持投保人问题核保
-        support_reconsider: '' // 是否支持复议
+       product_name: '',
+        company: '',
+        insurance_class: '',
+        channel: '',
+        customer_service_mobile: '',
+        return_visit: '',
+        contact_way_change: '',
+        basic_info_change: '',
+        renewal_account_change: '',
+        health_report: '',
+        beneficiary_change: '',
+        insurance_refund: '',
+        paper_policy: '',
+        invoice_apply: '',
+        policy_holder_exempt: '',
+        add_subtract_insurance: '',
+        second_policy_holder: '',
+        policy_holder_change: '',
+        universal_account: '',
+        policy_loan: '',
+        other_rule: '',
+        remarks: '',
       },
       classifyList: [
         {
@@ -251,24 +256,28 @@ export default {
     },
     reset() {
       this.formData = {
-        product_name_like: '', // 产品名称
-        company: '', // 保险公司
+        product_name: '',
+        company: '',
         insurance_class: '',
-        intelligent_underwriting: '', // 智能核保
-        manual_underwriting: '', // 人工核保
-        manual_underwriting_way: '', // 人核方式
-        manual_underwriting_operation: '', // 人核具体条件
-        medicare_card_loan: '', // 是否可以支持医保卡外借
-        manual_underwriting_time_limit: '', // 人工核保时效
-        manual_underwriting_refuse_leave_trace: '', // 人核拒保是否留痕
-        manual_underwriting_conclusion_query_way: '', // 人核结论查询方式
-        manual_underwriting_conclusion_expire_date: '', // 人核结论有效期
-        manual_underwriting_pass_how_to_insure: '', // 人工核保通过后如何投保
-        manual_underwriting_birthday_order_premium: '', // 人核生日单保费计算
-        manual_underwriting_conclusion_on_policy: '', // 人核结论是否会体现在保单上
-        underwriting_endorsement_application: '', // 核保批单申请
-        applicant_issue_underwriting: '', // 是否支持投保人问题核保
-        support_reconsider: '' // 是否支持复议
+        channel: '',
+        customer_service_mobile: '',
+        return_visit: '',
+        contact_way_change: '',
+        basic_info_change: '',
+        renewal_account_change: '',
+        health_report: '',
+        beneficiary_change: '',
+        insurance_refund: '',
+        paper_policy: '',
+        invoice_apply: '',
+        policy_holder_exempt: '',
+        add_subtract_insurance: '',
+        second_policy_holder: '',
+        policy_holder_change: '',
+        universal_account: '',
+        policy_loan: '',
+        other_rule: '',
+        remarks: '',
       }
       this.requestList()
     },
