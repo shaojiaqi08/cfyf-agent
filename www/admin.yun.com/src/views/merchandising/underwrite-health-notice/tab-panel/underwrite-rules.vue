@@ -147,7 +147,16 @@
               <el-form-item label="投保人豁免是否占风险保额">
               <el-input v-model="formData.applicant_occupied_risk_coverage" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
-              <el-form-item label="承保年龄">
+              <el-form-item label="待支付订单是否占用风险保额">
+                <el-input v-model="formData.unpaid_order_occupation_risk_coverage" placeholder="请输入搜索关键字"></el-input>
+              </el-form-item>
+              <el-form-item label="是否支持他人协助填写">
+                <el-input v-model="formData.is_support_others_fill_in" placeholder="请输入搜索关键字"></el-input>
+              </el-form-item>
+              <el-form-item label="投保人支持的投保证件">
+                <el-input v-model="formData.policy_holder_support_cert" placeholder="请输入搜索关键字"></el-input>
+              </el-form-item>
+              <el-form-item label="被保人年龄">
               <el-input v-model="formData.insured_age" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
               <el-form-item label="可为谁投保">
@@ -233,7 +242,10 @@ export default {
           { name: '对接方式', key: 'join_way'},
           { name: '投保人年龄', key: 'applicant_age'},
           { name: '投保人豁免是否占风险保额', key: 'applicant_occupied_risk_coverage'},
-          { name: '承保年龄', key: 'insured_age'},
+          {name: '待支付订单是否占用风险保额', key: 'unpaid_order_occupation_risk_coverage'},
+        {name: '是否支持他人协助填写', key: 'is_support_others_fill_in'},
+        {name: '投保人支持的投保证件', key: 'policy_holder_support_cert'},
+          { name: '被保人年龄', key: 'insured_age'},
           { name: '可为谁投保', key: 'applicant_insured_relation'},
           { name: '投保职业', key: 'occupation'},
           { name: '保额限制', key: 'guarantee_quota'},
@@ -277,7 +289,10 @@ export default {
         renewal_payment_way: '', // 续期支付方式
         applicant_crowd: '', // 被保人支持的投保证件
         apply_area: '', // 销售区域
-        holder_recognizee_same_person_death_handle: '' // 投被保人为同一人且不带身故责任时，身故处理
+        holder_recognizee_same_person_death_handle: '', // 投被保人为同一人且不带身故责任时，身故处理
+        unpaid_order_occupation_risk_coverage: '',
+        is_support_others_fill_in: '',
+        policy_holder_support_cert: '',
       },
       classifyList: Object.freeze([
         {
@@ -353,7 +368,10 @@ export default {
         renewal_payment_way: '', // 续期支付方式
         applicant_crowd: '', // 被保人支持的投保证件
         apply_area: '', // 销售区域
-        holder_recognizee_same_person_death_handle: '' // 投被保人为同一人且不带身故责任时，身故处理
+        holder_recognizee_same_person_death_handle: '', // 投被保人为同一人且不带身故责任时，身故处理
+        unpaid_order_occupation_risk_coverage: '',
+        is_support_others_fill_in: '',
+        policy_holder_support_cert: '',
       }
       this.requestList()
     },
