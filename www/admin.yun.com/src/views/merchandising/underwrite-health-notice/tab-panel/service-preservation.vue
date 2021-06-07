@@ -27,6 +27,9 @@
               <el-form-item label="对接渠道">
                 <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
+              <el-form-item label="是否在售">
+                <el-input v-model="formData.is_sale" placeholder="请输入搜索关键字"></el-input>
+              </el-form-item>
               <el-form-item label="保司客服电话">
                 <el-input v-model="formData.customer_service_mobile" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
@@ -200,6 +203,7 @@ export default {
         policy_loan: '',
         other_rule: '',
         remarks: '',
+        is_sale: ''
       },
       classifyList: [
         {
@@ -278,6 +282,7 @@ export default {
         policy_loan: '',
         other_rule: '',
         remarks: '',
+        is_sale: ''
       }
       this.requestList()
     },
