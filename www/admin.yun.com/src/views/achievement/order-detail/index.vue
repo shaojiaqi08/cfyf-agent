@@ -5,7 +5,7 @@
       <el-button
           type="primary"
           :loading="downloading"
-          v-if="baseInfo.policy_file_url && $checkAuth('/order/download_policy_file')"
+          v-if="baseInfo.policy_file_url && $checkAuth(`${perPreFix}download_policy_file`)"
           icon="iconfont iconxiao16_shouqiangaozhi"
           @click="download(baseInfo.policy_file_url)"
       >
