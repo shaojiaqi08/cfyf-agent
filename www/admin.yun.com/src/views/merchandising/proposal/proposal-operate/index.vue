@@ -345,7 +345,7 @@
                                             :label="radioItem.id">{{radioItem.name}}</el-radio>
                                             <el-select
                                               :key="radioItem.id+'select'"
-                                              v-model="productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].insurance_ids[kk])].coverage"
+                                              v-model="productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage"
                                               size="mini"
                                               :popper-append-to-body="false"
                                               popper-class="el-select-default"
@@ -377,7 +377,7 @@
                                       {{ productsState[index][idx].default_ids[kk] ?
                                       product.product_insurance_group[kk].insurances
                                       .filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name
-                                      +(!!productsState[index][idx].insurances[kk].coverage === false ? '' : '/'+productsState[index][idx].insurances[kk].coverage )
+                                      +(!!productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage ? '/'+productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage : '' )
                                       : option.name }}
 										<i class="el-icon-arrow-right"></i>
                                     </el-checkbox>
