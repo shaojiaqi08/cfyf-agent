@@ -27,6 +27,9 @@
               <el-form-item label="对接渠道">
                 <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
+              <el-form-item label="是否在售">
+                <el-input v-model="formData.is_sale" placeholder="请输入搜索关键字"></el-input>
+              </el-form-item>
               <el-form-item label="保险公司报案电话">
                 <el-input v-model="formData.report_mobile" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
@@ -82,6 +85,7 @@ export default {
         { name: '保险公司', key: 'company' },
         { name: '产品类别', key: 'insurance_class' },
         { name: '对接渠道', key: 'channel' },
+        { name: '是否在售', key: 'is_sale' },
         { name: '保险公司报案电话', key: 'report_mobile' },
         { name: '其他理赔途径', key: 'other_claims' },
         { name: '理赔材料', key: 'claim_materials' },
@@ -100,6 +104,7 @@ export default {
         company: '',
         insurance_class: '',
         channel: '',
+        is_sale: '',
         report_mobile: '',
         other_claims: '',
         claim_materials: '',
@@ -163,6 +168,7 @@ export default {
         company: '',
         insurance_class: '',
         channel: '',
+        is_sale:'',
         report_mobile: '',
         other_claims: '',
         claim_materials: '',
