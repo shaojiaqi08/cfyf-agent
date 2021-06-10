@@ -20,8 +20,16 @@ export const removeUnderwritingProduct = params => get('/agent/proxy/health_noti
 export const getUnderwriteRuleList = params => get('/agent/proxy/health_notice/underwrite-rule/list', params)
 // 投保规则详情
 export const getUnderwriteRuleDetail = params => get('/agent/proxy/health_notice/underwrite-rule/detail', params)
+// 保全规则详情
+export const getCustomerRuleDetail = params => get('/agent/proxy/health_notice/customer-service/detail', params)
+// 保全规则详情
+export const getClaimDetail = params => get('/agent/proxy/health_notice/claim-settlement/detail', params)
 // 核保规则列表
 export const getInsuranceRuleList = params => get('/agent/proxy/health_notice/underwrite-rule/insurance/list', params)
+// 保全售后列表
+export const getservicePreservationList = params => get('/agent/proxy/health_notice/customer-service/product-list', params)
+// 理赔规则列表
+export const getClaimPreservationList = params => get('/agent/proxy/health_notice/claim-settlement/product-list', params)
 // 获取对比表的字段配置
 export const getProductEvaluationConfig = params => get('/agent/proxy/product_evaluation/compare_columns_config', params)
 // 一览表产品列表
