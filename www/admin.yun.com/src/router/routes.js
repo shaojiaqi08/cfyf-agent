@@ -144,7 +144,7 @@ export const routers = [
         path: '/underwrite-health-notice',
         name: 'Underwrite-health-notice',
         meta: {
-          title: '核保健告',
+          title: '助销支持',
           header: true,
           menu: true,
           show: true,
