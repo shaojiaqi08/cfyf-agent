@@ -935,7 +935,7 @@ export default {
           return {
               illness_categorys_search: item.split('|.|')[0],
               condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2]
+              conclusion_search: item.split('|.|')[2].split(',')
           }
       })
       let params = {
@@ -1031,7 +1031,7 @@ export default {
           return {
               illness_categorys_search: item.split('|.|')[0],
               condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2]
+              conclusion_search: item.split('|.|')[2].split(',')
           }
       })
       let params = {
