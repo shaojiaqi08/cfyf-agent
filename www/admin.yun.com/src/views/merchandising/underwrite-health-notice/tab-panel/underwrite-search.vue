@@ -587,9 +587,9 @@ export default {
     hasValue,
     handleEnter(e) {
       e.preventDefault()
-      if (e.keyCode === 13) {
-        this.canSearch && this.search()
-      }
+      // if (e.keyCode === 13) {
+      //   this.canSearch && this.search()
+      // }
     },
     closeSupperSearchDialog() {
       this.inputSick = ''
