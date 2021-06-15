@@ -1132,31 +1132,8 @@ export default {
     requestDetail() {
       this.detailTableData = []
       this.loadingDetail = true
-      var illness_categorys_search = this.formData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var condition_search = this.formData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.formData.conclusion_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      let params = {
-        product_name: this.curProduct.product_name,
-        illness_categorys_search: {
-          value: illness_categorys_search.join(','),
-          query_rule: this.formData.illness_categorys_search.query_rule
-        },
-        condition_search: {
-          value: condition_search.join(','),
-          query_rule: this.formData.condition_search.query_rule
-        },
-        conclusion_search: {
-          value: conclusion_search.join(','),
-          query_rule: this.formData.conclusion_search.query_rule
-        },
-        is_reverse: this.formData.isReverse
-      }
+      let params = JSON.parse(JSON.stringify(this.lastSearchInfo))
+      params.product_name = this.curProduct.product_name
       getUnderwritingDetail({
         ...params,
         file_log_id: this.curProduct.file_log_id
