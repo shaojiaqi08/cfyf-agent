@@ -5,6 +5,7 @@
         <div class="flex-center mr16">
           <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
           <el-input
+            style="width: 480px"
             size="small"
             placeholder="输入病种，以逗号隔开"
             clearable
@@ -12,7 +13,7 @@
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentSick"></el-input>
         </div>
-        <div class="flex-center mr16">
+        <!-- <div class="flex-center mr16">
           <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
           <el-input
             size="small"
@@ -31,10 +32,10 @@
             @change="handleParentInputChange(false)"
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentConclusion"></el-input>
-        </div>
-        <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+        </div> -->
+        <el-button size="small" class="ml16" type="primary" @click="selectInfo"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
       </div>
-      <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 高级搜索</el-button>
+      <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 合并展示</el-button>
     </div>
     <div class="underwrite-search-container">
       <side-filter-list
@@ -59,7 +60,7 @@
           </div>
           <div class="filter-container">
             <div class="flex-between">
-              <el-radio-group
+              <!-- <el-radio-group
                 size="mini"
                 v-model="formData.isReverse"
                 @change="search"
@@ -72,7 +73,7 @@
                   :label="item.value"
                 >{{ item.label }}</el-radio-button
                 >
-              </el-radio-group>
+              </el-radio-group> -->
               <el-form class="search-form common-form no-border-bottom">
                 <div class="pos-rel">
                   <el-popover
@@ -83,83 +84,35 @@
                   >
                     <div class="filter-bar">
                       <div class="formData-select">
-                        <div class="formData-select-list">
-                          <div class="formData-select-list-header">
-                            <el-radio
-                              v-model="formData.illness_categorys_search.query_rule"
-                              label="and"
-                            >同时满足</el-radio
-                            >
-                            <el-radio
-                              v-model="formData.illness_categorys_search.query_rule"
-                              label="or"
-                            >满足其一</el-radio
-                            >
-                          </div>
-                          <el-form-item
-                            class="formData-select-list-list"
-                            :label="'病种' + (index + 1)"
-                            v-for="(item, index) in formData.illness_categorys_search
-                          .value"
-                            :key="index"
-                          >
-                            <el-input
-                              v-model="formData.illness_categorys_search.value[index]"
-                              placeholder="请输入病种"
-                            ></el-input>
-                          </el-form-item>
+                        <div class="formData-select-query-rule">
+                          <el-radio v-model="formData.condition_search.query_rule" label="and" key='and'>同时满足</el-radio>
+                          <el-radio v-model="formData.condition_search.query_rule" label="or" key="or">满足其一</el-radio>
                         </div>
-                        <div class="formData-select-list-info">同时满足</div>
-                        <div class="formData-select-list">
-                          <div class="formData-select-list-header">
-                            <el-radio
-                              v-model="formData.condition_search.query_rule"
-                              label="and"
-                            >同时满足</el-radio
-                            >
-                            <el-radio
-                              v-model="formData.condition_search.query_rule"
-                              label="or"
-                            >满足其一</el-radio
-                            >
-                          </div>
-                          <el-form-item
-                            class="formData-select-list-list"
-                            :label="'条件' + (index + 1)"
-                            v-for="(item, index) in formData.condition_search.value"
-                            :key="index"
-                          >
-                            <el-input
-                              v-model="formData.condition_search.value[index]"
-                              placeholder="请输入条件"
-                            ></el-input>
-                          </el-form-item>
+                        <div class="formData-select-title">
+                          <div class="normal-div">承保组合</div>
+                          <div class="normal-div">病种</div>
+                          <div class="normal-div">条件</div>
+                          <div class="w480 normal-div">结论</div>
+                          <div class="normal-div">操作</div>
                         </div>
-                        <div class="formData-select-list-info">同时满足</div>
-                        <div class="formData-select-list">
-                          <div class="formData-select-list-header">
-                            <el-radio
-                              v-model="formData.conclusion_search.query_rule"
-                              label="and"
-                            >同时满足</el-radio
-                            >
-                            <el-radio
-                              v-model="formData.conclusion_search.query_rule"
-                              label="or"
-                            >满足其一</el-radio
-                            >
+                        <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index + item.illness_categorys_search">
+                          <div class="normal-div tc">{{index + 1}}</div>
+                          <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
+                          <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
+                          <div class="w480 normal-div">
+                            <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
+                              <el-option
+                                v-for="item in conclusionList"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                              </el-option>
+                            </el-select>
                           </div>
-                          <el-form-item
-                            class="formData-select-list-list"
-                            :label="'结论' + (index + 1)"
-                            v-for="(item, index) in formData.conclusion_search.value"
-                            :key="index"
-                          >
-                            <el-input
-                              v-model="formData.conclusion_search.value[index]"
-                              placeholder="请输入结论"
-                            ></el-input>
-                          </el-form-item>
+                          <div class="normal-div">
+                            <i class="el-icon-plus bold" @click="addItem"></i>
+                            <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
+                          </div>
                         </div>
                       </div>
                       <el-button
@@ -171,15 +124,15 @@
                     </div>
                     <span class="dropdown-link" slot="reference">
                   <template>
-                    <!-- {{(searchText) ? searchText : '筛选'}}
+                    <!-- {{(searchText) ? searchText : '组合规则'}}
                     <el-button
                       slot="reference"
                       :class="['button-small-select', { hasValue: searchText }]"
-                      >筛选 <i class="el-icon-arrow-down"></i
+                      >组合规则 <i class="el-icon-arrow-down"></i
                     ></el-button>-->
                     <div class="filter-item el-popover__reference">
                       <div :class="['content', {'active': searchText}]">
-                        <span class="filter-label">筛选</span>
+                        <span class="filter-label">组合规则</span>
                         <i class="iconfont iconxiao16_xiajiantou ml4"></i>
                       </div>
                     </div>
@@ -268,17 +221,17 @@
       <el-dialog
         v-if="isShowSupperSearch"
         :visible.sync="isShowSupperSearch"
-        title="高级搜索"
+        title="合并展示"
         fullscreen
         height="100vh"
         center
-        @close="closeSuperSearchDialog"
+        @close="closeSupperSearchDialog"
         class="supper-search-box"
       >
         <template slot="title">
           <div class="flex-between">
             <div>
-              <h3>高级搜索</h3>
+              <h3>合并展示</h3>
             </div>
             <span class="mr50">
             调整字号
@@ -305,7 +258,7 @@
               size="small"
               class="supper-search-input">
             </el-input>
-            <el-radio-group
+            <!-- <el-radio-group
               size="mini"
               v-model="supperFormData.isReverse"
               @change="supperRequestList"
@@ -317,7 +270,7 @@
                 :key="'supper' + index"
                 :label="item.value"
               >{{ item.label }}</el-radio-button>
-            </el-radio-group>
+            </el-radio-group> -->
             <div class="pos-rel">
               <el-popover
                 placement="bottom"
@@ -348,34 +301,35 @@
                 trigger="click">
                 <div>
                   <div class="formData-select">
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="and">同时满足</el-radio>
-                        <el-radio v-model="supperFormData.illness_categorys_search.query_rule" label="or">满足其一</el-radio>
-                      </div>
-                      <el-form-item class="formData-select-list-list" :label="'病种'+ (index+1)" v-for="(item, index) in supperFormData.illness_categorys_search.value" :key="index">
-                        <el-input v-model="supperFormData.illness_categorys_search.value[index]" placeholder="请输入病种"></el-input>
-                      </el-form-item>
+                    <div class="formData-select-query-rule">
+                      <el-radio v-model="supperFormData.condition_search.query_rule" label="and">同时满足</el-radio>
+                      <el-radio v-model="supperFormData.condition_search.query_rule" label="or">满足其一</el-radio>
                     </div>
-                    <div class="formData-select-list-info">同时满足</div>
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio v-model="supperFormData.condition_search.query_rule" label="and">同时满足</el-radio>
-                        <el-radio v-model="supperFormData.condition_search.query_rule" label="or">满足其一</el-radio>
-                      </div>
-                      <el-form-item class="formData-select-list-list" :label="'条件'+ (index+1)" v-for="(item, index) in supperFormData.condition_search.value" :key="index">
-                        <el-input v-model="supperFormData.condition_search.value[index]" placeholder="请输入条件"></el-input>
-                      </el-form-item>
+                    <div class="formData-select-title">
+                      <div class="normal-div">承保组合</div>
+                      <div class="normal-div">病种</div>
+                      <div class="normal-div">条件</div>
+                      <div class="w480 normal-div">结论</div>
+                      <div class="normal-div">操作</div>
                     </div>
-                    <div class="formData-select-list-info">同时满足</div>
-                    <div class="formData-select-list">
-                      <div class="formData-select-list-header">
-                        <el-radio v-model="supperFormData.conclusion_search.query_rule" label="and">同时满足</el-radio>
-                        <el-radio v-model="supperFormData.conclusion_search.query_rule" label="or">满足其一</el-radio>
+                    <div class="formData-select-input" v-for="(item,index) in supperRuleList" :key="index + item.illness_categorys_search">
+                      <div class="normal-div tc">{{index + 1}}</div>
+                      <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
+                      <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
+                      <div class="w480 normal-div">
+                        <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
+                          <el-option
+                            v-for="item in conclusionList"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
                       </div>
-                      <el-form-item class="formData-select-list-list" :label="'结论'+ (index+1)" v-for="(item, index) in supperFormData.conclusion_search.value" :key="index">
-                        <el-input size="small" v-model="supperFormData.conclusion_search.value[index]" placeholder="请输入结论"></el-input>
-                      </el-form-item>
+                      <div class="normal-div">
+                        <i class="el-icon-plus bold" @click="supperAddItem"></i>
+                        <i class="el-icon-minus bold" @click="supperSubItem(index)" v-if="supperRuleList.length != 1"></i>
+                      </div>
                     </div>
                   </div>
                   <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
@@ -384,7 +338,7 @@
                 <template>
                   <div class="filter-item el-popover__reference ml16">
                     <div :class="['content', {'active': supperSearchText}]">
-                      <span class="filter-label">筛选</span>
+                      <span class="filter-label">组合规则</span>
                       <i class="iconfont iconxiao16_xiajiantou ml4"></i>
                     </div>
                   </div>
@@ -399,6 +353,7 @@
               <div class="flex-center mr16">
                 <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
                 <el-input
+                  style="width: 480px"
                   size="small"
                   placeholder="输入病种，以逗号隔开"
                   clearable
@@ -406,27 +361,7 @@
                   @keyup.enter.native.prevent="handleInputChange"
                   v-model.trim="inputSick"></el-input>
               </div>
-              <div class="flex-center mr16">
-                <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
-                <el-input
-                  size="small"
-                  placeholder="输入条件，以逗号隔开"
-                  clearable
-                  @change="handleInputChange(false)"
-                  @keyup.enter.native.prevent="handleInputChange"
-                  v-model.trim="inputCondition"></el-input>
-              </div>
-              <div class="flex-center">
-                <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
-                <el-input
-                  size="small"
-                  placeholder="输入结论，以逗号隔开"
-                  clearable
-                  @change="handleInputChange(false)"
-                  @keyup.enter.native.prevent="handleInputChange"
-                  v-model.trim="inputConclusion"></el-input>
-              </div>
-              <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+              <el-button size="small" class="ml16" type="primary" @click="supperSelectInfo" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
           </el-form>
         </div>
@@ -522,14 +457,6 @@ export default {
       illnessCategoryLength: 0,
       setFontSize: 12,
       supperSetFontSize: 12,
-      isReverseData: [
-        { label: "正向条件", value: "0" },
-        { label: "反向条件", value: "1" },
-      ],
-      supperIsReverseData: [
-        { label: "正向条件", value: "0" },
-        { label: "反向条件", value: "1" },
-      ],
       classifyList: [
         {
           name: '重疾险',
@@ -618,7 +545,56 @@ export default {
       allConditionShow: [],
       isShowSupperSearch: false,
       supperLoading: false,
-      nowIndex: 0
+      nowIndex: 0,
+      ruleList: [
+        {
+          illness_categorys_search: "",
+          condition_search: "",
+          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+        }
+      ],
+      supperRuleList: [
+        {
+          illness_categorys_search: "",
+          condition_search: "",
+          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+        }
+      ],
+      ruleListItem: {
+        illness_categorys_search: "",
+        condition_search: "",
+        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+      },
+      conclusionList: [
+        {
+          value: '标体承保',
+          label: '标体承保'
+        },
+        {
+          value: '除外承保',
+          label: '除外承保'
+        },
+        {
+          value: '加费承保',
+          label: '加费承保'
+        },
+        {
+          value: '人工核保',
+          label: '人工核保'
+        },
+        {
+          value: '延期承保',
+          label: '延期承保'
+        },
+        {
+          value: '拒保',
+          label: '拒保'
+        },
+      ],
+      lastSearchInfo: {},
+      supperLastSearchInfo: {},
+      isMixSearch: false,
+      isSupperMixSearch: false
     };
   },
   computed: {
@@ -636,7 +612,7 @@ export default {
         this.canSearch && this.search()
       }
     },
-    closeSuperSearchDialog() {
+    closeSupperSearchDialog() {
       this.inputSick = ''
       this.inputCondition = ''
       this.inputConclusion = ''
@@ -659,7 +635,7 @@ export default {
       this.supperDetailTableData = []
       this.supperLoading = false
     },
-    // 外层筛选
+    // 外层组合规则
     handleParentInputChange(doSearch = true) {
       const { inputParentSick, inputParentCondition, inputParentConclusion, formData } = this
       const { illness_categorys_search, condition_search, conclusion_search } = formData
@@ -669,7 +645,7 @@ export default {
       conclusion_search.value = inputParentConclusion.split(/,|，/).filter(i => i).concat(defValues).slice(0, 10)
       doSearch && this.search()
     },
-    // 高级搜索
+    // 合并展示
     handleInputChange(doSearch = true) {
       const { inputSick, inputCondition, inputConclusion, supperFormData } = this
       const { illness_categorys_search, condition_search, conclusion_search } = supperFormData
@@ -874,21 +850,23 @@ export default {
     selectItem(item) {
       item.isSelect = !item.isSelect
       if (!this.isShowSupperSearch) {
-        this.requestList()
+        if (this.isMixSearch) {
+          this.requestList()
+        } else {
+          this.selectInfo()
+        }
       } else {
-        this.supperRequestList()
+        if (this.isSupperMixSearch) {
+          this.supperRequestList()
+        } else {
+          this.supperSelectInfo()
+        }
       }
     },
-    requestList() {
+    selectInfo() {
+      this.isMixSearch = false
       this.loading = true
-      // this.searchConditionData = { ...this.formData }
       var illness_categorys_search = this.formData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var condition_search = this.formData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.formData.conclusion_search.value.filter(function (item) {
         return item && item.trim()
       })
       let insuranceList = this.classifyList.filter(item => {
@@ -903,21 +881,18 @@ export default {
       }
       let params = {
         product_name: this.formData.product_name,
-        illness_categorys_search: {
-          value: illness_categorys_search.join(','),
-          query_rule: this.formData.illness_categorys_search.query_rule
-        },
-        condition_search: {
-          value: condition_search.join(','),
-          query_rule: this.formData.condition_search.query_rule
-        },
-        conclusion_search: {
-          value: conclusion_search.join(','),
-          query_rule: this.formData.conclusion_search.query_rule
-        },
-        is_reverse: this.formData.isReverse,
+        query_rule: 'and',
+        rule_list: [],
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
+      illness_categorys_search.map(item => {
+        params.rule_list.push({
+          illness_categorys_search: item,
+          condition_search: '',
+          conclusion_search: ''
+        })
+      })
+      this.lastSearchInfo = JSON.parse(JSON.stringify(params))
       this.searchConditionData = { ...params }
       this.detailTableData = []
       getUnderwritingProductList(params)
@@ -929,18 +904,57 @@ export default {
         this.loading = false
       })
     },
-    supperRequestList() {
+    addItem() {
+      this.ruleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
+    },
+    subItem(index) {
+      this.ruleList.splice(index, 1)
+    },
+    supperAddItem() {
+      this.supperRuleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
+    },
+    supperSubItem(index) {
+      this.supperRuleList.splice(index, 1)
+    },
+    requestList() {
+      this.loading = true
+      this.isMixSearch = true
+      // this.searchConditionData = { ...this.formData }
+      let insuranceList = this.classifyList.filter(item => {
+        return item.isSelect
+      })
+      let insurance_class
+      if (insuranceList) {
+        console.log(insuranceList)
+        insurance_class = insuranceList.map(item => {
+          return item.name
+        })
+      }
+      let params = {
+        product_name: this.formData.product_name,
+        query_rule: this.formData.condition_search.query_rule,
+        rule_list: this.ruleList,
+        insurance_class: insurance_class ? insurance_class.join(',') : ''
+      }
+      this.searchConditionData = { ...params }
+      this.lastSearchInfo = JSON.parse(JSON.stringify(params))
+      this.detailTableData = []
+      getUnderwritingProductList(params)
+      .then((res) => {
+        this.searchText = this.conditionText()
+        this.tableData = res
+      })
+      .finally(() => {
+        this.loading = false
+      })
+    },
+    supperSelectInfo() {
+      this.isSupperMixSearch = false
       this.supperDetailTableData = []
       this.supperLoading = true
       this.nowIndex++
       // this.searchConditionData = { ...this.formData }
       var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var condition_search = this.supperFormData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.supperFormData.conclusion_search.value.filter(function (item) {
         return item && item.trim()
       })
       let insuranceList = this.supperClassifyList.filter(item => {
@@ -955,21 +969,57 @@ export default {
       }
       let params = {
         product_name: this.supperFormData.product_name,
-        illness_categorys_search: {
-          value: illness_categorys_search.join(','),
-          query_rule: this.supperFormData.illness_categorys_search.query_rule
-        },
-        condition_search: {
-          value: condition_search.join(','),
-          query_rule: this.supperFormData.condition_search.query_rule
-        },
-        conclusion_search: {
-          value: conclusion_search.join(','),
-          query_rule: this.supperFormData.conclusion_search.query_rule
-        },
-        is_reverse: this.supperFormData.isReverse,
+        query_rule: 'and',
+        rule_list: [],
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
+      illness_categorys_search.map(item => {
+        params.rule_list.push({
+          illness_categorys_search: item,
+          condition_search: '',
+          conclusion_search: ''
+        })
+      })
+      this.supperLastSearchInfo = JSON.parse(JSON.stringify(params))
+      this.searchConditionData = { ...params }
+      getUnderwritingProductList(params)
+      .then((res) => {
+        this.tempSupperDetailTableData = res
+        this.tempSupperDetailTableData.map(item => {
+          item.isSearch = false
+        })
+        this.supperSearchText = this.supperConditionText()
+        if (res.length > 0) {
+          this.loopDetail(this.nowIndex)
+        }
+      })
+      .finally(() => {
+        this.supperLoading = false
+      })
+    },
+    supperRequestList() {
+      this.supperDetailTableData = []
+      this.isSupperMixSearch = true
+      this.supperLoading = true
+      this.nowIndex++
+      // this.searchConditionData = { ...this.formData }
+      let insuranceList = this.supperClassifyList.filter(item => {
+        return item.isSelect
+      })
+      let insurance_class
+      if (insuranceList) {
+        console.log(insuranceList)
+        insurance_class = insuranceList.map(item => {
+          return item.name
+        })
+      }
+      let params = {
+        product_name: this.supperFormData.product_name,
+        query_rule: this.supperFormData.condition_search.query_rule,
+        rule_list: this.supperRuleList,
+        insurance_class: insurance_class ? insurance_class.join(',') : ''
+      }
+      this.supperLastSearchInfo = JSON.parse(JSON.stringify(params))
       this.searchConditionData = { ...params }
       getUnderwritingProductList(params)
       .then((res) => {
@@ -986,23 +1036,15 @@ export default {
       })
     },
     loopDetail(nowIndex) {
+      this.detailTableData = []
+      this.loadingDetail = true
       // this.supperDetailTableData = []
       if (!this.isShowSupperSearch) {
         this.supperFormData = {
           product_name: '',
-          illness_categorys_search: {
-            value: ['', '', '', '', '', '', '', '', '', ''],
-            query_rule: 'and'
-          },
-          condition_search: {
-            value: ['', '', '', '', '', '', '', '', '', ''],
-            query_rule: 'and'
-          },
-          conclusion_search: {
-            value: ['', '', '', '', '', '', '', '', '', ''],
-            query_rule: 'and'
-          },
-          isReverse: 0
+          illness_categorys_search: "",
+          condition_search: "",
+          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
         }
         this.supperDetailTableData = []
         this.supperLoading = false
@@ -1013,64 +1055,16 @@ export default {
         this.supperLoading = false
         return
       }
-      var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var condition_search = this.supperFormData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.supperFormData.conclusion_search.value.filter(function (item) {
-        return item && item.trim()
-      })
       let detailItemIndex = this.tempSupperDetailTableData.findIndex(item => {
         return item.isSearch === false
       })
-      let insuranceList = this.supperClassifyList.filter(item => {
-        return item.isSelect
-      })
-      let insurance_class
-      if (insuranceList) {
-        console.log(insuranceList)
-        insurance_class = insuranceList.map(item => {
-          return item.name
-        })
-      }
-      let params = {
-        product_name: this.tempSupperDetailTableData[detailItemIndex].product_name,
-        illness_categorys_search: {
-          value: illness_categorys_search.join(','),
-          query_rule: this.supperFormData.illness_categorys_search.query_rule
-        },
-        condition_search: {
-          value: condition_search.join(','),
-          query_rule: this.supperFormData.condition_search.query_rule
-        },
-        conclusion_search: {
-          value: conclusion_search.join(','),
-          query_rule: this.supperFormData.conclusion_search.query_rule
-        },
-        insurance_class: insurance_class ? insurance_class.join(',') : '',
-        is_reverse: this.supperFormData.isReverse
-      }
+      let params = JSON.parse(JSON.stringify(this.supperLastSearchInfo))
       this.searchConditionData = { ...params }
       getUnderwritingDetail(params)
       .then((res) => {
         if (!this.isShowSupperSearch) {
           this.supperFormData = {
-            product_name: '',
-            illness_categorys_search: {
-              value: ['', '', '', '', '', '', '', '', '', ''],
-              query_rule: 'and'
-            },
-            condition_search: {
-              value: ['', '', '', '', '', '', '', '', '', ''],
-              query_rule: 'and'
-            },
-            conclusion_search: {
-              value: ['', '', '', '', '', '', '', '', '', ''],
-              query_rule: 'and'
-            },
-            isReverse: 0
+            product_name: ''
           }
           this.supperDetailTableData = []
           return
@@ -1245,22 +1239,22 @@ export default {
           supperAll: false
         }
         this.page = 1
-        const fd = this.formData
-        this.selVal = ''
-        this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
-        this.inputParentCondition = fd.condition_search.value.filter(i => i).join(',')
-        this.inputParentConclusion = fd.conclusion_search.value.filter(i => i).join(',')
+        // const fd = this.formData
+        // this.selVal = ''
+        // this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
+        // this.inputParentCondition = fd.condition_search.value.filter(i => i).join(',')
+        // this.inputParentConclusion = fd.conclusion_search.value.filter(i => i).join(',')
         this.requestList()
       } else {
         this.isShowList = {
           all: false,
           supperAll: false
         }
-        const fd = this.supperFormData
-        this.selVal = ''
-        this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
-        this.inputCondition = fd.condition_search.value.filter(i => i).join(',')
-        this.inputConclusion = fd.conclusion_search.value.filter(i => i).join(',')
+        // const fd = this.supperFormData
+        // this.selVal = ''
+        // this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
+        // this.inputCondition = fd.condition_search.value.filter(i => i).join(',')
+        // this.inputConclusion = fd.conclusion_search.value.filter(i => i).join(',')
         this.supperRequestList()
       }
     },
@@ -1418,9 +1412,37 @@ export default {
   margin: 4px 4px 0 4px;
   max-height: 70vh;
   position: relative;
-  display: flex;
   overflow-y: scroll;
   font-size: 14px;
+  .formData-select-title{
+    margin-top: 24px;
+    text-align: center;
+  }
+  .formData-select-title, .formData-select-input{
+    .normal-div{
+      display: inline-block;
+      width: 160px;
+      padding: 0 5px;
+      .el-icon-plus{
+        margin-left: 20px;
+      }
+      .el-icon-minus {
+        margin-left: 20px;
+      }
+    }
+    .w480{
+      width: 480px;
+    }
+    .tc{
+      text-align: center;
+    }
+  }
+  .formData-select-input{
+    margin-top: 10px;
+  }
+  .formData-select-query-rule{
+    text-align: center;
+  }
   .formData-select-list{
     padding-left: 16px;
     min-width: 275px;
