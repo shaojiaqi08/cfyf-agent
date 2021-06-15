@@ -9,7 +9,7 @@
             size="small"
             placeholder="输入病种，以逗号隔开"
             clearable
-            @keyup.enter.native.prevent="selectInfo"
+            @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentSick"></el-input>
         </div>
         <el-button size="small" class="ml16" type="primary" @click="selectInfo"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
@@ -34,7 +34,7 @@
               placeholder="搜索产品名称"
               v-model.trim="formData.product_name"
               prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-              @input="search"
+              @input="selectProduct"
             ></el-input>
           </div>
           <div class="filter-container">
@@ -233,7 +233,7 @@
               clearable
               prefix-icon="el-icon-search"
               v-model.trim="supperFormData.product_name"
-              @keyup.enter.native="supperSelectInfo()"
+              @keyup.enter.native="selectProduct()"
               size="small"
               class="supper-search-input">
             </el-input>
@@ -828,6 +828,21 @@ export default {
     },
     selectItem(item) {
       item.isSelect = !item.isSelect
+      if (!this.isShowSupperSearch) {
+        if (this.isMixSearch) {
+          this.requestList()
+        } else {
+          this.selectInfo()
+        }
+      } else {
+        if (this.isSupperMixSearch) {
+          this.supperRequestList()
+        } else {
+          this.supperSelectInfo()
+        }
+      }
+    },
+    selectProduct() {
       if (!this.isShowSupperSearch) {
         if (this.isMixSearch) {
           this.requestList()
