@@ -1299,7 +1299,7 @@ export default {
   },
   created() {
     // this.ajaxProductData();
-    this.requestList()
+    this.selectInfo()
     window.addEventListener("resize", this.setMaxHeight);
     document.addEventListener('keyup', this.handleEnter)
   },
