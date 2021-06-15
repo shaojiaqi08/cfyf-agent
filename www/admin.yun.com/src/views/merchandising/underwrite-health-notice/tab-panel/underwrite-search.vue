@@ -95,12 +95,10 @@
                           </div>
                         </div>
                       </div>
-                      <el-button
-                        type="warning"
-                        class="button-all-select"
-                        @click="search"
-                      >确定</el-button
-                      >
+                      <div class="button-all-select-box">
+                        <el-button class="button-all-select" @click="resetList">重置</el-button>
+                        <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
+                      </div>
                     </div>
                     <span class="dropdown-link" slot="reference">
                   <template>
@@ -119,7 +117,6 @@
                   </template>
                 </span>
                   </el-popover>
-                  <span class="close-btn" @click="resetNormal" v-if="searchText">
                 <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
               </span>
                 </div>
@@ -312,7 +309,10 @@
                       </div>
                     </div>
                   </div>
-                  <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
+                  <div class="button-all-select-box">
+                    <el-button class="button-all-select" @click="resetSupperList">重置</el-button>
+                    <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
+                  </div>
                 </div>
                 <span class="dropdown-link" slot="reference">
                 <template>
@@ -325,7 +325,6 @@
                 </template>
               </span>
               </el-popover>
-              <span class="close-btn" @click="resetSupper" v-if="supperSearchText">
               <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
             </span>
             </div>
@@ -926,6 +925,19 @@ export default {
           return item.name
         })
       }
+      var newList = this.ruleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+
+      this.ruleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2]
+          }
+      })
       let params = {
         product_name: this.formData.product_name,
         query_rule: this.formData.query_rule,
@@ -1009,6 +1021,19 @@ export default {
           return item.name
         })
       }
+      var newList = this.supperRuleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+
+      this.supperRuleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2]
+          }
+      })
       let params = {
         product_name: this.supperFormData.product_name,
         query_rule: this.supperFormData.query_rule,
@@ -1189,6 +1214,22 @@ export default {
       }
       this.supperSearchText = ''
       this.supperDetailTableData = []
+    },
+    resetList() {
+      this.ruleList.length = 0
+      this.ruleList.push({
+        illness_categorys_search: "",
+        condition_search: "",
+        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+      })
+    },
+    resetSupperList() {
+      this.supperRuleList.length = 0
+      this.supperRuleList.push({
+        illness_categorys_search: "",
+        condition_search: "",
+        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+      })
     },
     search() {
       if (!this.isShowSupperSearch) {
@@ -1477,14 +1518,17 @@ export default {
   }
 }
 
-.button-all-select {
-  &.el-button--warning{
-    color: #fff;
-    background-color: #1f78ff;
-    border-color: #1f78ff;
-    width: 275px;
-    margin: 20px auto 0 auto;
-    display: block;
+.button-all-select-box{
+  text-align: center;
+  .button-all-select {
+    &.el-button--medium{
+      color: #fff;
+      background-color: #ff9000;
+      border-color: #ff9000;
+      width: 300px;
+      margin: 20px auto 0 auto;
+      display: inline-block;
+    }
   }
 }
 .search-form.no-border-bottom{
