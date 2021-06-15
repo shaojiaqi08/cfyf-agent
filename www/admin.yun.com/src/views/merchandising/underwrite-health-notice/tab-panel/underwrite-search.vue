@@ -13,7 +13,7 @@
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentSick"></el-input>
         </div>
-        <el-button size="small" class="ml16" type="primary" @click="selectInfo"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+        <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
       </div>
       <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 合并展示</el-button>
     </div>
@@ -75,7 +75,7 @@
                           <div class="w480 normal-div">结论</div>
                           <div class="normal-div">操作</div>
                         </div>
-                        <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index + item.illness_categorys_search">
+                        <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index">
                           <div class="normal-div tc">{{index + 1}}</div>
                           <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
                           <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
@@ -287,7 +287,7 @@
                       <div class="w480 normal-div">结论</div>
                       <div class="normal-div">操作</div>
                     </div>
-                    <div class="formData-select-input" v-for="(item,index) in supperRuleList" :key="index + item.illness_categorys_search">
+                    <div class="formData-select-input" v-for="(item,index) in supperRuleList" :key="index">
                       <div class="normal-div tc">{{index + 1}}</div>
                       <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
                       <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
@@ -336,7 +336,7 @@
                   @keyup.enter.native.prevent="handleInputChange"
                   v-model.trim="inputSick"></el-input>
               </div>
-              <el-button size="small" class="ml16" type="primary" @click="supperSelectInfo" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+              <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
           </el-form>
         </div>
@@ -525,14 +525,16 @@ export default {
         {
           illness_categorys_search: "",
           condition_search: "",
-          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
+          random: Math.random()
         }
       ],
       supperRuleList: [
         {
           illness_categorys_search: "",
           condition_search: "",
-          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
+          random: Math.random()
         }
       ],
       ruleListItem: {
@@ -565,11 +567,7 @@ export default {
           value: '拒保',
           label: '拒保'
         },
-      ],
-      lastSearchInfo: {},
-      supperLastSearchInfo: {},
-      isMixSearch: false,
-      isSupperMixSearch: false
+      ]
     };
   },
   computed: {
@@ -687,7 +685,7 @@ export default {
       }
     }, 300),
     // new
-     conditionText() {
+    conditionText() {
       let str = ''
       if (this.formData.product_name) {
         str += `产品名称：${this.formData.product_name},`
@@ -824,39 +822,37 @@ export default {
       return url
     },
     selectItem(item) {
+      this.selVal = ''
       item.isSelect = !item.isSelect
       if (!this.isShowSupperSearch) {
-        if (this.isMixSearch) {
-          this.requestList()
-        } else {
-          this.selectInfo()
-        }
+        this.requestList()
       } else {
-        if (this.isSupperMixSearch) {
-          this.supperRequestList()
-        } else {
-          this.supperSelectInfo()
-        }
+        this.supperRequestList()
       }
     },
     selectProduct() {
       if (!this.isShowSupperSearch) {
-        if (this.isMixSearch) {
-          this.requestList()
-        } else {
-          this.selectInfo()
-        }
+        this.requestList()
       } else {
-        if (this.isSupperMixSearch) {
-          this.supperRequestList()
-        } else {
-          this.supperSelectInfo()
-        }
+        this.supperRequestList()
       }
     },
-    selectInfo() {
-      this.isMixSearch = false
+    addItem() {
+      this.ruleList.push(JSON.parse(JSON.stringify({...this.ruleListItem, random: Math.random()})))
+    },
+    subItem(index) {
+      this.ruleList.splice(index, 1)
+    },
+    supperAddItem() {
+      this.supperRuleList.push(JSON.parse(JSON.stringify({...this.ruleListItem, random: Math.random()})))
+    },
+    supperSubItem(index) {
+      this.supperRuleList.splice(index, 1)
+    },
+    requestList() {
       this.loading = true
+      this.isMixSearch = true
+      // this.searchConditionData = { ...this.formData }
       var illness_categorys_search = this.formData.illness_categorys_search.value.filter(function (item) {
         return item && item.trim()
       })
@@ -870,68 +866,22 @@ export default {
           return item.name
         })
       }
-      let params = {
-        product_name: this.formData.product_name,
-        query_rule: 'and',
-        rule_list: [],
-        insurance_class: insurance_class ? insurance_class.join(',') : ''
-      }
       illness_categorys_search.map(item => {
-        params.rule_list.push({
+        this.ruleList.push({
           illness_categorys_search: item,
           condition_search: '',
-          conclusion_search: ''
+          conclusion_search: []
         })
       })
-      this.lastSearchInfo = JSON.parse(JSON.stringify(params))
-      this.searchConditionData = { ...params }
-      this.detailTableData = []
-      getUnderwritingProductList(params)
-      .then((res) => {
-        this.searchText = this.conditionText()
-        this.tableData = res
-      })
-      .finally(() => {
-        this.loading = false
-      })
-    },
-    addItem() {
-      this.ruleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
-    },
-    subItem(index) {
-      this.ruleList.splice(index, 1)
-    },
-    supperAddItem() {
-      this.supperRuleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
-    },
-    supperSubItem(index) {
-      this.supperRuleList.splice(index, 1)
-    },
-    requestList() {
-      this.loading = true
-      this.isMixSearch = true
-      // this.searchConditionData = { ...this.formData }
-      let insuranceList = this.classifyList.filter(item => {
-        return item.isSelect
-      })
-      let insurance_class
-      if (insuranceList) {
-        console.log(insuranceList)
-        insurance_class = insuranceList.map(item => {
-          return item.name
-        })
-      }
       var newList = this.ruleList.map(item => {
           return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
       })
-
       newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
-
       this.ruleList = newList.map(item => {
           return {
               illness_categorys_search: item.split('|.|')[0],
               condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2].split(',')
+              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
           }
       })
       let params = {
@@ -941,64 +891,14 @@ export default {
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
-      this.lastSearchInfo = JSON.parse(JSON.stringify(params))
       this.detailTableData = []
       getUnderwritingProductList(params)
       .then((res) => {
-        this.searchText = this.conditionText()
+        this.searchText = true
         this.tableData = res
       })
       .finally(() => {
         this.loading = false
-      })
-    },
-    supperSelectInfo() {
-      this.isSupperMixSearch = false
-      this.supperDetailTableData = []
-      this.supperLoading = true
-      this.nowIndex++
-      // this.searchConditionData = { ...this.formData }
-      var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      let insuranceList = this.supperClassifyList.filter(item => {
-        return item.isSelect
-      })
-      let insurance_class
-      if (insuranceList) {
-        console.log(insuranceList)
-        insurance_class = insuranceList.map(item => {
-          return item.name
-        })
-      }
-      let params = {
-        product_name: this.supperFormData.product_name,
-        query_rule: 'and',
-        rule_list: [],
-        insurance_class: insurance_class ? insurance_class.join(',') : ''
-      }
-      illness_categorys_search.map(item => {
-        params.rule_list.push({
-          illness_categorys_search: item,
-          condition_search: '',
-          conclusion_search: ''
-        })
-      })
-      this.supperLastSearchInfo = JSON.parse(JSON.stringify(params))
-      this.searchConditionData = { ...params }
-      getUnderwritingProductList(params)
-      .then((res) => {
-        this.tempSupperDetailTableData = res
-        this.tempSupperDetailTableData.map(item => {
-          item.isSearch = false
-        })
-        this.supperSearchText = this.supperConditionText()
-        if (res.length > 0) {
-          this.loopDetail(this.nowIndex)
-        }
-      })
-      .finally(() => {
-        this.supperLoading = false
       })
     },
     supperRequestList() {
@@ -1036,7 +936,6 @@ export default {
         rule_list: this.supperRuleList,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
-      this.supperLastSearchInfo = JSON.parse(JSON.stringify(params))
       this.searchConditionData = { ...params }
       getUnderwritingProductList(params)
       .then((res) => {
@@ -1044,7 +943,7 @@ export default {
         this.tempSupperDetailTableData.map(item => {
           item.isSearch = false
         })
-        this.supperSearchText = this.supperConditionText()
+        this.supperSearchText = true
         if (res.length > 0) {
           this.loopDetail(this.nowIndex)
         } else {
@@ -1067,13 +966,51 @@ export default {
       }
       if (nowIndex !== this.nowIndex) {
         this.supperDetailTableData = []
-        this.supperLoading = false
         return
       }
+      var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
+        return item && item.trim()
+      })
       let detailItemIndex = this.tempSupperDetailTableData.findIndex(item => {
         return item.isSearch === false
       })
-      let params = JSON.parse(JSON.stringify(this.supperLastSearchInfo))
+
+      let insuranceList = this.supperClassifyList.filter(item => {
+        return item.isSelect
+      })
+      let insurance_class
+      if (insuranceList) {
+        console.log(insuranceList)
+        insurance_class = insuranceList.map(item => {
+          return item.name
+        })
+      }
+      illness_categorys_search.map(item => {
+        this.supperRuleList.push({
+          illness_categorys_search: item,
+          condition_search: '',
+          conclusion_search: []
+        })
+      })
+      var newList = this.supperRuleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+
+      this.supperRuleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
+          }
+      })
+      let params = {
+        product_name: this.tempSupperDetailTableData[detailItemIndex].product_name,
+        query_rule: this.supperFormData.query_rule,
+        rule_list: this.supperRuleList,
+        insurance_class: insurance_class ? insurance_class.join(',') : ''
+      }
       this.searchConditionData = { ...params }
       getUnderwritingDetail(params)
       .then((res) => {
@@ -1147,8 +1084,43 @@ export default {
     requestDetail() {
       this.detailTableData = []
       this.loadingDetail = true
-      let params = JSON.parse(JSON.stringify(this.lastSearchInfo))
-      params.product_name = this.curProduct.product_name
+      var illness_categorys_search = this.formData.illness_categorys_search.value.filter(function (item) {
+        return item && item.trim()
+      })
+      let insuranceList = this.classifyList.filter(item => {
+        return item.isSelect
+      })
+      let insurance_class
+      if (insuranceList) {
+        console.log(insuranceList)
+        insurance_class = insuranceList.map(item => {
+          return item.name
+        })
+      }
+      illness_categorys_search.map(item => {
+        this.ruleList.push({
+          illness_categorys_search: item,
+          condition_search: '',
+          conclusion_search: []
+        })
+      })
+      var newList = this.ruleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+      this.ruleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
+          }
+      })
+      let params = {
+        product_name: this.formData.product_name,
+        query_rule: this.formData.query_rule,
+        rule_list: this.ruleList,
+        insurance_class: insurance_class ? insurance_class.join(',') : ''
+      }
       getUnderwritingDetail({
         ...params,
         file_log_id: this.curProduct.file_log_id
@@ -1210,6 +1182,7 @@ export default {
       this.supperDetailTableData = []
     },
     resetList() {
+      this.searchText = false
       this.ruleList.length = 0
       this.ruleList.push({
         illness_categorys_search: "",
@@ -1218,6 +1191,7 @@ export default {
       })
     },
     resetSupperList() {
+      this.supperSearchText = false
       this.supperRuleList.length = 0
       this.supperRuleList.push({
         illness_categorys_search: "",
@@ -1295,11 +1269,12 @@ export default {
   },
   created() {
     // this.ajaxProductData();
-    this.selectInfo()
+    this.requestList()
     window.addEventListener("resize", this.setMaxHeight);
     document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {
+    this.searchText = false
     window.removeEventListener("resize", this.setMaxHeight);
     document.removeEventListener('keyup', this.handleEnter)
   },
@@ -1517,10 +1492,10 @@ export default {
   .button-all-select {
     &.el-button--medium{
       color: #fff;
-      background-color: #ff9000;
-      border-color: #ff9000;
+      background-color: #1F78FF;
+      border-color: #1F78FF;
       width: 300px;
-      margin: 20px auto 0 auto;
+      margin: 20px 10px 0 auto;
       display: inline-block;
     }
   }
