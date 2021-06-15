@@ -65,8 +65,8 @@
                     <div class="filter-bar">
                       <div class="formData-select">
                         <div class="formData-select-query-rule">
-                          <el-radio v-model="formData.condition_search.query_rule" label="and" key='and'>同时满足</el-radio>
-                          <el-radio v-model="formData.condition_search.query_rule" label="or" key="or">满足其一</el-radio>
+                          <el-radio v-model="formData.query_rule" label="and" key='and'>同时满足</el-radio>
+                          <el-radio v-model="formData.query_rule" label="or" key="or">满足其一</el-radio>
                         </div>
                         <div class="formData-select-title">
                           <div class="normal-div">承保组合</div>
@@ -282,8 +282,8 @@
                 <div>
                   <div class="formData-select">
                     <div class="formData-select-query-rule">
-                      <el-radio v-model="supperFormData.condition_search.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData.condition_search.query_rule" label="or">满足其一</el-radio>
+                      <el-radio v-model="supperFormData.query_rule" label="and">同时满足</el-radio>
+                      <el-radio v-model="supperFormData.query_rule" label="or">满足其一</el-radio>
                     </div>
                     <div class="formData-select-title">
                       <div class="normal-div">承保组合</div>
@@ -484,6 +484,7 @@ export default {
       maxHeight: null,
       formData: {
         product_name: '',
+        query_rule: 'and',
         illness_categorys_search: {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
@@ -496,10 +497,10 @@ export default {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
         },
-        isReverse: '0'
       },
       supperFormData: {
         product_name: '',
+        query_rule: 'and',
         illness_categorys_search: {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
@@ -512,7 +513,6 @@ export default {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
         },
-        isReverse: '0'
       },
       isShowList: {
         all: false,
@@ -598,6 +598,7 @@ export default {
       this.inputConclusion = ''
       this.supperFormData = {
         product_name: '',
+        query_rule: 'and',
         illness_categorys_search: {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
@@ -927,7 +928,7 @@ export default {
       }
       let params = {
         product_name: this.formData.product_name,
-        query_rule: this.formData.condition_search.query_rule,
+        query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
@@ -1010,7 +1011,7 @@ export default {
       }
       let params = {
         product_name: this.supperFormData.product_name,
-        query_rule: this.supperFormData.condition_search.query_rule,
+        query_rule: this.supperFormData.query_rule,
         rule_list: this.supperRuleList,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
@@ -1167,15 +1168,8 @@ export default {
     resetNormal () {
       this.formData = {
         product_name: '',
+        query_rule: 'and',
         illness_categorys_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        condition_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        conclusion_search: {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
         },
@@ -1186,15 +1180,8 @@ export default {
     resetSupper() {
       this.supperFormData = {
         product_name: '',
+        query_rule: 'and',
         illness_categorys_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        condition_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        conclusion_search: {
           value: ['', '', '', '', '', '', '', '', '', ''],
           query_rule: 'and'
         },
