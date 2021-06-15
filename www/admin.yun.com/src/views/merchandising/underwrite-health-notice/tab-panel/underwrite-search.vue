@@ -9,30 +9,9 @@
             size="small"
             placeholder="输入病种，以逗号隔开"
             clearable
-            @change="handleParentInputChange(false)"
-            @keyup.enter.native.prevent="handleParentInputChange"
+            @keyup.enter.native.prevent="selectInfo"
             v-model.trim="inputParentSick"></el-input>
         </div>
-        <!-- <div class="flex-center mr16">
-          <span style="white-space: nowrap;font-size: 14px;" class="mr4">条件: </span>
-          <el-input
-            size="small"
-            placeholder="输入条件，以逗号隔开"
-            clearable
-            @change="handleParentInputChange(false)"
-            @keyup.enter.native.prevent="handleParentInputChange"
-            v-model.trim="inputParentCondition"></el-input>
-        </div>
-        <div class="flex-center">
-          <span style="white-space: nowrap;font-size: 14px;" class="mr4">结论: </span>
-          <el-input
-            size="small"
-            placeholder="输入结论，以逗号隔开"
-            clearable
-            @change="handleParentInputChange(false)"
-            @keyup.enter.native.prevent="handleParentInputChange"
-            v-model.trim="inputParentConclusion"></el-input>
-        </div> -->
         <el-button size="small" class="ml16" type="primary" @click="selectInfo"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
       </div>
       <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 合并展示</el-button>
@@ -254,7 +233,7 @@
               clearable
               prefix-icon="el-icon-search"
               v-model.trim="supperFormData.product_name"
-              @keyup.enter.native="supperRequestList()"
+              @keyup.enter.native="supperSelectInfo()"
               size="small"
               class="supper-search-input">
             </el-input>
@@ -1216,6 +1195,7 @@ export default {
           supperAll: false
         }
         this.page = 1
+        this.supperRuleList = JSON.parse(JSON.stringify(this.ruleList))
         // const fd = this.formData
         // this.selVal = ''
         // this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
@@ -1227,6 +1207,7 @@ export default {
           all: false,
           supperAll: false
         }
+        this.ruleList = JSON.parse(JSON.stringify(this.supperRuleList))
         // const fd = this.supperFormData
         // this.selVal = ''
         // this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
