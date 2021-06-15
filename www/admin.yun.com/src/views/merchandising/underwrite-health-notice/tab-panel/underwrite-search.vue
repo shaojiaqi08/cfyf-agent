@@ -117,8 +117,6 @@
                   </template>
                 </span>
                   </el-popover>
-                <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
-              </span>
                 </div>
               </el-form>
             </div>
@@ -325,8 +323,6 @@
                 </template>
               </span>
               </el-popover>
-              <i class="filter-clear iconfont iconxiao16_yuanxingchahao"></i>
-            </span>
             </div>
             <div style="display: inline-flex;">
               <div class="flex-center mr16">
