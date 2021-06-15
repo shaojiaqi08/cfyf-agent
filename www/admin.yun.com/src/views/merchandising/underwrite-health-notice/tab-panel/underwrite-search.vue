@@ -1053,8 +1053,6 @@ export default {
       })
     },
     loopDetail(nowIndex) {
-      this.detailTableData = []
-      this.loadingDetail = true
       // this.supperDetailTableData = []
       if (!this.isShowSupperSearch) {
         this.supperFormData = {
