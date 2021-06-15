@@ -9,6 +9,7 @@
             size="small"
             placeholder="输入病种，以逗号隔开"
             clearable
+            @change="handleParentInputChange(false)"
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentSick"></el-input>
         </div>
