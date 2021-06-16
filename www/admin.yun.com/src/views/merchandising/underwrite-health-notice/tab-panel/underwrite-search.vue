@@ -68,7 +68,8 @@
         </span>
           </el-popover>
         </div>
-        <div class="search-input-container mr16">
+        <div class="flex-center mr16">
+          <span style="white-space: nowrap" class="mr4">产品名称:</span>
           <el-input
             clearable
             placeholder="搜索产品名称"
@@ -263,7 +264,7 @@
               </el-popover>
             </div>
 
-
+            <span style="white-space: nowrap" class="mr4">产品名称:</span>
             <el-input
               placeholder="搜索产品名称"
               clearable
