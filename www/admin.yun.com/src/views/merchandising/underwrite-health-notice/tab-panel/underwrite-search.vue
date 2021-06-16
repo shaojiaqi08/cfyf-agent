@@ -877,12 +877,18 @@ export default {
           return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
       })
       newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
-      this.ruleList = newList.map(item => {
+      var newRuleList = newList.map(item => {
           return {
               illness_categorys_search: item.split('|.|')[0],
               condition_search: item.split('|.|')[1],
               conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
           }
+      })
+      this.ruleList.length = 0
+      newRuleList.map(item => {
+        if (item.illness_categorys_search || item.condition_search || item.conclusion_search.length > 0 ) {
+          this.ruleList.push(item)
+        }
       })
       let params = {
         product_name: this.formData.product_name,
@@ -923,12 +929,18 @@ export default {
 
       newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
 
-      this.supperRuleList = newList.map(item => {
+      var newRuleList = newList.map(item => {
           return {
               illness_categorys_search: item.split('|.|')[0],
               condition_search: item.split('|.|')[1],
               conclusion_search: item.split('|.|')[2].split(',')
           }
+      })
+      this.supperRuleList.length = 0
+      newRuleList.map(item => {
+        if (item.illness_categorys_search || item.condition_search || item.conclusion_search.length > 0 ) {
+          this.supperRuleList.push(item)
+        }
       })
       let params = {
         product_name: this.supperFormData.product_name,
