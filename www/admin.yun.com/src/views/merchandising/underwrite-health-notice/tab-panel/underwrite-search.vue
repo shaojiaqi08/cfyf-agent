@@ -2,10 +2,85 @@
   <div v-loading="loading" style="height: 95%">
     <div class="search-bar">
       <div style="display: inline-flex;" class="search-bar-condition">
+        <div class="classify-box">
+          <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+        </div>
+        <div class="pos-rel mr16">
+          <el-popover
+            placement="left-start"
+            class="formData-illness-box"
+            v-model="isShowList.all"
+            trigger="click"
+          >
+            <div class="filter-bar">
+              <div class="formData-select">
+                <div class="formData-select-query-rule">
+                  <el-radio v-model="formData.query_rule" label="and" key='and'>同时满足</el-radio>
+                  <el-radio v-model="formData.query_rule" label="or" key="or">满足其一</el-radio>
+                </div>
+                <div class="formData-select-title">
+                  <div class="normal-div">承保组合</div>
+                  <div class="normal-div">病种</div>
+                  <div class="normal-div">条件</div>
+                  <div class="w480 normal-div">结论</div>
+                  <div class="normal-div">操作</div>
+                </div>
+                <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index">
+                  <div class="normal-div tc">{{index + 1}}</div>
+                  <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
+                  <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
+                  <div class="w480 normal-div">
+                    <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
+                      <el-option
+                        v-for="item in conclusionList"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </div>
+                  <div class="normal-div">
+                    <i class="el-icon-plus bold" @click="addItem"></i>
+                    <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="button-all-select-box">
+                <el-button class="button-all-select" @click="resetList">重置</el-button>
+                <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
+              </div>
+            </div>
+            <span class="dropdown-link" slot="reference">
+          <template>
+            <!-- {{(searchText) ? searchText : '组合规则'}}
+            <el-button
+              slot="reference"
+              :class="['button-small-select', { hasValue: searchText }]"
+              >组合规则 <i class="el-icon-arrow-down"></i
+            ></el-button>-->
+            <div class="filter-item el-popover__reference">
+              <div :class="['content', {'active': searchText}]">
+                <span class="filter-label">组合规则</span>
+                <i class="iconfont iconxiao16_xiajiantou ml4"></i>
+              </div>
+            </div>
+          </template>
+        </span>
+          </el-popover>
+        </div>
+        <div class="search-input-container mr16">
+          <el-input
+            clearable
+            placeholder="搜索产品名称"
+            v-model.trim="formData.product_name"
+            prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+            @input="selectProduct"
+          ></el-input>
+        </div>
         <div class="flex-center mr16">
           <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
           <el-input
-            style="width: 480px"
+            style="width: 250px"
             size="small"
             placeholder="输入病种，以逗号隔开"
             clearable
@@ -28,103 +103,7 @@
         style="width: 280px"
         :listData="tableData"
       >
-        <div slot="extraFilter" class="underwrite-search-left">
-          <div class="search-input-container">
-            <el-input
-              clearable
-              placeholder="搜索产品名称"
-              v-model.trim="formData.product_name"
-              prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-              @input="selectProduct"
-            ></el-input>
-          </div>
-          <div class="filter-container">
-            <div class="flex-between">
-              <!-- <el-radio-group
-                size="mini"
-                v-model="formData.isReverse"
-                @change="search"
-                class="radio-group-wrap"
-              >
-                <el-radio-button
-                  style="height: 28px"
-                  v-for="(item, index) in isReverseData"
-                  :key="'normal' + index"
-                  :label="item.value"
-                >{{ item.label }}</el-radio-button
-                >
-              </el-radio-group> -->
-              <el-form class="search-form common-form no-border-bottom">
-                <div class="pos-rel">
-                  <el-popover
-                    placement="left-start"
-                    class="formData-illness-box"
-                    v-model="isShowList.all"
-                    trigger="click"
-                  >
-                    <div class="filter-bar">
-                      <div class="formData-select">
-                        <div class="formData-select-query-rule">
-                          <el-radio v-model="formData.query_rule" label="and" key='and'>同时满足</el-radio>
-                          <el-radio v-model="formData.query_rule" label="or" key="or">满足其一</el-radio>
-                        </div>
-                        <div class="formData-select-title">
-                          <div class="normal-div">承保组合</div>
-                          <div class="normal-div">病种</div>
-                          <div class="normal-div">条件</div>
-                          <div class="w480 normal-div">结论</div>
-                          <div class="normal-div">操作</div>
-                        </div>
-                        <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index">
-                          <div class="normal-div tc">{{index + 1}}</div>
-                          <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
-                          <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
-                          <div class="w480 normal-div">
-                            <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
-                              <el-option
-                                v-for="item in conclusionList"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                              </el-option>
-                            </el-select>
-                          </div>
-                          <div class="normal-div">
-                            <i class="el-icon-plus bold" @click="addItem"></i>
-                            <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="button-all-select-box">
-                        <el-button class="button-all-select" @click="resetList">重置</el-button>
-                        <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
-                      </div>
-                    </div>
-                    <span class="dropdown-link" slot="reference">
-                  <template>
-                    <!-- {{(searchText) ? searchText : '组合规则'}}
-                    <el-button
-                      slot="reference"
-                      :class="['button-small-select', { hasValue: searchText }]"
-                      >组合规则 <i class="el-icon-arrow-down"></i
-                    ></el-button>-->
-                    <div class="filter-item el-popover__reference">
-                      <div :class="['content', {'active': searchText}]">
-                        <span class="filter-label">组合规则</span>
-                        <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-                      </div>
-                    </div>
-                  </template>
-                </span>
-                  </el-popover>
-                </div>
-              </el-form>
-            </div>
-          </div>
-          <div class="classify-box">
-            <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
-          </div>
-        </div>
+      
       </side-filter-list>
       <div class="detail-wrap underwrite-search" v-loading="detailLoading || loadingDetail" ref="detailWrap">
         <template v-if="tableData.length > 0">
@@ -224,49 +203,8 @@
         </template>
         <div class="flex-between">
           <el-form inline :modal="formData" @submit.native.prevent label-position="left" class="supper-form">
-            <el-input
-              placeholder="搜索产品名称"
-              clearable
-              prefix-icon="el-icon-search"
-              v-model.trim="supperFormData.product_name"
-              @keyup.enter.native="selectProduct()"
-              size="small"
-              class="supper-search-input">
-            </el-input>
-            <!-- <el-radio-group
-              size="mini"
-              v-model="supperFormData.isReverse"
-              @change="supperRequestList"
-              class="radio-group-wrap"
-            >
-              <el-radio-button
-                style="height: 28px"
-                v-for="(item, index) in supperIsReverseData"
-                :key="'supper' + index"
-                :label="item.value"
-              >{{ item.label }}</el-radio-button>
-            </el-radio-group> -->
-            <div class="pos-rel">
-              <el-popover
-                placement="bottom"
-                class="formData-classify-box"
-                trigger="click">
-                <div class="formData-classify-dialog formData-classify">
-                  <div class="classify-box">
-                    <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
-                  </div>
-                </div>
-                <span class="dropdown-link" slot="reference">
-                <template>
-                  <div class="filter-item el-popover__reference ml16">
-                    <div :class="['content']">
-                      <span class="filter-label">产品类别</span>
-                      <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-                    </div>
-                  </div>
-                </template>
-              </span>
-              </el-popover>
+            <div class="classify-box">
+              <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
             </div>
             <div class="pos-rel mr16">
               <el-popover
@@ -314,7 +252,7 @@
                 </div>
                 <span class="dropdown-link" slot="reference">
                 <template>
-                  <div class="filter-item el-popover__reference ml16">
+                  <div class="filter-item el-popover__reference">
                     <div :class="['content', {'active': supperSearchText}]">
                       <span class="filter-label">组合规则</span>
                       <i class="iconfont iconxiao16_xiajiantou ml4"></i>
@@ -324,11 +262,58 @@
               </span>
               </el-popover>
             </div>
+
+
+            <el-input
+              placeholder="搜索产品名称"
+              clearable
+              prefix-icon="el-icon-search"
+              v-model.trim="supperFormData.product_name"
+              @keyup.enter.native="selectProduct()"
+              size="small"
+              class="supper-search-input">
+            </el-input>
+            <!-- <el-radio-group
+              size="mini"
+              v-model="supperFormData.isReverse"
+              @change="supperRequestList"
+              class="radio-group-wrap"
+            >
+              <el-radio-button
+                style="height: 28px"
+                v-for="(item, index) in supperIsReverseData"
+                :key="'supper' + index"
+                :label="item.value"
+              >{{ item.label }}</el-radio-button>
+            </el-radio-group> -->
+            <!-- <div class="pos-rel">
+              <el-popover
+                placement="bottom"
+                class="formData-classify-box"
+                trigger="click">
+                <div class="formData-classify-dialog formData-classify">
+                  <div class="classify-box">
+                    <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+                  </div>
+                </div>
+                <span class="dropdown-link" slot="reference">
+                <template>
+                  <div class="filter-item el-popover__reference ml16">
+                    <div :class="['content']">
+                      <span class="filter-label">产品类别</span>
+                      <i class="iconfont iconxiao16_xiajiantou ml4"></i>
+                    </div>
+                  </div>
+                </template>
+              </span>
+              </el-popover>
+            </div> -->
+            
             <div style="display: inline-flex;">
               <div class="flex-center mr16">
                 <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
                 <el-input
-                  style="width: 480px"
+                  style="width: 250px"
                   size="small"
                   placeholder="输入病种，以逗号隔开"
                   clearable
@@ -866,34 +851,11 @@ export default {
           return item.name
         })
       }
-      illness_categorys_search.map(item => {
-        this.ruleList.push({
-          illness_categorys_search: item,
-          condition_search: '',
-          conclusion_search: []
-        })
-      })
-      var newList = this.ruleList.map(item => {
-          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
-      })
-      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
-      var newRuleList = newList.map(item => {
-          return {
-              illness_categorys_search: item.split('|.|')[0],
-              condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
-          }
-      })
-      this.ruleList.length = 0
-      newRuleList.map(item => {
-        if (item.illness_categorys_search || item.condition_search || item.conclusion_search.length > 0 ) {
-          this.ruleList.push(item)
-        }
-      })
       let params = {
         product_name: this.formData.product_name,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
+        illness_categorys_search: illness_categorys_search,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -913,6 +875,9 @@ export default {
       this.supperLoading = true
       this.nowIndex++
       // this.searchConditionData = { ...this.formData }
+      var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
+        return item && item.trim()
+      })
       let insuranceList = this.supperClassifyList.filter(item => {
         return item.isSelect
       })
@@ -923,29 +888,11 @@ export default {
           return item.name
         })
       }
-      var newList = this.supperRuleList.map(item => {
-          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
-      })
-
-      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
-
-      var newRuleList = newList.map(item => {
-          return {
-              illness_categorys_search: item.split('|.|')[0],
-              condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2].split(',')
-          }
-      })
-      this.supperRuleList.length = 0
-      newRuleList.map(item => {
-        if (item.illness_categorys_search || item.condition_search || item.conclusion_search.length > 0 ) {
-          this.supperRuleList.push(item)
-        }
-      })
       let params = {
         product_name: this.supperFormData.product_name,
         query_rule: this.supperFormData.query_rule,
         rule_list: this.supperRuleList,
+        illness_categorys_search: illness_categorys_search,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -997,30 +944,11 @@ export default {
           return item.name
         })
       }
-      illness_categorys_search.map(item => {
-        this.supperRuleList.push({
-          illness_categorys_search: item,
-          condition_search: '',
-          conclusion_search: []
-        })
-      })
-      var newList = this.supperRuleList.map(item => {
-          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
-      })
-
-      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
-
-      this.supperRuleList = newList.map(item => {
-          return {
-              illness_categorys_search: item.split('|.|')[0],
-              condition_search: item.split('|.|')[1],
-              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(',')
-          }
-      })
       let params = {
         product_name: this.tempSupperDetailTableData[detailItemIndex].product_name,
         query_rule: this.supperFormData.query_rule,
         rule_list: this.supperRuleList,
+        illness_categorys_search: illness_categorys_search,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -1131,6 +1059,7 @@ export default {
         product_name: this.curProduct.product_name,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
+        illness_categorys_search: illness_categorys_search,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       getUnderwritingDetail({
@@ -1307,7 +1236,30 @@ export default {
     .search-bar-condition{
       flex: 1;
     }
+    .search-input-container{
+      display: inline-block;
+    }
   }
+.classify-box{
+  padding: 0px 8px 0 0;
+  font-size: 14px;
+  display: inline-block;
+  .classify-item{
+    cursor: pointer;
+    display: inline-block;
+    padding: 8px;
+    background: #F5F5F5;
+    border: 1px solid #E6E6E6;
+    color: #333;
+    border-radius: 4px;
+    line-height: 1;
+    margin-right: 8px;
+    &.active{
+      background: rgba(31, 120, 255, 0.1);
+      color: #1F78FF;
+    }
+  }
+}
 .underwrite-search-container {
   height: 100%;
   overflow: hidden;
@@ -1351,10 +1303,11 @@ export default {
     // width: 72px;
     .filter-item {
       // width: 100%;
+      display: inline-block;
       margin-right: 0;
       text-align: center;
       display: flex;
-      height: 28px;
+      height: 32px;
       align-items: center;
       justify-content: center;
     }
@@ -1461,6 +1414,7 @@ export default {
 .pos-rel{
   position: relative;
   display: inline-block;
+  padding-top: 3px;
   .close-btn {
     color: #ff5151;
     background: #fff;
@@ -1489,7 +1443,7 @@ export default {
     margin-right: 0px;
     height: 28px;
     .content{
-      padding: 4px 12px;
+      padding: 6px 12px;
       &.active{
         color: #1f78ff;
         background-color: rgba(31, 120, 255, 0.1);
@@ -1523,25 +1477,7 @@ export default {
 }
 
 .underwrite-search-left{
-  .classify-box{
-    padding: 0px 16px 8px 16px;
-    font-size: 14px;
-    .classify-item{
-      cursor: pointer;
-      display: inline-block;
-      padding: 6px 8px;
-      background: #F5F5F5;
-      border: 1px solid #E6E6E6;
-      color: #333;
-      border-radius: 4px;
-      line-height: 1;
-      margin-right: 8px;
-      &.active{
-        background: rgba(31, 120, 255, 0.1);
-        color: #1F78FF;
-      }
-    }
-  }
+  
 }
 
 .supper-search-button-box{
@@ -1638,5 +1574,8 @@ export default {
   .mr16{
     margin-right: 16px;
   }
+}
+.mr16{
+  margin-right: 16px;
 }
 </style>
