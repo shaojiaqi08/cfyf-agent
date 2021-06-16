@@ -322,7 +322,7 @@
                   @keyup.enter.native.prevent="handleInputChange"
                   v-model.trim="inputSick"></el-input>
               </div> -->
-              <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+              <el-button size="small" class="ml16" type="primary" @click="search" ><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
           </el-form>
         </div>
