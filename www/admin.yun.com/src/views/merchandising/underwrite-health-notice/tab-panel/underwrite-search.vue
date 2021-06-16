@@ -78,7 +78,7 @@
                         <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index">
                           <div class="normal-div tc">{{index + 1}}</div>
                           <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
-                          <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
+                          <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
                           <div class="w480 normal-div">
                             <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
                               <el-option
@@ -290,7 +290,7 @@
                     <div class="formData-select-input" v-for="(item,index) in supperRuleList" :key="index">
                       <div class="normal-div tc">{{index + 1}}</div>
                       <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
-                      <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入条件"></el-input></div>
+                      <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
                       <div class="w480 normal-div">
                         <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
                           <el-option
@@ -1116,7 +1116,7 @@ export default {
           }
       })
       let params = {
-        product_name: this.formData.product_name,
+        product_name: this.curProduct.product_name,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
         insurance_class: insurance_class ? insurance_class.join(',') : ''
