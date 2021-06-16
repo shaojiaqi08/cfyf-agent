@@ -78,7 +78,7 @@
             @input="selectProduct"
           ></el-input>
         </div>
-        <div class="flex-center mr16">
+        <!-- <div class="flex-center mr16">
           <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
           <el-input
             style="width: 250px"
@@ -88,7 +88,7 @@
             @change="handleParentInputChange(false)"
             @keyup.enter.native.prevent="handleParentInputChange"
             v-model.trim="inputParentSick"></el-input>
-        </div>
+        </div> -->
         <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
       </div>
       <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 合并展示</el-button>
@@ -311,7 +311,7 @@
             </div> -->
             
             <div style="display: inline-flex;">
-              <div class="flex-center mr16">
+              <!-- <div class="flex-center mr16">
                 <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
                 <el-input
                   style="width: 250px"
@@ -321,7 +321,7 @@
                   @change="handleInputChange(false)"
                   @keyup.enter.native.prevent="handleInputChange"
                   v-model.trim="inputSick"></el-input>
-              </div>
+              </div> -->
               <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
           </el-form>
@@ -1578,5 +1578,14 @@ export default {
 }
 .mr16{
   margin-right: 16px;
+}
+
+.normal-div{
+  /deep/ .el-input--medium .el-input__icon{
+    height: 14px;
+    position: relative;
+    top: calc(50% - 7px);
+    line-height: 1;
+  }
 }
 </style>
