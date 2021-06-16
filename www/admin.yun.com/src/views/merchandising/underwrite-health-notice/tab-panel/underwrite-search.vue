@@ -7,7 +7,7 @@
         </div>
         <div class="pos-rel mr16">
           <el-popover
-            placement="left-start"
+            placement="top-start"
             class="formData-illness-box"
             v-model="isShowList.all"
             trigger="click"
@@ -322,7 +322,7 @@
                   @keyup.enter.native.prevent="handleInputChange"
                   v-model.trim="inputSick"></el-input>
               </div> -->
-              <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+              <el-button size="small" class="ml16" type="primary" @click="search" :disabled="!canSearch"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
             </div>
           </el-form>
         </div>
@@ -672,60 +672,24 @@ export default {
     }, 300),
     // new
     conditionText() {
-      let str = ''
-      if (this.formData.product_name) {
-        str += `产品名称：${this.formData.product_name},`
-      }
-      var illness_categorys_search = this.formData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
+      let isSelect = false
+      this.ruleList.map(item => {
+        if (!(item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == "标体承保,除外承保,加费承保,人工核保")) {
+          isSelect = true
+        }
       })
-      var condition_search = this.formData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.formData.conclusion_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      if (illness_categorys_search.join(',').length > 0) {
-        str += '病种' + illness_categorys_search.join(',')
-      }
-      if (condition_search.join(',').length > 0) {
-        str += '条件' + condition_search.join(',')
-      }
-      if (conclusion_search.join(',').length > 0) {
-        str += '结论' + conclusion_search.join(',')
-      }
-      if (str.lastIndexOf(',') === (str.length - 1)) {
-        str = str.substring(0, str.length - 1)
-      }
-      return str
+      return isSelect
     },
     supperConditionText() {
-      let str = ''
-      if (this.supperFormData.product_name) {
-        str += `产品名称：${this.supperFormData.product_name},`
-      }
-      var illness_categorys_search = this.supperFormData.illness_categorys_search.value.filter(function (item) {
-        return item && item.trim()
+      let isSelect = false
+      this.supperRuleList.map(item => {
+        if (item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == "标体承保,除外承保,加费承保,人工核保") {
+          isSelect = false
+        } else {
+          isSelect = true
+        }
       })
-      var condition_search = this.supperFormData.condition_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      var conclusion_search = this.supperFormData.conclusion_search.value.filter(function (item) {
-        return item && item.trim()
-      })
-      if (illness_categorys_search.join(',').length > 0) {
-        str += '病种' + illness_categorys_search.join(',')
-      }
-      if (condition_search.join(',').length > 0) {
-        str += '条件' + condition_search.join(',')
-      }
-      if (conclusion_search.join(',').length > 0) {
-        str += '结论' + conclusion_search.join(',')
-      }
-      if (str.lastIndexOf(',') === (str.length - 1)) {
-        str = str.substring(0, str.length - 1)
-      }
-      return str
+      return isSelect
     },
     createImg(ref, isShow) {
       if (this.isCreateImgLock) {
@@ -863,7 +827,7 @@ export default {
       this.detailTableData = []
       getUnderwritingProductList(params)
       .then((res) => {
-        this.searchText = true
+        this.searchText = this.conditionText()
         this.tableData = res
       })
       .finally(() => {
@@ -903,7 +867,7 @@ export default {
         this.tempSupperDetailTableData.map(item => {
           item.isSearch = false
         })
-        this.supperSearchText = true
+        this.supperSearchText = this.supperConditionText()
         if (res.length > 0) {
           this.loopDetail(this.nowIndex)
         } else {
@@ -1120,26 +1084,27 @@ export default {
         },
         isReverse: 0
       }
-      this.supperSearchText = ''
+      this.supperSearchText = this.supperConditionText()
       this.supperDetailTableData = []
     },
     resetList() {
-      this.searchText = false
+      console.log('------------------resetList--------------------------')
       this.ruleList.length = 0
       this.ruleList.push({
         illness_categorys_search: "",
         condition_search: "",
         conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
       })
+      this.searchText = this.conditionText()
     },
     resetSupperList() {
-      this.supperSearchText = false
       this.supperRuleList.length = 0
       this.supperRuleList.push({
         illness_categorys_search: "",
         condition_search: "",
         conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
       })
+      this.supperSearchText = this.supperConditionText()
     },
     search() {
       if (!this.isShowSupperSearch) {
@@ -1216,7 +1181,7 @@ export default {
     document.addEventListener('keyup', this.handleEnter)
   },
   beforeDestroy() {
-    this.searchText = false
+    this.searchText = this.conditionText()
     window.removeEventListener("resize", this.setMaxHeight);
     document.removeEventListener('keyup', this.handleEnter)
   },
