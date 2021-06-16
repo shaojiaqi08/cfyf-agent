@@ -855,7 +855,7 @@ export default {
         product_name: this.formData.product_name,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
-        illness_categorys_search: illness_categorys_search,
+        illness_categorys_search: illness_categorys_search ? illness_categorys_search.join(',') : '',
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -892,7 +892,7 @@ export default {
         product_name: this.supperFormData.product_name,
         query_rule: this.supperFormData.query_rule,
         rule_list: this.supperRuleList,
-        illness_categorys_search: illness_categorys_search,
+        illness_categorys_search: illness_categorys_search ? illness_categorys_search.join(',') : '',
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -948,7 +948,7 @@ export default {
         product_name: this.tempSupperDetailTableData[detailItemIndex].product_name,
         query_rule: this.supperFormData.query_rule,
         rule_list: this.supperRuleList,
-        illness_categorys_search: illness_categorys_search,
+        illness_categorys_search: illness_categorys_search ? illness_categorys_search.join(',') : '',
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       this.searchConditionData = { ...params }
@@ -1059,7 +1059,7 @@ export default {
         product_name: this.curProduct.product_name,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
-        illness_categorys_search: illness_categorys_search,
+        illness_categorys_search: illness_categorys_search ? illness_categorys_search.join(',') : '',
         insurance_class: insurance_class ? insurance_class.join(',') : ''
       }
       getUnderwritingDetail({
