@@ -28,7 +28,15 @@
                 <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
               <el-form-item label="是否在售">
-                <el-input v-model="formData.is_sale" placeholder="请输入搜索关键字"></el-input>
+                <!-- <el-input v-model="formData.is_sale" placeholder="请输入搜索关键字"></el-input> -->
+                <el-select v-model="formData.is_sale" placeholder="请选择是否在售" clearable  style="width: 100%;">
+                  <el-option
+                    v-for="item in isSaleList"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="保险公司报案电话">
                 <el-input v-model="formData.report_mobile" placeholder="请输入搜索关键字"></el-input>
@@ -90,6 +98,18 @@ export default {
         { name: '其他理赔途径', key: 'other_claims' },
         { name: '理赔材料', key: 'claim_materials' },
       ],
+      isSaleList: [
+        {
+          value: '',
+          label: '全部'
+        }, {
+          value: '是',
+          label: '是'
+        }, {
+          value: '否',
+          label: '否'
+        }
+      ],
       columnsData: [],
       tableHeight: null,
       loading: false,
@@ -104,7 +124,7 @@ export default {
         company: '',
         insurance_class: '',
         channel: '',
-        is_sale: '',
+        is_sale: '全部',
         report_mobile: '',
         other_claims: '',
         claim_materials: '',
@@ -168,7 +188,7 @@ export default {
         company: '',
         insurance_class: '',
         channel: '',
-        is_sale:'',
+        is_sale:'全部',
         report_mobile: '',
         other_claims: '',
         claim_materials: '',
@@ -197,6 +217,9 @@ export default {
         return
       }
       this.loading = true
+      if (this.formData.is_sale == '全部') {
+        this.formData.is_sale = ''
+      }
       getClaimPreservationList({
         ...this.formData,
         insurance_class: insurance_class ? insurance_class.join(',') : ''

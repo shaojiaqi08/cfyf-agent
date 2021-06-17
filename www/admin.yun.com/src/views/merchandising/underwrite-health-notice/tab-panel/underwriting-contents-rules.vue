@@ -15,11 +15,12 @@
         </div>
         <el-scrollbar>
           <el-form inline :modal="formData" @submit.native.prevent label-position="top">
-              <el-form-item label="保险公司">
-              <el-input v-model="formData.company" placeholder="请输入搜索关键字"></el-input>
-            </el-form-item>
+              
             <el-form-item label="产品名称">
               <el-input v-model="formData.product_name_like" placeholder="请输入搜索关键字"></el-input>
+            </el-form-item>
+            <el-form-item label="保险公司">
+              <el-input v-model="formData.company" placeholder="请输入搜索关键字"></el-input>
             </el-form-item>
             <el-form-item label="智能核保">
               <el-input v-model="formData.intelligent_underwriting" placeholder="请输入搜索关键字"></el-input>
