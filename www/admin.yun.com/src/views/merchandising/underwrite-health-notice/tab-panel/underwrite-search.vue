@@ -188,7 +188,7 @@
             <div>
               <h3>合并展示</h3>
             </div>
-            <span class="mr50">
+            <span class="mr100">
             调整字号
             <el-input-number
               size="small"
@@ -1466,8 +1466,21 @@ export default {
       padding: 10px 20px !important;
       line-height: 40px !important;
       height: auto !important;
-      .el-dialog__headerbtn {
-        top: 16px;
+      .el-dialog__headerbtn{
+        border: 2px solid #1F78FF;
+        box-sizing: border-box;
+        font-weight: bold;
+        background: #1F78FF;
+        border-radius: 8px;
+        top: 9px !important;
+        width: 67px;
+        .el-dialog__close{
+          color: #fff !important;
+          font-size: 38px;
+        }
+        &:hover{
+          color: #fff;
+        }
       }
     }
     .el-dialog__body {
@@ -1552,5 +1565,8 @@ export default {
     top: calc(50% - 7px);
     line-height: 1;
   }
+}
+.mr100{
+  margin-right: 100px;
 }
 </style>
