@@ -1466,8 +1466,21 @@ export default {
       padding: 10px 20px !important;
       line-height: 40px !important;
       height: auto !important;
-      .el-dialog__headerbtn {
-        top: 16px;
+      .el-dialog__headerbtn{
+        border: 2px solid #1F78FF;
+        box-sizing: border-box;
+        font-weight: bold;
+        background: #1F78FF;
+        border-radius: 8px;
+        top: 9px !important;
+        width: 67px;
+        .el-dialog__close{
+          color: #fff;
+          font-size: 38px;
+        }
+        &:hover{
+          color: #fff;
+        }
       }
     }
     .el-dialog__body {
