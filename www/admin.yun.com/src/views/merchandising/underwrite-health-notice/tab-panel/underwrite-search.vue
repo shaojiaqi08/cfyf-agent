@@ -1475,7 +1475,7 @@ export default {
         top: 9px !important;
         width: 67px;
         .el-dialog__close{
-          color: #fff;
+          color: #fff !important;
           font-size: 38px;
         }
         &:hover{
