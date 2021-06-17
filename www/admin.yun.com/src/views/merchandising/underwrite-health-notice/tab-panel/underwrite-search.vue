@@ -188,7 +188,7 @@
             <div>
               <h3>合并展示</h3>
             </div>
-            <span class="mr50">
+            <span class="mr100">
             调整字号
             <el-input-number
               size="small"
@@ -1565,5 +1565,8 @@ export default {
     top: calc(50% - 7px);
     line-height: 1;
   }
+}
+.mr100{
+  margin-right: 100px;
 }
 </style>
