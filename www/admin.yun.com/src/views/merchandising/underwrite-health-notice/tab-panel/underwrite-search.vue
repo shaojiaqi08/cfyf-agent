@@ -1,97 +1,82 @@
 <template>
-  <div v-loading="loading" style="height: 95%">
+  <div v-loading="loading" style="height: 100%">
     <div class="search-bar">
-      <div style="display: inline-flex;" class="search-bar-condition">
-        <div class="classify-box">
-          <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+      <el-form style="display: inline-block; font-size: 0px" class="search-bar-condition">
+        <div class="left-header">
+          <div class="flex-center mr16">
+            <el-input
+              clearable
+              placeholder='搜索多个产品名称用","间隔'
+              v-model.trim="formData.product_name"
+              prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+              @input="selectProduct"
+            ></el-input>
+          </div>
+          <div class="classify-box">
+            <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+          </div>
         </div>
-        <div class="pos-rel mr16">
-          <el-popover
-            placement="top-start"
-            class="formData-illness-box"
-            v-model="isShowList.all"
-            trigger="click"
-          >
-            <div class="filter-bar">
-              <div class="formData-select">
-                <div class="formData-select-query-rule">
-                  <el-radio v-model="formData.query_rule" label="and" key='and'>同时满足</el-radio>
-                  <el-radio v-model="formData.query_rule" label="or" key="or">满足其一</el-radio>
-                </div>
-                <div class="formData-select-title">
-                  <div class="normal-div">承保组合</div>
-                  <div class="normal-div">病种</div>
-                  <div class="normal-div">条件</div>
-                  <div class="w480 normal-div">结论</div>
-                  <div class="normal-div">操作</div>
-                </div>
-                <div class="formData-select-input" v-for="(item,index) in ruleList" :key="index">
-                  <div class="normal-div tc">{{index + 1}}</div>
-                  <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
-                  <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
-                  <div class="w480 normal-div">
-                    <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
-                      <el-option
-                        v-for="item in conclusionList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                      </el-option>
-                    </el-select>
-                  </div>
-                  <div class="normal-div">
-                    <i class="el-icon-plus bold" @click="addItem"></i>
-                    <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
+        <div class="right-header">
+          <div class="right-num-box">
+            <span v-if="selectNum != 0" class="right-num">{{selectNum}}</span>
+            组合规则
+          </div>
+          <div class="formData-select-query-rule">
+            <el-radio v-model="formData.query_rule" label="and">同时满足</el-radio>
+            <el-radio v-model="formData.query_rule" label="or">满足其一</el-radio>
+          </div>
+          <div class="formData-select-input-box rel">
+            <div class="formData-select-input rel" v-for="(item,index) in ruleList" :key="item.value">
+              <div class="normal-div check">
+                <i class="el-icon-check bold" v-if="item.isUseSearch"></i>
+              </div>
+              <div class="normal-div">
+                <div class="el-form-item el-form-item--medium">
+                  <label class="el-form-item__label rel">
+                    病种:<i class="el-icon-warning-outline tip-info" title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。' ></i>
+                  </label>
+                  <div class="el-form-item__content">
+                    <el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种" @keyup.enter.native="selectProduct()"></el-input>
                   </div>
                 </div>
               </div>
-              <div class="button-all-select-box">
-                <el-button class="button-all-select" @click="resetList">重置</el-button>
-                <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
+              <div class="normal-div">
+                <div class="el-form-item el-form-item--medium">
+                  <label class="el-form-item__label rel">
+                    条件:<i class="el-icon-warning-outline tip-info" title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。' ></i>
+                  </label>
+                  <div class="el-form-item__content">
+                    <el-input v-model="item.condition_search" placeholder="请输入单一条件" @keyup.enter.native="selectProduct()"></el-input>
+                  </div>
+                </div>
               </div>
-            </div>
-            <span class="dropdown-link" slot="reference">
-          <template>
-            <!-- {{(searchText) ? searchText : '组合规则'}}
-            <el-button
-              slot="reference"
-              :class="['button-small-select', { hasValue: searchText }]"
-              >组合规则 <i class="el-icon-arrow-down"></i
-            ></el-button>-->
-            <div class="filter-item el-popover__reference">
-              <div :class="['content', {'active': searchText}]">
-                <span class="filter-label">组合规则</span>
-                <i class="iconfont iconxiao16_xiajiantou ml4"></i>
+              <div class="w400 normal-div">
+                <el-form-item label="结论:">
+                  <el-select style="width: 400px" v-model="item.conclusion_search" multiple :popper-append-to-body="false" placeholder="请选择">
+                    <el-option
+                      v-for="item in conclusionList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
               </div>
+              <div class="normal-div">
+                <i class="el-icon-plus bold" @click="addItem"></i>
+                <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
+              </div> 
             </div>
-          </template>
-        </span>
-          </el-popover>
+            <el-button class="button-all-reset" @click="resetList">重置</el-button>
+          </div>
+          <div class="button-box">
+            <el-button class="supper-search" @click="supperSearch"><i class="el-icon-search"></i>合并展示</el-button>
+            <el-button class="normal-search" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
+          </div>
+          <i class="el-icon-arrow-up up-arrow"></i>
+          <i class="el-icon-arrow-down down-arrow"></i>
         </div>
-        <div class="flex-center mr16">
-          <span style="white-space: nowrap" class="mr4">产品名称:</span>
-          <el-input
-            clearable
-            placeholder="搜索产品名称"
-            v-model.trim="formData.product_name"
-            prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
-            @input="selectProduct"
-          ></el-input>
-        </div>
-        <!-- <div class="flex-center mr16">
-          <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
-          <el-input
-            style="width: 250px"
-            size="small"
-            placeholder="输入病种，以逗号隔开"
-            clearable
-            @change="handleParentInputChange(false)"
-            @keyup.enter.native.prevent="handleParentInputChange"
-            v-model.trim="inputParentSick"></el-input>
-        </div> -->
-        <el-button size="small" class="ml16" type="primary" @click="search"><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
-      </div>
-      <el-button class="ml16" type="primary" @click="supperSearch" size="small"><i class="iconfont iconxiao16_sousuo mr4"></i> 合并展示</el-button>
+      </el-form>
     </div>
     <div class="underwrite-search-container">
       <side-filter-list
@@ -203,126 +188,79 @@
           </div>
         </template>
         <div class="flex-between">
-          <el-form inline :modal="formData" @submit.native.prevent label-position="left" class="supper-form">
-            <div class="classify-box">
-              <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
-            </div>
-            <div class="pos-rel mr16">
-              <el-popover
-                placement="bottom"
-                class="formData-illness-box"
-                v-model="isShowList.supperAll"
-                trigger="click">
-                <div>
-                  <div class="formData-select">
-                    <div class="formData-select-query-rule">
-                      <el-radio v-model="supperFormData.query_rule" label="and">同时满足</el-radio>
-                      <el-radio v-model="supperFormData.query_rule" label="or">满足其一</el-radio>
-                    </div>
-                    <div class="formData-select-title">
-                      <div class="normal-div">承保组合</div>
-                      <div class="normal-div">病种</div>
-                      <div class="normal-div">条件</div>
-                      <div class="w480 normal-div">结论</div>
-                      <div class="normal-div">操作</div>
-                    </div>
-                    <div class="formData-select-input" v-for="(item,index) in supperRuleList" :key="index">
-                      <div class="normal-div tc">{{index + 1}}</div>
-                      <div class="normal-div"><el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种"></el-input></div>
-                      <div class="normal-div"><el-input v-model="item.condition_search" placeholder="请输入单一条件"></el-input></div>
-                      <div class="w480 normal-div">
-                        <el-select style="width: 480px" v-model="item.conclusion_search" multiple placeholder="请选择">
-                          <el-option
-                            v-for="item in conclusionList"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                      </div>
-                      <div class="normal-div">
-                        <i class="el-icon-plus bold" @click="supperAddItem"></i>
-                        <i class="el-icon-minus bold" @click="supperSubItem(index)" v-if="supperRuleList.length != 1"></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="button-all-select-box">
-                    <el-button class="button-all-select" @click="resetSupperList">重置</el-button>
-                    <el-button type="warning" class="button-all-select" @click="search">确定</el-button>
-                  </div>
-                </div>
-                <span class="dropdown-link" slot="reference">
-                <template>
-                  <div class="filter-item el-popover__reference">
-                    <div :class="['content', {'active': supperSearchText}]">
-                      <span class="filter-label">组合规则</span>
-                      <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-                    </div>
-                  </div>
-                </template>
-              </span>
-              </el-popover>
-            </div>
-
-            <span style="white-space: nowrap" class="mr4">产品名称:</span>
-            <el-input
-              placeholder="搜索产品名称"
-              clearable
-              prefix-icon="el-icon-search"
-              v-model.trim="supperFormData.product_name"
-              @keyup.enter.native="selectProduct()"
-              size="small"
-              class="supper-search-input">
-            </el-input>
-            <!-- <el-radio-group
-              size="mini"
-              v-model="supperFormData.isReverse"
-              @change="supperRequestList"
-              class="radio-group-wrap"
-            >
-              <el-radio-button
-                style="height: 28px"
-                v-for="(item, index) in supperIsReverseData"
-                :key="'supper' + index"
-                :label="item.value"
-              >{{ item.label }}</el-radio-button>
-            </el-radio-group> -->
-            <!-- <div class="pos-rel">
-              <el-popover
-                placement="bottom"
-                class="formData-classify-box"
-                trigger="click">
-                <div class="formData-classify-dialog formData-classify">
-                  <div class="classify-box">
-                    <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
-                  </div>
-                </div>
-                <span class="dropdown-link" slot="reference">
-                <template>
-                  <div class="filter-item el-popover__reference ml16">
-                    <div :class="['content']">
-                      <span class="filter-label">产品类别</span>
-                      <i class="iconfont iconxiao16_xiajiantou ml4"></i>
-                    </div>
-                  </div>
-                </template>
-              </span>
-              </el-popover>
-            </div> -->
-            
-            <div style="display: inline-flex;">
-              <!-- <div class="flex-center mr16">
-                <span style="white-space: nowrap; font-size: 14px;" class="mr4">病种:</span>
+          <el-form style="display: inline-block; font-size: 0px" class="search-bar-condition">
+            <div class="left-header">
+              <div class="flex-center mr16">
                 <el-input
-                  style="width: 250px"
-                  size="small"
-                  placeholder="输入病种，以逗号隔开"
                   clearable
-                  @change="handleInputChange(false)"
-                  @keyup.enter.native.prevent="handleInputChange"
-                  v-model.trim="inputSick"></el-input>
-              </div> -->
-              <el-button size="small" class="ml16" type="primary" @click="search" ><i class="iconfont iconxiao16_sousuo mr4"></i>搜索</el-button>
+                  placeholder='搜索多个产品名称用","间隔'
+                  v-model.trim="supperFormData.product_name"
+                  prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon"
+                  @input="selectProduct"
+                ></el-input>
+              </div>
+              <div class="classify-box">
+                <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value" @click="selectItem(item)">{{item.name}}</div>
+              </div>
+            </div>
+            <div class="right-header">
+              <div class="right-num-box">
+                <span v-if="supperSelectNum != 0" class="right-num">{{supperSelectNum}}</span>
+                组合规则
+              </div>
+              <div class="formData-select-query-rule">
+                <el-radio v-model="supperFormData.query_rule" label="and">同时满足</el-radio>
+                <el-radio v-model="supperFormData.query_rule" label="or">满足其一</el-radio>
+              </div>
+              <div class="formData-select-input-box rel">
+                <div class="formData-select-input rel" v-for="(item,index) in supperRuleList" :key="item.value">
+                  <div class="normal-div check">
+                    <i class="el-icon-check bold" v-if="item.isUseSearch"></i>
+                  </div>
+                  <div class="normal-div">
+                    <div class="el-form-item el-form-item--medium">
+                      <label class="el-form-item__label rel">
+                        病种:<i class="el-icon-warning-outline tip-info" title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。' ></i>
+                      </label>
+                      <div class="el-form-item__content">
+                        <el-input v-model="item.illness_categorys_search" placeholder="请输入单一病种" @keyup.enter.native="selectProduct()"></el-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="normal-div">
+                    <div class="el-form-item el-form-item--medium">
+                      <label class="el-form-item__label rel">
+                        条件:<i class="el-icon-warning-outline tip-info" title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。' ></i>
+                      </label>
+                      <div class="el-form-item__content">
+                        <el-input v-model="item.condition_search" placeholder="请输入单一条件" @keyup.enter.native="selectProduct()"></el-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w400 normal-div">
+                    <el-form-item label="结论:">
+                      <el-select style="width: 400px" v-model="item.conclusion_search" multiple :popper-append-to-body="false" placeholder="请选择">
+                        <el-option
+                          v-for="item in conclusionList"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                  <div class="normal-div">
+                    <i class="el-icon-plus bold" @click="supperAddItem"></i>
+                    <i class="el-icon-minus bold" @click="supperSubItem(index)" v-if="supperRuleList.length != 1"></i>
+                  </div> 
+                </div>
+                <el-button class="button-all-reset" @click="resetSupperList">重置</el-button>
+              </div>
+              <div class="button-box">
+                <el-button class="normal-search" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
+              </div>
+              <i class="el-icon-arrow-up up-arrow"></i>
+              <i class="el-icon-arrow-down down-arrow"></i>
             </div>
           </el-form>
         </div>
@@ -508,25 +446,14 @@ export default {
       supperLoading: false,
       nowIndex: 0,
       ruleList: [
-        {
-          illness_categorys_search: "",
-          condition_search: "",
-          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
-          random: Math.random()
-        }
       ],
       supperRuleList: [
-        {
-          illness_categorys_search: "",
-          condition_search: "",
-          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
-          random: Math.random()
-        }
       ],
       ruleListItem: {
         illness_categorys_search: "",
         condition_search: "",
-        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
+        isUseSearch: false
       },
       conclusionList: [
         {
@@ -560,7 +487,27 @@ export default {
     canSearch() {
       const { inputCondition, inputConclusion, inputSick, supperFormData } = this
       return inputCondition || inputConclusion || inputSick || supperFormData.product_name
-    }
+    },
+    selectNum() {
+      let num = 0
+      let selectNumList = this.checkRuleNull(this.ruleList)
+      selectNumList.map(item => {
+        if (item.isUseSearch) {
+          num++
+        }
+      })
+      return num
+    },
+    supperSelectNum() {
+      let num = 0
+      let selectNumList = this.checkRuleNull(this.supperRuleList)
+      selectNumList.map(item => {
+        if (item.isUseSearch) {
+          num++
+        }
+      })
+      return num
+    },
   },
   methods: {
     clearValue,
@@ -572,26 +519,26 @@ export default {
       // }
     },
     closeSupperSearchDialog() {
-      this.inputSick = ''
-      this.inputCondition = ''
-      this.inputConclusion = ''
-      this.supperFormData = {
-        product_name: '',
-        query_rule: 'and',
-        illness_categorys_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        condition_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        conclusion_search: {
-          value: ['', '', '', '', '', '', '', '', '', ''],
-          query_rule: 'and'
-        },
-        isReverse: '0'
-      }
+      // this.inputSick = ''
+      // this.inputCondition = ''
+      // this.inputConclusion = ''
+      // this.supperFormData = {
+      //   product_name: '',
+      //   query_rule: 'and',
+      //   illness_categorys_search: {
+      //     value: ['', '', '', '', '', '', '', '', '', ''],
+      //     query_rule: 'and'
+      //   },
+      //   condition_search: {
+      //     value: ['', '', '', '', '', '', '', '', '', ''],
+      //     query_rule: 'and'
+      //   },
+      //   conclusion_search: {
+      //     value: ['', '', '', '', '', '', '', '', '', ''],
+      //     query_rule: 'and'
+      //   },
+      //   isReverse: '0'
+      // }
       this.supperDetailTableData = []
       this.supperLoading = false
     },
@@ -670,11 +617,24 @@ export default {
         this.maxHeight = wrap.offsetHeight - 64;
       }
     }, 300),
+    checkRuleNull(ruleList) {
+      let tempruleList = JSON.parse(JSON.stringify(ruleList))
+      var newruleList = tempruleList.filter(item => {
+        if (tempruleList.length > 1) {
+           if (item.illness_categorys_search != '' || item.condition_search != '') {
+            return item
+          }
+        } else {
+          return item
+        }
+      })
+      return newruleList
+    },
     // new
     conditionText() {
       let isSelect = false
       this.ruleList.map(item => {
-        if (!(item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == "标体承保,除外承保,加费承保,人工核保")) {
+        if (!(item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == '' + this.ruleListItem.conclusion_search)) {
           isSelect = true
         }
       })
@@ -683,7 +643,7 @@ export default {
     supperConditionText() {
       let isSelect = false
       this.supperRuleList.map(item => {
-        if (item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == "标体承保,除外承保,加费承保,人工核保") {
+        if (item.illness_categorys_search == '' && item.condition_search == '' && '' + item.conclusion_search == '' + this.ruleListItem.conclusion_search) {
           isSelect = false
         } else {
           isSelect = true
@@ -816,6 +776,32 @@ export default {
           return item.name
         })
       }
+      var newList = this.ruleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+      var newRuleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(','),
+              isUseSearch: false
+          }
+      })
+
+      this.ruleList.length = 0
+      newRuleList.map((item, index) => {
+        if (newRuleList.length > 1) {
+          if (item.illness_categorys_search || item.condition_search) { 
+            this.ruleList.push(item)
+          }
+        } else {
+          this.ruleList.push(item)
+        }
+        if (index == (newRuleList.length - 1) && this.ruleList.length == 0) {
+          this.ruleList.push(newRuleList[0])
+        }
+      })
       let params = {
         product_name: this.formData.product_name,
         query_rule: this.formData.query_rule,
@@ -827,6 +813,20 @@ export default {
       this.detailTableData = []
       getUnderwritingProductList(params)
       .then((res) => {
+        this.ruleList.map((item, index) => {
+          if (this.ruleList.length > 1) {
+            if (item.illness_categorys_search != '' || item.condition_search != '') {
+              this.ruleList[index].isUseSearch = true
+            } else {
+              this.ruleList[index].isUseSearch = false
+            }
+          } else {
+            this.ruleList[index].isUseSearch = true
+          }
+          // illness_categorys_search: "",
+          // condition_search: "",
+          // conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
+        })
         this.searchText = this.conditionText()
         this.tableData = res
       })
@@ -853,6 +853,33 @@ export default {
           return item.name
         })
       }
+      var newList = this.supperRuleList.map(item => {
+          return '' + item.illness_categorys_search + '|.|' + item.condition_search  + '|.|' +  item.conclusion_search
+      })
+
+      newList = newList.reduce((prev,cur) => prev.includes(cur) ? prev : [...prev,cur],[])
+
+      var newRuleList = newList.map(item => {
+          return {
+              illness_categorys_search: item.split('|.|')[0],
+              condition_search: item.split('|.|')[1],
+              conclusion_search: item.split('|.|')[2] == '' ? [] : item.split('|.|')[2].split(','),
+              isUseSearch: false
+          }
+      })
+      this.supperRuleList.length = 0
+      newRuleList.map((item, index) => {
+        if (newRuleList.length > 1) {
+          if (item.illness_categorys_search || item.condition_search) { 
+            this.supperRuleList.push(item)
+          }
+        } else {
+          this.supperRuleList.push(item)
+        }
+        if (index == (newRuleList.length - 1) && this.supperRuleList.length == 0) {
+          this.supperRuleList.push(newRuleList[0])
+        }
+      })
       let params = {
         product_name: this.supperFormData.product_name,
         query_rule: this.supperFormData.query_rule,
@@ -863,6 +890,20 @@ export default {
       this.searchConditionData = { ...params }
       getUnderwritingProductList(params)
       .then((res) => {
+        this.supperRuleList.map((item, index) => {
+          if (this.supperRuleList.length > 1) {
+            if (item.illness_categorys_search != '' || item.condition_search != '') {
+              this.supperRuleList[index].isUseSearch = true
+            } else {
+              this.supperRuleList[index].isUseSearch = false
+            }
+          } else {
+            this.supperRuleList[index].isUseSearch = true
+          }
+          // illness_categorys_search: "",
+          // condition_search: "",
+          // conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保'],
+        })
         this.tempSupperDetailTableData = res
         this.tempSupperDetailTableData.map(item => {
           item.isSearch = false
@@ -921,7 +962,8 @@ export default {
       .then((res) => {
         if (!this.isShowSupperSearch) {
           this.supperFormData = {
-            product_name: ''
+            product_name: '',
+            query_rule: this.supperFormData.query_rule,
           }
           this.supperDetailTableData = []
           return
@@ -1088,22 +1130,13 @@ export default {
       this.supperDetailTableData = []
     },
     resetList() {
-      console.log('------------------resetList--------------------------')
       this.ruleList.length = 0
-      this.ruleList.push({
-        illness_categorys_search: "",
-        condition_search: "",
-        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
-      })
+      this.ruleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
       this.searchText = this.conditionText()
     },
     resetSupperList() {
       this.supperRuleList.length = 0
-      this.supperRuleList.push({
-        illness_categorys_search: "",
-        condition_search: "",
-        conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
-      })
+      this.supperRuleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
       this.supperSearchText = this.supperConditionText()
     },
     search() {
@@ -1115,6 +1148,11 @@ export default {
         }
         this.page = 1
         this.supperRuleList = JSON.parse(JSON.stringify(this.ruleList))
+        this.supperRuleList = this.supperRuleList.map(item => {
+          item.isUseSearch = false
+          return item
+        })
+        this.supperFormData.query_rule = this.formData.query_rule
         // const fd = this.formData
         // this.selVal = ''
         // this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
@@ -1127,6 +1165,11 @@ export default {
           supperAll: false
         }
         this.ruleList = JSON.parse(JSON.stringify(this.supperRuleList))
+        this.ruleList = this.ruleList.map(item => {
+          item.isUseSearch = false
+          return item
+        })
+        this.formData.query_rule = this.supperFormData.query_rule
         // const fd = this.supperFormData
         // this.selVal = ''
         // this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
@@ -1176,6 +1219,9 @@ export default {
   },
   created() {
     // this.ajaxProductData();
+    this.ruleListItem.conclusion_search = ['标体承保', '除外承保', '加费承保', '人工核保', '延期承保', '拒保']
+    this.ruleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
+    this.supperRuleList.push(JSON.parse(JSON.stringify(this.ruleListItem)))
     this.requestList()
     window.addEventListener("resize", this.setMaxHeight);
     document.addEventListener('keyup', this.handleEnter)
@@ -1207,7 +1253,7 @@ export default {
     }
   }
 .classify-box{
-  padding: 0px 8px 0 0;
+  padding: 8px 16px 0 0;
   font-size: 14px;
   display: inline-block;
   .classify-item{
@@ -1227,7 +1273,7 @@ export default {
   }
 }
 .underwrite-search-container {
-  height: 100%;
+  height: 77vh;
   overflow: hidden;
   display: flex;
   align-items: stretch;
@@ -1327,13 +1373,18 @@ export default {
       padding: 0 5px;
       .el-icon-plus{
         margin-left: 20px;
+        cursor: pointer;
       }
       .el-icon-minus {
         margin-left: 20px;
+        cursor: pointer;
       }
     }
     .w480{
       width: 480px;
+    }
+    .w400{
+      width: 400px;
     }
     .tc{
       text-align: center;
@@ -1372,8 +1423,8 @@ export default {
     width: 88px;
   }
   .el-form-item{
-    margin-right: 16px!important;
-    margin-bottom: 20px!important;
+    margin-right: 0px!important;
+    margin-bottom: 0px!important;
   }
 }
 
@@ -1560,13 +1611,189 @@ export default {
 
 .normal-div{
   /deep/ .el-input--medium .el-input__icon{
-    height: 14px;
-    position: relative;
-    top: calc(50% - 7px);
-    line-height: 1;
+    // height: 14px;
+    // position: relative;
+    // top: calc(50% - 7px);
+    // line-height: 1;
   }
 }
 .mr100{
   margin-right: 100px;
+}
+
+.left-header{
+  width: 280px;
+  display: inline-block;
+  float: left;
+}
+.right-header{
+  position: absolute;
+  z-index: 3000;
+  display: inline-block;
+  background: #fff;
+  font-size: 0px;
+  padding-top: 6px;
+  padding-right: 20px;
+  padding-left: 8px;
+  float: left;
+  height: 86px;
+  padding-bottom: 20px;
+  overflow: hidden;
+  &:hover{
+    height: auto;
+    overflow: inherit;
+    box-shadow: 5px 4px 6px 1px #999;
+    .down-arrow{
+      display: none;
+    }
+    .up-arrow{
+      display: inline-block;
+    }
+    .formData-select-input-box{
+      .formData-select-input{
+        display: inline-block;
+        .el-form-item--medium .el-form-item__content{
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .down-arrow{
+    font-size: 16px;
+    position: absolute;
+    left: 49.2%;
+    bottom: 0px;
+  }
+  .up-arrow{
+    display: none;
+    font-size: 16px;
+    position: absolute;
+    left: 49.2%;
+    bottom: 4px;
+  }
+  .el-button--default{
+    background: #E0EDFF;
+    color: #1f78ff;
+    border-color: #E0EDFF;
+  }
+  .el-button--primary{
+    width: 117px;
+  }
+  .right-num-box{
+    position: relative;
+    float: left;
+    width: 64px;
+    height: 64px;
+    background: #E0EDFF;
+    border-radius: 8px;
+    font-size: 20px;
+    color: #1f78ff;
+    border: 1px solid #1f78ff;
+    box-sizing: border-box;
+    padding: 11px;
+    box-sizing: border-box;
+    line-height: 1;
+    display: inline-block;
+    .right-num{
+      position: absolute;
+      right: -6px;
+      top: -6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1f78ff;
+      text-align: center;
+      line-height: 20px;
+      font-size: 14px;
+      color: #fff;
+      border: 0px solid #333;
+    }
+  }
+  .formData-select-query-rule{
+    float: left;
+    height: 86px;
+    margin-left: 20px;
+    display: inline-block;
+    .el-radio{
+      margin-right: 0px !important;
+      display: block;
+      padding-top: 12px;
+    }
+  }
+  .formData-select-input-box{
+    width: 1080px;
+    float: left;
+    display: inline-block;
+    background: #fff;
+    text-align: center;
+    .formData-select-input{
+      float: left;
+      height: 76px;
+      display: none;
+      &:first-child {
+        display: inline-block;
+      }
+      .normal-div{
+        font-size: 14px;
+        margin-top: 14px;
+        margin-left: 10px;
+        line-height: 36px;
+        display: inline-block;
+        min-width: 50px;
+        vertical-align: top;
+        &.check{
+          min-width: 20px;
+          font-size: 16px;
+          color: #1f78ff;
+        }
+        /deep/ .el-form-item__content{
+          display: inline-block;
+        }
+      }
+    }
+    .button-all-reset{
+      margin-top: 20px;
+      width: 220px;
+    }
+  }
+  .button-box{
+    display: inline-block;
+    .supper-search, .normal-search {
+      display: block;
+      margin-left: 0px;
+      margin-top: 0px;
+    }
+    .normal-search{
+      margin-top: 5px;
+    }
+    .el-button--medium{
+      padding: 8px 20px;
+    }
+  }
+}
+
+.normal-div{
+  .el-form-item{
+    margin-bottom: 0px !important;
+    margin-right: 0px !important;
+  }
+}
+
+.rel{
+  position: relative;
+}
+
+.zi2000{
+  z-index: 2000;
+}
+
+.tip-info{
+  position: absolute;
+  right: 0px;
+  top: 4px;
+}
+.el-form--inline .el-form-item {
+  display: inline-block;
+  vertical-align: top;
 }
 </style>
