@@ -734,18 +734,10 @@ export default {
     selectItem(item) {
       this.selVal = ''
       item.isSelect = !item.isSelect
-      if (!this.isShowSupperSearch) {
-        this.requestList()
-      } else {
-        this.supperRequestList()
-      }
+      this.search()
     },
     selectProduct() {
-      if (!this.isShowSupperSearch) {
-        this.requestList()
-      } else {
-        this.supperRequestList()
-      }
+      this.search()
     },
     addItem() {
       this.ruleList.push(JSON.parse(JSON.stringify({...this.ruleListItem, random: Math.random()})))
@@ -1659,6 +1651,18 @@ export default {
       display: inline-block;
     }
     .formData-select-input-box{
+      max-height: 600px;
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+        // background-color: rgba(0,0,0,.2);
+      }
+      &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.2);
+        background-color: rgba(0,0,0,0.2);
+      }
       .formData-select-input{
         display: inline-block;
         .el-form-item--medium .el-form-item__content{
@@ -1767,6 +1771,7 @@ export default {
   }
   .button-box{
     display: inline-block;
+    margin-left: 20px;
     .supper-search, .normal-search {
       display: block;
       margin-left: 0px;
