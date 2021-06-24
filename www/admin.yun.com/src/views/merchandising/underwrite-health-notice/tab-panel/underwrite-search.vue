@@ -123,7 +123,7 @@
             <el-table
               border
               :data="detailTableData"
-              height="calc(100vh - 250px)"
+              height="calc(100vh - 290px)"
               stripe
               class="not-select main-table"
               :style="{fontSize: setFontSize + 'px'}"
@@ -264,7 +264,7 @@
             </div>
           </el-form>
         </div>
-        <div class="supper-table" style="height: calc(100% - 75px)">
+        <div class="supper-table" style="height: calc(100% - 110px)">
           <div ref="supperImageDom" v-loading="supperLoading" style="height: 100%">
             <el-table
               border
@@ -964,6 +964,11 @@ export default {
           this.supperFormData = {
             product_name: '',
             query_rule: this.supperFormData.query_rule,
+            illness_categorys_search: {
+              value: ['', '', '', '', '', '', '', '', '', ''],
+              query_rule: 'and'
+            },
+            isReverse: 0
           }
           this.supperDetailTableData = []
           return
@@ -1153,6 +1158,8 @@ export default {
           return item
         })
         this.supperFormData.query_rule = this.formData.query_rule
+        this.supperFormData.product_name = this.formData.product_name
+        this.supperClassifyList = JSON.parse(JSON.stringify(this.classifyList))
         // const fd = this.formData
         // this.selVal = ''
         // this.inputParentSick = fd.illness_categorys_search.value.filter(i => i).join(',')
@@ -1170,6 +1177,8 @@ export default {
           return item
         })
         this.formData.query_rule = this.supperFormData.query_rule
+        this.formData.product_name = this.supperFormData.product_name
+        this.classifyList = JSON.parse(JSON.stringify(this.supperClassifyList))
         // const fd = this.supperFormData
         // this.selVal = ''
         // this.inputSick = fd.illness_categorys_search.value.filter(i => i).join(',')
