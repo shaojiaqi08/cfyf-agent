@@ -1246,7 +1246,9 @@ export default {
     align-items: center;
     padding: 10px 15px;
     border-bottom: 1px solid #eee;
-
+    position: absolute;
+    top: 56px;
+    width: 100%;
     .search-bar-condition{
       flex: 1;
     }
@@ -1278,6 +1280,7 @@ export default {
   height: 77vh;
   overflow: hidden;
   display: flex;
+  margin-top: 96px;
   align-items: stretch;
   justify-content: stretch;
   .search-input-container {
@@ -1641,6 +1644,7 @@ export default {
   height: 86px;
   padding-bottom: 20px;
   overflow: hidden;
+  min-width: 1400px;
   &:hover{
     height: auto;
     overflow: inherit;
@@ -1735,7 +1739,7 @@ export default {
     }
   }
   .formData-select-input-box{
-    width: 1080px;
+    width: 1040px;
     float: left;
     display: inline-block;
     background: #fff;
