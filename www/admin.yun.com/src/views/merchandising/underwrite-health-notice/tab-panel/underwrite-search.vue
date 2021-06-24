@@ -911,12 +911,13 @@ export default {
     loopDetail(nowIndex) {
       // this.supperDetailTableData = []
       if (!this.isShowSupperSearch) {
-        this.supperFormData = {
-          product_name: '',
-          illness_categorys_search: "",
-          condition_search: "",
-          conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
-        }
+        this.supperRuleList = [
+          {
+            illness_categorys_search: "",
+            condition_search: "",
+            conclusion_search: ['标体承保', '除外承保', '加费承保', '人工核保']
+          }
+        ]
         this.supperDetailTableData = []
         this.supperLoading = false
         return
