@@ -359,7 +359,7 @@
                         <div class="placeholder-style"></div>
                         <div class="add-minus-content">
                           <i class="el-icon-plus bold" @click="supperAddItem"></i>
-                          <i class="el-icon-minus bold mg-l-5" @click="supperSubItem(index)" v-if="ruleList.length != 1"></i>
+                          <i class="el-icon-minus bold mg-l-5" @click="supperSubItem(index)" v-if="supperRuleList.length != 1"></i>
                         </div>
                       </div>
                     </div>
@@ -1016,7 +1016,7 @@ export default {
               this.ruleList[index].isUseSearch = false
             }
           } else {
-            this.ruleList[index].isUseSearch = false
+            this.ruleList[index].isUseSearch = true
           }
           // illness_categorys_search: "",
           // condition_search: "",
