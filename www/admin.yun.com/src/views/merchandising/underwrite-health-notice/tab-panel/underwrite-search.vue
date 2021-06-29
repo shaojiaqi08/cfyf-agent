@@ -34,7 +34,7 @@
                   <div class="kinds-style mg-l-5">
                     <div class="placeholder-style relative-style">
                       <span v-show="index === 0">
-                        病种:<i class="el-icon-warning-outline tip-info"
+                        病种<i class="el-icon-warning-outline tip-info"
                           title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
                       </span>
                     </div>
@@ -46,7 +46,7 @@
                   <div class="reason-style mg-l-10">
                     <div class="placeholder-style relative-style">
                       <span v-show="index === 0">
-                        条件:<i class="el-icon-warning-outline tip-info"
+                        条件<i class="el-icon-warning-outline tip-info"
                           title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
                       </span>
                     </div>
@@ -67,7 +67,7 @@
                     </div>
                   </div>
       
-                  <div class="add-minus-style mg-l-5">
+                  <div class="add-minus-style">
                     <div class="placeholder-style"></div>
                     <div class="add-minus-content">
                       <i class="el-icon-plus bold" @click="addItem"></i>
@@ -322,7 +322,7 @@
                       <div class="kinds-style mg-l-5">
                         <div class="placeholder-style relative-style">
                           <span v-show="index === 0">
-                            病种:<i class="el-icon-warning-outline tip-info"
+                            病种<i class="el-icon-warning-outline tip-info"
                               title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
                           </span>
                         </div>
@@ -334,7 +334,7 @@
                       <div class="reason-style mg-l-10">
                         <div class="placeholder-style relative-style">
                           <span v-show="index === 0">
-                            条件:<i class="el-icon-warning-outline tip-info"
+                            条件<i class="el-icon-warning-outline tip-info"
                               title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
                           </span>
                         </div>
@@ -355,7 +355,7 @@
                         </div>
                       </div>
           
-                      <div class="add-minus-style mg-l-5">
+                      <div class="add-minus-style">
                         <div class="placeholder-style"></div>
                         <div class="add-minus-content">
                           <i class="el-icon-plus bold" @click="supperAddItem"></i>
@@ -1016,7 +1016,7 @@ export default {
               this.ruleList[index].isUseSearch = false
             }
           } else {
-            this.ruleList[index].isUseSearch = true
+            this.ruleList[index].isUseSearch = false
           }
           // illness_categorys_search: "",
           // condition_search: "",

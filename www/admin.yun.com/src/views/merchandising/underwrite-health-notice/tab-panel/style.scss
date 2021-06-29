@@ -15,7 +15,6 @@
     min-width: 280px;
     padding: 0 5px 0 10px;
     box-sizing: border-box;
-    border-right: 1px solid #e6e6e6;
   }
   .right-style:hover .condition-list {
     border-left: 1px solid #e6e6e6;
@@ -33,9 +32,7 @@
       .flot-box{
         .condition-box{
           .condition-list{
-            border-left: 1px solid #e6e6e6;
-            border-right: 1px solid #e6e6e6;
-            border-bottom: 1px solid #e6e6e6;
+            box-shadow: 0 0 3px #e6e6e6;
             height: auto;
             max-height: 450px;
             overflow-y: scroll;
@@ -84,11 +81,11 @@
         float: left;
         width: 64px;
         height: 64px;
-        background: #E0EDFF;
+        background: #FFF4E6;
         border-radius: 8px;
         font-size: 20px;
-        color: #1f78ff;
-        border: 1px solid #1f78ff;
+        color: #ff9900;
+        border: 1px solid #ff9900;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         padding: 11px;
@@ -102,7 +99,7 @@
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #1f78ff;
+          background: #ff9900;
           text-align: center;
           line-height: 20px;
           font-size: 14px;
@@ -112,7 +109,6 @@
       }
       .formData-select-query-rule {
         float: left;
-        // height: 76px;
         margin-left: 15px;
         display: inline-block;
         text-align: center;
@@ -122,17 +118,16 @@
           padding-top: 10px;
         }
       }
-      .condition-box { // todo 记得设置最小宽度
+      .condition-box {
         position: relative;
         background-color: #FFFFFF;
         height: 100%;
         flex: 1;
-        // min-width: 590px;
         background-color: #ffffff;
         .arrow-box {
           position: absolute;
           left: 0;
-          bottom: -12px;
+          bottom: -16px;
           width: 100%;
           text-align: center;
           z-index: -2;
@@ -157,21 +152,12 @@
             margin-bottom: 10px;
             .button-all-reset {
               width: 220px;
-              color: #1f78ff;
-              border-color: #1f78ff;
-              background: #E0EDFF;
+              color: #ff9900;
+              border-color: #FFF4E6;
+              background: #FFF4E6;
             }
           }
         }
-        // .condition-list:hover {
-        //   border-left: 1px solid #e6e6e6;
-        //   border-right: 1px solid #e6e6e6;
-        //   border-bottom: 1px solid #e6e6e6;
-        //   height: auto;
-        //   max-height: 600px;
-        //   overflow-y: scroll;
-        //   background-color: #fff;
-        // }
         .condition-item {
           display: flex;
           flex-flow: row nowrap;
@@ -181,6 +167,7 @@
           width: 100%;
           .placeholder-style {
             height: 26px;
+            margin: 0 auto;
             text-align: left;
             line-height: 26px;
           }
@@ -189,7 +176,7 @@
             height: 76px;
             background-color: #FFFFFF;
             font-size: 16px;
-            color: #1f78ff;
+            color: #ff9900;
             text-align: center;
             .check-style-content {
               line-height: 38px;
@@ -231,7 +218,7 @@
             }
           }
           .add-minus-style {
-            width: 70px;
+            width: 50px;
             text-align: center;
             .add-minus-content {
               font-weight: bold;
@@ -252,9 +239,9 @@
           margin-left: 0px;
           margin-top: 0px;
           width: 97px;
-          background: #E0EDFF;
-          color: #1f78ff;
-          border-color: #1f78ff;
+          background: #FFF4E6;
+          color: #ff9900;
+          border-color: #FFF4E6;
         }
         .normal-search {
           width: 97px;
