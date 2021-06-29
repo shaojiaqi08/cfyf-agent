@@ -288,7 +288,104 @@
           </div>
         </template>
         <div class="flex-between">
-          <el-form style="display: inline-block; font-size: 0px" class="search-bar-condition">
+          <el-form class="underwriting-search-header-style" :modal="supperFormData" @submit.native.prevent>
+            <div class="left-style">
+              <div class="flex-center mr16">
+                <el-input placeholder='搜索多个产品名称用","间隔' prefix-icon="el-icon-search" v-model.trim="supperFormData.product_name"
+                  clearable @keyup.enter.native="selectProduct()">
+                </el-input>
+              </div>
+              <div class="classify-box">
+                <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in supperClassifyList" :key="item.value"
+                  @click="selectItem(item)">{{item.name}}</div>
+              </div>
+            </div>
+            <div class="right-style" @mouseleave="maskRightHeaderHoverLeave">
+              <div class="flot-box">
+                <div class="right-num-box">
+                  <span v-if="supperSelectNum != 0" class="right-num">{{supperSelectNum}}</span>
+                  组合规则
+                </div>
+                <div class="formData-select-query-rule">
+                  <el-radio v-model="supperFormData.query_rule" label="and">同时满足</el-radio>
+                  <el-radio v-model="supperFormData.query_rule" label="or">满足其一</el-radio>
+                </div>
+                <div class="condition-box mg-l-10">
+                  <div class="condition-list" ref="maskConditionList">
+                    <div class="condition-item" v-for="(item,index) in supperRuleList" :key="index">
+                      <div class="check-style">
+                        <div class="placeholder-style"></div>
+                        <div class="check-style-content">
+                          <i class="el-icon-check bold" v-if="item.isUseSearch"></i>
+                        </div>
+                      </div>
+                      <div class="kinds-style mg-l-5">
+                        <div class="placeholder-style relative-style">
+                          <span v-show="index === 0">
+                            病种:<i class="el-icon-warning-outline tip-info"
+                              title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
+                          </span>
+                        </div>
+                        <div class="kinds-style-content">
+                          <el-input v-model="item.illness_categorys_search" class="kinds-style-content-input"
+                            placeholder="请输入单一病种" @keyup.enter.native="selectProduct()"></el-input>
+                        </div>
+                      </div>
+                      <div class="reason-style mg-l-10">
+                        <div class="placeholder-style relative-style">
+                          <span v-show="index === 0">
+                            条件:<i class="el-icon-warning-outline tip-info"
+                              title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
+                          </span>
+                        </div>
+                        <div class="reason-style-content">
+                          <el-input v-model="item.condition_search" class="reason-style-content-input" placeholder="请输入单一条件"
+                            @keyup.enter.native="selectProduct()"></el-input>
+                        </div>
+                      </div>
+          
+                      <div class="result-style mg-l-10">
+                        <div class="placeholder-style relative-style">{{index === 0 ? '结论': ''}}</div>
+                        <div class="result-style-content">
+                          <el-select class="result-style-content-select" v-model="item.conclusion_search" multiple
+                            :popper-append-to-body="false" placeholder="请选择">
+                            <el-option v-for="item in conclusionList" :key="item.value" :label="item.label" :value="item.value">
+                            </el-option>
+                          </el-select>
+                        </div>
+                      </div>
+          
+                      <div class="add-minus-style mg-l-5">
+                        <div class="placeholder-style"></div>
+                        <div class="add-minus-content">
+                          <i class="el-icon-plus bold" @click="supperAddItem"></i>
+                          <i class="el-icon-minus bold mg-l-5" @click="supperSubItem(index)" v-if="ruleList.length != 1"></i>
+                        </div>
+                      </div>
+                    </div>
+          
+                    <div class="condition-list-tools">
+                      <el-button class="button-all-reset" @click="resetSupperList">重置</el-button>
+                    </div>
+          
+                    <div class="arrow-style">
+                      <i class="el-icon-arrow-up up-arrow"></i>
+                    </div>
+                  </div>
+                  <div class="arrow-box">
+                    <i class="el-icon-arrow-down down-arrow"></i>
+                  </div>
+                </div>
+          
+                <div class="tools-box mg-l-10">
+                  <el-button class="normal-search" type="primary" @click="search"><i class="el-icon-search"></i>搜索</el-button>
+                </div>
+              </div>
+            </div>
+          </el-form>
+          
+          <!-- 废弃模板 -->
+          <!-- <el-form style="display: inline-block; font-size: 0px" class="search-bar-condition">
             <div class="left-header">
               <div class="flex-center mr16">
                 <el-input
@@ -362,7 +459,7 @@
               <i class="el-icon-arrow-up up-arrow"></i>
               <i class="el-icon-arrow-down down-arrow"></i>
             </div>
-          </el-form>
+          </el-form> -->
         </div>
         <div class="supper-table" style="height: calc(100% - 110px)">
           <div ref="supperImageDom" v-loading="supperLoading" style="height: 100%">
@@ -614,6 +711,9 @@ export default {
     hasValue,
     rightHeaderHoverLeave () { // 当添加多项查询条件又hover又滚动位置时候， 防止hover事件结束后错位
       this.$refs.conditionList.scrollTop  = 0
+    },
+    maskRightHeaderHoverLeave () {
+      this.$refs.maskConditionList.scrollTop  = 0
     },
     handleEnter(e) {
       e.preventDefault()
