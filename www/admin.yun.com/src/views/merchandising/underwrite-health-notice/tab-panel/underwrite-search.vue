@@ -1,6 +1,106 @@
 <template>
   <div v-loading="loading" style="height: 100%">
-    <div class="search-bar">
+      <el-form class="underwriting-search-header-style" :modal="formData" @submit.native.prevent>
+        <div class="left-style">
+          <div class="flex-center mr16">
+            <el-input placeholder='搜索多个产品名称用","间隔' prefix-icon="el-icon-search" v-model.trim="formData.product_name" clearable
+              @keyup.enter.native="selectProduct()">
+            </el-input>
+          </div>
+          <div class="classify-box">
+            <div :class="['classify-item', {'active': item.isSelect}]" v-for="item in classifyList" :key="item.value"
+              @click="selectItem(item)">{{item.name}}</div>
+          </div>
+        </div>
+        <div class="right-style" @mouseleave="rightHeaderHoverLeave">
+          <div class="flot-box">
+            <div class="right-num-box">
+              <span v-if="selectNum != 0" class="right-num">{{selectNum}}</span>
+              组合规则
+            </div>
+            <div class="formData-select-query-rule">
+              <el-radio v-model="formData.query_rule" label="and">同时满足</el-radio>
+              <el-radio v-model="formData.query_rule" label="or">满足其一</el-radio>
+            </div>
+            <div class="condition-box mg-l-10">
+              <div class="condition-list" ref="conditionList">
+                <div class="condition-item" v-for="(item,index) in ruleList" :key="index">
+                  <div class="check-style">
+                    <div class="placeholder-style"></div>
+                    <div class="check-style-content">
+                      <i class="el-icon-check bold" v-if="item.isUseSearch"></i>
+                    </div>
+                  </div>
+                  <div class="kinds-style mg-l-5">
+                    <div class="placeholder-style relative-style">
+                      <span v-show="index === 0">
+                        病种:<i class="el-icon-warning-outline tip-info"
+                          title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
+                      </span>
+                    </div>
+                    <div class="kinds-style-content">
+                      <el-input v-model="item.illness_categorys_search" class="kinds-style-content-input"
+                        placeholder="请输入单一病种" @keyup.enter.native="selectProduct()"></el-input>
+                    </div>
+                  </div>
+                  <div class="reason-style mg-l-10">
+                    <div class="placeholder-style relative-style">
+                      <span v-show="index === 0">
+                        条件:<i class="el-icon-warning-outline tip-info"
+                          title='使用半角"%"支持模糊检索，例如："乙%肝" = "乙肝"或"乙型肝炎"；"肺%结节" = "肺结节"或"肺部结节"或"肺部小结节" ；"DNA%阳性" = "HBV-DNA检查阳性"等。'></i>
+                      </span>
+                    </div>
+                    <div class="reason-style-content">
+                      <el-input v-model="item.condition_search" class="reason-style-content-input" placeholder="请输入单一条件"
+                        @keyup.enter.native="selectProduct()"></el-input>
+                    </div>
+                  </div>
+      
+                  <div class="result-style mg-l-10">
+                    <div class="placeholder-style relative-style">{{index === 0 ? '结论': ''}}</div>
+                    <div class="result-style-content">
+                      <el-select class="result-style-content-select" v-model="item.conclusion_search" multiple
+                        :popper-append-to-body="false" placeholder="请选择">
+                        <el-option v-for="item in conclusionList" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </div>
+                  </div>
+      
+                  <div class="add-minus-style mg-l-5">
+                    <div class="placeholder-style"></div>
+                    <div class="add-minus-content">
+                      <i class="el-icon-plus bold" @click="addItem"></i>
+                      <i class="el-icon-minus bold mg-l-5" @click="subItem(index)" v-if="ruleList.length != 1"></i>
+                    </div>
+                  </div>
+                </div>
+      
+                <div class="condition-list-tools">
+                  <el-button class="button-all-reset" @click="resetList">重置</el-button>
+                </div>
+      
+                <div class="arrow-style">
+                  <i class="el-icon-arrow-up up-arrow"></i>
+                </div>
+              </div>
+              <div class="arrow-box">
+                <i class="el-icon-arrow-down down-arrow"></i>
+              </div>
+            </div>
+            <div class="tools-box mg-l-10">
+              <el-button class="supper-search" size="small" @click="supperSearch"><i class="el-icon-search"></i>合并展示
+              </el-button>
+              <el-button class="normal-search" size="small" type="primary" @click="search"><i class="el-icon-search"></i>搜索
+              </el-button>
+            </div>
+          </div>
+        </div>
+      </el-form>
+      
+      
+      <!-- 废弃代码 -->
+    <!-- <div class="search-bar">
       <el-form style="display: inline-block; font-size: 0px" class="search-bar-condition">
         <div class="left-header">
           <div class="flex-center mr16">
@@ -77,7 +177,7 @@
           <i class="el-icon-arrow-down down-arrow"></i>
         </div>
       </el-form>
-    </div>
+    </div> -->
     <div class="underwrite-search-container">
       <side-filter-list
         label-key="product_name"
@@ -512,6 +612,9 @@ export default {
   methods: {
     clearValue,
     hasValue,
+    rightHeaderHoverLeave () { // 当添加多项查询条件又hover又滚动位置时候， 防止hover事件结束后错位
+      this.$refs.conditionList.scrollTop  = 0
+    },
     handleEnter(e) {
       e.preventDefault()
       // if (e.keyCode === 13) {
@@ -1280,7 +1383,7 @@ export default {
   height: 77vh;
   overflow: hidden;
   display: flex;
-  margin-top: 96px;
+  // margin-top: 96px;
   align-items: stretch;
   justify-content: stretch;
   .search-input-container {
@@ -1815,4 +1918,8 @@ export default {
   display: inline-block;
   vertical-align: top;
 }
+</style>
+
+<style lang="scss" scoped>
+@import './style.scss';
 </style>
