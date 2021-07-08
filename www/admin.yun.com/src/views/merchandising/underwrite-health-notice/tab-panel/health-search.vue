@@ -1,6 +1,6 @@
 <template>
   <div class="underwrite-search-container">
-    <side-filter-list v-loading="loading" label-key="product_name" value-key="product_name" :showFilter="false" v-model="selVal" @change="showDetail" :disabled="detailLoading" style="width: 280px" :listData="tableData">
+    <side-filter-list v-loading="loading" label-key="product_name" value-key="product_name" :showFilter="false" v-model="selVal" @change="showDetail" :cur-channel="selChannel" :disabled="detailLoading" style="width: 280px" :listData="tableData">
       <div slot="extraFilter">
         <div class="search-input-container">
           <el-input clearable placeholder="搜索产品名称" v-model="formData.product_name" prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" @blur="search"></el-input>
@@ -94,6 +94,7 @@ export default {
       loading: false,
       detailLoading: false,
       selVal: "",
+      selChannel: '',     // 当前选中的channel
       detailTableData: [],
       tableData: [],
       searchModel: {
@@ -262,6 +263,7 @@ export default {
         notice: notice.join(','),
         is_reverse: this.formData.isReverse,
         product_name: this.curProduct.product_name,
+        channel: this.curProduct.channel,
         file_log_id: this.curProduct.file_log_id
       })
         .then((res) => {
@@ -289,6 +291,7 @@ export default {
     showDetail(data) {
       this.curProduct = data
       this.showProductDetail = true
+      this.selChannel = data.channel
       this.requestDetail()
     },
     closeDetailModal() {

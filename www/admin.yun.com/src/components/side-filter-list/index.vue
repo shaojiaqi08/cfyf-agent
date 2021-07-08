@@ -16,7 +16,7 @@
                 <div class="list-item"
                      v-for="(item, index) in filterList"
                      :key="index"
-                     :class="{active: item[valueKey] === activeValue}"
+                     :class="{active: item[valueKey] === activeValue && item['channel'] === curChannel}"
                      @click="!disabled && handleSelected(item)">
                     <slot name="list" v-bind:row="item">
                         <list-item :tips-content="item[labelKey]">
@@ -72,6 +72,10 @@
             disabled: {
                 type: Boolean,
                 default: false
+            },
+            curChannel: {
+              type: String,
+              default: ''
             }
         },
         data() {

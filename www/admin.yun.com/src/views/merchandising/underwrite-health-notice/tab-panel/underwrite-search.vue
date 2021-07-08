@@ -65,7 +65,7 @@
               <div class="normal-div">
                 <i class="el-icon-plus bold" @click="addItem"></i>
                 <i class="el-icon-minus bold" @click="subItem(index)" v-if="ruleList.length != 1"></i>
-              </div> 
+              </div>
             </div>
             <el-button class="button-all-reset" @click="resetList">重置</el-button>
           </div>
@@ -84,12 +84,13 @@
         value-key="product_name"
         :showFilter="false"
         v-model="selVal"
+        :cur-channel="selChannel"
         @change="showDetail"
         :disabled="detailLoading"
         style="width: 280px"
         :listData="tableData"
       >
-      
+
       </side-filter-list>
       <div class="detail-wrap underwrite-search" v-loading="detailLoading || loadingDetail" ref="detailWrap">
         <template v-if="tableData.length > 0">
@@ -252,7 +253,7 @@
                   <div class="normal-div">
                     <i class="el-icon-plus bold" @click="supperAddItem"></i>
                     <i class="el-icon-minus bold" @click="supperSubItem(index)" v-if="supperRuleList.length != 1"></i>
-                  </div> 
+                  </div>
                 </div>
                 <el-button class="button-all-reset" @click="resetSupperList">重置</el-button>
               </div>
@@ -338,6 +339,7 @@ export default {
       loading: false,
       detailLoading: false,
       selVal: "", // 选中的产品
+      selChannel: '',// 选中产品的channel
       tableMaxHeight: 0,
       maxConditionLength: 30,
       maxCategorysLength: 30,
@@ -784,7 +786,7 @@ export default {
       this.ruleList.length = 0
       newRuleList.map((item, index) => {
         if (newRuleList.length > 1) {
-          if (item.illness_categorys_search || item.condition_search) { 
+          if (item.illness_categorys_search || item.condition_search) {
             this.ruleList.push(item)
           }
         } else {
@@ -862,7 +864,7 @@ export default {
       this.supperRuleList.length = 0
       newRuleList.map((item, index) => {
         if (newRuleList.length > 1) {
-          if (item.illness_categorys_search || item.condition_search) { 
+          if (item.illness_categorys_search || item.condition_search) {
             this.supperRuleList.push(item)
           }
         } else {
@@ -1062,6 +1064,7 @@ export default {
       })
       let params = {
         product_name: this.curProduct.product_name,
+        channel: this.curProduct.channel,
         query_rule: this.formData.query_rule,
         rule_list: this.ruleList,
         illness_categorys_search: illness_categorys_search ? illness_categorys_search.join(',') : '',
@@ -1205,6 +1208,7 @@ export default {
     showDetail(data) {
       this.curProduct = data
       this.showProductDetail = true
+      this.selChannel = data.channel
       this.requestDetail()
     },
     closeDetailModal() {
@@ -1499,7 +1503,7 @@ export default {
 }
 
 .underwrite-search-left{
-  
+
 }
 
 .supper-search-button-box{
