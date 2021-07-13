@@ -34,7 +34,7 @@
           .condition-list{
             box-shadow: 0 0 3px #e6e6e6;
             height: auto;
-            max-height: 450px;
+            max-height: none;
             overflow-y: visible !important;
             background-color: #fff;
             &::-webkit-scrollbar-track-piece {
