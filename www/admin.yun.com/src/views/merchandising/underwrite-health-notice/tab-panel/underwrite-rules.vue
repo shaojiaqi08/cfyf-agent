@@ -171,7 +171,7 @@
               <el-form-item label="BMI限制">
               <el-input v-model="formData.bmi_restrict" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
-              <el-form-item label="反洗钱处理（20万总保费）">
+              <el-form-item label="投保认证规则">
               <el-input v-model="formData.aml" placeholder="请输入搜索关键字"></el-input>
               </el-form-item>
               <el-form-item label="是否有风控">
@@ -250,7 +250,7 @@ export default {
           { name: '投保职业', key: 'occupation'},
           { name: '保额限制', key: 'guarantee_quota'},
           { name: 'BMI限制', key: 'bmi_restrict'},
-          { name: '反洗钱处理（20万总保费）', key: 'aml'},
+          { name: '投保认证规则', key: 'aml'},
           { name: '是否有风控', key: 'risk_management'},
           { name: '首期保费收款方', key: 'collect_premium'},
           { name: '支付认证（校验）', key: 'check_wechat_real_name'},
