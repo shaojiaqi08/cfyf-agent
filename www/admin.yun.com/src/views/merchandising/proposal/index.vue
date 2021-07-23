@@ -1,7 +1,7 @@
 <template>
     <div class="prospectus-container page-container">
         <div class="header">
-            计划书
+            <common-tabs-header v-model="curTabIdx" :data="tabsData"></common-tabs-header>
             <el-input type="primary" v-model="keyword" placeholder="请输入" clearable @input="search" size="small">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
@@ -72,24 +72,26 @@
         <proposal-material :show.sync="isProposalMaterialShow"
                            :proposalInfo="proposalInfo"
                            title="计划书材料"></proposal-material>
-        <add-member-struct :show.sync="isAddProposal"></add-member-struct>
+        <add-member-struct :show.sync="isAddProposal" :is-deposit="isDeposit"></add-member-struct>
     </div>
 </template>
 <script>
     import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
+    import CommonTabsHeader from '../../../components/common-tabs-header'
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
     import {debounce} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'
-    import {getProposalList, getProposalMasterInfo} from '@/apis/modules/proposal'
+    import {getProposalList, getProposalMasterInfo, getDepositProposalList} from '@/apis/modules/proposal'
     export default {
         name: 'prospectus',
         components: {
             UserInfoModal,
             ProposalMaterial,
             AddMemberStruct,
-            FilterShell
+            FilterShell,
+            CommonTabsHeader
         },
         data() {
             return {
@@ -122,7 +124,13 @@
                 },
                 total: 0,
                 maxHeight: null,
-                paramsChanged: false
+                paramsChanged: false,
+                curTabIdx: '',
+                tabsData: [
+                  { name: 'guarantee-pane', label: '保障计划书', permission: '/sale/list'},
+                  { name: 'deposit-pane', label: '储蓄计划书', permission: '/sale/position_and_authority'}
+                ],
+                isDeposit: false
             }
         },
         methods: {
@@ -181,7 +189,7 @@
                 this.loading = true
                 const {searchForm, keywordType, keyword, type} = this
                 const key = keywordType.find(item => item.value === type).value
-                getProposalList({...searchForm, [key]: keyword}).then(res => {
+                ;(this.isDeposit ? getDepositProposalList : getProposalList)({...searchForm, [key]: keyword}).then(res => {
                     // 当前不是最后一次请求或者最后一次请求结束
                     if (idx < this.fetchIndex || !this.fetchIndex) return
                     if (searchForm.page <= 1) {
@@ -228,6 +236,12 @@
                 v = v || ['', '']
                 this.searchForm.start_created_at = v[0]
                 this.searchForm.end_created_at = v[1]
+            },
+            curTabIdx(v) {
+                this.searchForm.page = 1
+                this.isDeposit = v.includes('deposit')
+                document.querySelector('.el-table__body-wrapper').scrollTo(0, 0)
+                this.ajaxData()
             },
         }
     }

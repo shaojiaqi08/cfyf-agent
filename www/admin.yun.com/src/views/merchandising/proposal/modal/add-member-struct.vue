@@ -2,7 +2,7 @@
   <el-dialog width="690px"
              :visible="show"
              :close-on-click-modal="false"
-             title="新建计划书"
+             :title="`新建${isDeposit ? '储蓄' : '保障'}计划书`"
              @before-close="addHandleClose"
              @close="modalClose">
     <div class="struct-title">客户名称</div>
@@ -80,7 +80,8 @@ export default {
     show: {
       required: true,
       type: Boolean
-    }
+    },
+    isDeposit: Boolean
   },
   data() {
     return {
@@ -108,12 +109,13 @@ export default {
         customer_name: this.customerName,
         members: this.members.map(i => {
           return Object.assign({}, i, { birthday: i.birthday.replace(/-/g, '') })
-        })
+        }),
+        type: !this.isDeposit ? 'safeguard_proposal' : 'deposit_proposal'
       }
       addCustomer(data)
       .then(res => {
         this.modalClose()
-        const routeUrl = this.$router.resolve(`/proposal/proposal-operate?customer_id=${res.id}&customer_name=${res.customer_name}`)
+        const routeUrl = this.$router.resolve(`/proposal/${this.isDeposit ? 'proposal-operate-deposit' : 'proposal-operate'}?customer_id=${res.id}&customer_name=${res.customer_name}`)
         window.open(routeUrl.href, '_blank')
       })
       .catch(err => console.log(err))

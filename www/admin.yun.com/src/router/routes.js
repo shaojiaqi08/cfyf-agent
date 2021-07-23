@@ -134,11 +134,21 @@ export const routers = [
         path: '/proposal/proposal-operate',
         name: 'Proposal-operate',
         meta: {
-          title: '计划书编辑',
+          title: '保障计划书编辑',
           show: false,
           permission: '/proposal/proposal-operate/update'
         },
         component: () => import('views/merchandising/proposal/proposal-operate')
+      },
+      {
+        path: '/proposal/proposal-operate-deposit',
+        name: 'Proposal-operate-deposit',
+        meta: {
+          title: '储蓄计划书编辑',
+          show: false,
+          permission: '/proposal/proposal-operate/update'
+        },
+        component: () => import('views/merchandising/proposal/proposal-operate-deposit')
       },
       {
         path: '/underwrite-health-notice',
