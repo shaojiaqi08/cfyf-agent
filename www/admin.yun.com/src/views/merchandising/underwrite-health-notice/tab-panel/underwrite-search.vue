@@ -1018,7 +1018,7 @@ export default {
               this.ruleList[index].isUseSearch = false
             }
           } else {
-            this.ruleList[index].isUseSearch = true
+            this.ruleList[index].isUseSearch = false
           }
           // illness_categorys_search: "",
           // condition_search: "",
@@ -1095,7 +1095,7 @@ export default {
               this.supperRuleList[index].isUseSearch = false
             }
           } else {
-            this.supperRuleList[index].isUseSearch = true
+            this.supperRuleList[index].isUseSearch = false
           }
           // illness_categorys_search: "",
           // condition_search: "",
