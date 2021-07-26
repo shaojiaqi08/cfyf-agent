@@ -34,18 +34,18 @@ export const getProposalInfo = (data) => get('/agent/proxy/proposal/detail', dat
 export const getPdf = (data) => get('', data)
 
 // 储蓄计划书-产品列表
-export const getDepositProductList = data => get('/deposit-proposal/products', data)
+export const getDepositProductList = data => get('/agent/proxy/deposit-proposal/products', data)
 // 储蓄计划书-计算
-export const depositProposalCalc = data => post('/deposit-proposal/calculate', data)
+export const depositProposalCalc = data => post('/agent/proxy/deposit-proposal/calculate', data)
 // 储蓄计划书自定义二产品计算
 export const depositProposalCustCalc = data => post('/deposit-proposal/custom-product-calculate', data)
 // 储蓄计划书IRR计算
 export const IRRCalc = data => post('/deposit-proposal/reduction-check', data)
 // 储蓄计划书列表
-export const getDepositProposalList = data => get('/deposit-proposal/list-with-page', data)
+export const getDepositProposalList = data => get('/agent/proxy/deposit-proposal/list-with-page', data)
 // 储蓄计划书自定义产品IRR计算
 export const custProdIRRCalc = data => post('/deposit-proposal/custom-product-reduction-check', data)
 // 储蓄计划书保存
-export const depositProposalSave = data => post('/deposit-proposal/store', data)
+export const depositProposalSave = data => post('/agent/proxy/deposit-proposal/store', data)
 // 计划书详情
-export const getDepositProposalInfo = (data) => get('/deposit-proposal/detail', data)
+export const getDepositProposalInfo = (data) => get('/agent/proxy/deposit-proposal/detail', data)

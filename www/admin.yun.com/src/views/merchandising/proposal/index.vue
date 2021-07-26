@@ -71,6 +71,7 @@
                          @fresh="ajaxUserInfo"></user-info-modal>
         <proposal-material :show.sync="isProposalMaterialShow"
                            :proposalInfo="proposalInfo"
+                           :is-deposit="isDeposit"
                            title="计划书材料"></proposal-material>
         <add-member-struct :show.sync="isAddProposal" :is-deposit="isDeposit"></add-member-struct>
     </div>
@@ -159,7 +160,7 @@
                 })
             },
             editProposal(item) {
-                let routeUrl = this.$router.resolve(`/proposal/proposal-operate?proposal_id=${item.id}&customer_id=${item.customer_id}`)
+              let routeUrl = this.$router.resolve(`/proposal/proposal-operate${this.isDeposit ? '-deposit' : ''}?proposal_id=${item.id}&customer_id=${item.customer_id}`)
                 window.open(routeUrl.href, '_blank')
             },
             checkMaterial(item) {

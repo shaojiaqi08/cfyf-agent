@@ -57,6 +57,9 @@ export default {
     proposalInfo: {
       required: true,
       type: Object
+    },
+    isDeposit: {
+      type: Boolean
     }
   },
   data() {
@@ -64,7 +67,8 @@ export default {
   },
   methods: {
     check(type, mode) {
-      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/file/${type}/${mode}?pcode=${this.proposalInfo.pcode}`)
+      // window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/proposal/file/${type}/${mode}?pcode=${this.proposalInfo.pcode}`)
+      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/${mode}/${type}-by-pcode` : `proposal/file/${type}/${mode}`}?pcode=${this.proposalInfo.pcode}`)
     },
     modalClose() {
       this.$emit('update:show', false)
