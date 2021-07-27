@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div class="fr">
+      <div class="fr margin-15">
         <el-button @click="modalClose">取消</el-button>
         <el-button type="primary" @click="submit">添加</el-button>
       </div>
@@ -127,6 +127,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .margin-15{
+    margin: 15px;
+  }
 .el-form-item {
   margin-right: 0 !important;
 }

@@ -32,7 +32,7 @@
             ></el-input-number>
             <el-button
               type="text"
-              icon="iconfont iconxiao_xiazhixiangjiantou"
+              icon="iconfont iconxiao16_xiazhixiangjiantou"
               class="ml8"
               v-if="$index != tableData.length - 1"
               @click="cutDown(row, $index)"></el-button>
