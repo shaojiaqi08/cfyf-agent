@@ -44,7 +44,7 @@ export const IRRCalc = data => post('/agent/proxy/deposit-proposal/reduction-che
 // 储蓄计划书列表
 export const getDepositProposalList = data => get('/agent/proxy/deposit-proposal/list-with-page', data)
 // 储蓄计划书自定义产品IRR计算
-export const custProdIRRCalc = data => post('/deposit-proposal/custom-product-reduction-check', data)
+export const custProdIRRCalc = data => post('/agent/proxy/deposit-proposal/custom-product-reduction-check', data)
 // 储蓄计划书保存
 export const depositProposalSave = data => post('/agent/proxy/deposit-proposal/store', data)
 // 计划书详情
