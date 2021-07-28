@@ -880,13 +880,13 @@
       previewImage (type) {
         this.submit(type, res => {
           const pcode = res.pcode
-          window.open(`${process.env.API_URL}/agent/proxy/deposit-proposal/image/view-by-pcode?pcode=${pcode}`)
+          window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/deposit-proposal/image/view-by-pcode?pcode=${pcode}`)
         })
       },
       previewPdf (type) {
         this.submit(type, res => {
           const pcode = res.pcode
-          window.open(`${process.env.API_URL}/agent/proxy/deposit-proposal/pdf/view-by-pcode?pcode=${pcode}`)
+          window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/deposit-proposal/pdf/view-by-pcode?pcode=${pcode}`)
         })
       },
       validate () {
