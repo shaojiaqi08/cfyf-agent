@@ -33,7 +33,6 @@
               保险公司介绍
               <el-switch
                 v-model="is_show_company_profile"
-                active-color="#FF9B19"
                 class="ml10"
                 inactive-color="#E6E6E6"
               ></el-switch>
@@ -48,7 +47,6 @@
               投保链接
               <el-switch
                 v-model="is_show_link"
-                active-color="#FF9B19"
                 inactive-color="#E6E6E6"
                 style="margin-left: 37px;"
               ></el-switch>
