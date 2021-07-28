@@ -106,7 +106,8 @@ export default {
         customer_name: this.customerName,
         members: this.members.map(i => {
           return Object.assign({}, i, { birthday: i.birthday.replace(/-/g, '') })
-        })
+        }),
+        type: !this.isDeposit ? 'safeguard_proposal' : 'deposit_proposal'
       }
       addCustomer(data)
       .then(res => {

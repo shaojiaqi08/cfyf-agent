@@ -85,14 +85,14 @@
                   :resizable="false"
                   align="center"
                   width="232px">
-                  <template slot="header">
+                  <template #header>
                     <div class="company-box">
                       <i class="el-icon-error fs14 company-icon-close" @click="handleDelProduct(index)"></i>
                       <div class="company-name mb4">{{ item.proposal_product_name }}</div>
                       <div class="company-des mb8">{{ item.supplier_name }}</div>
                       <div class="company-btns">
                         <template v-if="item.is_support_reduction">
-                          <i v-if="item.year_reduction" class="iconfont iconzhong_duigou fs16 company-icon-success"></i>
+                          <i v-if="item.year_reduction" class="iconfont iconxiao16_duigou fs16 company-icon-success"></i>
                           <el-button
                             :disabled="calcing || !item.cash_value || !item.cash_value.length || (item.source === productFrom.MANUALLY_ENTER && item.cash_value.some(i => !i.cash_value))"
                             size="small"
