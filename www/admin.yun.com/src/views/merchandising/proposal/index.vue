@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button v-if="$checkAuth('/proposal/store')" type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
+                    <el-button v-if="checkAddProposal" type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
@@ -49,12 +49,12 @@
                 <el-table-column label="操作" width="240px" align="center">
                     <template v-slot="{row, index}">
                         <template v-if="row.status === proposalStatusMap.done.value">
-                            <el-link v-if="$checkAuth('/proposal/materials')" type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
-                            <el-link v-if="$checkAuth('/proposal/proposal-operate/copy')" type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
-                            <el-link v-if="$checkAuth('/proposal/h5')" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
+                            <el-link v-if="checkProposalMaterial" type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
+                            <el-link v-if="checkCopyProposal" type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
+                            <el-link v-if="checkH5Proposal" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
                         </template>
                         <template v-else>
-                            <el-link v-if="$checkAuth('/proposal/proposal-operate/update')" type="primary" @click="editProposal(row)">编辑计划书</el-link>
+                            <el-link v-if="checkEditProposal" type="primary" @click="editProposal(row)">编辑计划书</el-link>
                         </template>
                     </template>
                 </el-table-column>
@@ -128,8 +128,8 @@
                 paramsChanged: false,
                 curTabIdx: '',
                 tabsData: [
-                  { name: 'guarantee-pane', label: '保障计划书', permission: '/sale/list'},
-                  { name: 'deposit-pane', label: '储蓄计划书', permission: '/sale/position_and_authority'}
+                  { name: 'guarantee-pane', label: '保障计划书', permission: '/proposal'},
+                  { name: 'deposit-pane', label: '储蓄计划书', permission: '/deposit-proposal/list-with-page'}
                 ],
                 isDeposit: false
             }
@@ -244,6 +244,23 @@
                 document.querySelector('.el-table__body-wrapper').scrollTo(0, 0)
                 this.ajaxData()
             },
+        },
+        computed: {
+          checkAddProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/store') : this.$checkAuth('/proposal/store')
+          },
+          checkEditProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/update') : this.$checkAuth('/proposal/proposal-operate/update')
+          },
+          checkProposalMaterial(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/materials') : this.$checkAuth('/proposal/materials')
+          },
+          checkCopyProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/copy') : this.$checkAuth('/proposal/proposal-operate/copy')
+          },
+          checkH5Proposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/h5') : this.$checkAuth('/proposal/h5')
+          }
         }
     }
 </script>

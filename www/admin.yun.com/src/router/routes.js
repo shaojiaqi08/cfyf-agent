@@ -126,7 +126,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/proposal'
+          permission: ['/proposal', '/deposit-proposal/list-with-page']
         },
         component: () => import('views/merchandising/proposal')
       },
