@@ -65,10 +65,10 @@
     },
     methods: {
       check (type) {
-        window.open(`${process.env.API_URL}/${this.isDeposit ? 'deposit-' : ''}proposal/pdf/${type}-by-pcode?pcode=${this.proposalInfo.pcode}`)
+        window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/pdf/${type}-by-pcode` : `proposal/file/${type}/pdf`}?pcode=${this.proposalInfo.pcode}`)
       },
       checkImg (type) {
-        window.open(`${process.env.API_URL}/${this.isDeposit ? 'deposit-' : ''}proposal/image/${type}-by-pcode?pcode=${this.proposalInfo.pcode}`)
+        window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/image/${type}-by-pcode` : `proposal/file/${type}/image`}?pcode=${this.proposalInfo.pcode}`)
       },
       modalClose () {
         this.$emit('fresh')
