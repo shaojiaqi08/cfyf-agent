@@ -624,6 +624,7 @@
       },
       // 复制产品
       handleCopyProd (item) {
+        if(this.productMaxCnt - this.productList.length <= 0) return
         const copy = JSON.parse(JSON.stringify(item))
         // 复制不带减保信息
         delete copy.year_reduction

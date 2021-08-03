@@ -43,7 +43,12 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
-                <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
+                <el-table-column label="创建时间" align="center">
+                  <template v-slot="{row}">
+                    <span v-if="curTabIdx.includes('guarantee-pane')">{{row.created_at}}</span>
+                    <span v-else-if="curTabIdx.includes('deposit-pane')">{{row.add_time}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
                 <el-table-column label="备注" prop="remark" align="center"></el-table-column>
                 <el-table-column label="操作" width="240px" align="center">
