@@ -46,7 +46,7 @@
                 <el-table-column label="创建时间" align="center">
                   <template v-slot="{row}">
                     <span v-if="curTabIdx.includes('guarantee-pane')">{{row.created_at}}</span>
-                    <span v-else-if="curTabIdx.includes('deposit-pane')">{{row.add_time}}</span>
+                    <span v-else-if="curTabIdx.includes('deposit-pane')">{{row.add_time_format}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
@@ -226,7 +226,7 @@
         },
         created() {
             this.ajaxUserInfo()
-            this.ajaxData()
+            // this.ajaxData()
             window.addEventListener('storage', this.onStorage)
             window.addEventListener('resize', this.setTableMaxHeight)
         },

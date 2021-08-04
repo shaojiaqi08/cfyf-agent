@@ -146,7 +146,7 @@ export const routers = [
         meta: {
           title: '储蓄计划书编辑',
           show: false,
-          permission: '/proposal/proposal-operate/update'
+          permission: '/deposit-proposal/update'
         },
         component: () => import('views/merchandising/proposal/proposal-operate-deposit')
       },
