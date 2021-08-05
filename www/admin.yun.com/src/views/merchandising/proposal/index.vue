@@ -1,7 +1,7 @@
 <template>
     <div class="prospectus-container page-container">
         <div class="header">
-            计划书
+            <common-tabs-header v-model="curTabIdx" :data="tabsData"></common-tabs-header>
             <el-input type="primary" v-model="keyword" placeholder="请输入" clearable @input="search" size="small">
                 <filter-shell v-model="type" slot="prepend" class="keyword-type-filter" autoFocus autoClose :clearable="false">
                     <el-select v-model="type" filterable style="width: 100%" @change="keyword=''">
@@ -28,7 +28,7 @@
                             <img :src="userHeadImg" class="avatar-image">
                         </div>
                     </el-tooltip>
-                    <el-button v-if="$checkAuth('/proposal/store')" type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
+                    <el-button v-if="checkAddProposal" type="primary" @click="addProposal" size="small"><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button>
                 </div>
             </div>
             <el-table v-loading="loading"
@@ -43,18 +43,23 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="所属客户" prop="customer_name" align="center"></el-table-column>
-                <el-table-column label="创建时间" prop="created_at" align="center"></el-table-column>
+                <el-table-column label="创建时间" align="center">
+                  <template v-slot="{row}">
+                    <span v-if="curTabIdx.includes('guarantee-pane')">{{row.created_at}}</span>
+                    <span v-else-if="curTabIdx.includes('deposit-pane')">{{row.add_time_format}}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column label="被保人" prop="recognizee_policies_text" align="center"></el-table-column>
                 <el-table-column label="备注" prop="remark" align="center"></el-table-column>
                 <el-table-column label="操作" width="240px" align="center">
                     <template v-slot="{row, index}">
                         <template v-if="row.status === proposalStatusMap.done.value">
-                            <el-link v-if="$checkAuth('/proposal/materials')" type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
-                            <el-link v-if="$checkAuth('/proposal/proposal-operate/copy')" type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
-                            <el-link v-if="$checkAuth('/proposal/h5')" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
+                            <el-link v-if="checkProposalMaterial" type="primary" class="mr8" @click="checkMaterial(row)">计划书材料</el-link>
+                            <el-link v-if="checkCopyProposal" type="primary" class="mr8" @click="editProposal(row)">复制</el-link>
+                            <el-link v-if="checkH5Proposal" type="primary" class="mr8" @click="checkInfo(row, index)">查看h5计划书</el-link>
                         </template>
                         <template v-else>
-                            <el-link v-if="$checkAuth('/proposal/proposal-operate/update')" type="primary" @click="editProposal(row)">编辑计划书</el-link>
+                            <el-link v-if="checkEditProposal" type="primary" @click="editProposal(row)">编辑计划书</el-link>
                         </template>
                     </template>
                 </el-table-column>
@@ -71,25 +76,28 @@
                          @fresh="ajaxUserInfo"></user-info-modal>
         <proposal-material :show.sync="isProposalMaterialShow"
                            :proposalInfo="proposalInfo"
+                           :is-deposit="isDeposit"
                            title="计划书材料"></proposal-material>
-        <add-member-struct :show.sync="isAddProposal"></add-member-struct>
+        <add-member-struct :show.sync="isAddProposal" :is-deposit="isDeposit"></add-member-struct>
     </div>
 </template>
 <script>
     import FilterShell, {clearValue, hasValue} from '@/components/filters/filter-shell'
+    import CommonTabsHeader from '../../../components/common-tabs-header'
     import UserInfoModal from './modal/user-info'
     import ProposalMaterial from './modal/proposal-material'
     import AddMemberStruct from './modal/add-member-struct'
     import {debounce} from '@/utils'
     import {proposal_status, proposalStatusMap} from '@/enums/merchandising'
-    import {getProposalList, getProposalMasterInfo} from '@/apis/modules/proposal'
+    import {getProposalList, getProposalMasterInfo, getDepositProposalList} from '@/apis/modules/proposal'
     export default {
         name: 'prospectus',
         components: {
             UserInfoModal,
             ProposalMaterial,
             AddMemberStruct,
-            FilterShell
+            FilterShell,
+            CommonTabsHeader
         },
         data() {
             return {
@@ -122,7 +130,13 @@
                 },
                 total: 0,
                 maxHeight: null,
-                paramsChanged: false
+                paramsChanged: false,
+                curTabIdx: '',
+                tabsData: [
+                  { name: 'guarantee-pane', label: '保障计划书', permission: '/proposal'},
+                  { name: 'deposit-pane', label: '储蓄计划书', permission: '/deposit-proposal/list-with-page'}
+                ],
+                isDeposit: false
             }
         },
         methods: {
@@ -151,7 +165,7 @@
                 })
             },
             editProposal(item) {
-                let routeUrl = this.$router.resolve(`/proposal/proposal-operate?proposal_id=${item.id}&customer_id=${item.customer_id}`)
+              let routeUrl = this.$router.resolve(`/proposal/proposal-operate${this.isDeposit ? '-deposit' : ''}?proposal_id=${item.id}&customer_id=${item.customer_id}`)
                 window.open(routeUrl.href, '_blank')
             },
             checkMaterial(item) {
@@ -181,7 +195,7 @@
                 this.loading = true
                 const {searchForm, keywordType, keyword, type} = this
                 const key = keywordType.find(item => item.value === type).value
-                getProposalList({...searchForm, [key]: keyword}).then(res => {
+                ;(this.isDeposit ? getDepositProposalList : getProposalList)({...searchForm, [key]: keyword}).then(res => {
                     // 当前不是最后一次请求或者最后一次请求结束
                     if (idx < this.fetchIndex || !this.fetchIndex) return
                     if (searchForm.page <= 1) {
@@ -212,7 +226,7 @@
         },
         created() {
             this.ajaxUserInfo()
-            this.ajaxData()
+            // this.ajaxData()
             window.addEventListener('storage', this.onStorage)
             window.addEventListener('resize', this.setTableMaxHeight)
         },
@@ -229,6 +243,29 @@
                 this.searchForm.start_created_at = v[0]
                 this.searchForm.end_created_at = v[1]
             },
+            curTabIdx(v) {
+                this.searchForm.page = 1
+                this.isDeposit = v.includes('deposit')
+                document.querySelector('.el-table__body-wrapper').scrollTo(0, 0)
+                this.ajaxData()
+            },
+        },
+        computed: {
+          checkAddProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/store') : this.$checkAuth('/proposal/store')
+          },
+          checkEditProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/update') : this.$checkAuth('/proposal/proposal-operate/update')
+          },
+          checkProposalMaterial(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/materials') : this.$checkAuth('/proposal/materials')
+          },
+          checkCopyProposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/copy') : this.$checkAuth('/proposal/proposal-operate/copy')
+          },
+          checkH5Proposal(){
+            return this.isDeposit ? this.$checkAuth('/deposit-proposal/h5') : this.$checkAuth('/proposal/h5')
+          }
         }
     }
 </script>
