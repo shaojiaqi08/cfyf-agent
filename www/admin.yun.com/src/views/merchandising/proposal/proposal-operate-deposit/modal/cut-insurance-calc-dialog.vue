@@ -7,7 +7,7 @@
     @close="closeDialog">
     <div class="tips">
       {{data.proposal_product_name}}
-      <span>内部收益率 = {{irr || '-'}} %</span>
+      <span>内部收益率 = {{Number(irr) && Number(irr).toFixed(3) || '-'}} %</span>
     </div>
     <el-table
       :max-height="520"
