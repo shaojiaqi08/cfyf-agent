@@ -49,7 +49,10 @@
             },
             'userInfo.permissions': {
                 handler() {
-                    this.tabIndex = (this.filterData[0] || {}).name
+                    // 如果url设置了tab参数，会自动的将对应的tab排序到数组首位
+                    let curTabName = this.$route.query.tab
+                    let curTab = this.filterData.find(item => item.name === curTabName)
+                    this.tabIndex = curTab ? curTab.name : (this.filterData[0] || {}).name
                 },
                 immediate: true
             }

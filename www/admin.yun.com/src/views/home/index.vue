@@ -1,129 +1,81 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../../assets/logo.png" />
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
-    <div id="container"></div>
+  <div class="home-page">
+    <div class="page-container">
+      <div class="banner">
+        <el-carousel arrow="hover" trigger="click">
+          <el-carousel-item v-for="item in imgList" :key="item">
+            <img :src="item" alt="" class="banner-img">
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+
+      <div class="announcement-sector">
+        <div class="sector">
+          <el-button type="primary" @click="toMore('new-lines')">新品更多</el-button>
+        </div>
+        <div class="sector">
+          <el-button type="primary" @click="toMore('regulate')">调整更多</el-button>
+        </div>
+        <div class="sector">
+          <el-button type="primary" @click="toMore('announcement')">公告更多</el-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
-#container {
-  width: 800px;
-  height: 500px;
-  border: 1px solid #ccc;
-}
-</style>
-
 <script>
-// @ is an alias to /src
-import G6 from '@antv/g6';
-// import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
   name: "Home",
-  components: {
-    // HelloWorld
-  },
-  mounted() {
-    this.init()
+  data(){
+    return {
+      imgList: [
+        'https://hbimg.huabanimg.com/9b7670df2b854924c8f527d15449edde57719f4a3e5fb-ohj3Qk_fw658/format/webp',
+        'https://hbimg.huabanimg.com/c2c34bd77d79fc39f2e3f63b1d4689533e65e395137d6-TTHWQb_fw658/format/webp',
+        'https://hbimg.huabanimg.com/59e21a6330c0d2c4119e22b040bd549a47a61a00eba6-amBScH_fw658/format/webp'
+      ]
+    }
   },
   methods: {
-    init() {
-      fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/algorithm-category.json')
-    .then(res => res.json())
-    .then(data => {
-      data = Object.assign(data, { label: '=1==', type: 'star', x: 0, y: 0 })
-      console.log(data, '====')
-      const width = document.getElementById('container').scrollWidth;
-      const height = document.getElementById('container').scrollHeight || 500;
-      const graph = new G6.TreeGraph({
-        container: 'container',
-        width,
-        height,
-        linkCenter: true,
-        modes: {
-          default: [
-            {
-              type: 'collapse-expand',
-              onChange: function onChange(item, collapsed) {
-                const data = item.get('model').data;
-                data.collapsed = collapsed;
-                return true;
-              },
-            },
-            'drag-canvas',
-            'zoom-canvas',
-          ],
-        },
-        defaultNode: {
-          size: [50, 26],
-          type: 'rect',
-          label: '++++++++',
-          anchorPoints: [
-            [0, 0.5],
-            [1, 0.5],
-          ],
-          style: {
-            fill: '#FF9900',
-            stroke: '#FF9900',
-          },
-        },
-        defaultEdge: {
-          type: 'cubic-vertical',
-          style: {
-            stroke: '#A3B1BF',
-          },
-        },
-        layout: {
-          type: 'compactBox',
-          direction: 'TB',
-          getId: function getId(d) {
-            return d.id;
-          },
-          getHeight: function getHeight() {
-            return 16;
-          },
-          getWidth: function getWidth() {
-            return 16;
-          },
-          getVGap: function getVGap() {
-            return 80;
-          },
-          getHGap: function getHGap() {
-            return 20;
-          },
-        },
-      });
-
-      graph.node(function(node) {
-        let position = 'left';
-        let rotate = 0;
-        if (!node.children) {
-          position = 'bottom';
-          // rotate = Math.PI / 2;
+    toMore(type){
+      this.$router.push({
+        path: '/announcement',
+        query: {
+          tab: type
         }
-        return {
-          label: node.id,
-          labelCfg: {
-            position,
-            offset: 5,
-            style: {
-              rotate,
-              textAlign: 'start',
-            },
-          },
-        };
-      });
-      
-      graph.on('node:click', function(event) {
-        console.log(event, '====')
       })
-
-      graph.data(data);
-      graph.render();
-      graph.fitView();
-    });
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.home-page{
+  padding: 0 20px;
+  height: 100%;
+
+  .page-container{
+    background: #fff;
+
+    .banner{
+      width: 100%;
+      padding-top: 20px;
+
+      .banner-img{
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .announcement-sector{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .sector{
+        width: 30%;
+      }
+    }
+  }
+}
+</style>
