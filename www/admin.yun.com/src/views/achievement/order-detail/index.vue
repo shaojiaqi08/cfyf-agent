@@ -652,6 +652,7 @@ export default {
       }
       this.customerInfoLoading = true
       getPolicyHolder(obj).then((res) => {
+        res.policy_holder_info = res.policy_holder_info || {} // 容错处理
         res.policy_holder_info.policy_renewal = res.policy_renewal || {}
         this.customerInfo = res
         this.customerInfoLoading = false
