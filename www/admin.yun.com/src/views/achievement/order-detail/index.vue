@@ -106,7 +106,7 @@
               <el-tab-pane label="被保人" name="2"></el-tab-pane>
               <el-tab-pane label="受益人" name="3"></el-tab-pane>
             </el-tabs>
-            <cust-info :data="customerInfo.policy_holder_info" v-if="tabIndex === '1'"></cust-info>
+            <cust-info :data="customerInfo.policy_holder_info" v-if="tabIndex === '1' && customerInfo.policy_holder_info"></cust-info>
             <template
                 v-for="(item, index) in customerInfo.policy_recognizee_policies"
                 v-else-if="tabIndex === '2'"
@@ -119,7 +119,7 @@
             <div
                 v-for="(item, index) in customerInfo.policy_recognizee_policies"
                 :key="'policy_recognizee_policies' + index"
-                v-else
+                v-else-if="tabIndex === '3'"
             >
               <div class="mb10 mt10">
                 <span class="mr10" style="font-size: 14px">被保人{{index + 1}}的受益人类型</span>
@@ -652,8 +652,9 @@ export default {
       }
       this.customerInfoLoading = true
       getPolicyHolder(obj).then((res) => {
-        res.policy_holder_info = res.policy_holder_info || {} // 容错处理
-        res.policy_holder_info.policy_renewal = res.policy_renewal || {}
+        if (res.policy_holder_info ) {
+          res.policy_holder_info.policy_renewal = res.policy_renewal || {}
+        }
         this.customerInfo = res
         this.customerInfoLoading = false
       })
