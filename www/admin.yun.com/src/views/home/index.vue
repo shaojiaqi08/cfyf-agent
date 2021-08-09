@@ -30,16 +30,13 @@
         </div>
       </div>
 
-      <div class="performance-count">
+      <div class="performance-count" v-loading="performanceLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">业绩统计</span></span>
             <div class="performance-tabs">
               <el-tabs v-model="activePerformanceName">
-                <el-tab-pane label="用户管理" name="first"></el-tab-pane>
-                <el-tab-pane label="配置管理" name="second"></el-tab-pane>
-                <el-tab-pane label="角色管理" name="third"></el-tab-pane>
-                <el-tab-pane label="定时任务补偿" name="fourth"></el-tab-pane>
+                <el-tab-pane :label="item.name + '业绩'" :name="item.start + ',' + item.end" v-for="item in dateRange" :key="item.name"></el-tab-pane>
               </el-tabs>
             </div>
           </div>
@@ -48,22 +45,34 @@
             <el-radio-group v-model="viewRange">
               <el-radio label="company">公司</el-radio>
               <el-radio label="team">团队</el-radio>
-              <el-radio label="person">个人</el-radio>
+              <el-radio label="self">个人</el-radio>
             </el-radio-group>
           </div>
         </div>
 
         <div class="performance-main">
-          <div class="common-main" v-for="item in performanceStatistics" :key="item.label">
+          <div class="common-main">
             <div class="main-wrap">
-              <div class="main-title">{{ item.label }}</div>
-              <div class="main-count">{{ item.count }}</div>
+              <div class="main-title">新增保单（个）</div>
+              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_policy }}</div>
+            </div>
+          </div>
+          <div class="common-main">
+            <div class="main-wrap">
+              <div class="main-title">投保客户（个）</div>
+              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_count }}</div>
+            </div>
+          </div>
+          <div class="common-main">
+            <div class="main-wrap">
+              <div class="main-title">累计保费（元）</div>
+              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_premium }}</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="sales-top">
+      <div class="sales-top" v-loading="salesTopLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">商品销量TOP5</span></span>
@@ -86,23 +95,22 @@
 
         <div class="sales-main">
           <el-table :data="topSalesList"
-                    max-height="100%"
+                    height="100%"
                     border
                     stripe
-                    v-loading="salesTableLoading"
                     ref="table">
-            <el-table-column type="index"></el-table-column>
-            <el-table-column label="产品名称" prop=""></el-table-column>
-            <el-table-column label="销量（个）" prop=""></el-table-column>
-            <el-table-column label="总保费（元）" prop=""></el-table-column>
+            <el-table-column type="index" align="center"></el-table-column>
+            <el-table-column label="产品名称" prop="product_name" align="center"></el-table-column>
+            <el-table-column label="销量（个）" prop="underwrite_quantity" align="center"></el-table-column>
+            <el-table-column label="总保费（元）" prop="underwrite_premium" align="center"></el-table-column>
           </el-table>
         </div>
       </div>
 
-      <div class="insurance-type">
+      <div class="insurance-type" v-loading="insuranceClassLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
-            <span class="title"><span class="title-text">商品销量TOP5</span></span>
+            <span class="title"><span class="title-text">险种分析销售</span></span>
           </div>
           <div>
             <span style="color: #999999; font-size: 14px; margin-right: 15px">筛选</span>
@@ -110,7 +118,7 @@
               <el-date-picker
                 style="width: 262px"
                 size="mini"
-                v-model="topSalesDate"
+                v-model="insuranceTypeDate"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
@@ -121,7 +129,7 @@
         </div>
 
         <div class="insurance-type-main">
-          <div class="pieChart" id="pieChart"></div>
+          <div class="pieChart" id="pieChart" ref="pieChart"></div>
         </div>
       </div>
     </div>
@@ -130,10 +138,16 @@
 
 <script>
   import {Chart} from '@antv/g2';
-  import DataSet from '@antv/data-set'
+  import {getPerformance, getSalesTop, getInsuranceClass} from '@/apis/modules/home'
+  import { getDateRange } from '@/apis/modules/achievement'
 export default {
   name: "Home",
   data(){
+    let now = new Date()
+    let year = now.getFullYear()
+    let month = +now.getMonth() + 1 >= 10 ? +now.getMonth() + 1 : '0' + (+now.getMonth() + 1).toString()
+    let day = now.getDate() >= 10 ? now.getMonth() : '0' + now.getDate()
+    let today = `${year}${month}${day},${year}${month}${day}`
     return {
       imgList: [
         'https://hbimg.huabanimg.com/9b7670df2b854924c8f527d15449edde57719f4a3e5fb-ohj3Qk_fw658/format/webp',
@@ -206,28 +220,70 @@ export default {
         }
       ],
       viewRange: 'company',
-      activePerformanceName: 'first',
-      performanceStatistics: [
-        {
-          label: '新增保单（个）',
-          count: 5001
-        },
-        {
-          label: '投保客户（个）',
-          count: 51
-        },
-        {
-          label: '累计保费（元）',
-          count: 789532
-        }
-      ],
+      activePerformanceName: today,
+      performanceStatistics: {},
       topSalesDate: [],
-      salesTableLoading: false,
+      insuranceTypeDate: [],
       topSalesList: [],
-      pieChart: null
+      insuranceClassList: [],
+      pieChart: null,
+      performanceLoading: false,
+      salesTopLoading: false,
+      insuranceClassLoading: false,
+      dateRange: []
     }
   },
   methods: {
+    getDateRange(){
+      getDateRange().then(res => {
+        this.dateRange = res.filter(item => item.name !== '上周' && item.name !== '上月')
+      })
+    },
+    init(){
+      this.getPerformanceList()
+      this.getSalesTopList()
+      this.getInsuranceClassList()
+    },
+    getInsuranceClassList(){
+      let data = this.insuranceTypeDate.length > 0 ? {proposal_at_start: this.insuranceTypeDate[0] / 1000, proposal_at_end: this.insuranceTypeDate[1] / 1000} : {}
+      getInsuranceClass(this.viewRange,data).then(res => {
+        console.log(res)
+        this.insuranceClassList = res
+        this.$nextTick(() => {
+          this.renderChart()
+        })
+
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        this.insuranceClassLoading = false
+      })
+    },
+    getSalesTopList(){
+      let data = this.topSalesDate.length > 0 ? {proposal_at_start: this.topSalesDate[0] / 1000, proposal_at_end: this.topSalesDate[1] / 1000} : {}
+      getSalesTop(this.viewRange, data).then(res => {
+        this.topSalesList = res
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        this.salesTopLoading = false
+      })
+    },
+    getPerformanceList(){
+      let date = this.activePerformanceName.split(',')
+      let params = {
+        proposal_at_start: date[0],
+        proposal_at_end: date[1]
+      }
+      getPerformance(this.viewRange, params).then(res => {
+        this.performanceStatistics = res
+        this.performanceStatistics.actual_underwrite_total_policy = 324
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        this.performanceLoading = false
+      })
+    },
     toMore(type){
       this.$router.push({
         path: '/announcement',
@@ -245,67 +301,80 @@ export default {
       })
 
       window.open(url.href, '_blank')
+    },
+    renderChart(){
+      const data = this.insuranceClassList.map(item => {
+        return {
+          ...item,
+          item: item.insurance_class_name,
+          percent: item.underwrite_premium_rate
+        }
+      })
+
+      const chart = new Chart({
+        // container: 'pieChart',
+        container: this.$refs.pieChart,
+        autoFit: true,
+        width: 630,
+        height: 300
+      });
+
+      chart.coordinate('theta', {
+        radius: 0.75,
+      });
+
+      chart.data(data);
+
+      chart.scale('underwrite_premium_rate', {
+        formatter: (val) => {
+          val = val + '%';
+          return val;
+        },
+      });
+
+      chart.tooltip({
+        showTitle: false,
+        showMarkers: false,
+        customContent: (name, items) => {
+          const container = document.createElement('div');
+          container.className = 'g2-tooltip';
+          let listItem = '';
+          items.forEach((item) => {
+            listItem += `<li class="g2-tooltip-list-item" data-index={index}>
+                  <div style="margin-bottom: 10px;">
+                    <span >比例:</span><span>${item.data.underwrite_premium_rate}</span>
+                  </div>
+                  <div style="margin-bottom: 10px;">
+                    <span >保单数:</span><span>${item.data.underwrite_quantity}</span>
+                  </div>
+                  <div style="margin-bottom: 10px;">
+                    <span>保费:</span><span>${item.data.underwrite_premium}</span>
+                  </div>
+            </li>`;
+          });
+          container.innerHTML = listItem;
+          return container;
+        }
+      });
+
+      chart
+        .interval()
+        .adjust('stack')
+        .position('underwrite_premium_rate')
+        .color('item', ['#2C68FF', '#FF8601', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
+        .tooltip( 'underwrite_premium_rate');
+      chart.legend({position: 'right'})
+      chart.interaction('element-active');
+      chart.render();
     }
   },
-  mounted () {
-    const data = [
-      { item: '事例一', count: 40, percent: 0.4 },
-      { item: '事例二', count: 21, percent: 0.21 },
-      { item: '事例三', count: 17, percent: 0.17 },
-      { item: '事例四', count: 13, percent: 0.13 },
-      { item: '事例五', count: 9, percent: 0.09 },
-    ];
-
-    const chart = new Chart({
-      container: 'pieChart',
-      autoFit: true,
-      width: 630,
-      height: 300
-    });
-
-    chart.coordinate('theta', {
-      radius: 0.75,
-    });
-
-    chart.data(data);
-
-    chart.scale('percent', {
-      formatter: (val) => {
-        val = val * 100 + '%';
-        return val;
-      },
-    });
-
-    chart.tooltip({
-      showTitle: false,
-      showMarkers: false,
-    });
-
-    chart
-      .interval()
-      .adjust('stack')
-      .position('percent')
-      .color('item')
-      // .label('percent', {
-      //   offset: '-30%',
-      //   style: {
-      //     textAlign: 'center',
-      //     fontSize: 16,
-      //     shadowBlur: 2,
-      //     shadowColor: 'rgba(0, 0, 0, .45)',
-      //   },
-      // })
-      .tooltip('item*percent', (item, percent) => {
-        percent = percent * 100 + '%';
-        return {
-          name: item,
-          value: percent,
-        };
-      });
-    chart.legend({position: 'right'})
-    chart.interaction('element-active');
-    chart.render();
-  }
+  created () {
+    this.performanceLoading = true
+    this.salesTopLoading = true
+    this.insuranceClassLoading = true
+    this.getDateRange()
+    this.init()
+  },
 };
 </script>
 
