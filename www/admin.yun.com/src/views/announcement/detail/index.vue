@@ -15,31 +15,7 @@
       配置公告内容，内容可能很多，会换行展示停售公告内容内容可能很多，会换行展示停售公告内容，内容可能很多，会换行展示停售公告内容内容可能很多配置公告内容，内容可能很多，会换行展示停售公告内容内容可能很多，会换行展示停售公告内容，内容可能很多，会换行展示停售公告内容内容可能很多
     </div>
     <div class="announcement-img-container">
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
-      </div>
-      <div class="img-wrap">
+      <div class="img-wrap" v-for="item in 9" :key="item">
         <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
       </div>
     </div>
