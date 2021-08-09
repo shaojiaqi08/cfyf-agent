@@ -442,14 +442,14 @@
         <el-table :data="manPowerDetail.data" :show-header="false" border stripe>
           <el-table-column width="230px" align="center">
             <template v-slot="{ row }">
-              <p>照会{{row.is_complete && '完成'}}</p>
+              <p>照会{{row.is_complete ? '完成' : ''}}</p>
               <span>{{formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss')}}</span>
             </template>
           </el-table-column>
           <el-table-column>
             <template v-slot="{ row }">
               <span>
-                {{`${row.role_name_arr.join(',')}【${row.custom_name}】`}}
+                {{`${row.role_name_arr.join(',')}【${row.real_name}】`}}
                 <span :style="{ color: row.conclusion === 'accept' ? 'blue' : row.conclusion === 'refuse' ? 'red' : null}">{{row.conclusion_str}}</span>
               </span>
             </template>
