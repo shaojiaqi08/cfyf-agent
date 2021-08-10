@@ -433,7 +433,7 @@
       </template>
 
       <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
-        <iframe
+        <iframe v-if="manPowerDialogVisible"
             :src="manPowerDetail.data.file_url"
             style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
       </template>
