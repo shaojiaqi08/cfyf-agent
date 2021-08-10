@@ -35,14 +35,14 @@
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">业绩统计</span></span>
             <div class="performance-tabs">
-              <el-tabs v-model="activePerformanceName">
+              <el-tabs v-model="activePerformanceName" @tab-click="performanceChange">
                 <el-tab-pane :label="item.name + '业绩'" :name="item.start + ',' + item.end" v-for="item in dateRange" :key="item.name"></el-tab-pane>
               </el-tabs>
             </div>
           </div>
           <div>
             <span style="color: #999999; font-size: 14px; margin-right: 15px">查看范围</span>
-            <el-radio-group v-model="viewRange">
+            <el-radio-group v-model="viewRange" @change="viewRangeChange">
               <el-radio label="company">公司</el-radio>
               <el-radio label="team">团队</el-radio>
               <el-radio label="self">个人</el-radio>
@@ -54,7 +54,7 @@
           <div class="common-main">
             <div class="main-wrap">
               <div class="main-title">新增保单（个）</div>
-              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_policy }}</div>
+              <div class="main-count">{{ performanceStatistics.cumulative_customer }}</div>
             </div>
           </div>
           <div class="common-main">
@@ -81,10 +81,12 @@
             <span style="color: #999999; font-size: 14px; margin-right: 15px">筛选</span>
             <div class="date-range">
               <el-date-picker
+                @change="salesTopDateChange"
                 style="width: 262px"
                 size="mini"
                 v-model="topSalesDate"
                 type="daterange"
+                value-format="yyyyMMdd"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -119,7 +121,9 @@
                 style="width: 262px"
                 size="mini"
                 v-model="insuranceTypeDate"
+                @change="insuranceTypeDateChange"
                 type="daterange"
+                value-format="yyyyMMdd"
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期">
@@ -146,7 +150,7 @@ export default {
     let now = new Date()
     let year = now.getFullYear()
     let month = +now.getMonth() + 1 >= 10 ? +now.getMonth() + 1 : '0' + (+now.getMonth() + 1).toString()
-    let day = now.getDate() >= 10 ? now.getMonth() : '0' + now.getDate()
+    let day = now.getDate() >= 10 ? now.getDate().toString() : '0' + now.getDate()
     let today = `${year}${month}${day},${year}${month}${day}`
     return {
       imgList: [
@@ -234,6 +238,19 @@ export default {
     }
   },
   methods: {
+    viewRangeChange(){
+      this.init()
+    },
+    insuranceTypeDateChange(){
+      this.pieChart.clear();
+      this.getInsuranceClassList()
+    },
+    salesTopDateChange(){
+      this.getSalesTopList()
+    },
+    performanceChange(){
+      this.getPerformanceList()
+    },
     getDateRange(){
       getDateRange().then(res => {
         this.dateRange = res.filter(item => item.name !== '上周' && item.name !== '上月')
@@ -245,14 +262,14 @@ export default {
       this.getInsuranceClassList()
     },
     getInsuranceClassList(){
-      let data = this.insuranceTypeDate.length > 0 ? {proposal_at_start: this.insuranceTypeDate[0] / 1000, proposal_at_end: this.insuranceTypeDate[1] / 1000} : {}
+      this.insuranceClassLoading = true
+      let data = this.insuranceTypeDate.length > 0 ? {proposal_at_start: this.insuranceTypeDate[0], proposal_at_end: this.insuranceTypeDate[1]} : {}
       getInsuranceClass(this.viewRange,data).then(res => {
         console.log(res)
         this.insuranceClassList = res
         this.$nextTick(() => {
           this.renderChart()
         })
-
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -260,7 +277,8 @@ export default {
       })
     },
     getSalesTopList(){
-      let data = this.topSalesDate.length > 0 ? {proposal_at_start: this.topSalesDate[0] / 1000, proposal_at_end: this.topSalesDate[1] / 1000} : {}
+      this.salesTopLoading = true
+      let data = this.topSalesDate.length > 0 ? {proposal_at_start: this.topSalesDate[0], proposal_at_end: this.topSalesDate[1]} : {}
       getSalesTop(this.viewRange, data).then(res => {
         this.topSalesList = res
       }).catch(err => {
@@ -270,6 +288,7 @@ export default {
       })
     },
     getPerformanceList(){
+      this.performanceLoading = true
       let date = this.activePerformanceName.split(',')
       let params = {
         proposal_at_start: date[0],
@@ -277,7 +296,6 @@ export default {
       }
       getPerformance(this.viewRange, params).then(res => {
         this.performanceStatistics = res
-        this.performanceStatistics.actual_underwrite_total_policy = 324
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -311,7 +329,7 @@ export default {
         }
       })
 
-      const chart = new Chart({
+      this.pieChart = new Chart({
         // container: 'pieChart',
         container: this.$refs.pieChart,
         autoFit: true,
@@ -319,20 +337,20 @@ export default {
         height: 300
       });
 
-      chart.coordinate('theta', {
+      this.pieChart.coordinate('theta', {
         radius: 0.75,
       });
 
-      chart.data(data);
+      this.pieChart.data(data);
 
-      chart.scale('underwrite_premium_rate', {
+      this.pieChart.scale('underwrite_premium_rate', {
         formatter: (val) => {
           val = val + '%';
           return val;
         },
       });
 
-      chart.tooltip({
+      this.pieChart.tooltip({
         showTitle: false,
         showMarkers: false,
         customContent: (name, items) => {
@@ -342,10 +360,13 @@ export default {
           items.forEach((item) => {
             listItem += `<li class="g2-tooltip-list-item" data-index={index}>
                   <div style="margin-bottom: 10px;">
-                    <span >比例:</span><span>${item.data.underwrite_premium_rate}</span>
+                    <span >比例:</span><span>${item.data.underwrite_premium_rate}%</span>
                   </div>
                   <div style="margin-bottom: 10px;">
                     <span >保单数:</span><span>${item.data.underwrite_quantity}</span>
+                  </div>
+                  <div style="margin-bottom: 10px;">
+                    <span >投保客户数:</span><span>${item.data.customer_total}</span>
                   </div>
                   <div style="margin-bottom: 10px;">
                     <span>保费:</span><span>${item.data.underwrite_premium}</span>
@@ -357,21 +378,18 @@ export default {
         }
       });
 
-      chart
+      this.pieChart
         .interval()
         .adjust('stack')
         .position('underwrite_premium_rate')
         .color('item', ['#2C68FF', '#FF8601', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
         .tooltip( 'underwrite_premium_rate');
-      chart.legend({position: 'right'})
-      chart.interaction('element-active');
-      chart.render();
+      this.pieChart.legend({position: 'right'})
+      this.pieChart.interaction('element-active');
+      this.pieChart.render();
     }
   },
   created () {
-    this.performanceLoading = true
-    this.salesTopLoading = true
-    this.insuranceClassLoading = true
     this.getDateRange()
     this.init()
   },
