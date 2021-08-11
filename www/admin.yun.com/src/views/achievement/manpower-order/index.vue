@@ -140,20 +140,30 @@
         v-table-infinite-scroll="scroll2Bottom"
         v-loading="loading"
         ref="table">
-        <el-table-column label="出单人" prop="supplier_name" align="center" v-if="$route.name !== 'manpower-order-sales'"></el-table-column>
-        <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="$route.name !== 'manpower-order-sales'" min-width="120px"></el-table-column>
+        <el-table-column label="产品名称" prop="policy_holder_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
-        <el-table-column label="人核状态" prop="status_str" align="center"></el-table-column>
-        <el-table-column label="人核进度" prop="action_str" width="180px" align="center"></el-table-column>
-        <el-table-column label="人核结论" prop="result_str" width="180px" align="center"></el-table-column>
+        <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
         <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
           <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
         </el-table-column>
         <el-table-column label="更新时间" prop="last_update_time" width="180px" align="center">
           <template v-slot="{ row }">{{row.last_update_time ? formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
         </el-table-column>
-        <el-table-column label="操作" prop fixed="right" width="100px" align="center">
+        <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
+          <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+        </el-table-column>
+        <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center">
+          <template v-slot="{ row }">
+            <el-button class="relation-order-btn" type="text" @click="toOrderDetail(row.policy.order_no)">{{row.policy.order_no}}</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="关联单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
+        <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" width="120px" align="center">
           <template v-slot="{ row }">
             <el-link type="primary" @click="toDetail(row.policy.order_no)">详情</el-link>
           </template>
@@ -209,11 +219,29 @@ export default {
   methods: {
     formatDate,
     getData() {},
-    toDetail(id) {
-      console.log(id)
+    // 跳转到关联订单详情
+    toOrderDetail(id) {
+      let routeName = ''
+      switch (this.$route.name) {
+        case 'manpower-order-company':
+          routeName = 'achievement-company-detail'
+          break
+        case 'manpower-order-team':
+          routeName = 'achievement-team-detail'
+          break
+        case 'manpower-order-sales':
+          routeName = 'achievement-self-detail'
+          break
+      }
+      window.open(this.$router.resolve({
+        name: routeName,
+        params: { id }
+      }).href)
+    },
+    toDetail(order_no) {
       window.open(this.$router.resolve({
         name: `${this.$route.name}-detail`,
-        params: { id }
+        params: { order_no }
       }).href)
     },
     scroll2Bottom() {
@@ -281,6 +309,10 @@ export default {
   },
   mounted() {
     this.$nextTick(() => this.calcTableHeight())
+    window.addEventListener('resize', this.calcTableHeight)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.calcTableHeight)
   }
 };
 </script>
@@ -307,6 +339,18 @@ export default {
     background-color: #fff;
     flex: 1;
     padding: 0 16px;
+    overflow: hidden;
+    ::v-deep .relation-order-btn {
+      display: inline-block;
+      width: 180px;
+      & > span {
+        display: inline-block;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
   }
 }
 </style>
