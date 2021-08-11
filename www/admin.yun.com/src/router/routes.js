@@ -111,7 +111,79 @@ export const routers = [
           permission: '/my_performance/detail'
         },
         component: getView('achievement/order-detail')
-      }
+      },
+      {
+        path: '/manpower-order-company',
+        name: 'manpower-order-company',
+        meta: {
+          title: '公司人核订单',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order')
+      },
+      {
+        path: '/manpower-order-company-detail/:id',
+        name: 'manpower-order-company-detail',
+        meta: {
+          title: '公司人核订单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order-detail')
+      },
+      {
+        path: '/manpower-order-team',
+        name: 'manpower-order-team',
+        meta: {
+          title: '团队人核订单',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order')
+      },
+      {
+        path: '/manpower-order-team-detail/:id',
+        name: 'manpower-order-team-detail',
+        meta: {
+          title: '团队人核订单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order-detail')
+      },
+      {
+        path: '/manpower-order-sales',
+        name: 'manpower-order-sales',
+        meta: {
+          title: '我的人核订单',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order')
+      },
+      {
+        path: '/manpower-order-sales-detail/:id',
+        name: 'manpower-order-sales-detail',
+        meta: {
+          title: '我的人核订单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/achievement-company'
+        },
+        component: getView('achievement/manpower-order-detail')
+      },
     ]
   },
   {
