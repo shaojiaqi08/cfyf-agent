@@ -1,16 +1,16 @@
 <template>
   <div class="home-page">
     <div class="page-container">
-      <div class="banner">
+      <div class="banner" v-if="bannerList">
         <el-carousel arrow="hover" trigger="click">
-          <el-carousel-item v-for="item in imgList" :key="item">
-            <img :src="item" alt="" class="banner-img">
+          <el-carousel-item v-for="item in bannerList" :key="item.banner_no">
+            <img :src="item.banner_pic_url" :alt="item.title" class="banner-img" @click="bannerHandle(item)">
           </el-carousel-item>
         </el-carousel>
       </div>
 
       <div class="announcement-sector">
-        <div class="sector" v-for="item in announcementList" :key="item.key">
+        <div class="sector" v-for="item in announcementList" :key="item.key" v-loading="item.loading">
           <div class="common-sector-header">
             <span class="title"><span class="title-text">{{ item.title }}</span></span>
             <span class="more" @click="toMore(item.key)">
@@ -19,13 +19,15 @@
             </span>
           </div>
           <div class="sector-content">
-            <div class="sector-row" v-for="post in item.data" :key="post.title" @click="toDetail(43)">
-              <div class="row-header">
-                <div class="row-title">{{post.title}}</div>
-                <div class="row-date">{{post.date}}</div>
+            <template v-if="item.data.length">
+              <div class="sector-row" v-for="post in item.data" :key="post.announcement_no" @click="toDetail(post.announcement_no)">
+                <div class="row-header">
+                  <div class="row-title">{{post.title}}</div>
+                  <div class="row-date">{{formatYYMMDD(post.put_up_at * 1000, '-')}}</div>
+                </div>
+                <div class="row-desc">{{post.desc || post.content}}</div>
               </div>
-              <div class="row-desc">{{post.desc}}</div>
-            </div>
+            </template>
           </div>
         </div>
       </div>
@@ -142,8 +144,9 @@
 
 <script>
   import {Chart} from '@antv/g2';
-  import {getPerformance, getSalesTop, getInsuranceClass} from '@/apis/modules/home'
+  import {getPerformance, getSalesTop, getInsuranceClass, getBannerList, logBannerClick, getAnnouncementList, getRegulateList, logPlateClick, getNewLinesList} from '@/apis/modules/home'
   import { getDateRange } from '@/apis/modules/achievement'
+  import {formatYYMMDD} from '@/utils/formatTime'
 export default {
   name: "Home",
   data(){
@@ -153,74 +156,25 @@ export default {
     let day = now.getDate() >= 10 ? now.getDate().toString() : '0' + now.getDate()
     let today = `${year}${month}${day},${year}${month}${day}`
     return {
-      imgList: [
-        'https://hbimg.huabanimg.com/9b7670df2b854924c8f527d15449edde57719f4a3e5fb-ohj3Qk_fw658/format/webp',
-        'https://hbimg.huabanimg.com/c2c34bd77d79fc39f2e3f63b1d4689533e65e395137d6-TTHWQb_fw658/format/webp',
-        'https://hbimg.huabanimg.com/59e21a6330c0d2c4119e22b040bd549a47a61a00eba6-amBScH_fw658/format/webp'
-      ],
+      bannerList: [],
       announcementList: [
         {
           title: '新品上线',
           key: 'new-lines',
-          data: [
-            {
-              title: '新少儿平安4.0上线通知11111',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知2222222222222222',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知3333',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            }
-          ]
+          loading: false,
+          data: []
         },
         {
           title: '商品调整',
           key: 'regulate',
-          data: [
-            {
-              title: '新少儿平安4.0上线通知11111',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知2222222222222222',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知3333',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            }
-          ]
+          loading: false,
+          data: []
         },
         {
           title: '平台公告',
           key: 'announcement',
-          data: [
-            {
-              title: '新少儿平安4.0上线通知11111',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知2222222222222222',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            },
-            {
-              title: '新少儿平安4.0上线通知3333',
-              date: '2021-01-01',
-              desc: '新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解新少儿平安4.0上线通知，各位商家可立即了解'
-            }
-          ]
+          loading: false,
+          data: []
         }
       ],
       viewRange: 'company',
@@ -234,15 +188,63 @@ export default {
       performanceLoading: false,
       salesTopLoading: false,
       insuranceClassLoading: false,
-      dateRange: []
+      dateRange: [],
+      regulateLoading: false,
+      announcementLoading: false,
+      newLinesLoading: false,
     }
   },
   methods: {
+    formatYYMMDD,
+    getRegulateList(){
+      let regulate = this.announcementList.find(item => item.key.includes('regulate'))
+      regulate.loading = true
+      getRegulateList({page: 1, page_size: 3, read_type: ''}).then(res => {
+        regulate.data = res.data
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        regulate.loading = false
+      })
+    },
+    getNewLinesList(){
+      let newLines = this.announcementList.find(item => item.key.includes('new-lines'))
+      newLines.loading = true
+      getNewLinesList({page: 1, page_size: 3, read_type: ''}).then(res => {
+        newLines.data = res.data
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        newLines.loading = false
+      })
+    },
+    getAnnouncementList(){
+      let announcement = this.announcementList.find(item => item.key.includes('announcement'))
+      announcement.loading = true
+      getAnnouncementList({page: 1, page_size: 3, read_type: ''}).then(res => {
+        announcement.data = res.data
+      }).catch(err => {
+        console.log(err)
+      }).finally(() => {
+        announcement.loading = false
+      })
+    },
+    bannerHandle(banner){
+      if(banner.file_url || banner.target_url) {
+        logBannerClick({banner_no: banner.banner_no})
+        let url = banner.file_url || banner.target_url
+        window.open(url, '_blank')
+      }
+    },
+    getBannerList(){
+      getBannerList().then(res => {
+        this.bannerList = res
+      })
+    },
     viewRangeChange(){
       this.init()
     },
     insuranceTypeDateChange(){
-      this.pieChart.clear();
       this.getInsuranceClassList()
     },
     salesTopDateChange(){
@@ -257,18 +259,33 @@ export default {
       })
     },
     init(){
+      this.getBannerList()
+      this.getNewLinesList()
+      this.getAnnouncementList()
+      this.getRegulateList()
       this.getPerformanceList()
       this.getSalesTopList()
       this.getInsuranceClassList()
     },
     getInsuranceClassList(){
       this.insuranceClassLoading = true
-      let data = this.insuranceTypeDate.length > 0 ? {proposal_at_start: this.insuranceTypeDate[0], proposal_at_end: this.insuranceTypeDate[1]} : {}
+      let data = this.insuranceTypeDate && this.insuranceTypeDate.length > 0 ? {proposal_at_start: this.insuranceTypeDate[0], proposal_at_end: this.insuranceTypeDate[1]} : {}
       getInsuranceClass(this.viewRange,data).then(res => {
         console.log(res)
         this.insuranceClassList = res
         this.$nextTick(() => {
-          this.renderChart()
+          if(this.pieChart){
+            const data = res.map(item => {
+              return {
+                ...item,
+                item: item.insurance_class_name,
+                percent: item.underwrite_premium_rate
+              }
+            })
+            this.pieChart.changeData(data)
+          }else{
+            this.renderChart()
+          }
         })
       }).catch(err => {
         console.log(err)
@@ -278,7 +295,7 @@ export default {
     },
     getSalesTopList(){
       this.salesTopLoading = true
-      let data = this.topSalesDate.length > 0 ? {proposal_at_start: this.topSalesDate[0], proposal_at_end: this.topSalesDate[1]} : {}
+      let data = this.topSalesDate && this.topSalesDate.length > 0 ? {proposal_at_start: this.topSalesDate[0], proposal_at_end: this.topSalesDate[1]} : {}
       getSalesTop(this.viewRange, data).then(res => {
         this.topSalesList = res
       }).catch(err => {
@@ -311,6 +328,7 @@ export default {
       })
     },
     toDetail(id){
+      logPlateClick({announcement_no: id})
       let url = this.$router.resolve({
         path: '/announcement-detail',
         query: {
@@ -330,8 +348,8 @@ export default {
       })
 
       this.pieChart = new Chart({
-        // container: 'pieChart',
-        container: this.$refs.pieChart,
+        container: 'pieChart',
+        // container: this.$refs.pieChart,
         autoFit: true,
         width: 630,
         height: 300
@@ -404,6 +422,7 @@ export default {
   .page-container{
     background: #f5f5f5;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-bottom: 20px;
 
     .common-sector-header {
@@ -490,6 +509,7 @@ export default {
 
         .sector-content {
           padding: 8px;
+          height: 196px;
 
           .sector-row {
             cursor: pointer;

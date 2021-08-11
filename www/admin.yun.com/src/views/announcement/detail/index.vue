@@ -1,28 +1,28 @@
 <template>
-<div class="announcement-detail">
+<div class="announcement-detail" v-if="detail">
   <div class="header">
     公告详情
   </div>
   <div class="content">
     <div class="announcement-content-title">
-      新少儿平安4.0上线通知，各位商家可立即了解超长换行展示各位商家可立即了解超长换行展示各位商
-      <div class="announcement-content-date">2021-01-01 09:33</div>
+      {{detail.title}}
+      <div class="announcement-content-date">{{ detail.put_up_at_format }}</div>
     </div>
-    <div class="announcement-product-name">
+    <div class="announcement-product-name" v-if="detail.type === 'new_product'">
       保险名称：<span class="product-name">同方全球凡尔赛1号重大疾病保险(赔保额)</span>
     </div>
     <div class="announcement-desc">
-      配置公告内容，内容可能很多，会换行展示停售公告内容内容可能很多，会换行展示停售公告内容，内容可能很多，会换行展示停售公告内容内容可能很多配置公告内容，内容可能很多，会换行展示停售公告内容内容可能很多，会换行展示停售公告内容，内容可能很多，会换行展示停售公告内容内容可能很多
+      {{ detail.content }}
     </div>
-    <div class="announcement-img-container">
-      <div class="img-wrap" v-for="item in 9" :key="item">
-        <img src="https://hbimg.huabanimg.com/ab591dcf46df0e0af48cd5b471137622977d78271a310-iTCqPO_fw658/format/webp" alt="">
+    <div class="announcement-img-container" v-if="detail.img_file_urls && detail.img_file_urls.length">
+      <div class="img-wrap" v-for="item in detail.img_file_urls" :key="item">
+        <img :src="item" alt="">
       </div>
     </div>
-    <div class="file-container">
-      <el-button icon="el-icon-document" type="text">文件名.txt</el-button>
+    <div class="file-container" v-if="detail.file_url">
+      <el-button icon="el-icon-document" type="text">{{detail.file_name}}</el-button>
       <el-link target="_blank" :underline="false">
-        <el-button type="primary" size="small"><i class="iconfont iconxiao16_xiazai"></i>&nbsp;下载</el-button>
+        <el-button type="primary" size="small" @click="download"><i class="iconfont iconxiao16_xiazai"></i>&nbsp;下载</el-button>
       </el-link>
     </div>
   </div>
@@ -30,8 +30,24 @@
 </template>
 
 <script>
+  import {getPlateDetail} from '@/apis/modules/home'
   export default {
-    name: "announcement-detail"
+    name: "announcement-detail",
+    data(){
+      return {
+        detail: null
+      }
+    },
+    created(){
+      getPlateDetail({announcement_no: this.$route.query.id}).then(res => {
+        this.detail = res
+      })
+    },
+    methods: {
+      download(){
+        window.open(this.detail.file_url, '_blank')
+      }
+    }
   }
 </script>
 

@@ -3,7 +3,7 @@
     <div class="header">
       <common-tabs-header v-model="tabIndex" :data="tabData"></common-tabs-header>
     </div>
-    <div class="content">
+    <div class="content" v-loading="loading">
       <div class="content-top">
         <div class="unread">
           {{ tabData.find(item => item.name.includes(tabIndex)).label }}
@@ -12,13 +12,14 @@
         <div class="unread-filter">
           <!--筛选-->
           <filter-shell
-            v-model="readFilter"
+            v-model="searchModel.read_type"
             :width="150"
             autoFocus
+            auto-close
             no-margin
             @input="searchModelChange"
           >
-            <el-select v-model="readFilter"
+            <el-select v-model="searchModel.read_type"
                        class="block"
                        clearable
                        placeholder="请选择"
@@ -30,31 +31,23 @@
                 :value="item.value"
               ></el-option>
             </el-select>
-            <template v-slot:label>{{ hasValue(readFilter) ? readMap.find(i => i.value === readFilter).label : '全部' }}
+            <template v-slot:label>{{ searchModel.read_type ? readMap.find(i => i.value === searchModel.read_type).label : '全部' }}
             </template>
           </filter-shell>
         </div>
       </div>
-      <div class="content-wrap">
-        <el-row align="middle" class="row" justify="space-between" type="flex" @click.native="toDetail(23)">
+      <div class="content-wrap" v-if="list.data && list.data.length > 0">
+        <el-row align="middle" class="row" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
           <el-col :span="22">
-            <div class="row-title">发达撒发俺的沙发撒地方阿斯蒂发撒大撒地方阿萨德发按时；的看法； 拉斯柯达； 分开；萨迪克；冯老师看；代付款萨的看法；卡士大夫撒点击费率加速度六块腹</div>
+            <div class="row-title">{{item.title}}</div>
           </el-col>
           <el-col :span="2" style="text-align: right">
-            <span class="row-date">10:54</span>
-            <i class="el-icon-arrow-right"></i>
-          </el-col>
-        </el-row>
-        <el-row align="middle" class="row is-top" justify="space-between" type="flex">
-          <el-col :span="22">
-            <div class="row-title">发达撒发俺的沙发撒地方阿斯蒂发撒大撒地方阿萨德发按时；的看法； 拉斯柯达； 分开；萨迪克；冯老师看；代付款萨的看法；卡士大夫撒点击费率加速度六块腹</div>
-          </el-col>
-          <el-col :span="2" style="text-align: right">
-            <span class="row-date">10:54</span>
+            <span class="row-date">{{item.put_up_at_str}}</span>
             <i class="el-icon-arrow-right"></i>
           </el-col>
         </el-row>
       </div>
+      <div v-else class="tc mt30">暂无数据</div>
     </div>
   </div>
 </template>
@@ -62,6 +55,7 @@
 <script>
   import commonTabsHeader from '@/components/common-tabs-header'
   import FilterShell, { hasValue } from '@/components/filters/filter-shell'
+  import {getAnnouncementList, getRegulateList, getNewLinesList} from '@/apis/modules/home'
   import { debounce } from "@/utils";
   import {
     mapActions,
@@ -78,18 +72,29 @@
           {name: 'announcement', label: '平台公告', permission: '/insure-goods/new_product_notice'}
         ],
         readMap: [
-          {label: '已读', value: '1'},
-          {label: '未读', value: '2'}
+          {label: '已读', value: 'read'},
+          {label: '未读', value: 'ureand'}
         ],
         tabIndex: '',
         readFilter: '',
-        rowLists: [
+        list: [
           {title: 'dsf52a', create_at: '10:54', is_unread: 1},
           {title: 'dsfa23', create_at: '10:54', is_unread: 0},
           {title: 'dsfa42', create_at: '10:54', is_unread: 1},
           {title: 'dsfa52', create_at: '10:54', is_unread: 0},
         ],
-        unReadLists: []
+        unReadLists: [],
+        typeMap: {
+          'new-lines': getNewLinesList,
+          regulate: getRegulateList,
+          announcement: getAnnouncementList
+        },
+        searchModel: {
+          read_type: '',
+          page: 1,
+          page_size: 20
+        },
+        loading: false
       }
     },
     components: {
@@ -109,7 +114,6 @@
       hasValue,
       searchModelChange () {
         const func = debounce(() => {
-          this.rowLoading = true
           this.page = 1
           this.total = 0
           this.ajaxListData()
@@ -127,10 +131,15 @@
 
         window.open(url.href, '_blank')
       },
-      tabChange (val) {
-        console.log(val)
-      },
       ajaxListData () {
+        this.loading = true
+        this.typeMap[this.tabIndex](this.searchModel).then(res => {
+          this.list = res
+        }).catch(err => {
+          console.log(err)
+        }).finally(() => {
+          this.loading = false
+        })
         // let dots = {}
         // this.unReadLists = this.rowLists.filter(item => item.is_unread)
         // console.log(dots)
