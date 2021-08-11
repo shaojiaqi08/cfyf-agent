@@ -7,7 +7,7 @@
       <div class="content-top">
         <div class="unread">
           {{ tabData.find(item => item.name.includes(tabIndex)).label }}
-          <span v-if="unReadLists.length > 0">(未读{{ unReadLists.length }})</span>
+          <span>(未读{{ unread }})</span>
         </div>
         <div class="unread-filter">
           <!--筛选-->
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="content-wrap" v-if="list.data && list.data.length > 0">
-        <el-row align="middle" class="row" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
+        <el-row align="middle" class="row" :class="{'is-top': item.is_top}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
           <el-col :span="22">
             <div class="row-title">{{item.title}}</div>
           </el-col>
@@ -54,8 +54,13 @@
 
 <script>
   import commonTabsHeader from '@/components/common-tabs-header'
-  import FilterShell, { hasValue } from '@/components/filters/filter-shell'
-  import {getAnnouncementList, getRegulateList, getNewLinesList} from '@/apis/modules/home'
+  import FilterShell from '@/components/filters/filter-shell'
+  import {
+    getAnnouncementList,
+    getRegulateList,
+    getNewLinesList,
+    logPlateClick
+  } from '@/apis/modules/home'
   import { debounce } from "@/utils";
   import {
     mapActions,
@@ -71,30 +76,29 @@
           {name: 'regulate', label: '商品调整', permission: '/rate/commission_management', dot: 'regulate_quantity'},
           {name: 'announcement', label: '平台公告', permission: '/insure-goods/new_product_notice'}
         ],
-        readMap: [
+        readMap: Object.freeze([
           {label: '已读', value: 'read'},
           {label: '未读', value: 'ureand'}
-        ],
+        ]),
         tabIndex: '',
-        readFilter: '',
-        list: [
-          {title: 'dsf52a', create_at: '10:54', is_unread: 1},
-          {title: 'dsfa23', create_at: '10:54', is_unread: 0},
-          {title: 'dsfa42', create_at: '10:54', is_unread: 1},
-          {title: 'dsfa52', create_at: '10:54', is_unread: 0},
-        ],
-        unReadLists: [],
-        typeMap: {
+        list: [],
+        typeMap: Object.freeze({
           'new-lines': getNewLinesList,
           regulate: getRegulateList,
           announcement: getAnnouncementList
-        },
+        }),
+        unreadTypeMap: Object.freeze({
+          'new-lines': 'new_lines_quantity',
+          regulate: 'regulate_quantity',
+          announcement: 'announcement_quantity'
+        }),
         searchModel: {
           read_type: '',
           page: 1,
           page_size: 20
         },
-        loading: false
+        loading: false,
+        unread: 0
       }
     },
     components: {
@@ -111,7 +115,6 @@
     },
     methods: {
       ...mapActions({updateDots: 'dotManage/updateDots'}),
-      hasValue,
       searchModelChange () {
         const func = debounce(() => {
           this.page = 1
@@ -122,6 +125,7 @@
         this.searchModelChange = func
       },
       toDetail (id) {
+        logPlateClick({announcement_no: id})
         let url = this.$router.resolve({
           name: 'announcement-detail',
           query: {
@@ -134,16 +138,15 @@
       ajaxListData () {
         this.loading = true
         this.typeMap[this.tabIndex](this.searchModel).then(res => {
-          this.list = res
+          this.list = res.list
+          this.unread = res.un_read_count
+          // 更新
+          this.updateDots({...this.dots, [this.unreadTypeMap[this.tabIndex]]: res.un_read_count})
         }).catch(err => {
           console.log(err)
         }).finally(() => {
           this.loading = false
         })
-        // let dots = {}
-        // this.unReadLists = this.rowLists.filter(item => item.is_unread)
-        // console.log(dots)
-        // this.updateDots({...this.dots, ...dots})
       },
     },
   }

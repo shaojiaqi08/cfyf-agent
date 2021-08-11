@@ -147,6 +147,10 @@
   import {getPerformance, getSalesTop, getInsuranceClass, getBannerList, logBannerClick, getAnnouncementList, getRegulateList, logPlateClick, getNewLinesList} from '@/apis/modules/home'
   import { getDateRange } from '@/apis/modules/achievement'
   import {formatYYMMDD} from '@/utils/formatTime'
+  import {
+    mapState,
+    mapActions
+  } from 'vuex'
 export default {
   name: "Home",
   data(){
@@ -195,12 +199,14 @@ export default {
     }
   },
   methods: {
+    ...mapActions({updateDots: 'dotManage/updateDots'}),
     formatYYMMDD,
     getRegulateList(){
       let regulate = this.announcementList.find(item => item.key.includes('regulate'))
       regulate.loading = true
       getRegulateList({page: 1, page_size: 3, read_type: ''}).then(res => {
-        regulate.data = res.data
+        res.list ? regulate.data = res.list.data : ''
+        this.updateDots({...this.dots, regulate_quantity: res.un_read_count})
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -211,7 +217,8 @@ export default {
       let newLines = this.announcementList.find(item => item.key.includes('new-lines'))
       newLines.loading = true
       getNewLinesList({page: 1, page_size: 3, read_type: ''}).then(res => {
-        newLines.data = res.data
+        res.list ? newLines.data = res.list.data : ''
+        this.updateDots({...this.dots, new_lines_quantity: res.un_read_count})
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -222,7 +229,8 @@ export default {
       let announcement = this.announcementList.find(item => item.key.includes('announcement'))
       announcement.loading = true
       getAnnouncementList({page: 1, page_size: 3, read_type: ''}).then(res => {
-        announcement.data = res.data
+        res.list ? announcement.data = res.list.data : ''
+        this.updateDots({...this.dots, announcement_quantity: res.un_read_count})
       }).catch(err => {
         console.log(err)
       }).finally(() => {
@@ -410,6 +418,9 @@ export default {
   created () {
     this.getDateRange()
     this.init()
+  },
+  computed: {
+    ...mapState('dotManage', ['dots']),
   },
 };
 </script>
