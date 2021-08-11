@@ -163,7 +163,7 @@
         </el-table-column>
         <el-table-column label="关联单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
         <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
-        <el-table-column label="操作" fixed="right" width="120px" align="center">
+        <el-table-column label="操作" fixed="right" width="120px" align="center" v-if="showDetailBtn">
           <template v-slot="{ row }">
             <el-link type="primary" @click="toDetail(row.policy.order_no)">详情</el-link>
           </template>
@@ -180,7 +180,24 @@ import { debounce} from '@/utils'
 import { policyStatusArray, insuranceTypeArray,manualReview } from '@/enums/common'
 import { visitStatus, visitStatusArray } from '@/enums/achievement'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
-
+let reqId = 0
+const routeMap = {
+  'manpower-order-company': {
+    apiFunc: manpowerListForCompany, // 接口函数
+    relationRouteName: 'achievement-company-detail', // 关联订单路由名称,
+    permission: '' // 详情权限
+  },
+  'manpower-order-team': {
+    apiFunc: manpowerListForTeam,
+    relationRouteName: 'achievement-team-detail', // 关联订单路由名称,
+    permission: '' // 详情权限
+  },
+  'manpower-order-sales': {
+    apiFunc: manpowerListForSales,
+    relationRouteName: 'achievement-self-detail', // 关联订单路由名称,
+    permission: '' // 详情权限
+  }
+}
 // 人核订单
 export default {
   name: 'manpower-order',
@@ -216,25 +233,18 @@ export default {
       tableMaxHeight: null
     };
   },
+  computed: {
+    showDetailBtn() {
+      return this.$checkAuth(routeMap[this.$route.name].permission)
+    }
+  },
   methods: {
     formatDate,
     getData() {},
     // 跳转到关联订单详情
     toOrderDetail(id) {
-      let routeName = ''
-      switch (this.$route.name) {
-        case 'manpower-order-company':
-          routeName = 'achievement-company-detail'
-          break
-        case 'manpower-order-team':
-          routeName = 'achievement-team-detail'
-          break
-        case 'manpower-order-sales':
-          routeName = 'achievement-self-detail'
-          break
-      }
       window.open(this.$router.resolve({
-        name: routeName,
+        name: routeMap[this.$route.name].relationRouteName,
         params: { id }
       }).href)
     },
@@ -281,23 +291,18 @@ export default {
     }, 300)
   },
   created() {
-    const { name } = this.$route
-    let reqFunc
-    // 通过路由名称区分使用的接口
-    if (name === 'manpower-order-company') {
-      reqFunc = manpowerListForCompany
-    } else if (name === 'manpower-order-team') {
-      reqFunc = manpowerListForTeam
-    } else if (name === 'manpower-order-sales') {
-      reqFunc = manpowerListForSales
-    }
     this.getData = () => {
       this.loading = true
-      reqFunc(this.searchModelFormat()).then(res => {
-        this.list = this.page === 1 ? res.data : this.list.concat(res.data)
-        this.total = res.total
+      const id = reqId++
+      routeMap[this.$route.name].apiFunc(this.searchModelFormat()).then(res => {
+        if (id === reqId) {
+          this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+          this.total = res.total
+        }
       }).finally(() => {
-        this.loading = false
+        if (id === reqId) {
+          this.loading = false
+        }
       })
     }
     this.getData()
