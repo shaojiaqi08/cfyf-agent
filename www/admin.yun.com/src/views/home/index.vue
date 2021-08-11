@@ -10,16 +10,16 @@
       </div>
 
       <div class="announcement-sector">
-        <div class="sector" v-for="item in announcementList" :key="item.key" v-loading="item.loading">
-          <div class="common-sector-header">
-            <span class="title"><span class="title-text">{{ item.title }}</span></span>
-            <span class="more" @click="toMore(item.key)">
+        <template v-for="item in filterAnnouncementList">
+          <div class="sector" v-loading="item.loading" :key="item.key" v-if="item.data.length" :style="{width: (100 / filterAnnouncementList.length - 1) + '%'}">
+            <div class="common-sector-header">
+              <span class="title"><span class="title-text">{{ item.title }}</span></span>
+              <span class="more" @click="toMore(item.key)">
               更多
               <i class="el-icon-arrow-right"></i>
             </span>
-          </div>
-          <div class="sector-content">
-            <template v-if="item.data.length">
+            </div>
+            <div class="sector-content">
               <div class="sector-row" v-for="post in item.data" :key="post.announcement_no" @click="toDetail(post.announcement_no)">
                 <div class="row-header">
                   <div class="row-title">{{post.title}}</div>
@@ -27,9 +27,9 @@
                 </div>
                 <div class="row-desc">{{post.desc || post.content}}</div>
               </div>
-            </template>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
 
       <div class="performance-count" v-loading="performanceLoading">
@@ -283,17 +283,17 @@ export default {
         this.insuranceClassList = res
         this.$nextTick(() => {
           if(this.pieChart){
-            const data = res.map(item => {
-              return {
-                ...item,
-                item: item.insurance_class_name,
-                percent: item.underwrite_premium_rate
-              }
-            })
-            this.pieChart.changeData(data)
-          }else{
-            this.renderChart()
+            // const data = res.map(item => {
+            //   return {
+            //     ...item,
+            //     item: item.insurance_class_name,
+            //     percent: item.underwrite_premium_rate
+            //   }
+            // })
+            // this.pieChart.changeData(data)
+            this.pieChart.destroy()
           }
+          this.renderChart()
         })
       }).catch(err => {
         console.log(err)
@@ -410,7 +410,20 @@ export default {
         .position('underwrite_premium_rate')
         .color('item', ['#2C68FF', '#FF8601', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
         .tooltip( 'underwrite_premium_rate');
-      this.pieChart.legend({position: 'right'})
+      // let legendData = data.map(item => {
+      //   return {
+      //     name: item.insurance_class_name + ' : ' + item.underwrite_premium_rate + '%'
+      //   }
+      // })
+      this.pieChart.legend({
+        position: 'right',
+        itemValue: {
+          formatter: (text, item, idx) => {
+            return `: ${data[idx].percent}%`
+          }
+        }
+        // items: legendData
+      })
       this.pieChart.interaction('element-active');
       this.pieChart.render();
     }
@@ -421,6 +434,9 @@ export default {
   },
   computed: {
     ...mapState('dotManage', ['dots']),
+    filterAnnouncementList(){
+      return this.announcementList.filter(item => item.data.length > 0)
+    }
   },
 };
 </script>
@@ -514,7 +530,7 @@ export default {
       margin-bottom: 16px;
 
       .sector {
-        width: 32.5%;
+        //width: 32.5%;
         background: #FFFFFF;
         border-radius: 5px;
 
