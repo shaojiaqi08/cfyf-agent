@@ -56,13 +56,13 @@
           <div class="common-main">
             <div class="main-wrap">
               <div class="main-title">新增保单（个）</div>
-              <div class="main-count">{{ performanceStatistics.cumulative_customer }}</div>
+              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_count }}</div>
             </div>
           </div>
           <div class="common-main">
             <div class="main-wrap">
               <div class="main-title">投保客户（个）</div>
-              <div class="main-count">{{ performanceStatistics.actual_underwrite_total_count }}</div>
+              <div class="main-count">{{ performanceStatistics.cumulative_customer }}</div>
             </div>
           </div>
           <div class="common-main">
