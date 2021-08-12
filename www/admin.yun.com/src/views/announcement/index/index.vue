@@ -78,7 +78,7 @@
         ],
         readMap: Object.freeze([
           {label: '已读', value: 'read'},
-          {label: '未读', value: 'ureand'}
+          {label: '未读', value: 'unread'}
         ]),
         tabIndex: '',
         list: [],
