@@ -14,7 +14,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/insure-goods'
+          permission: '/home_page/manage'
         },
         component: getView('home')
       },
@@ -26,7 +26,7 @@ export const routers = [
           header: true,
           menu: true,
           show: false,
-          permission: '/insure-goods'
+          permission: '/home_page/manage'
         },
         component: getView('announcement/index')
       },
@@ -38,7 +38,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/insure-goods'
+          permission: '/home_page/manage'
         },
         component: getView('announcement/detail')
       }

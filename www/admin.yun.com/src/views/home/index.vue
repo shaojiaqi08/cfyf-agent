@@ -11,7 +11,7 @@
 
       <div class="announcement-sector">
         <template v-for="item in filterAnnouncementList">
-          <div class="sector" v-loading="item.loading" :key="item.key" v-if="item.data.length" :style="{width: (100 / filterAnnouncementList.length - 1) + '%'}">
+          <div class="sector" v-loading="item.loading" :key="item.key" v-if="item.data.length" :style="{width: (100 / filterAnnouncementList.length <= 50 ? 100 / filterAnnouncementList.length - 1 : 100 / filterAnnouncementList.length) + '%'}">
             <div class="common-sector-header">
               <span class="title"><span class="title-text">{{ item.title }}</span></span>
               <span class="more" @click="toMore(item.key)">
@@ -32,7 +32,7 @@
         </template>
       </div>
 
-      <div class="performance-count" v-loading="performanceLoading">
+      <div class="performance-count" v-if="hasStatisticsAuth" v-loading="performanceLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">业绩统计</span></span>
@@ -45,9 +45,9 @@
           <div>
             <span style="color: #999999; font-size: 14px; margin-right: 15px">查看范围</span>
             <el-radio-group v-model="viewRange" @change="viewRangeChange">
-              <el-radio label="company">公司</el-radio>
-              <el-radio label="team">团队</el-radio>
-              <el-radio label="self">个人</el-radio>
+              <el-radio label="company" v-if="checkCompany">公司</el-radio>
+              <el-radio label="team" v-if="checkTeam">团队</el-radio>
+              <el-radio label="self" v-if="checkSelf">个人</el-radio>
             </el-radio-group>
           </div>
         </div>
@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div class="sales-top" v-loading="salesTopLoading">
+      <div class="sales-top"  v-if="hasStatisticsAuth" v-loading="salesTopLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">商品销量TOP5</span></span>
@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <div class="insurance-type" v-loading="insuranceClassLoading">
+      <div class="insurance-type" v-if="hasStatisticsAuth" v-loading="insuranceClassLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">险种分析销售</span></span>
@@ -268,12 +268,14 @@ export default {
     },
     init(){
       this.getBannerList()
+      if(this.hasStatisticsAuth){
+        this.getPerformanceList()
+        this.getSalesTopList()
+        this.getInsuranceClassList()
+      }
       this.getNewLinesList()
       this.getAnnouncementList()
       this.getRegulateList()
-      this.getPerformanceList()
-      this.getSalesTopList()
-      this.getInsuranceClassList()
     },
     getInsuranceClassList(){
       this.insuranceClassLoading = true
@@ -283,14 +285,6 @@ export default {
         this.insuranceClassList = res
         this.$nextTick(() => {
           if(this.pieChart){
-            // const data = res.map(item => {
-            //   return {
-            //     ...item,
-            //     item: item.insurance_class_name,
-            //     percent: item.underwrite_premium_rate
-            //   }
-            // })
-            // this.pieChart.changeData(data)
             this.pieChart.destroy()
           }
           this.renderChart()
@@ -436,6 +430,18 @@ export default {
     ...mapState('dotManage', ['dots']),
     filterAnnouncementList(){
       return this.announcementList.filter(item => item.data.length > 0)
+    },
+    checkCompany(){
+      return this.$checkAuth('/statistics_manage/company_statistics_list')
+    },
+    checkTeam(){
+      return this.$checkAuth('/statistics_manage/team_statistics_list')
+    },
+    checkSelf(){
+      return this.$checkAuth('/statistics_manage/self_statistics_list')
+    },
+    hasStatisticsAuth(){
+      return this.checkCompany || this.checkTeam || this.checkSelf
     }
   },
 };
