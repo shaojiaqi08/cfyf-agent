@@ -150,6 +150,8 @@
               <el-table-column label="险种名称" prop="name"></el-table-column>
               <el-table-column label="基本保额(元)" prop="guarantee_quota"></el-table-column>
               <el-table-column label="保费(元)" prop="premium"></el-table-column>
+              <el-table-column label="结论" prop="risk_conclusion_str"></el-table-column>
+              <el-table-column label="备注" prop="risk_conclusion_remark"></el-table-column>
             </el-table>
             <div class="item-block" style="width: 40%;margin: 0 0 0 auto;justify-content: flex-end">
               <div class="item" style="width: auto;display: inline-flex;">
@@ -428,6 +430,31 @@
             <el-divider v-if="index!==manPowerDetail.data.length - 1"></el-divider>
           </div>
         </template>
+      </template>
+
+      <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
+        <iframe v-if="manPowerDialogVisible"
+            :src="manPowerDetail.data.file_url"
+            style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
+      </template>
+
+      <template v-else-if="manPowerDetail.type === 'counteroffer_all_confirming' || manPowerDetail.type === 'counteroffer_all_confirmed'">
+        <el-table :data="manPowerDetail.data" :show-header="false" border stripe>
+          <el-table-column width="230px" align="center">
+            <template v-slot="{ row }">
+              <p>照会{{row.is_complete ? '完成' : ''}}</p>
+              <span>{{formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column>
+            <template v-slot="{ row }">
+              <span>
+                {{`${row.role_name_arr.join(',')}【${row.real_name}】`}}
+                <span :style="{ color: row.conclusion === 'accept' ? 'blue' : row.conclusion === 'refuse' ? 'red' : null}">{{row.conclusion_str}}</span>
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
       </template>
     </el-dialog>
     <el-image-viewer
