@@ -293,7 +293,7 @@ export default {
   created() {
     this.getData = () => {
       this.loading = true
-      const id = reqId++
+      const id = ++reqId
       routeMap[this.$route.name].apiFunc(this.searchModelFormat()).then(res => {
         if (id === reqId) {
           this.list = this.page === 1 ? res.data : this.list.concat(res.data)
