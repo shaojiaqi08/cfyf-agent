@@ -59,7 +59,8 @@
     getAnnouncementList,
     getRegulateList,
     getNewLinesList,
-    logPlateClick
+    logPlateClick,
+    getUnreadCount
   } from '@/apis/modules/home'
   import { debounce } from "@/utils";
   import {
@@ -72,9 +73,9 @@
     data () {
       return {
         tabData: [
-          {name: 'new-lines', label: '新品上新', permission: '/rate/service_rate'},
+          {name: 'new-lines', label: '新品上新', permission: '/rate/service_rate', dot: 'new_lines_quantity'},
           {name: 'regulate', label: '商品调整', permission: '/rate/commission_management', dot: 'regulate_quantity'},
-          {name: 'announcement', label: '平台公告', permission: '/insure-goods/new_product_notice'}
+          {name: 'announcement', label: '平台公告', permission: '/insure-goods/new_product_notice', dot: 'announcement_quantity'}
         ],
         readMap: Object.freeze([
           {label: '已读', value: 'read'},
@@ -115,6 +116,16 @@
     },
     methods: {
       ...mapActions({updateDots: 'dotManage/updateDots'}),
+      getUnreadCount(){
+        getUnreadCount().then(res => {
+          this.updateDots({
+            ...this.dots,
+            new_lines_quantity: res.new_product,
+            regulate_quantity: res.product_adjust,
+            announcement_quantity: res.platform
+          })
+        })
+      },
       searchModelChange () {
         const func = debounce(() => {
           this.page = 1
@@ -149,6 +160,9 @@
         })
       },
     },
+    created () {
+      this.getUnreadCount()
+    }
   }
 </script>
 

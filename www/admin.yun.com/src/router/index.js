@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
     return next('/login')
   }
   // 刷新和登录跳转时获取权限
-  if (userInfo.token && (from.path === '/' || from.name === 'login')) {
+  if (userInfo.token && from.path === '/') {
     getPermission().then(res => {
       // 刷新权限
       store.dispatch('users/clearReadPermission')
@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
         permissions: res
       }).then(() => {
         if (meta.permission && (Array.isArray(meta.permission) ? !res.some(i => meta.permission.includes(i)) : !res.includes(meta.permission))) {
-          next('/user-info')
+          res && res.includes('/home_page/manage') ? next('/index') : next('/user-info')
         }
       })
     })
@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   if (meta.permission &&
         userInfo.permissions &&
         (Array.isArray(meta.permission) ? !userInfo.permissions.some(i => meta.permission.includes(i)) : !userInfo.permissions.includes(meta.permission))) {
-    return next('/user-info')
+    return userInfo.permissions.includes('/home_page/manage') ? next('/index') : next('/user-info')
   } else {
     Nprogress.start()
     setTimeout(next, 300)

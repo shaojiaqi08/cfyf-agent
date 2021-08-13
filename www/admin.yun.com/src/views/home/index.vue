@@ -45,9 +45,9 @@
           <div>
             <span style="color: #999999; font-size: 14px; margin-right: 15px">查看范围</span>
             <el-radio-group v-model="viewRange" @change="viewRangeChange">
-              <el-radio label="company" v-if="checkCompany">公司</el-radio>
-              <el-radio label="team" v-if="checkTeam">团队</el-radio>
-              <el-radio label="self" v-if="checkSelf">个人</el-radio>
+              <template v-for="item in viewRangeMap">
+                <el-radio :label="item.value" v-if="item.show" :key="item.value">{{item.label}}</el-radio>
+              </template>
             </el-radio-group>
           </div>
         </div>
@@ -181,7 +181,12 @@ export default {
           data: []
         }
       ],
-      viewRange: 'company',
+      viewRange: '',
+      viewRangeMap: [
+        {label: '公司', value: 'company', show: this.$checkAuth('/statistics_manage/company_statistics_list')},
+        {label: '团队', value: 'team', show: this.$checkAuth('/statistics_manage/team_statistics_list')},
+        {label: '个人', value: 'self', show: this.$checkAuth('/statistics_manage/self_statistics_list')},
+      ],
       activePerformanceName: today,
       performanceStatistics: {},
       topSalesDate: [],
@@ -267,15 +272,11 @@ export default {
       })
     },
     init(){
-      this.getBannerList()
       if(this.hasStatisticsAuth){
         this.getPerformanceList()
         this.getSalesTopList()
         this.getInsuranceClassList()
       }
-      this.getNewLinesList()
-      this.getAnnouncementList()
-      this.getRegulateList()
     },
     getInsuranceClassList(){
       this.insuranceClassLoading = true
@@ -423,8 +424,14 @@ export default {
     }
   },
   created () {
+    let filterViewRange = this.viewRangeMap.filter(item => item.show)
+    this.viewRange = filterViewRange && filterViewRange.length ? filterViewRange[0].value : ''
     this.getDateRange()
     this.init()
+    this.getBannerList()
+    this.getNewLinesList()
+    this.getAnnouncementList()
+    this.getRegulateList()
   },
   computed: {
     ...mapState('dotManage', ['dots']),

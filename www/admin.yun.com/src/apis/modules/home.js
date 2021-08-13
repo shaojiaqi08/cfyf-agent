@@ -29,3 +29,6 @@ export const logPlateClick = data => post('/agent/proxy/home_page/announcement/r
 
 // 获取平台公告、商品调整、平台公告详情
 export const getPlateDetail = data => get('/agent/proxy/home_page/announcement/detail', data)
+
+// 获取公告未读红点
+export const getUnreadCount = data => get('/agent/proxy/home_page/announcement/unread_notice', data)
