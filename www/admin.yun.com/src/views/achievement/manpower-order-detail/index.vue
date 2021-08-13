@@ -1,17 +1,6 @@
 <template>
   <div class="order-detail-container">
-    <div class="header">
-      {{$route.meta.title}}
-      <el-button
-          type="primary"
-          :loading="downloading"
-          v-if="baseInfo.policy_file_url && $checkAuth(`/${$route.name.slice(0, -7)}/policy_file_url`)"
-          icon="iconfont iconxiao16_shouqiangaozhi"
-          @click="download(baseInfo.policy_file_url)"
-      >
-        <span class="ml4">下载电子保单</span>
-      </el-button>
-    </div>
+    <div class="header">{{$route.meta.title}}</div>
     <div id="detail-content" class="content" :style="{maxHeight: contentMaxHeight + 'px'}">
       <el-scrollbar>
         <!--保单基本信息-->
@@ -303,7 +292,7 @@ import {
 } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
-import manpowerTable from '../component/manpower-table.vue'
+import manpowerTable from './component/manpower-table.vue'
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 
 export default {
@@ -318,38 +307,12 @@ export default {
       payInfo: {},
       baseInfo: {},
       baseInfoLoading: false,
-      tabIndex: '1',
-      downloading: false,
       contentMaxHeight: null,
-      customerInfoLoading: false,
-      insuranceInfoLoading: false,
-      salesInfoLoading: false,
-      payInfoLoading: false,
-      visitInfoLoading: false,
-      relationInfoLoading: false,
-      renewalDialogVisible: false,
-      renewalInfoLoading: false,
-      salesInfo: {},
-      customerInfo: {
-        policy_holder_info: {},
-        policy_recognizee_policies: [],
-        policy_payment: {},
-      },
-      relationInfo: [],
-      insuranceInfo: {
-        policy_product_insurances: [],
-      },
-      renewalInfo: {
-        renewal_insurance: {},
-        renewal_terms: [],
-      },
-      payInfoPayment: {},
-      visitInfo: {},
       manPowerInfoLoading: false,
       custInfoCollapse: false,
       manPowerDownloading: false,
       previewUrl: [],
-      isPreview:false,
+      isPreview: false,
       manPowerDialogVisible: false,
       manPowerDetail: {},
       activeName: '0',
