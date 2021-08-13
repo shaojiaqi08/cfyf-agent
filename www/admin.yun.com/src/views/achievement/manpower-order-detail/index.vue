@@ -292,7 +292,7 @@ import {
 } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
-import manpowerTable from './component/manpower-table.vue'
+import manpowerTable from '../component/manpower-table.vue'
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 
 export default {
