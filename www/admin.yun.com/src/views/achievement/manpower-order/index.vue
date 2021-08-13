@@ -141,9 +141,9 @@
         v-loading="loading"
         ref="table">
         <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="$route.name !== 'manpower-order-sales'" min-width="120px"></el-table-column>
-        <el-table-column label="产品名称" prop="policy_holder_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="投保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
-        <el-table-column label="被保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
+        <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
+        <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
         <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
         <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
