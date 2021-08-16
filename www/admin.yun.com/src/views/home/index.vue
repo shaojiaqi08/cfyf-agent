@@ -135,7 +135,10 @@
         </div>
 
         <div class="insurance-type-main">
-          <div class="pieChart" id="pieChart" ref="pieChart"></div>
+          <div class="pieChart" id="pieChart" ref="pieChart" v-if="filterInsuranceClassList.length > 0"></div>
+          <div v-else class="no-insurance-data">
+            暂无数据
+          </div>
         </div>
       </div>
     </div>
@@ -287,8 +290,11 @@ export default {
         this.$nextTick(() => {
           if(this.pieChart){
             this.pieChart.destroy()
+            this.pieChart = null
           }
-          this.renderChart()
+          if(this.filterInsuranceClassList.length > 0){
+            this.renderChart()
+          }
         })
       }).catch(err => {
         console.log(err)
@@ -342,7 +348,7 @@ export default {
       window.open(url.href, '_blank')
     },
     renderChart(){
-      const data = this.insuranceClassList.map(item => {
+      const data = this.filterInsuranceClassList.map(item => {
         return {
           ...item,
           item: item.insurance_class_name,
@@ -403,7 +409,7 @@ export default {
         .interval()
         .adjust('stack')
         .position('underwrite_premium_rate')
-        .color('item', ['#2C68FF', '#FF8601', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
+        .color('item', ['#2C68FF', '#1431ca', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
         .tooltip( 'underwrite_premium_rate');
       // let legendData = data.map(item => {
       //   return {
@@ -449,6 +455,9 @@ export default {
     },
     hasStatisticsAuth(){
       return this.checkCompany || this.checkTeam || this.checkSelf
+    },
+    filterInsuranceClassList(){
+      return this.insuranceClassList.filter(item => +item.underwrite_premium_rate > 0)
     }
   },
 };
@@ -688,6 +697,12 @@ export default {
         box-sizing: border-box;
         height: 332px;
         padding: 16px;
+
+        .no-insurance-data{
+          text-align: center;
+          line-height: 332px;
+          height: 100%;
+        }
       }
     }
   }
