@@ -20,7 +20,7 @@
             </span>
             </div>
             <div class="sector-content">
-              <div class="sector-row" v-for="post in item.data" :key="post.announcement_no" @click="toDetail(post.announcement_no)">
+              <div class="sector-row" :class="{'is_top': post.is_emphasis, 'is_unread': post.is_read == 0}" v-for="post in item.data" :key="post.announcement_no" @click="toDetail(post.announcement_no)">
                 <div class="row-header">
                   <div class="row-title">{{post.title}}</div>
                   <div class="row-date">{{formatYYMMDD(post.put_up_at * 1000, '-')}}</div>
@@ -555,6 +555,22 @@ export default {
             cursor: pointer;
             padding: 8px;
             transition: all .4s;
+
+            &.is_unread{
+              .row-desc,
+              .row-date,
+              .row-title{
+                color: #999 !important;
+              }
+            }
+
+            &.is_top{
+              .row-desc,
+              .row-date,
+              .row-title{
+                color: #FF4C4C !important;
+              }
+            }
 
             &:hover{
               background: #F3F8FF;
