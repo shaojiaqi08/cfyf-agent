@@ -161,7 +161,7 @@
             <el-button class="relation-order-btn" type="text" @click="toOrderDetail(row.policy.order_no)">{{row.policy.order_no}}</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="关联单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
+        <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
         <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="120px" align="center" v-if="showDetailBtn">
           <template v-slot="{ row }">
@@ -276,8 +276,12 @@ export default {
         const cur = model[key]
         if (key === 'apply_at' || key === 'last_update_time') {
           const [start, end] = cur
+          const endDate = new Date(end)
+          endDate.setHours(23)
+          endDate.setMinutes(59)
+          endDate.setSeconds(59)
           model[key + '_start'] = start ? parseInt(start / 1000) : ''
-          model[key + '_end'] = end ? parseInt(end / 1000) : ''
+          model[key + '_end'] = end ? parseInt(endDate.getTime() / 1000) : ''
         }
       })
       delete model.apply_at
