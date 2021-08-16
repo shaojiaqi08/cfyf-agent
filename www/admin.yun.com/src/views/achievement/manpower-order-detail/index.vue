@@ -167,7 +167,6 @@
               </el-timeline-item>
             </el-timeline>
           </div>
-          <el-divider></el-divider>
         </template>
       </el-scrollbar>
     </div>
