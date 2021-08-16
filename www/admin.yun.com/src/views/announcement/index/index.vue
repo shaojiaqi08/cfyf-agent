@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="content-wrap" v-if="list.data && list.data.length > 0">
-        <el-row align="middle" class="row" :class="{'is-top': item.is_top}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
+        <el-row align="middle" class="row" :class="{'is-top': item.is_emphasis, 'is-read': item.is_read != 0}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
           <el-col :span="22">
             <div class="row-title">{{item.title}}</div>
           </el-col>
@@ -216,7 +216,14 @@
           &.is-top {
             .row-date,
             .row-title {
-              color: #FF4C4C;
+              color: #FF4C4C !important;
+            }
+          }
+
+          &.is-read{
+            .row-date,
+            .row-title {
+              color: #999 !important;
             }
           }
 
