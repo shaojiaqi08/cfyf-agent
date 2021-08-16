@@ -185,17 +185,17 @@ const routeMap = {
   'manpower-order-company': {
     apiFunc: manpowerListForCompany, // 接口函数
     relationRouteName: 'achievement-company-detail', // 关联订单路由名称,
-    permission: '' // 详情权限
+    permission: 'manpower-order-company-detail' // 详情权限
   },
   'manpower-order-team': {
     apiFunc: manpowerListForTeam,
     relationRouteName: 'achievement-team-detail', // 关联订单路由名称,
-    permission: '' // 详情权限
+    permission: 'manpower-order-team-detail' // 详情权限
   },
   'manpower-order-sales': {
     apiFunc: manpowerListForSales,
     relationRouteName: 'achievement-self-detail', // 关联订单路由名称,
-    permission: '' // 详情权限
+    permission: 'manpower-order-sales-detail' // 详情权限
   }
 }
 // 人核订单
