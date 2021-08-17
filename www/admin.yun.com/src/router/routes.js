@@ -353,7 +353,7 @@ const necessaryRoutes = [
   {
     path: '/',
     name: 'Home',
-    redirect: '/user-info'
+    redirect: '/index'
   },
   {
     path: '/user-info',
