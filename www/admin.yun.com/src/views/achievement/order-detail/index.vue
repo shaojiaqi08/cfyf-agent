@@ -325,7 +325,8 @@
     </el-dialog>
     <el-dialog :title="manPowerDetail.title"
                :visible.sync="manPowerDialogVisible"
-               :width="manPowerDetail.type === 'customer_info' ? '1200px' : '1200px'"
+               :width="manPowerDetail.type === 'waiting_counteroffer_reply' ? '1000px' : '1200px'"
+               :top="manPowerDetail.type === 'waiting_counteroffer_reply' ? '1vh' : '15vh'"
                custom-class="manpower-dialog"
                :close-on-click-modal="false">
       <el-tabs v-model="activeName" v-if="manPowerDetail.type === 'customer_info'">
@@ -428,6 +429,30 @@
             <el-divider v-if="index!==manPowerDetail.data.length - 1"></el-divider>
           </div>
         </template>
+      </template>
+
+      <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
+        <iframe v-if="manPowerDialogVisible"
+                :src="manPowerDetail.data.file_url"
+                style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
+      </template>
+      <template v-else-if="manPowerDetail.type === 'counteroffer_all_confirming' || manPowerDetail.type === 'counteroffer_all_confirmed'">
+        <el-table :data="manPowerDetail.data" :show-header="false" border stripe>
+          <el-table-column width="230px" align="center">
+            <template v-slot="{ row }">
+              <p>照会{{row.is_complete ? '完成' : ''}}</p>
+              <span>{{formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column>
+            <template v-slot="{ row }">
+              <span>
+                {{`${row.role_name_arr.join(',')}【${row.real_name}】`}}
+                <span :style="{ color: row.conclusion === 'accept' ? 'blue' : row.conclusion === 'refuse' ? 'red' : null}">{{row.conclusion_str}}</span>
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
       </template>
     </el-dialog>
     <el-image-viewer

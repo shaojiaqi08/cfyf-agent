@@ -125,7 +125,7 @@ export const routers = [
         component: getView('achievement/manpower-order')
       },
       {
-        path: '/manpower-order-company-detail/:order_no',
+        path: '/manpower-order-company-detail/:id',
         name: 'manpower-order-company-detail',
         meta: {
           title: '公司人核订单详情',

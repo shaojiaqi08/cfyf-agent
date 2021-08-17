@@ -248,10 +248,10 @@ export default {
         params: { id }
       }).href)
     },
-    toDetail(order_no) {
+    toDetail(id) {
       window.open(this.$router.resolve({
         name: `${this.$route.name}-detail`,
-        params: { order_no }
+        params: { id }
       }).href)
     },
     scroll2Bottom() {
