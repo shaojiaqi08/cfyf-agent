@@ -16,7 +16,7 @@
     </div>
     <div class="announcement-img-container" v-if="detail.img_file_urls && detail.img_file_urls.length">
       <div class="img-wrap" v-for="item in detail.img_file_urls" :key="item">
-        <img :src="item" alt="">
+        <img :src="item" alt="" @click="previewManPowerImg(item)">
       </div>
     </div>
     <div class="file-container" v-if="detail.file_url">
@@ -26,16 +26,23 @@
       </el-link>
     </div>
   </div>
+  <el-image-viewer
+    v-if="isPreview"
+    :on-close="closePreview"
+    :url-list="previewUrl" />
 </div>
 </template>
 
 <script>
   import {getPlateDetail} from '@/apis/modules/home'
+  import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
   export default {
     name: "announcement-detail",
     data(){
       return {
         detail: null,
+        isPreview: false,
+        previewUrl: [],
         typeMap: {
           product_adjust: '商品调整公告',
           platform: '平台公告',
@@ -46,12 +53,23 @@
     created(){
       getPlateDetail({announcement_no: this.$route.query.id}).then(res => {
         this.detail = res
+        this.previewUrl = res.img_file_urls
       })
     },
     methods: {
       download(){
         window.open(this.detail.file_url, '_blank')
-      }
+      },
+      closePreview() {
+        this.isPreview = false
+      },
+      previewManPowerImg(item) {
+        this.isPreview = true
+        this.previewUrl = [item]
+      },
+    },
+    components: {
+      ElImageViewer
     }
   }
 </script>
