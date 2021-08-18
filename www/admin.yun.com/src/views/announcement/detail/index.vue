@@ -1,7 +1,7 @@
 <template>
 <div class="announcement-detail" v-if="detail">
   <div class="header">
-    公告详情
+    {{detail.type && typeMap[detail.type]}}详情
   </div>
   <div class="content">
     <div class="announcement-content-title">
@@ -35,7 +35,12 @@
     name: "announcement-detail",
     data(){
       return {
-        detail: null
+        detail: null,
+        typeMap: {
+          product_adjust: '商品调整公告',
+          platform: '平台公告',
+          new_product: '新品上线公告'
+        }
       }
     },
     created(){
