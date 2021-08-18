@@ -285,6 +285,36 @@ export const routers = [
     ]
   },
   {
+    label: '续保续期',
+    icon: 'iconcebiandaohang20_yonghuguanli1',
+    children: [
+      {
+        path: '/renewal-order',
+        name: 'RenewalOrder',
+        meta: {
+          title: '续保续期订单',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-notify',
+        name: 'RenewalNotify',
+        meta: {
+          title: '续保续期通知',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/manager'
+        },
+        component: getView('renewal-order/notify')
+      }
+    ]
+  },
+  {
     label: '用户管理',
     icon: 'iconcebiandaohang20_yonghuguanli1',
     children: [
