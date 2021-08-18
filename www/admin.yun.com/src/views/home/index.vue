@@ -249,6 +249,7 @@ export default {
       if(banner.file_url || banner.target_url) {
         logBannerClick({banner_no: banner.banner_no})
         let url = banner.file_url || banner.target_url
+        url = url.includes('http') || url.includes('//') ? url : '//' + url
         window.open(url, '_blank')
       }
     },
