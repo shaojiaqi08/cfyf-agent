@@ -9,7 +9,7 @@
       <div class="announcement-content-date">{{ detail.put_up_at_format }}</div>
     </div>
     <div class="announcement-product-name" v-if="detail.type === 'new_product'">
-      保险名称：<span class="product-name">同方全球凡尔赛1号重大疾病保险(赔保额)</span>
+      保险名称：<span class="product-name">{{detail.product_name}}</span>
     </div>
     <div class="announcement-desc">
       {{ detail.content }}
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="file-container" v-if="detail.file_url">
-      <el-button icon="el-icon-document" type="text">{{detail.file_name}}</el-button>
+      <el-button icon="el-icon-document" class="product-detail-file-name" type="text">{{detail.file_name}}</el-button>
       <el-link target="_blank" :underline="false">
         <el-button type="primary" size="small" @click="download"><i class="iconfont iconxiao16_xiazai"></i>&nbsp;下载</el-button>
       </el-link>
@@ -182,6 +182,17 @@
         }
         span{
           color:#333;
+        }
+      }
+
+      .product-detail-file-name{
+        /deep/ span{
+          width: 300px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          word-break: break-all;
+          display: block;
         }
       }
     }
