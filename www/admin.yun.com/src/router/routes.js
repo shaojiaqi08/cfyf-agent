@@ -120,7 +120,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'manpower-order-sales'
+          permission: 'manpower-order-company'
         },
         component: getView('achievement/manpower-order')
       },
@@ -132,7 +132,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: 'manpower-order-sales-detail'
+          permission: 'manpower-order-company-detail'
         },
         component: getView('achievement/manpower-order-detail')
       },
@@ -168,7 +168,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: 'manpower-order-company'
+          permission: 'manpower-order-sales'
         },
         component: getView('achievement/manpower-order')
       },
@@ -180,7 +180,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: 'manpower-order-company-detail'
+          permission: 'manpower-order-sales-detail'
         },
         component: getView('achievement/manpower-order-detail')
       },
