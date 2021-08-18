@@ -2,7 +2,7 @@
   <div class="home-page">
     <div class="page-container">
       <div class="banner" v-if="bannerList">
-        <el-carousel arrow="hover" trigger="click">
+        <el-carousel arrow="hover" trigger="click" ref="bannerWrap" :height="bannerHeight">
           <el-carousel-item v-for="item in bannerList" :key="item.banner_no">
             <img :src="item.banner_pic_url" :alt="item.title" class="banner-img" @click="bannerHandle(item)">
           </el-carousel-item>
@@ -204,6 +204,7 @@ export default {
       regulateLoading: false,
       announcementLoading: false,
       newLinesLoading: false,
+      bannerHeight: '200px'
     }
   },
   methods: {
@@ -428,6 +429,9 @@ export default {
       })
       this.pieChart.interaction('element-active');
       this.pieChart.render();
+    },
+    computedBannerHeight(){
+      this.bannerHeight = Math.round((200 / 1208) * this.$refs.bannerWrap.$el.clientWidth) + 'px'
     }
   },
   created () {
@@ -439,6 +443,15 @@ export default {
     this.getNewLinesList()
     this.getAnnouncementList()
     this.getRegulateList()
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.bannerHeight = Math.round((200 / 1208) * this.$refs.bannerWrap.$el.clientWidth) + 'px'
+      window.addEventListener('resize', this.computedBannerHeight)
+    })
+  },
+  destroyed () {
+    window.removeEventListener('resize', this.computedBannerHeight)
   },
   computed: {
     ...mapState('dotManage', ['dots']),
