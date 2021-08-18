@@ -156,11 +156,7 @@
         <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
           <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
         </el-table-column>
-        <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center">
-          <template v-slot="{ row }">
-            <el-button class="relation-order-btn" type="text" @click="toOrderDetail(row.policy.order_no)">{{row.policy.order_no}}</el-button>
-          </template>
-        </el-table-column>
+        <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
         <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
         <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="120px" align="center" v-if="showDetailBtn">
