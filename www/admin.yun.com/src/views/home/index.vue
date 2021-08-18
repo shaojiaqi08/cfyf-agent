@@ -22,7 +22,7 @@
             <div class="sector-content">
               <div class="sector-row" :class="{'is_top': post.is_emphasis, 'is_read': post.is_read != 0}" v-for="post in item.data" :key="post.announcement_no" @click="toDetail(post.announcement_no)">
                 <div class="row-header">
-                  <div class="row-title">{{post.title}}</div>
+                  <div class="row-title">{{post.is_top ? '【置顶】' : ''}}{{post.title}}</div>
                   <div class="row-date">{{formatYYMMDD(post.put_up_at * 1000, '-')}}</div>
                 </div>
                 <div class="row-desc">{{post.desc || post.content}}</div>
@@ -37,7 +37,7 @@
           <div class="header-left-wrap">
             <span class="title"><span class="title-text">业绩统计</span></span>
             <div class="performance-tabs">
-              <el-tabs v-model="activePerformanceName" @tab-click="performanceChange">
+              <el-tabs v-model="activePerformanceName" @tab-click="performanceChange" class="sector-header-tabs">
                 <el-tab-pane :label="item.name + '业绩'" :name="item.start + ',' + item.end" v-for="item in dateRange" :key="item.name"></el-tab-pane>
               </el-tabs>
             </div>
@@ -105,8 +105,8 @@
                     ref="table">
             <el-table-column type="index" align="center"></el-table-column>
             <el-table-column label="产品名称" prop="product_name" align="center"></el-table-column>
-            <el-table-column label="销量（个）" prop="underwrite_quantity" align="center"></el-table-column>
-            <el-table-column label="总保费（元）" prop="underwrite_premium" align="center"></el-table-column>
+            <el-table-column label="销量（个）" prop="underwrite_quantity" align="center" width="100px"></el-table-column>
+            <el-table-column label="总保费（元）" prop="underwrite_premium" align="center" width="100px"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -406,13 +406,13 @@ export default {
           return container;
         }
       });
-
+      // tickInterval
       this.pieChart
         .interval()
         .adjust('stack')
         .position('underwrite_premium_rate')
-        .color('item', ['#2C68FF', '#1431ca', '#FF8601', '#00CBCB', '#71EFE3', '#08DAAA', '#FCEE51', '#1431CA'])
-        .tooltip( 'underwrite_premium_rate');
+        .color('item', ['#2c68ff', '#0092fe', '#ff8601', '#00cbcb', '#71efe3', '#08daaa', '#fcee51', '#1431ca'])
+        .tooltip( 'underwrite_premium_rate')
       // let legendData = data.map(item => {
       //   return {
       //     name: item.insurance_class_name + ' : ' + item.underwrite_premium_rate + '%'
@@ -427,7 +427,10 @@ export default {
         }
         // items: legendData
       })
-      this.pieChart.interaction('element-active');
+      this.pieChart.interaction('element-single-selected', {
+        start: [{ trigger: 'element:mouseenter', action: 'element-single-selected:selected' }],
+        end: [{ trigger: 'element:mouseleave', action: 'element-single-selected:reset' }],
+      });
       this.pieChart.render();
     },
     computedBannerHeight(){
@@ -509,13 +512,21 @@ export default {
 
       /deep/ .el-tabs {
         .el-tabs__item{
-          height: 32px !important;
+          height: 28px !important;
         }
       }
 
       .header-left-wrap{
         display: flex;
         align-items: center;
+
+        .performance-tabs{
+          .sector-header-tabs{
+            /deep/ .el-tabs__item{
+              font-size: 14px !important;
+            }
+          }
+        }
       }
 
       .title {
@@ -552,6 +563,11 @@ export default {
       width: 100%;
       padding-top: 20px;
       margin-bottom: 16px;
+
+      /deep/ .el-carousel__button{
+        height: 6px;
+        border-radius: 20px;
+      }
 
       .banner-img{
         width: 100%;

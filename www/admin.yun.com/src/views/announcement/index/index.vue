@@ -39,7 +39,7 @@
       <div class="content-wrap" v-if="list && list.length > 0" v-infinite-scroll="scroll2Bottom">
         <el-row align="middle" class="row" :class="{'is-top': item.is_emphasis, 'is-read': item.is_read != 0}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list" :key="item.announcement_no">
           <el-col :span="22">
-            <div class="row-title">{{item.title}}</div>
+            <div class="row-title">{{item.is_top ? '【置顶】' : ''}}{{item.title}}</div>
           </el-col>
           <el-col :span="2" style="text-align: right">
             <span class="row-date">{{item.put_up_at_str}}</span>
