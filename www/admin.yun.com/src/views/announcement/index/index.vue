@@ -36,8 +36,8 @@
           </filter-shell>
         </div>
       </div>
-      <div class="content-wrap" v-if="list.data && list.data.length > 0">
-        <el-row align="middle" class="row" :class="{'is-top': item.is_emphasis, 'is-read': item.is_read != 0}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list.data" :key="item.announcement_no">
+      <div class="content-wrap" v-if="list && list.length > 0" v-infinite-scroll="scroll2Bottom">
+        <el-row align="middle" class="row" :class="{'is-top': item.is_emphasis, 'is-read': item.is_read != 0}" justify="space-between" type="flex" @click.native="toDetail(item.announcement_no)" v-for="item in list" :key="item.announcement_no">
           <el-col :span="22">
             <div class="row-title">{{item.title}}</div>
           </el-col>
@@ -96,7 +96,7 @@
         searchModel: {
           read_type: '',
           page: 1,
-          page_size: 20
+          page_size: 25
         },
         loading: false,
         unread: 0
@@ -111,11 +111,20 @@
     },
     watch: {
       tabIndex () {
+        this.searchModel.page = 1
         this.ajaxListData()
       },
     },
     methods: {
       ...mapActions({updateDots: 'dotManage/updateDots'}),
+      // 触底加载方法
+      scroll2Bottom() {
+        const {total, searchModel: {page, page_size}} = this
+        if (page * page_size < total) {
+          this.searchModel.page += 1
+          this.ajaxListData()
+        }
+      },
       getUnreadCount(){
         getUnreadCount().then(res => {
           this.updateDots({
@@ -149,7 +158,8 @@
       ajaxListData () {
         this.loading = true
         this.typeMap[this.tabIndex](this.searchModel).then(res => {
-          this.list = res.list
+          this.list = this.searchModel.page === 1 ? res.list.data : this.list.concat(res.list.data)
+          this.total = res.list.total
           this.unread = res.un_read_count
           // 更新
           this.updateDots({...this.dots, [this.unreadTypeMap[this.tabIndex]]: res.un_read_count})
@@ -210,6 +220,9 @@
       }
 
       .content-wrap {
+        height: 750px;
+        overflow-y: auto;
+
         .row {
           cursor: pointer;
 
