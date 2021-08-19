@@ -44,7 +44,7 @@
           >{{hasValue(searchModel.sales_id) ? '出单人：' +salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
         </filter-shell>
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange">
+        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange" v-if="$route.name !== 'manpower-order-team'">
           <el-select
               class="block"
               v-model="searchModel.sales_team_id"
@@ -202,7 +202,7 @@
         v-table-infinite-scroll="scroll2Bottom"
         v-loading="loading"
         ref="table">
-        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="$route.name !== 'manpower-order-team'"></el-table-column>
         <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="$route.name !== 'manpower-order-sales'" min-width="120px"></el-table-column>
         <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
