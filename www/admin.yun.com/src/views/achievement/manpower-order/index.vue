@@ -8,12 +8,74 @@
         size="small"
         class="fw400"
         clearable
-        @input="searchModelChange">
+        @keyup.enter.native="searchModelChange">
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+        <el-button slot="append" @click="searchModelChange">搜索</el-button>
       </el-input>
     </div>
     <div class="page-content">
       <div class="sb-container pt16">
+        <!--全部销售-->
+        <filter-shell
+            v-model="searchModel.sales_id"
+            autoFocus
+            class="mb16"
+            placeholder="全部出单人"
+            @input="searchModelChange"
+        >
+          <el-select
+              class="block"
+              v-model="searchModel.sales_id"
+              clearable
+              filterable
+              multiple
+              placeholder="请选择"
+              @change="searchModelChange"
+          >
+            <el-option
+                v-for="item in salesList"
+                :key="item.id"
+                :label="item.real_name"
+                :value="item.id"
+            ></el-option>
+          </el-select>
+          <template
+              v-slot:label
+          >{{hasValue(searchModel.sales_id) ? '出单人：' +salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
+        </filter-shell>
+        <!--全部团队-->
+        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange">
+          <el-select
+              class="block"
+              v-model="searchModel.sales_team_id"
+              multiple
+              clearable
+              filterable
+              placeholder="请选择"
+              @change="searchModelChange"
+          >
+            <el-option
+                v-for="item in salesTeamList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+            ></el-option>
+          </el-select>
+          <div class="mt20 mb10 flex-between">
+            包含子团队
+            <el-switch
+                :disabled="searchModel.sales_team_id.length<=0"
+                style="float: right"
+                inactive-value="0"
+                active-value="1"
+                v-model="searchModel.include_child_team"
+                @change="searchModelChange"
+            ></el-switch>
+          </div>
+          <template
+              v-slot:label
+          >{{ hasValue(searchModel.sales_team_id) ? '团队：' + salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '团队' }}</template>
+        </filter-shell>
         <!--人核状态-->
         <filter-shell v-model="searchModel.status"
                       autoFocus
@@ -140,6 +202,7 @@
         v-table-infinite-scroll="scroll2Bottom"
         v-loading="loading"
         ref="table">
+        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px"></el-table-column>
         <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="$route.name !== 'manpower-order-sales'" min-width="120px"></el-table-column>
         <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
@@ -159,9 +222,10 @@
         <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
         <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
         <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
-        <el-table-column label="操作" fixed="right" width="120px" align="center" v-if="showDetailBtn">
+        <el-table-column label="操作" fixed="right" width="180px" align="center">
           <template v-slot="{ row }">
-            <el-link type="primary" @click="toDetail(row.policy.order_no)">详情</el-link>
+            <el-link type="primary" class="mr16" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
+            <el-link type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -170,11 +234,17 @@
 </template>
 
 <script>
-import { manpowerListForSales, manpowerListForTeam, manpowerListForCompany, getManpowerOptions } from '@/apis/modules/achievement'
+import {
+  manpowerListForSales,
+  manpowerListForTeam,
+  manpowerListForCompany,
+  getManpowerOptions,
+  getSalesData,
+  getSalesTeamData
+} from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { debounce} from '@/utils'
-import { policyStatusArray, insuranceTypeArray,manualReview } from '@/enums/common'
-import { visitStatus, visitStatusArray } from '@/enums/achievement'
+import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 let reqId = 0
 const routeMap = {
@@ -209,19 +279,18 @@ export default {
       total: 0,
       policyStatusArray,
       insuranceTypeArray,
-      visitStatus,
-      visitStatusArray,manualReview,
-      productList: [],
-      supplierList: [],
-      companyList: [],
       salesList: [],
+      salesTeamList: [],
+
       searchModel: {
         keyword: '',
         apply_at: [],
         last_update_time: [],
         status: '',
         result: '',
-        action: ''
+        action: '',
+        sales_id: '',
+        sales_team_id: ''
       },
       manpowerStatus: [],
       manpowerAction: [],
@@ -243,6 +312,23 @@ export default {
         name: routeMap[this.$route.name].relationRouteName,
         params: { id }
       }).href)
+    },
+    copyManpowerLink(url) {
+      this.$copyText(url).then(() => this.$message.success('人核链接已复制到粘贴板')).catch(e => this.$message.error(e))
+    },
+    getSalesData() {
+      getSalesData()
+          .then((res) => {
+            this.salesList = res
+          })
+          .catch((err) => console.log(err))
+    },
+    getSalesTeamData() {
+      getSalesTeamData()
+          .then((res) => {
+            this.salesTeamList = res
+          })
+          .catch((err) => console.log(err))
     },
     toDetail(id) {
       window.open(this.$router.resolve({
@@ -291,6 +377,8 @@ export default {
     }, 300)
   },
   created() {
+    this.getSalesData()
+    this.getSalesTeamData()
     this.getData = () => {
       this.loading = true
       const id = ++reqId
@@ -325,6 +413,13 @@ export default {
 .manpower-container {
   display: flex;
   flex-direction: column;
+  ::v-deep .el-input-group__append {
+    background-color: #1F78FF;
+    border-color: #1F78FF;
+    .el-button {
+      color: #fff;
+    }
+  }
   & >.header {
     font-size: 16px;
     font-weight: bold;
