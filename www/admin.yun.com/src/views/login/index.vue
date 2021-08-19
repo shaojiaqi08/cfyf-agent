@@ -117,7 +117,7 @@ export default {
         getPermission().then(p => {
           this.updateUserInfo({...this.userInfo, permissions: p})
         })
-        this.$router.replace('/user-info')
+        this.$router.replace('/index')
       }).finally(() => {
         this.submitting = false
       })
