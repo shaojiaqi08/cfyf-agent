@@ -106,7 +106,7 @@
             <el-table-column type="index" align="center"></el-table-column>
             <el-table-column label="产品名称" prop="product_name" align="center"></el-table-column>
             <el-table-column label="销量（个）" prop="underwrite_quantity" align="center" width="100px"></el-table-column>
-            <el-table-column label="总保费（元）" prop="underwrite_premium" align="center" width="100px"></el-table-column>
+            <el-table-column label="总保费（元）" prop="underwrite_premium" align="center" width="150px"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -413,6 +413,19 @@ export default {
         .position('underwrite_premium_rate')
         .color('item', ['#2c68ff', '#0092fe', '#ff8601', '#00cbcb', '#71efe3', '#08daaa', '#fcee51', '#1431ca'])
         .tooltip( 'underwrite_premium_rate')
+        .label('item*percent', {
+          layout: { type: 'pie-spider' },
+          labelHeight: 30,
+          content: (obj) => `${obj.item}`,
+          style: {
+            fontSize: 14
+          },
+          labelLine: {
+            style: {
+              lineWidth: 1.5,
+            },
+          },
+        })
       // let legendData = data.map(item => {
       //   return {
       //     name: item.insurance_class_name + ' : ' + item.underwrite_premium_rate + '%'
@@ -420,7 +433,18 @@ export default {
       // })
       this.pieChart.legend({
         position: 'right',
+        offsetX: -50,
+        itemName: {
+          style: {
+            fontSize: 14,
+            lineHeight: 26
+          }
+        },
         itemValue: {
+          style: {
+            fontSize: 14,
+            lineHeight: 26
+          },
           formatter: (text, item, idx) => {
             return `: ${data[idx].percent}%`
           }
