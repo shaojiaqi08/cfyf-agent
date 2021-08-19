@@ -2,6 +2,67 @@
   <div class="renewal-notify page-container">
     <div class="left-content">
       <div class="header">投保人信息</div>
+      <div class="content-body">
+        <el-row>
+          <el-col :span="8">
+            <span class="mr8">姓名</span>xxx
+          </el-col>
+          <el-col :span="8">
+            <span class="mr8">手机号</span>xxx
+          </el-col>
+          <el-col :span="8">
+            <span class="mr8">身份证号</span>xxx
+          </el-col>
+          <el-col :span="8">
+            <span class="mr8">出生日期</span>xxx
+          </el-col>
+          <el-col :span="8" class="mt10 ">
+            <span class="mr8">邮箱</span>xxx
+          </el-col>
+        </el-row>
+        <div class="table-wrap">
+          <p>关联家庭</p>
+          <el-table
+            height="calc(50% - 68px)"
+            border
+            stripe>
+            <el-table-column label="产品种类" align="center" width="80px"></el-table-column>
+            <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
+            <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
+            <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="976px"></el-table-column>
+            <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
+            <el-table-column label="保单号" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人" align="center" width="100px"></el-table-column>
+            <el-table-column label="被保人" align="center" width="100px"></el-table-column>
+            <el-table-column label="保费" align="center" width="100px"></el-table-column>
+            <el-table-column label="应续日期" align="center" width="120px" ></el-table-column>
+            <el-table-column label="宽限日期" align="center" width="120px"></el-table-column>
+            <el-table-column label="操作" align="center" width="150px" fixed="right"></el-table-column>
+          </el-table>
+          <p>关联家庭保单</p>
+          <el-table
+            height="calc(50% - 68px)"
+            border
+            stripe>
+            <el-table-column label="产品种类" align="center" width="80px"></el-table-column>
+            <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
+            <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
+            <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="976px"></el-table-column>
+            <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
+            <el-table-column label="保单号" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人" align="center" width="100px"></el-table-column>
+            <el-table-column label="被保人" align="center" width="100px"></el-table-column>
+            <el-table-column label="保费" align="center" width="100px"></el-table-column>
+            <el-table-column label="应续日期" align="center" width="120px" ></el-table-column>
+            <el-table-column label="宽限日期" align="center" width="120px"></el-table-column>
+            <el-table-column label="操作" align="center" width="150px" fixed="right"></el-table-column>
+          </el-table>
+        </div>
+      </div>
     </div>
     <div class="right-content">
       <div class="follow-head">
@@ -90,7 +151,8 @@
           <div>
             跟踪内容
             <el-input
-              :autosize="{ minRows: 2, maxRows: 4 }"
+              :rows="2"
+              resize="none"
               type="textarea"
               size="mini"
               placeholder="必填"
@@ -145,6 +207,8 @@ export default {
     margin-right: 12px;
     overflow: hidden;
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
     .header {
       font-size: 16px;
       font-weight: bold;
@@ -158,6 +222,34 @@ export default {
       align-items: center;
       .el-input {
         width: 360px;
+      }
+    }
+    .content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 16px;
+      box-sizing: border-box;
+      .el-col {
+        font-size: 14px;
+        font-weight: bold;
+        color: #1A1A1A;
+        & > span {
+          font-weight: normal;
+          color: #4D4D4D;
+        }
+      }
+      .table-wrap {
+        flex: 1;
+        overflow: hidden;
+        & > p {
+          margin: 28px 0 16px 0;
+          line-height: 24px;
+          font-size: 16px;
+          color: #1A1A1A;
+          font-weight: bold;
+        }
       }
     }
   }
