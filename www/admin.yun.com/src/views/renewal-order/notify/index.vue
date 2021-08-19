@@ -30,23 +30,83 @@
       </div>
       <div class="year-wrap">2021</div>
       <el-scrollbar class="scrollbar">
+        <div class="list-item active">
+          <div class="date-wrap">
+            <span>08-08</span><br><span>09:33</span>
+          </div>
+          <div class="content-wrap">
+            <span class="title-wrap">
+              <i class="status-dot"></i>
+              <el-avatar>
+              </el-avatar>
+              <span class="name-span">系统触发短信</span>
+            </span>
+            <div class="msg-wrap">
+              <p>手工发送短信</p>
+              <span>短信内容，超长换行超长换行超长换行超长换行超长换行</span>
+            </div>
+          </div>
+        </div>
         <div class="list-item">
           <div class="date-wrap">
             <span>08-08</span><br><span>09:33</span>
           </div>
           <div class="content-wrap">
             <span class="title-wrap">
-              <i class="iconfont"></i>
-              <el-avatar v-if="false"></el-avatar>
-              系统触发短信
+              <i class="status-dot"></i>
+              <el-avatar>
+              </el-avatar>
+              <span class="name-span">系统触发短信</span>
             </span>
             <div class="msg-wrap">
-              <p></p>
-              <span></span>
+              <p>手工发送短信</p>
+              <span>短信内容，超长换行超长换行超长换行超长换行超长换行</span>
             </div>
           </div>
         </div>
+        <div class="list-item completed">
+          <div class="date-wrap">
+            <span>08-08</span><br><span>09:33</span>
+          </div>
+          <div class="content-wrap">
+            <span class="title-wrap">
+              <i class="iconfont icona-zhong20_duigou_xuanzhong"></i>
+              <el-avatar></el-avatar>
+              <span class="name-span" :class="{ 'name-txt-overflow': true }" title="销售1">销售1</span>
+              <span class="action-span">将跟踪状态标记为</span>
+              <span class="status-block">
+                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>未跟踪
+              </span>
+            </span>
+          </div>
+        </div>
       </el-scrollbar>
+      <div class="follow-footer">
+        <div>
+          跟踪标题
+          <el-input size="mini" placeholder="必填"></el-input>
+        </div>
+        <div>
+          <div>
+            跟踪内容
+            <el-input
+              :autosize="{ minRows: 2, maxRows: 4 }"
+              type="textarea"
+              size="mini"
+              placeholder="必填"
+              @keyup.ctrl.enter.native="send"
+              class="mr8"></el-input>
+          </div>
+          <el-tooltip content="回车换行，Ctrl键+回车键发送" placement="top">
+            <el-button
+              type="primary"
+              size="mini"
+              :loading="sending"
+              :disabled="sending"
+              @click="send">发送</el-button>
+          </el-tooltip>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +116,7 @@ export default {
   name: 'renewal-notify',
   data() {
     return {
+      sending: false,
       stepIndex: 2,
       stepData: Object.freeze([
         { label: '未跟踪', value: 'no_follow'},
@@ -65,6 +126,11 @@ export default {
         { label: '其他', value: 'other'}
       ]),
       list: [{}]
+    }
+  },
+  methods: {
+    send() {
+
     }
   }
 }
@@ -161,16 +227,15 @@ export default {
       overflow: hidden;
       .list-item {
         display: flex;
-        padding: 18px 0;
         .date-wrap {
           width: 72px;
           height: 34px;
           box-sizing: border-box;
-          border-right: 1px solid #d8d8d8;
           color: #333;
           text-align: center;
           position: relative;
           font-size: 12px;
+          margin-top: 8px;
           span {
             line-height: 17px;
           }
@@ -181,14 +246,16 @@ export default {
         .content-wrap {
           flex: 1;
           font-size: 12px;
-          padding: 0 12px;
+          padding: 8px 16px 8px 12px;
+          border-left: 1px solid #d8d8d8;
+          box-sizing: border-box;
           .title-wrap {
             display: flex;
             align-items: center;
             color: #333;
             transform: translateX(-20px);
             height: 34px;
-            .iconfont {
+            & > .status-dot {
               color: #D8D8D8;
               box-sizing: border-box;
               border: 4px solid #fff;
@@ -198,19 +265,150 @@ export default {
               border-radius: 50%;
               background-color: #D8D8D8;
             }
+
+            .el-avatar {
+              width: 20px;
+              height: 20px;
+              margin-right: 8px;
+            }
+            .name-span {
+              font-weight: 800;
+            }
+            .name-txt-overflow {
+              display: inline-block;
+              max-width: 70px;
+              overflow: hidden;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+            .action-span {
+              color: #999;
+              margin: 0 4px;
+            }
+            .status-block {
+              background-color: #F5F5F5;
+              border-style: solid;
+              border-width: 1px;
+              border-color: rgba(204, 204, 204, 0.2);
+              border-radius: 2px;
+              height: 20px;
+              box-sizing: border-box;
+              display: flex;
+              align-items: center;
+              padding: 0 8px;
+              color: #999;
+              font-size: 12px;
+              & > .iconfont {
+                font-size: 12px;
+                color: #999;
+                margin-right: 4px;
+              }
+            }
           }
           .msg-wrap {
+            background-color: #F5F5F5;
+            padding: 16px;
+            color: #131415;
+            border-radius: 0px 12px 12px 12px;
+            & > p {
+              margin: 0 0 4px 0;
+              line-height: 20px;
+              font-size: 14px;
+              font-weight: bold;
+            }
 
+            & > span {
+              font-size: 14px;
+              text-align: justify;
+              line-height: 20px;
+            }
           }
         }
         &.active {
-
+          .date-wrap {
+            color: #1F78FF;
+          }
+          .content-wrap {
+            .iconfont {
+              background-color: #1F78FF;
+            }
+            .msg-wrap {
+              background-color: #1F78FF;
+              color: #fff;
+            }
+          }
+        }
+        &.completed {
+          .content-wrap {
+            position: relative;
+            &::after {
+              content: '';
+              width: 2px;
+              position: absolute;
+              background-color: #fff;
+              left: -1px;
+              top: 35px;
+              bottom: 0;
+            }
+            .title-wrap > .iconfont {
+              border: transparent;
+              font-size: 16px;
+              margin-right: 4px;
+              background-color: #fff;
+              color: #1F78FF;
+              position: relative;
+            }
+          }
         }
       }
     }
     .follow-footer {
-      height: 84px;
+      min-height: 84px;
       overflow: hidden;
+      border-top: 1px solid #E6E6E6;
+      box-sizing: border-box;
+      padding: 0 16px 13px 16px;
+      display: flex;
+      font-size: 12px;
+      flex-direction: column;
+      color: #ccc;
+      & > div:first-child {
+        height: 34px;
+        display: flex;
+        line-height: 20px;
+        align-items: center;
+        display: flex;
+        align-items: center;
+      }
+      & > div:nth-child(2) {
+        display: flex;
+        align-items: center;
+        & > div {
+          flex: 1;
+          display: flex;
+          align-items: flex-start;
+          line-height: 20px;
+        }
+      }
+
+      ::v-deep .el-input, ::v-deep .el-textarea{
+        flex: 1;
+        font-size: 12px;
+        margin-left: 8px;
+        line-height: 20px;
+        color: #ccc;
+        resize: none;
+        &::-webkit-input-placeholder {
+          color: #ccc;
+          font-size: 12px;
+        }
+        input, textarea {
+          border: transparent;
+          outline: transparent;
+          padding: 0;
+        }
+      }
     }
   }
 }
