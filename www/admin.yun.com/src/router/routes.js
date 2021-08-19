@@ -3,6 +3,48 @@ const getView = (name) => () => import(`@/views/${name}/index.vue`)
 
 export const routers = [
   {
+    label: '首页',
+    icon: 'iconcebiandaohang20_shangpin',
+    children: [
+      {
+        path: '/index',
+        name: 'index',
+        meta: {
+          title: '首页',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/home_page/manage'
+        },
+        component: getView('home')
+      },
+      {
+        path: '/announcement',
+        name: 'announcement',
+        meta: {
+          title: '公告',
+          header: true,
+          menu: true,
+          show: false,
+          permission: '/home_page/manage'
+        },
+        component: getView('announcement/index')
+      },
+      {
+        path: '/announcement-detail',
+        name: 'announcement-detail',
+        meta: {
+          title: '公告详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/home_page/manage'
+        },
+        component: getView('announcement/detail')
+      }
+    ]
+  },
+  {
     label: '商品管理',
     icon: 'iconcebiandaohang20_shangpin',
     children: [
@@ -351,7 +393,7 @@ const necessaryRoutes = [
   {
     path: '/',
     name: 'Home',
-    redirect: '/user-info'
+    redirect: '/index'
   },
   {
     path: '/user-info',
