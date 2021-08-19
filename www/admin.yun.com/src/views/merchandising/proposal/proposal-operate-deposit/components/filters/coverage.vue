@@ -1,0 +1,79 @@
+<template>
+  <div :class="['filter-item',visible ? 'active' : '', hasValue && isSetValue ? 'has-value' : '']">
+    <el-popover
+      placement="bottom"
+      :width="popoverWidth"
+      trigger="click"
+      v-model="visible">
+      <span slot="reference">
+        <span>保额</span>
+        <i class="el-icon-arrow-down el-icon--right"></i>
+      </span>
+      <el-input class="mini-count-input"
+                placeholder="最小"
+                type="number"
+                v-model="obj.min"></el-input>
+      &nbsp;-&nbsp;
+      <el-input class="mini-count-input"
+                placeholder="最大"
+                type="number"
+                v-model="obj.max"></el-input>
+      <el-select class="count-select"
+                 v-model="obj.unit">
+        <el-option v-for="item in baseTypes"
+                   :key="item.value"
+                   :value="item.value"
+                   :label="item.label"></el-option>
+      </el-select>
+      <el-button type="primary"
+                 class="block mt16"
+                 @click="submit">确定</el-button>
+    </el-popover>
+    <span class="close-btn" @click="clear">
+        <i class="iconfont iconxiao_yuanxingguanbi"></i>
+    </span>
+  </div>
+</template>
+
+<script>
+import { baseTypes } from '../../config'
+export default {
+  data() {
+    return {
+      popoverWidth: 305,
+      baseTypes,
+      visible: false,
+      isSetValue: false,
+      obj: {
+        min: '',
+        max: '',
+        unit: '10_thousand_yuan'
+      }
+    }
+  },
+  computed: {
+    hasValue() {
+      return (this.obj.unit && this.obj.min) || (this.obj.unit && this.obj.max)
+    }
+  },
+  methods: {
+    clear() {
+      this.obj = { min: '', max: '', unit: '10_thousand_yuan' }
+      this.isSetValue = false
+      this.submit()
+    },
+    submit() {
+      if (this.hasValue) {
+        this.isSetValue = true
+      } else {
+        this.isSetValue = false
+      }
+      this.$emit('search', { base_coverage_value: this.obj })
+      this.visible = false
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+@import url(./index.scss);
+</style>

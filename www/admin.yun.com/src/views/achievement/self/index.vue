@@ -1,7 +1,29 @@
 <template>
   <div class="order-container page-container">
-    <div class="header">
-      我的业绩
+    <div class="header row-style">
+      <div class="flex-left-style">
+        <div class="margin-r-30">我的业绩</div>
+        <div class="color-desc-box">
+          <div class="color-desc color-desc-row">
+            <div class="color-desc-bg" :style="getBgColor('invalid')"></div>
+            <div>无效单</div>
+          </div>
+          <div class="color-desc color-desc-row">
+            <div class="color-desc-bg" :style="getBgColor('unpaid')"></div>
+            <div>待支付</div>
+          </div>
+          <div class="color-desc color-desc-row">
+            <div class="color-desc-bg" :style="getBgColor(0)"></div>
+            <div>人核中</div>
+          </div>
+          <div class="color-desc color-desc-row">
+            <div class="color-desc-bg" :style="getBgColor('surrendered')"></div>
+            <div>已退保</div>
+          </div>
+          
+        </div>
+      </div>
+      
       <div class="flex-between">
         <el-button size="small"
                    type="primary"
@@ -571,4 +593,61 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '../index.scss';
+</style>
+<style lang="scss" scoped>
+.row-style {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .flex-left-style {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .row-style-auto {
+    flex: 1;
+  }
+  
+  .color-desc-box {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    width: 630px;
+    font-weight: 400 !important;
+  }
+  .color-desc-title {
+    font-size: 14px;
+  }
+  .color-desc {
+    position: relative;
+    color: #000;
+    box-sizing: border-box;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  .margin-r-30 {
+    margin-right: 30px;
+  }
+  .color-desc-row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    width: 70px;
+    .color-desc-bg {
+      width: 12px;
+      height: 12px;
+      margin-right: 5px;
+    }
+  }
 </style>

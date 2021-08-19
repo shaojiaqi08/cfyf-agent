@@ -106,7 +106,7 @@
               <el-tab-pane label="被保人" name="2"></el-tab-pane>
               <el-tab-pane label="受益人" name="3"></el-tab-pane>
             </el-tabs>
-            <cust-info :data="customerInfo.policy_holder_info" v-if="tabIndex === '1'"></cust-info>
+            <cust-info :data="customerInfo.policy_holder_info" v-if="tabIndex === '1' && customerInfo.policy_holder_info"></cust-info>
             <template
                 v-for="(item, index) in customerInfo.policy_recognizee_policies"
                 v-else-if="tabIndex === '2'"
@@ -119,7 +119,7 @@
             <div
                 v-for="(item, index) in customerInfo.policy_recognizee_policies"
                 :key="'policy_recognizee_policies' + index"
-                v-else
+                v-else-if="tabIndex === '3'"
             >
               <div class="mb10 mt10">
                 <span class="mr10" style="font-size: 14px">被保人{{index + 1}}的受益人类型</span>
@@ -150,6 +150,8 @@
               <el-table-column label="险种名称" prop="name"></el-table-column>
               <el-table-column label="基本保额(元)" prop="guarantee_quota"></el-table-column>
               <el-table-column label="保费(元)" prop="premium"></el-table-column>
+              <el-table-column label="结论" prop="risk_conclusion_str"></el-table-column>
+              <el-table-column label="备注" prop="risk_conclusion_remark"></el-table-column>
             </el-table>
             <div class="item-block" style="width: 40%;margin: 0 0 0 auto;justify-content: flex-end">
               <div class="item" style="width: auto;display: inline-flex;">
@@ -429,6 +431,31 @@
           </div>
         </template>
       </template>
+
+      <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
+        <iframe v-if="manPowerDialogVisible"
+            :src="manPowerDetail.data.file_url"
+            style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
+      </template>
+
+      <template v-else-if="manPowerDetail.type === 'counteroffer_all_confirming' || manPowerDetail.type === 'counteroffer_all_confirmed'">
+        <el-table :data="manPowerDetail.data" :show-header="false" border stripe>
+          <el-table-column width="230px" align="center">
+            <template v-slot="{ row }">
+              <p>照会{{row.is_complete ? '完成' : ''}}</p>
+              <span>{{formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column>
+            <template v-slot="{ row }">
+              <span>
+                {{`${row.role_name_arr.join(',')}【${row.real_name}】`}}
+                <span :style="{ color: row.conclusion === 'accept' ? 'blue' : row.conclusion === 'refuse' ? 'red' : null}">{{row.conclusion_str}}</span>
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
     </el-dialog>
     <el-image-viewer
         v-if="isPreview"
@@ -652,7 +679,9 @@ export default {
       }
       this.customerInfoLoading = true
       getPolicyHolder(obj).then((res) => {
-        res.policy_holder_info.policy_renewal = res.policy_renewal || {}
+        if (res.policy_holder_info ) {
+          res.policy_holder_info.policy_renewal = res.policy_renewal || {}
+        }
         this.customerInfo = res
         this.customerInfoLoading = false
       })
