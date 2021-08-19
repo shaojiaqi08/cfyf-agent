@@ -455,6 +455,11 @@ export default {
         start: [{ trigger: 'element:mouseenter', action: 'element-single-selected:selected' }],
         end: [{ trigger: 'element:mouseleave', action: 'element-single-selected:reset' }],
       });
+
+      this.pieChart.interaction('legend-active', {
+        start: [{ trigger: 'legend-item:mouseenter', action:['list-active:active', 'element-selected:selected'] }],
+        end: [{ trigger: 'legend-item:mouseleave', action: ['list-active:reset', 'element-selected:reset'] }],
+      });
       this.pieChart.render();
     },
     computedBannerHeight(){
