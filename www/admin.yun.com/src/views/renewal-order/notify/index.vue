@@ -30,7 +30,7 @@
             <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" align="center" width="976px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="280px"></el-table-column>
             <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
@@ -50,7 +50,7 @@
             <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" align="center" width="976px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="280px"></el-table-column>
             <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
@@ -502,6 +502,9 @@ export default {
         }
       }
     }
+  }
+  ::v-deep .el-table__empty-block{
+    width: 100% !important;
   }
 }
 </style>
