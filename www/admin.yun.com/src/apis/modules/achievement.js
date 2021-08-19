@@ -80,3 +80,13 @@ export const getPolicySales = (params) => get('/agent/proxy/policy_info/sales', 
 export const getPolicyVisit = (params) => get('/agent/proxy/policy_info/get_visit', params)
 // 订单详情-人核信心
 export const getManPowerInfo = params => get('/agent/proxy/policy_info/manpower', params)
+
+// 人核订单列表 - 销售
+export const manpowerListForSales = params => get('/agent/proxy/manpower-order/list-for-sales', params)
+// 人核订单列表 - 团队
+export const manpowerListForTeam = params => get('/agent/proxy/manpower-order/list-for-team', params)
+// 人核订单列表 - 公司
+export const manpowerListForCompany = params => get('/agent/proxy/manpower-order/list-for-company', params)
+// 人核筛选数据
+export const getManpowerOptions = params => get('/agent/proxy/manpower-order/select-options', params)
+

@@ -1,17 +1,6 @@
 <template>
   <div class="order-detail-container">
-    <div class="header">
-      订单详情
-      <el-button
-          type="primary"
-          :loading="downloading"
-          v-if="baseInfo.policy_file_url && $checkAuth(`/${$route.name.slice(0, -7)}/policy_file_url`)"
-          icon="iconfont iconxiao16_shouqiangaozhi"
-          @click="download(baseInfo.policy_file_url)"
-      >
-        <span class="ml4">下载电子保单</span>
-      </el-button>
-    </div>
+    <div class="header">{{$route.meta.title}}</div>
     <div id="detail-content" class="content" :style="{maxHeight: contentMaxHeight + 'px'}">
       <el-scrollbar>
         <!--保单基本信息-->
@@ -96,72 +85,6 @@
             <el-divider></el-divider>
           </div>
         </template>
-
-        <!--客户信息-->
-        <template v-if="$checkAuth(`${perPreFix}holder_recognize`)">
-          <h3>客户信息</h3>
-          <div v-loading="customerInfoLoading">
-            <el-tabs v-model="tabIndex" lazy>
-              <el-tab-pane label="投保人" name="1"></el-tab-pane>
-              <el-tab-pane label="被保人" name="2"></el-tab-pane>
-              <el-tab-pane label="受益人" name="3"></el-tab-pane>
-            </el-tabs>
-            <cust-info :data="customerInfo.policy_holder_info" v-if="tabIndex === '1' && customerInfo.policy_holder_info"></cust-info>
-            <template
-                v-for="(item, index) in customerInfo.policy_recognizee_policies"
-                v-else-if="tabIndex === '2'"
-            >
-              <div :key="'policy_recognizee_policies' + index">
-                <p style="color:#999;font-size: 14px">被保人{{index + 1}}：</p>
-                <cust-info type="2" :data="item"></cust-info>
-              </div>
-            </template>
-            <div
-                v-for="(item, index) in customerInfo.policy_recognizee_policies"
-                :key="'policy_recognizee_policies' + index"
-                v-else-if="tabIndex === '3'"
-            >
-              <div class="mb10 mt10">
-                <span class="mr10" style="font-size: 14px">被保人{{index + 1}}的受益人类型</span>
-                <el-radio-group :value="customerInfo.is_legal_beneficiary">
-                  <el-radio :label="2">指定受益人</el-radio>
-                  <el-radio :label="1">法定受益人</el-radio>
-                  <el-radio :label="3">被保人本人</el-radio>
-                </el-radio-group>
-              </div>
-              <div
-                  class="pl10"
-                  :key="'policy_beneficiaries' + index"
-                  v-for="(item, index) in item.policy_beneficiaries"
-              >
-                <p style="color:#999;font-size: 14px">受益人{{index + 1}}：</p>
-                <cust-info type="3" :data="item"></cust-info>
-              </div>
-            </div>
-          </div>
-          <el-divider></el-divider>
-        </template>
-
-        <!--险种信息-->
-        <template v-if="$checkAuth(`${perPreFix}insurances`)">
-          <h3>险种信息</h3>
-          <div v-loading="insuranceInfoLoading">
-            <el-table class="mt20" border stripe :data="insuranceInfo.policy_product_insurances">
-              <el-table-column label="险种名称" prop="name"></el-table-column>
-              <el-table-column label="基本保额(元)" prop="guarantee_quota"></el-table-column>
-              <el-table-column label="保费(元)" prop="premium"></el-table-column>
-              <el-table-column label="结论" prop="risk_conclusion_str"></el-table-column>
-              <el-table-column label="备注" prop="risk_conclusion_remark"></el-table-column>
-            </el-table>
-            <div class="item-block" style="width: 40%;margin: 0 0 0 auto;justify-content: flex-end">
-              <div class="item" style="width: auto;display: inline-flex;">
-                <div class="label">总保费(元)：</div>
-                <div class="content">{{insuranceInfo.total_premium||'-'}}</div>
-              </div>
-            </div>
-          </div>
-          <el-divider class="mt4"></el-divider>
-        </template>
         <!--人工核保信息-->
         <template v-if="$checkAuth(`${perPreFix}manpower`) && manPowerInfo">
           <h3>人工核保信息</h3>
@@ -244,87 +167,9 @@
               </el-timeline-item>
             </el-timeline>
           </div>
-          <el-divider></el-divider>
-        </template>
-
-        <!--回访信息-->
-        <template v-if="$checkAuth(`${perPreFix}visit_info`)">
-          <h3 style="display: flex; align-items: center">回访信息
-            <i
-              v-if="visitInfo.visit_link != ''"
-              type="primary"
-              @click="copyLink(visitInfo.visit_link)"
-              class="iconfont iconxiao16_fuzhi fs18 ml8"
-              style="color: #1fa5ff;cursor: pointer;font-weight: normal;display: inline-flex; align-items: center"
-            >
-              <span style="font-size: 14px;margin-left: 2px;">回访链接</span>
-            </i>
-          </h3>
-          <div class="item-block" v-loading="visitInfoLoading">
-            <div class="item">
-              <div class="label">回访状态：</div>
-              <div class="content">{{visitInfo.visit_status||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">回访时间：</div>
-              <div
-                  class="content"
-              >{{visitInfo.visit_at ? formatDate(visitInfo.visit_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">回访方式：</div>
-              <div class="content">{{visitInfo.visit_way_name||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">回访失败原因：</div>
-              <div class="content">{{visitInfo.visit_ques_reason||'-'}}</div>
-            </div>
-            <el-divider></el-divider>
-          </div>
-        </template>
-
-        <!--销售信息-->
-        <template v-if="$checkAuth(`${perPreFix}sales_info`)">
-          <h3>销售信息</h3>
-          <div class="item-block" v-loading="salesInfoLoading">
-            <div class="item">
-              <div class="label">所属公司：</div>
-              <div class="content">{{salesInfo.sales_company_name||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">所属团队：</div>
-              <div class="content">{{salesInfo.sales_team_name||'-'}}</div>
-            </div>
-            <div class="item">
-              <div class="label">出单人：</div>
-              <div class="content">{{salesInfo.sales_real_name||'-'}}</div>
-            </div>
-          </div>
-          <el-divider></el-divider>
         </template>
       </el-scrollbar>
     </div>
-    <el-dialog
-        title="续期信息"
-        :visible.sync="renewalDialogVisible"
-        @close="renewalDialogVisible = false"
-        append-to-body
-    >
-      <el-table :data="renewalInfo.renewal_terms" border stripe>
-        <el-table-column label="缴费期数" prop="stage"></el-table-column>
-        <el-table-column label="缴费周期"></el-table-column>
-        <el-table-column label="应缴日期" prop="renewal_date"></el-table-column>
-        <el-table-column label="宽限期满日期" prop="grace_end_at"></el-table-column>
-        <el-table-column label="期缴保费(元)" prop="premium"></el-table-column>
-        <el-table-column label="预期保费(元)" prop="predict_premium"></el-table-column>
-        <el-table-column label="续保状态" prop="renewal_status_name"></el-table-column>
-        <el-table-column label="续期失败原因" prop="fail_reason"></el-table-column>
-        <el-table-column label="实缴日期" prop="renewal_at"></el-table-column>
-      </el-table>
-      <span slot="footer">
-          <el-button @click="renewalDialogVisible=false">关闭</el-button>
-        </span>
-    </el-dialog>
     <el-dialog :title="manPowerDetail.title"
                :visible.sync="manPowerDialogVisible"
                :width="manPowerDetail.type === 'waiting_counteroffer_reply' ? '1000px' : '1200px'"
@@ -416,11 +261,9 @@
           <el-divider v-if="index!==manPowerObj.length-1"></el-divider>
         </div>
       </template>
-
       <template v-else-if="manPowerDetail.type === 'work_notification' || manPowerDetail.type === 'result_notification'">
         <manpower-table :data="manPowerDetail.data"></manpower-table>
       </template>
-
       <template v-else-if="manPowerDetail.type === 'manpower_result'">
         <template v-if="typeof manPowerDetail.data === 'string'">
           <span>{{manPowerDetail.data}}</span>
@@ -432,13 +275,11 @@
           </div>
         </template>
       </template>
-
       <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
         <iframe v-if="manPowerDialogVisible"
-            :src="manPowerDetail.data.file_url"
-            style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
+                :src="manPowerDetail.data.file_url"
+                style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
       </template>
-
       <template v-else-if="manPowerDetail.type === 'counteroffer_all_confirming' || manPowerDetail.type === 'counteroffer_all_confirmed'">
         <el-table :data="manPowerDetail.data" :show-header="false" border stripe>
           <el-table-column width="230px" align="center">
@@ -468,22 +309,16 @@
 <script>
 import {
   getPolicyBase,
-  getPolicyHolder,
-  getPolicyInsurances,
-  getPolicySales,
-  getManPowerInfo,
-  getPolicyVisit
+  getManPowerInfo
 } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
-import custInfo from '../component/cust-info'
 import manpowerTable from '../component/manpower-table.vue'
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 
 export default {
   name: 'order-detail',
   components: {
-    custInfo,
     manpowerTable,
     ElImageViewer
   },
@@ -493,38 +328,12 @@ export default {
       payInfo: {},
       baseInfo: {},
       baseInfoLoading: false,
-      tabIndex: '1',
-      downloading: false,
       contentMaxHeight: null,
-      customerInfoLoading: false,
-      insuranceInfoLoading: false,
-      salesInfoLoading: false,
-      payInfoLoading: false,
-      visitInfoLoading: false,
-      relationInfoLoading: false,
-      renewalDialogVisible: false,
-      renewalInfoLoading: false,
-      salesInfo: {},
-      customerInfo: {
-        policy_holder_info: {},
-        policy_recognizee_policies: [],
-        policy_payment: {},
-      },
-      relationInfo: [],
-      insuranceInfo: {
-        policy_product_insurances: [],
-      },
-      renewalInfo: {
-        renewal_insurance: {},
-        renewal_terms: [],
-      },
-      payInfoPayment: {},
-      visitInfo: {},
       manPowerInfoLoading: false,
       custInfoCollapse: false,
       manPowerDownloading: false,
       previewUrl: [],
-      isPreview:false,
+      isPreview: false,
       manPowerDialogVisible: false,
       manPowerDetail: {},
       activeName: '0',
@@ -543,9 +352,9 @@ export default {
     // 权限值前缀
     perPreFix () {
       const map = {
-        'achievement-company-detail': '/company_performance/',
-        'achievement-team-detail': '/team_performance/',
-        'achievement-self-detail': '/my_performance/'
+        'manpower-order-company-detail': '/company_performance/',
+        'manpower-order-team-detail': '/company_performance/',
+        'manpower-order-sales-detail': '/company_performance/'
       }
       return map[this.$route.name]
     }
@@ -557,30 +366,13 @@ export default {
     formatDate,
     download(url) {
       window.open(url)
-      // this.downloading = true
-      // const params = { order_no: this.$route.params.order_no }
-      // getPolicyFile(params)
-      //   .then((res) => {
-      //     if (res.policy_file_url) {
-      //       window.open(res.policy_file_url)
-      //     }
-      //   })
-      //   .finally(() => (this.downloading = false))
     },
     init() {
       const { perPreFix } = this
       // 获取保单基本信息
       this.$checkAuth(`${perPreFix}base`) && this.getPolicyBase_()
-      // 获取客户信息
-      this.$checkAuth(`${perPreFix}holder_recognize`) && this.getPolicyHolder_()
-      // 获取险种信息
-      this.$checkAuth(`${perPreFix}insurances`) && this.getPolicyInsurances_()
       // 获取人核信息
       this.$checkAuth(`${perPreFix}manpower`) && this.getManPowerInfo_()
-      // 获取销售信息
-      this.$checkAuth(`${perPreFix}sales_info`) && this.getPolicySales_()
-      // 获取回访信息
-      this.$checkAuth(`${perPreFix}visit_info`) && this.getPolicyVisit_()
       // 设置高度
       this.setHeight()
       window.addEventListener('resize', this.setHeight);
@@ -590,12 +382,12 @@ export default {
     },
     copyLink(link) {
       this.$copyText(link).then(
-          () => {
-            this.$message.success('已复制到粘贴板')
-          },
-          (e) => {
-            this.$message.error(e)
-          }
+        () => {
+          this.$message.success('已复制到粘贴板')
+        },
+        (e) => {
+          this.$message.error(e)
+        }
       )
     },
     getManPowerInfo_() {
@@ -633,59 +425,6 @@ export default {
     },
     closePreview() {
       this.isPreview = false
-    },
-    getPolicyVisit_() {
-      const obj = {
-        order_no: this.$route.params.id,
-      }
-      this.visitInfoLoading = true
-      getPolicyVisit(obj).then((res) => {
-        this.visitInfo = {
-          ...res,
-          ...(res.policy_sales || {}),
-          ...(res.policy_customer || {}),
-        }
-        this.visitInfoLoading = false
-      })
-    },
-    getPolicySales_() {
-      const obj = {
-        order_no: this.$route.params.id,
-      }
-      this.salesInfoLoading = true
-      getPolicySales(obj).then((res) => {
-        this.salesInfo = {
-          ...res,
-          ...(res.policy_sales || {}),
-          ...(res.policy_customer || {}),
-        }
-        this.salesInfoLoading = false
-      })
-    },
-    getPolicyInsurances_() {
-      // 获取险种信息
-      const obj = {
-        order_no: this.$route.params.id,
-      }
-      this.insuranceInfoLoading = true
-      getPolicyInsurances(obj).then((res) => {
-        this.insuranceInfo = res
-        this.insuranceInfoLoading = false
-      })
-    },
-    getPolicyHolder_() {
-      // 获取保单基本信息
-      const obj = {
-        order_no: this.$route.params.id,
-      }
-      this.customerInfoLoading = true
-      getPolicyHolder(obj).then((res) => {
-        if (res.policy_holder_info ) {
-          res.policy_holder_info.policy_renewal = res.policy_renewal || {}
-        }
-        this.customerInfo = res
-        this.customerInfoLoading = false
-      })
     },
     getPolicyBase_() {
       // 获取客户信息
