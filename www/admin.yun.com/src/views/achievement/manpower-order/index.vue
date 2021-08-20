@@ -405,12 +405,18 @@ export default {
         this.total = 0
         this.list = []
         this.getData()
+        const { salesList, salesTeamList, tabIndex, tabsData } = this
+        if (!salesList.length && tabIndex !== tabsData[0].name) {
+          this.getSalesData()
+        }
+        if (!salesTeamList.length && tabIndex !== tabsData[0].name) {
+          this.getSalesTeamData()
+        }
       }
     }
   },
   created() {
-    this.getSalesData()
-    this.getSalesTeamData()
+    // 人核选项数据
     getManpowerOptions().then(res => {
       this.manpowerAction = res.action
       this.manpowerStatus = res.status
