@@ -403,6 +403,16 @@ export default {
       if (v) {
         this.page = 1
         this.total = 0
+        this.searchModel = {
+          keyword: '',
+          apply_at: [],
+          last_update_time: [],
+          status: '',
+          result: '',
+          action: '',
+          sales_id: '',
+          sales_team_id: ''
+        }
         this.list = []
         this.getData()
         const { salesList, salesTeamList, tabIndex, tabsData } = this
