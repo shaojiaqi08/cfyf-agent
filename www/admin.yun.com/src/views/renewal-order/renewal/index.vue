@@ -1,11 +1,7 @@
 <template>
   <div class="renewal-container page-container">
     <div class="header">
-      <el-tabs class="tabs" v-model="tabIndex" @tab-click="tabChange">
-        <el-tab-pane name="all" label="全部续保续期"></el-tab-pane>
-        <el-tab-pane name="rank" label="短险续保"></el-tab-pane>
-        <el-tab-pane name="statistics" label="长期续保"></el-tab-pane>
-      </el-tabs>
+      <common-tabs-header :data="tabsData" v-model="tabIndex"></common-tabs-header>
       <el-input
           v-model="searchModel.keyword"
           placeholder="搜索单号或投被保人信息"
@@ -400,12 +396,14 @@ import { policyStatusArray, insuranceTypeArray,manualReview } from '@/enums/comm
 import { visitStatus, visitStatusArray } from '@/enums/achievement'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
+import CommonTabsHeader from '@/components/common-tabs-header'
 // 续保续期订单
 export default {
   name: 'renewal-order',
   components: {
     FilterShell,
-    textHiddenEllipsis
+    textHiddenEllipsis,
+    CommonTabsHeader
   },
   data() {
     return {
@@ -437,6 +435,11 @@ export default {
       scrol2Rvisible: false,
       exporting: false,
       scrollTranslateX: 0,
+      tabsData: Object.freeze([
+        { label: '全部续保续期', name: 'all' },
+        { label: '短险续保', name: 'rank' },
+        { label: '长期续保', name: 'statistics' }
+      ]),
       searchModel: {
         keyword: '',
         policy_status: [],
