@@ -211,6 +211,7 @@
         <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
         <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
         <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
         <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
           <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
         </el-table-column>
@@ -222,7 +223,6 @@
         </el-table-column>
         <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
         <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
-        <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="180px" align="center">
           <template v-slot="{ row }">
             <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
