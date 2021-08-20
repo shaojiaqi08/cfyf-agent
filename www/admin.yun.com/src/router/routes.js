@@ -116,7 +116,7 @@ export const routers = [
         path: '/manpower-order',
         name: 'manpower-order',
         meta: {
-          title: '人核订单列表',
+          title: '人核订单',
           header: true,
           menu: true,
           show: true,
