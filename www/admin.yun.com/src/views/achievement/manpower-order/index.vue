@@ -280,7 +280,7 @@ export default {
       tabsData: Object.freeze([
         { label: '公司人核订单', name: 'manpower-order-company', permission: 'manpower-order-company' },
         { label: '团队人核订单', name: 'manpower-order-team', permission: 'manpower-order-team' },
-        { label: '我的核订单', name: 'manpower-order-sales', permission: 'manpower-order-sales'}
+        { label: '我的人核订单', name: 'manpower-order-sales', permission: 'manpower-order-sales'}
       ]),
       page: 1,
       page_size: 20,
