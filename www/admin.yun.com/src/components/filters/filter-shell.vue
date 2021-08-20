@@ -10,7 +10,7 @@
       <div class="inner-box" :class="{ noPadding }">
         <slot></slot>
       </div>
-      <div class="filter-item" :class="{ actived: popoverShow || isHasValue || isActive }" slot="reference">
+      <div class="filter-item" :class="{ actived: popoverShow || isHasValue || isActive, m0: noMargin }" slot="reference">
         <div class="content">
           <span class="filter-label">{{filterValue}}</span>
           <el-badge
@@ -119,6 +119,10 @@ export default {
     textOverflow: {
       type: Boolean,
       default: true
+    },
+    noMargin: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -168,6 +172,10 @@ export default {
 .filter-bar {
   display: inline-block;
   // padding-bottom: 16px;
+}
+
+.m0{
+  margin: 0 !important;
 }
 .filter-item {
   // display: inline-block;

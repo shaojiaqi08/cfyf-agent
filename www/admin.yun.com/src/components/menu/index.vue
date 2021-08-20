@@ -55,7 +55,7 @@
       getDotsData() {
         clearTimeout(timer)
         getDotsData().then(res => {
-          this.$store.dispatch('dotManage/updateDots', res)
+          this.$store.dispatch('dotManage/updateDots', {...this.dots, ...res})
           timer = setTimeout(this.getDotsData, 60000)
         })
       },

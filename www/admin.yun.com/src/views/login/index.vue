@@ -42,6 +42,7 @@
 <script>
 import {login, getUserDetail, simulatedLogin, getPermission} from '@/apis/modules/index'
 import {mapActions, mapState} from 'vuex'
+import store from "@/store";
 export default {
   data() {
     return {
@@ -66,15 +67,23 @@ export default {
         this.updateUserInfo(res).then(() => {
           const path = this.$route.query.redirect
           // 如果不是跳转到个人信息页就获取用户信息
-          if (path && !path.includes('user-info')) {
-            getUserDetail().then(ud => {
-              this.updateUserInfo({...this.userInfo, ...ud}).then(() => {
-                this.$router.replace(path)
+          getUserDetail().then(ud => {
+            getPermission().then(permissionList => {
+              store.dispatch('users/clearReadPermission')
+              this.updateUserInfo({...res, ...ud, permissions: permissionList}).then(() => {
+                path && !path.includes('user-info') ? this.$router.replace(path) : this.$router.replace('/index')
               })
             })
-          } else {
-            this.$router.replace('/user-info')
-          }
+          })
+          // if (path && !path.includes('user-info')) {
+          //   getUserDetail().then(ud => {
+          //     this.updateUserInfo({...this.userInfo, ...ud}).then(() => {
+          //       this.$router.replace(path)
+          //     })
+          //   })
+          // } else {
+          //   this.$router.replace('/user-info')
+          // }
         })
       }).catch(err => {
         console.log(err)
@@ -107,8 +116,8 @@ export default {
         // 获取权限
         getPermission().then(p => {
           this.updateUserInfo({...this.userInfo, permissions: p})
+          this.$router.replace('/index')
         })
-        this.$router.replace('/user-info')
       }).finally(() => {
         this.submitting = false
       })
