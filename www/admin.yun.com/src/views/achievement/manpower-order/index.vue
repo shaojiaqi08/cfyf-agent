@@ -1,7 +1,7 @@
 <template>
   <div class="manpower-container page-container">
     <div class="header">
-      {{$route.meta.title}}
+      <common-tabs-header v-model="tabIndex" :data="tabsData"></common-tabs-header>
       <el-input
         v-model="searchModel.keyword"
         placeholder="搜索投保人或被保人或产品名称"
@@ -44,7 +44,7 @@
           >{{hasValue(searchModel.sales_id) ? '出单人：' +salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
         </filter-shell>
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange" v-if="$route.name !== 'manpower-order-team'">
+        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange" v-if="tabIndex !== 'manpower-order-team'">
           <el-select
               class="block"
               v-model="searchModel.sales_team_id"
@@ -202,8 +202,8 @@
         v-table-infinite-scroll="scroll2Bottom"
         v-loading="loading"
         ref="table">
-        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="$route.name !== 'manpower-order-team'"></el-table-column>
-        <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="$route.name !== 'manpower-order-sales'" min-width="120px"></el-table-column>
+        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
+        <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
         <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
@@ -246,6 +246,7 @@ import { formatDate } from '@/utils/formatTime'
 import { debounce} from '@/utils'
 import { policyStatusArray, insuranceTypeArray } from '@/enums/common'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
+import CommonTabsHeader from '@/components/common-tabs-header'
 let reqId = 0
 const routeMap = {
   'manpower-order-company': {
@@ -269,11 +270,18 @@ export default {
   name: 'manpower-order',
   components: {
     FilterShell,
+    CommonTabsHeader
   },
   data() {
     return {
       loading: false,
       list: [],
+      tabIndex: '',
+      tabsData: Object.freeze([
+        { label: '公司人核订单', name: 'manpower-order-company', permission: 'manpower-order-company' },
+        { label: '团队人核订单', name: 'manpower-order-team', permission: 'manpower-order-team' },
+        { label: '我的核订单', name: 'manpower-order-sales', permission: 'manpower-order-sales'}
+      ]),
       page: 1,
       page_size: 20,
       total: 0,
@@ -281,7 +289,6 @@ export default {
       insuranceTypeArray,
       salesList: [],
       salesTeamList: [],
-
       searchModel: {
         keyword: '',
         apply_at: [],
@@ -300,12 +307,26 @@ export default {
   },
   computed: {
     showDetailBtn() {
-      return this.$checkAuth(routeMap[this.$route.name].permission)
+      const obj = routeMap[this.tabIndex]
+      return obj ? this.$checkAuth(obj.permission) : false
     }
   },
   methods: {
     formatDate,
-    getData() {},
+    getData() {
+      this.loading = true
+      const id = ++reqId
+      routeMap[this.tabIndex].apiFunc(this.searchModelFormat()).then(res => {
+        if (id === reqId) {
+          this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+          this.total = res.total
+        }
+      }).finally(() => {
+        if (id === reqId) {
+          this.loading = false
+        }
+      })
+    },
     // 跳转到关联订单详情
     toOrderDetail(id) {
       window.open(this.$router.resolve({
@@ -332,7 +353,7 @@ export default {
     },
     toDetail(id) {
       window.open(this.$router.resolve({
-        name: `${this.$route.name}-detail`,
+        name: `${this.tabIndex}-detail`,
         params: { id }
       }).href)
     },
@@ -376,24 +397,19 @@ export default {
       this.tableMaxHeight = bodyHeight - top - 10
     }, 300)
   },
+  watch: {
+    tabIndex(v) {
+      if (v) {
+        this.page = 1
+        this.total = 0
+        this.list = []
+        this.getData()
+      }
+    }
+  },
   created() {
     this.getSalesData()
     this.getSalesTeamData()
-    this.getData = () => {
-      this.loading = true
-      const id = ++reqId
-      routeMap[this.$route.name].apiFunc(this.searchModelFormat()).then(res => {
-        if (id === reqId) {
-          this.list = this.page === 1 ? res.data : this.list.concat(res.data)
-          this.total = res.total
-        }
-      }).finally(() => {
-        if (id === reqId) {
-          this.loading = false
-        }
-      })
-    }
-    this.getData()
     getManpowerOptions().then(res => {
       this.manpowerAction = res.action
       this.manpowerStatus = res.status

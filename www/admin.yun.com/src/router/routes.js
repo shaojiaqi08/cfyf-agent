@@ -113,14 +113,14 @@ export const routers = [
         component: getView('achievement/order-detail')
       },
       {
-        path: '/manpower-order-company',
-        name: 'manpower-order-company',
+        path: '/manpower-order',
+        name: 'manpower-order',
         meta: {
-          title: '公司人核订单',
+          title: '人核订单列表',
           header: true,
           menu: true,
           show: true,
-          permission: 'manpower-order-company'
+          permission: ['manpower-order-company', 'manpower-order-team', 'manpower-order-sales']
         },
         component: getView('achievement/manpower-order')
       },
@@ -137,18 +137,6 @@ export const routers = [
         component: getView('achievement/manpower-order-detail')
       },
       {
-        path: '/manpower-order-team',
-        name: 'manpower-order-team',
-        meta: {
-          title: '团队人核订单',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'manpower-order-team'
-        },
-        component: getView('achievement/manpower-order')
-      },
-      {
         path: '/manpower-order-team-detail/:id',
         name: 'manpower-order-team-detail',
         meta: {
@@ -159,18 +147,6 @@ export const routers = [
           permission: 'manpower-order-team-detail'
         },
         component: getView('achievement/manpower-order-detail')
-      },
-      {
-        path: '/manpower-order-sales',
-        name: 'manpower-order-sales',
-        meta: {
-          title: '我的人核订单',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'manpower-order-sales'
-        },
-        component: getView('achievement/manpower-order')
       },
       {
         path: '/manpower-order-sales-detail/:id',
