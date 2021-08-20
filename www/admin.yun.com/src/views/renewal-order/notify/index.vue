@@ -2,7 +2,6 @@
   <div class="renewal-notify page-container">
     <div class="header">
       续保续期短信通知
-      <el-button type="primary"><i class="iconfont iconxiao16_jiahao mr4"></i>新增销售</el-button>
     </div>
     <el-scrollbar class="content-body scrollbar" v-loading="loading">
       <el-switch
@@ -15,18 +14,20 @@
         <div class="sales-wrap">
           <div>
             <span>工作昵称</span>
-            <el-tooltip>
+            <el-tooltip content="昵称用于发送给客户相关短信时的称呼" placement="top">
               <i class="iconfont iconxiao16_gengduoxinxi ml4 mr12"></i>
             </el-tooltip>
             <b>李四</b>
           </div>
           <div>
             <span>工作手机</span>
-            <el-tooltip>
+            <el-tooltip content="工作手机用于接收本平台各类提醒，同时，也用于发送给客户相关短信，以便客户回拨电话时，联系您" placement="top">
               <i class="iconfont iconxiao16_gengduoxinxi ml4 mr12"></i>
             </el-tooltip>
             <b>138000138000</b>
-            <i class="ml4 iconfont iconxiao16_bianji" title="编辑工作手机"></i>
+            <el-tooltip content="去修改个人信息" placement="top" :open-delay="1000">
+              <i class="ml4 iconfont iconxiao16_bianji" style="cursor: pointer;"></i>
+            </el-tooltip>
           </div>
         </div>
       </template>
@@ -48,6 +49,9 @@
         :disabled="submitting"
         @click="save">保存</el-button>
     </el-scrollbar>
+    <el-dialog
+      :title="`编辑销售`"
+    ></el-dialog>
   </div>
 </template>
 
@@ -59,7 +63,15 @@ export default {
       loading: false,
       submitting: false,
       isAutoSend: false,
-      isAuth: false
+      isAuth: false,
+      dialogVisible: false,
+      formModel: {
+        name: '',
+        mobile: ''
+      },
+      rules: {
+        name: { required: true, message: '' }
+      }
     }
   },
   computed: {
