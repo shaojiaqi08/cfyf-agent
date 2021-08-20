@@ -224,8 +224,8 @@
         <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="180px" align="center">
           <template v-slot="{ row }">
-            <el-link v-if="row.policy.underwrite_url" type="primary" class="mr16" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
-            <el-link type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
+            <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
+            <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
           </template>
         </el-table-column>
       </el-table>
