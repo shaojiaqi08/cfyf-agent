@@ -409,7 +409,7 @@ export default {
         if (!salesList.length && tabIndex !== tabsData[0].name) {
           this.getSalesData()
         }
-        if (!salesTeamList.length && tabIndex !== tabsData[0].name) {
+        if (!salesTeamList.length && tabIndex !== tabsData[0].name && tabIndex !== tabsData[1].name) {
           this.getSalesTeamData()
         }
       }
