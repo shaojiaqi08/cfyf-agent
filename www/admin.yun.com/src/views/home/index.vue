@@ -114,7 +114,7 @@
       <div class="insurance-type" v-if="hasStatisticsAuth" v-loading="insuranceClassLoading">
         <div class="common-sector-header">
           <div class="header-left-wrap">
-            <span class="title"><span class="title-text">险种分析销售</span></span>
+            <span class="title"><span class="title-text">险种销售分析</span></span>
           </div>
           <div>
             <span style="color: #999999; font-size: 14px; margin-right: 15px">筛选</span>
