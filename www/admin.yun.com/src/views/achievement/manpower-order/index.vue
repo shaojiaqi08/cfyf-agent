@@ -17,6 +17,7 @@
       <div class="sb-container pt16">
         <!--全部销售-->
         <filter-shell
+            v-if="tabIndex !== tabsData[0].name"
             v-model="searchModel.sales_id"
             autoFocus
             class="mb16"
@@ -44,7 +45,7 @@
           >{{hasValue(searchModel.sales_id) ? '出单人：' +salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
         </filter-shell>
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange" v-if="tabIndex !== 'manpower-order-team'">
+        <filter-shell v-model="searchModel.sales_team_id" autoFocus class="mb16" @input="searchModelChange" v-if="tabIndex !== tabsData[1].name && tabIndex !== tabsData[0].name">
           <el-select
               class="block"
               v-model="searchModel.sales_team_id"
@@ -278,9 +279,9 @@ export default {
       list: [],
       tabIndex: '',
       tabsData: Object.freeze([
-        { label: '公司人核订单', name: 'manpower-order-company', permission: 'manpower-order-company' },
+        { label: '我的人核订单', name: 'manpower-order-sales', permission: 'manpower-order-sales'},
         { label: '团队人核订单', name: 'manpower-order-team', permission: 'manpower-order-team' },
-        { label: '我的人核订单', name: 'manpower-order-sales', permission: 'manpower-order-sales'}
+        { label: '公司人核订单', name: 'manpower-order-company', permission: 'manpower-order-company' }
       ]),
       page: 1,
       page_size: 20,
