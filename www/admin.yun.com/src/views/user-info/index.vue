@@ -42,11 +42,39 @@
           <div class="label">密码</div>
           <div class="value">
             <el-button type="text"
-                       style="margin-right: -12px;"
+                       style="margin-right: 0px;"
                        @click="changePassword">
               <i class="iconfont iconxiao16_bianji"></i>
               修改密码
             </el-button>
+          </div>
+        </div>
+        <div class="item work-info-item">
+          <div class="label">
+            工作昵称
+            <el-tooltip content="昵称用于发送给客户相关短信时的称呼" placement="top">
+              <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
+            </el-tooltip>
+          </div>
+          <div class="value">
+            <el-input placeholder="请输入工作昵称"></el-input>
+          </div>
+        </div>
+        <div class="item work-info-item">
+          <div class="label">
+            工作手机
+            <el-tooltip content="工作手机用于接收本平台各类提醒，同时，也用于发送给客户相关短信，以便客户回拨电话时，联系您" placement="top">
+              <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
+            </el-tooltip>
+          </div>
+          <div class="value">
+            <el-input placeholder="请输入工作手机"></el-input>
+          </div>
+        </div>
+        <div class="item work-info-item pb16">
+          <div class="label">工作微信</div>
+          <div class="value">
+            <el-input placeholder="请输入工作微信"></el-input>
           </div>
         </div>
       </div>
@@ -124,7 +152,6 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     width: 320px;
-    height: 452px;
     border: 1px solid rgba(230,230,230,1);
     border-radius: 4px;
     .header {
@@ -143,7 +170,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 14px;
+        padding: 16px;
         font-weight: bold;
         line-height: 1.45;
         .label {
@@ -159,6 +186,13 @@
             background: no-repeat;
             background-size: cover;
             overflow: hidden;
+          }
+        }
+        &.work-info-item {
+          padding: 0 16px 20px 16px;
+          .iconfont {
+            color: #1F78FF;
+            font-weight: normal;
           }
         }
       }

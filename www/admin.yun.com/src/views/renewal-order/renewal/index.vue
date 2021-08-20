@@ -843,6 +843,7 @@ export default {
         margin-left: 2px;
         color: #1F78FF;
         font-size: 16px;
+        line-height: 16px;
       }
     }
   }
