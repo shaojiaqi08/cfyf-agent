@@ -2,7 +2,7 @@
   <div class="home-page">
     <div class="page-container">
       <div class="banner" v-if="bannerList">
-        <el-carousel arrow="hover" trigger="click" ref="bannerWrap" :height="bannerHeight">
+        <el-carousel arrow="hover" trigger="click" ref="bannerWrap" :height="bannerHeight" :interval="5000">
           <el-carousel-item v-for="item in bannerList" :key="item.banner_no">
             <img :src="item.banner_pic_url" :alt="item.title" class="banner-img" @click="bannerHandle(item)">
           </el-carousel-item>
