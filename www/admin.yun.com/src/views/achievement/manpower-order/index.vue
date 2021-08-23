@@ -318,12 +318,12 @@ export default {
       manpowerResult: [],
       tableMaxHeight: null,
       actionMap: Object.freeze({
-        cancel: { label: '审核不通过', color: 'red'},
-        refuse: { label: '拒保', color: 'red'},
-        waiting_reply: { label: '问题下发', color: 'green'},
-        waiting_confirm_except: { label: '除责下发', color: 'blue'},
-        pass: { label: '审核通过', color: 'blue' },
-        overtime: { label: '超时', color: 'grey'}
+        cancel: { label: '审核不通过', color: '#FF4C4C'},
+        refuse: { label: '拒保', color: '#FF4C4C'},
+        waiting_reply: { label: '问题下发', color: '#09ba08'},
+        waiting_confirm_except: { label: '除责下发', color: '#4497eb'},
+        pass: { label: '审核通过', color: '#4497eb' },
+        overtime: { label: '超时', color: '#999999'}
       })
     };
   },
