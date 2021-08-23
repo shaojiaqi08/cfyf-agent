@@ -207,11 +207,12 @@
         <el-table-column>
           <template #header>
             <span
+              class="action-block"
               style="display: inline-flex"
               v-for="(actions, color) in actionGroup"
               :key="color">
-              <span class="block" :style="{ 'background-color': color}"></span>
-              <span v-for="(item, index) in actions" :key="index">{{item.label}}</span>
+              <span class="color-block" :style="{ 'background-color': color}"></span>
+              <span v-for="(item, index) in actions" :key="index">{{item.label + (index !== actions.length - 1 ? '、' : '')}}</span>
             </span>
           </template>
           <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
@@ -519,6 +520,18 @@ export default {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+    }
+
+    ::v-deep .action-block {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 20px;
+      & > .color-block {
+        display: block;
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
       }
     }
   }
