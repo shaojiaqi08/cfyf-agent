@@ -167,7 +167,7 @@
       font-weight: 400;
       color: #333333;
       margin-bottom: 16px;
-      white-space: pre;
+      white-space: pre-wrap;
     }
 
     .announcement-img-container{
