@@ -205,6 +205,7 @@
           color:#979797;
         }
         span{
+          text-align: left;
           color:#333;
         }
       }
