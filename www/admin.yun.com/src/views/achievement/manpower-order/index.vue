@@ -241,6 +241,32 @@
               <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
             </template>
           </el-table-column>
+          <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
+          <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
+          <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
+          <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
+          <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
+          <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
+          <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
+          <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
+          <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
+          <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
+            <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+          </el-table-column>
+          <el-table-column label="更新时间" prop="last_update_time" width="180px" align="center">
+            <template v-slot="{ row }">{{row.last_update_time ? formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+          </el-table-column>
+          <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
+            <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+          </el-table-column>
+          <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
+          <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
+          <el-table-column label="操作" fixed="right" width="180px" align="center">
+            <template v-slot="{ row }">
+              <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
+              <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
     </div>
