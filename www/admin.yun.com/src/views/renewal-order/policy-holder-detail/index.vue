@@ -66,17 +66,21 @@
     </div>
     <div class="right-content">
       <div class="follow-head">
-        <el-tooltip content="复星联合康乐一生重大疾病保超长…" placement="top">
-          <span class="order-name">复星联合康乐一生重大疾病保超长…</span>
+        <el-tooltip :content="curRenewalDetail.product_name" placement="top">
+          <span class="order-name">{{curRenewalDetail.product_name}}</span>
         </el-tooltip>
         <el-dropdown>
           <span class="el-dropdown-link">
-            本次续保<i class="el-icon-arrow-down el-icon--right"></i>
+            {{curRenewalDetail.label}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>a</el-dropdown-item>
-            <el-dropdown-item>b</el-dropdown-item>
-          </el-dropdown-menu>
+            <el-dropdown-item
+              :disabled="readonly"
+              v-for="item in renewalOptions"
+              :command="item.value"
+              :key="item.value"
+              :class="{ 'renewal-dropdown-active': item.value === curRenewalId }">{{ item.label }}</el-dropdown-item>
+            </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div class="step-wrap">
@@ -89,60 +93,39 @@
           <span>{{item.label}}</span>
         </div>
       </div>
-      <div class="year-wrap">2021</div>
+      <div class="year-wrap">{{ currentYear }}</div>
       <el-scrollbar class="scrollbar">
-        <div class="list-item active">
+        <div
+          v-for="(item, index) in detail.follow_logs"
+          :key="index"
+          class="list-item active"
+          :class="{ active: isToday(item.follow_at) }">
           <div class="date-wrap">
-            <span>08-08</span><br><span>09:33</span>
+            <span>{{isToday(item.follow_at * 1000) ? '今天' : formatDate(item.follow_at * 1000, 'yyyy-MM')}}</span><br><span>{{formatDate(item.follow_at * 1000, 'hh:mm')}}</span>
           </div>
           <div class="content-wrap">
             <span class="title-wrap">
               <i class="status-dot"></i>
-              <el-avatar>
-              </el-avatar>
-              <span class="name-span">系统触发短信</span>
-            </span>
-            <div class="msg-wrap">
-              <p>手工发送短信</p>
-              <span>短信内容，超长换行超长换行超长换行超长换行超长换行</span>
-            </div>
-          </div>
-        </div>
-        <div class="list-item">
-          <div class="date-wrap">
-            <span>08-08</span><br><span>09:33</span>
-          </div>
-          <div class="content-wrap">
-            <span class="title-wrap">
-              <i class="status-dot"></i>
-              <el-avatar>
-              </el-avatar>
-              <span class="name-span">系统触发短信</span>
-            </span>
-            <div class="msg-wrap">
-              <p>手工发送短信</p>
-              <span>短信内容，超长换行超长换行超长换行超长换行超长换行</span>
-            </div>
-          </div>
-        </div>
-        <div class="list-item completed">
-          <div class="date-wrap">
-            <span>08-08</span><br><span>09:33</span>
-          </div>
-          <div class="content-wrap">
-            <span class="title-wrap">
-              <i class="iconfont icona-zhong20_duigou_xuanzhong"></i>
-              <el-avatar></el-avatar>
-              <span class="name-span" :class="{ 'name-txt-overflow': true }" title="销售1">销售1</span>
-              <span class="action-span">将跟踪状态标记为</span>
-              <span class="status-block">
-                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>未跟踪
+              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus" :src="item.cs_admin_avatar_url"></el-avatar>
+              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.cs_admin_name}}</span>
+              <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span>
+              <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
+              <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
+              <span
+                class="status-block"
+                :class="[item.renewal_status]"
+                v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
+                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>{{messageStatus[item.renewal_status].label}}
               </span>
             </span>
+            <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
+              <p>{{item.title}}</p>
+              <span>{{item.remark}}</span>
+            </div>
           </div>
         </div>
       </el-scrollbar>
-      <div class="follow-footer">
+      <div class="follow-footer" v-if="!readonly">
         <div>
           跟踪标题
           <el-input size="mini" placeholder="必填"></el-input>
@@ -175,27 +158,75 @@
 
 <script>
 // 投保人详情
+import { formatDate } from '@/utils/formatTime'
 export default {
   name: 'PolicyHolderDetail',
   data() {
     return {
+      readonly: false,
       loading: false,
       followLoading: false,
       sending: false,
-      step: 'no_follow',
+      currentYear: new Date().getFullYear(),
+      step: 'not_follow',
       stepData: Object.freeze([
-        { label: '未跟踪', value: 'no_follow'},
-        { label: '跟踪中', value: 'following'},
-        { label: '未联系上', value: 'no_link'},
-        { label: '放弃续保', value: 'give_up_renewal'},
-        { label: '其他', value: 'other'}
+        { label: '未跟踪', value: 'not_follow' },
+        { label: '跟踪中', value: 'already_follow' },
+        { label: '未联系上', value: 'cannot_get_in_touch' },
+        { label: '放弃续保', value: 'refuse_renewal' },
+        { label: '其他', value: 'other' }
       ]),
-      list: [{}]
+      list: [{}],
+      curRenewalId: null,
+      detail: {
+        follow_logs: []
+      },
+      row: {},
+      messageTypes: {
+        // 客服跟进
+        following: 'following',
+        // 客户修改跟进状态
+        modifyFollowStatus: 'modify_follow_status',
+        // 系统发送续期短信
+        systemSendCustomerMessage: 'system_send_customer_message',
+        // 系统修改跟进状态
+        systemModifyFollowStatus: 'system_modify_follow_status'
+      },
+      messageStatus: {
+        not_follow: '未跟踪',
+        already_follow: '已跟踪',
+        cannot_get_in_touch: '未联系上',
+        refuse_renewal: '放弃续保',
+        already_renewal: '已续保',
+        other: '其他'
+      }
+    }
+  },
+  computed: {
+    renewalOptions() {
+      let { stage_list } = this.detail
+      const { id } = this.row.current_renewal_stage
+      stage_list = stage_list || []
+      return stage_list.map(item => ({
+        label: item.id === +id ? '本次续保' : `第${item.stage - 1}次续保`,
+        value: item.id,
+        stage: item.stage,
+        follow_status: item.follow_status,
+        product_name: item.policy.product_name,
+        is_current: item.id === +id
+      }))
+    },
+    curRenewalDetail() {
+      return this.renewalOptions.find(i => i.value === this.curRenewalId) || {}
     }
   },
   methods: {
+    formatDate,
     send() {
 
+    },
+    isToday(timestamp) {
+      return new Date(timestamp).toLocaleDateString() === new Date().toLocaleDateString()
     }
   }
 }
@@ -399,6 +430,16 @@ export default {
                 color: #999;
                 margin-right: 4px;
               }
+              &.cannot_get_in_touch, &.refuse_renewal {
+                color: #ff5151;
+                background: #ffeded;
+                border: 1px solid rgba(255, 81, 81, 0.1);
+              }
+              &.already_renewal {
+                color: #4497eb;
+                background: #ecf4fd;
+                border: 1px solid #daeafb;
+              }
             }
           }
           .msg-wrap {
@@ -509,5 +550,11 @@ export default {
   ::v-deep .el-table__empty-block{
     width: 100% !important;
   }
+}
+</style>
+<style lang="scss">
+.renewal-dropdown-active {
+  background-color: rgba(31,120,255,.1) !important;
+  color: #1f78ff !important;
 }
 </style>

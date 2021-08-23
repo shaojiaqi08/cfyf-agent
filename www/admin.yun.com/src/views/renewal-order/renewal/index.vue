@@ -305,30 +305,13 @@
           v-loading="tableLoading"
           ref="table"
       >
-        <el-table-column
-            label="B端公司"
-            prop="sales_team_name"
-            align="center"
-            width="150px"
-            fixed="left"
-        ></el-table-column>
-        <el-table-column
-            label="出单人"
-            prop="sales_real_name"
-            align="center"
-            width="150px"
-            fixed="left"
-        ></el-table-column>
+        <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
+        <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="应续日期" prop="proposal_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="宽限日期" prop="policy_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column
-            label="投保人"
-            prop="policy_holder_basic_info_str"
-            width="180px"
-            align="center"
-        ></el-table-column>
+        <el-table-column label="投保人" prop="policy_holder_basic_info_str" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="recognizee_basic_info" width="180px" align="center">
           <template slot-scope="{row}">
             <div
@@ -359,7 +342,7 @@
               class="mr8">跟踪</el-link>
             <el-link
               type="primary"
-              @click="showInfoDialog(row)"
+              @click="copyLink(row)"
               class="mr8">复制链接</el-link>
             <el-link
               type="primary"
@@ -477,6 +460,7 @@ export default {
       this.getCompanyPolicyList()
       this.getCompanyPolicyStatistics()
     },
+    copyLink() {},
     policyExport() {
       const url = `${exportCompanyPolicy}?${qs.stringify({
         ...this.searchModelFormat(true),

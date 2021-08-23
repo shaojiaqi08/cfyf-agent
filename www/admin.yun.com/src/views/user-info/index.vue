@@ -56,8 +56,15 @@
               <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
             </el-tooltip>
           </div>
-          <div class="value">
-            <el-input placeholder="请输入工作昵称"></el-input>
+          <div class="value editable">
+            <template v-if="editingFields.includes('nickname')">
+              <el-input placeholder="请输入工作昵称" size="small"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('nickname')"></i>
+            </template>
+            <template v-else>
+              <span>-</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('nickname')"></i>
+            </template>
           </div>
         </div>
         <div class="item work-info-item">
@@ -67,14 +74,28 @@
               <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
             </el-tooltip>
           </div>
-          <div class="value">
-            <el-input placeholder="请输入工作手机"></el-input>
+          <div class="value editable">
+            <template v-if="editingFields.includes('mobile')">
+              <el-input placeholder="请输入工作手机" size="small"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('mobile')"></i>
+            </template>
+            <template v-else>
+              <span>-</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('mobile')"></i>
+            </template>
           </div>
         </div>
         <div class="item work-info-item pb16">
           <div class="label">工作微信</div>
-          <div class="value">
-            <el-input placeholder="请输入工作微信"></el-input>
+          <div class="value editable">
+            <template v-if="editingFields.includes('wechat')">
+              <el-input placeholder="请输入工作微信" size="small"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('wechat')"></i>
+            </template>
+            <template v-else>
+              <span>-</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('wechat')"></i>
+            </template>
           </div>
         </div>
       </div>
@@ -94,7 +115,8 @@
     data() {
       return {
         isModiifyPasswordShow: false,
-        loading: false
+        loading: false,
+        editingFields: []
       }
     },
     computed: {
@@ -105,6 +127,9 @@
     },
     methods: {
       ...mapActions('users', ['updateUserInfo']),
+      submitInfo(key) {
+        this.editingFields = this.editingFields.filter(i => i !== key)
+      },
       changePassword() {
         this.isModiifyPasswordShow = true
       },
@@ -178,6 +203,16 @@
         }
         .value {
           color: #1A1A1A;
+          width: 200px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          & > span, & > el-input {
+            flex: 1;
+          }
+          .iconfont {
+            cursor: pointer;
+          }
           .avatar {
             width: 40px;
             height: 40px;
@@ -186,6 +221,9 @@
             background: no-repeat;
             background-size: cover;
             overflow: hidden;
+          }
+          &.editable {
+            height: 32px;
           }
         }
         &.work-info-item {

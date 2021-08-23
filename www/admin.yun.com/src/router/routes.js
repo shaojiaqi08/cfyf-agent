@@ -400,7 +400,7 @@ export const routers = [
   },
   {
     label: '续保续期',
-    icon: 'iconcebiandaohang20_yonghuguanli1',
+    icon: 'icona-cebiandaohang20_xubaoxuqi',
     children: [
       {
         path: '/renewal-order',
