@@ -395,9 +395,9 @@ export const routers = [
         name: 'RenewalOrderTrace',
         meta: {
           title: '跟踪续保续期详情',
-          header: true,
-          menu: true,
-          show: true,
+          header: false,
+          menu: false,
+          show: false,
           permission: '/sale'
         },
         component: getView('renewal-order/policy-holder-detail')
@@ -407,9 +407,9 @@ export const routers = [
         name: 'RenewalOrderView',
         meta: {
           title: '查看续保续期详情',
-          header: true,
-          menu: true,
-          show: true,
+          header: false,
+          menu: false,
+          show: false,
           permission: '/sale'
         },
         component: getView('renewal-order/policy-holder-detail')

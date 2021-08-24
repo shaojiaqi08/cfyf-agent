@@ -464,13 +464,12 @@ export default {
           `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`,
           'get',
           true
-      )
-          .then(() => {
-            // this.$message.success('导出成功')
-          })
-          .finally(() => {
-            this.exporting = false
-          })
+      ).then(() => {
+        // this.$message.success('导出成功')
+      })
+      .finally(() => {
+        this.exporting = false
+      })
     },
     dateSelect(date) {
       const start = dateStr2Timestamp(date.start)
