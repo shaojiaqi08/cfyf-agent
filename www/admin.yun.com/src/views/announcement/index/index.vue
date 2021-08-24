@@ -73,9 +73,9 @@
     data () {
       return {
         tabData: [
-          {name: 'new-lines', label: '新品上新', permission: '/home_page/manage', dot: 'new_lines_quantity'},
-          {name: 'regulate', label: '商品调整', permission: '/home_page/manage', dot: 'regulate_quantity'},
-          {name: 'announcement', label: '平台公告', permission: '/home_page/manage', dot: 'announcement_quantity'}
+          {name: 'new-lines', label: '新品上新', permission: '/rate/service_rate', dot: 'new_lines_quantity'},
+          {name: 'regulate', label: '商品调整', permission: '/rate/commission_management', dot: 'regulate_quantity'},
+          {name: 'announcement', label: '平台公告', permission: '/insure-goods/new_product_notice', dot: 'announcement_quantity'}
         ],
         readMap: Object.freeze([
           {label: '已读', value: 'read'},
