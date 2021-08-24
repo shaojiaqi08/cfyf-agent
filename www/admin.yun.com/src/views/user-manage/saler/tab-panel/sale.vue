@@ -148,6 +148,7 @@
                     <el-table-column label="姓名" prop="real_name" width="150px" align="center"></el-table-column>
                     <el-table-column label="账号" prop="username" width="150px" align="center"></el-table-column>
                     <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
+                    <el-table-column label="系统工号" prop="interior_job_no" width="200px" align="center"></el-table-column>
                     <el-table-column label="职位" prop="sales_position.name" width="150px" align="center"></el-table-column>
                     <el-table-column label="所属团队" prop="team.name" width="150px" align="center"></el-table-column>
                     <el-table-column label="新增时间" width="150px" prop="join_date" align="center">
@@ -213,7 +214,8 @@
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
-                            <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
+                          <el-table-column label="系统工号" prop="interior_job_no" width="200px" align="center"></el-table-column>
+                          <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
                             <el-table-column label="新增时间" prop="join_date" align="center">
                                 <template v-slot="{row}">
@@ -242,6 +244,7 @@
                             <el-table-column label="姓名" prop="real_name" align="center"></el-table-column>
                             <el-table-column label="账号" prop="username" align="center"></el-table-column>
                             <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                            <el-table-column label="系统工号" prop="interior_job_no" width="200px" align="center"></el-table-column>
                             <el-table-column label="职位" prop="sales_position.name" align="center"></el-table-column>
                             <el-table-column label="所属团队" prop="team.name" align="center"></el-table-column>
                             <el-table-column label="新增时间" prop="join_date" align="center">
