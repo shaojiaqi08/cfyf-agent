@@ -4,6 +4,7 @@
             v-for="(item, index) in filterData"
             :key="index"
             :name="item.name"
+            :disabled="disabled || item.disabled"
             :label="item.label">
             <span slot="label">
                 <span>{{item.label}}</span>
@@ -36,7 +37,8 @@
                 default: () => [],
                 required: true
             },
-            value: String
+            value: String,
+            disabled: Boolean
         },
         methods: {
             checkIsShowDot(dots) {

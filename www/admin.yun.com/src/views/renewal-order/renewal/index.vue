@@ -1,7 +1,7 @@
 <template>
   <div class="renewal-container page-container">
     <div class="header">
-      <common-tabs-header :data="tabsData" v-model="tabIndex"></common-tabs-header>
+      <common-tabs-header :data="tabsData" v-model="tabIndex" @tab-click="tabChange" :disabled="tableLoading"></common-tabs-header>
       <el-input
           v-model="searchModel.keyword"
           placeholder="搜索单号或投被保人信息"
@@ -13,7 +13,7 @@
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
       </el-input>
     </div>
-    <div class="scroll-box p16" ref="content">
+    <div class="scroll-box p16" ref="content" v-loading="loading">
       <div>
         <!--应续日期-->
         <filter-shell
@@ -54,9 +54,8 @@
         <!--出单人-->
         <filter-shell
             v-model="searchModel.sales_id"
-            autofocus
+            autoFocus
             class="mb16"
-            placeholder="全部出单人"
             @input="searchModelChange"
         >
           <el-select
@@ -83,7 +82,7 @@
         <!--保险产品-->
         <filter-shell
             v-model="searchModel.products"
-            autofocus
+            autoFocus
             class="mb16"
             @input="searchModelChange"
         >
@@ -111,7 +110,7 @@
         <!--保险公司-->
         <filter-shell
             v-model="searchModel.supplier_id"
-            autofocus
+            autoFocus
             class="mb16"
             @input="searchModelChange"
         >
@@ -139,7 +138,7 @@
         <!--B端公司-->
         <filter-shell
             v-model="searchModel.supplier_id"
-            autofocus
+            autoFocus
             class="mb16"
             @input="searchModelChange"
         >
@@ -165,7 +164,11 @@
         </filter-shell>
 
         <!--全部团队-->
-        <filter-shell v-model="searchModel.sales_team_id" class="mb16" @input="searchModelChange">
+        <filter-shell
+          autoFocus
+          v-model="searchModel.sales_team_id"
+          class="mb16"
+          @input="searchModelChange">
           <el-select
               class="block"
               v-model="searchModel.sales_team_id"
@@ -225,19 +228,7 @@
       </div>
       <div class="flex-between" style="align-items: flex-end;">
         <div class="data-row" ref="dataRow">
-          <el-button
-              class="left"
-              icon="el-icon-arrow-left"
-              circle
-              plain
-              v-if="scrol2Lvisible"
-              @click="scrollTo(0)"
-          ></el-button>
-          <div
-              class="scroll-wrap"
-              :style="{transform: `translateX(${scrollTranslateX}px)`}"
-              v-loading="statisticLoading"
-          >
+          <div class="scroll-wrap">
             <div class="item-block">
               <div>
                 长险应续保费(元)
@@ -277,14 +268,6 @@
               </div>
             </div>
           </div>
-          <el-button
-              class="right"
-              icon="el-icon-arrow-right"
-              circle
-              plain
-              v-if="scrol2Rvisible"
-              @click="scrollTo(1)"
-          ></el-button>
         </div>
         <el-button
             size="small"
@@ -302,7 +285,6 @@
           v-table-infinite-scroll="scroll2Bottom"
           border
           stripe
-          v-loading="tableLoading"
           ref="table"
       >
         <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
@@ -338,7 +320,7 @@
           <template slot-scope="{row}">
             <el-link
               type="primary"
-              @click="showInfoDialog(row)"
+              @click="trace(row)"
               class="mr8">跟踪</el-link>
             <el-link
               type="primary"
@@ -346,50 +328,62 @@
               class="mr8">复制链接</el-link>
             <el-link
               type="primary"
-              @click="showInfoDialog(row)"
+              @click="showQrCode(row)"
               class="mr8">链接二维码</el-link>
             <el-link
               type="primary"
-              @click="showInfoDialog(row)"
+              @click="showSendLetter(row)"
               class="mr8">发送短信</el-link>
             <el-link
               type="primary"
-              @click="showInfoDialog(row)"
+              @click="trace(row, true)"
               class="mr8">查看</el-link>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <qr-code-dialog
+      :visible.sync="qrCodeDialogVisible"
+      :src="qrCodeSrc"></qr-code-dialog>
+    <letter-dialog
+      :visible.sync="letterDialogVisible"
+      :data="detailObj"></letter-dialog>
   </div>
 </template>
 <script>
 import {
-  getCompanyPolicyList,
-  getCompanyPolicyStatistics,
   getSalesData,
   getSalesTeamData,
   getDateRange,
   exportCompanyPolicy,
 } from '@/apis/modules/achievement'
+import { getRenewalList } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
 import qs from 'qs'
-import { policyStatusArray, insuranceTypeArray,manualReview } from '@/enums/common'
-import { visitStatus, visitStatusArray } from '@/enums/achievement'
 import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import CommonTabsHeader from '@/components/common-tabs-header'
+import QrCodeDialog from './dialog/qrcode-dialog'
+import LetterDialog from './dialog/letter-dialog'
 // 续保续期订单
 export default {
   name: 'renewal-order',
   components: {
     FilterShell,
     textHiddenEllipsis,
-    CommonTabsHeader
+    CommonTabsHeader,
+    QrCodeDialog,
+    LetterDialog
   },
   data() {
     return {
+      qrCodeDialogVisible: false,
+      qrCodeSrc: '',
+      letterDialogVisible: false,
+      detailObj: null,
+      loading: false,
       tabIndex: 'all',
       formatDate,
       filterValue: false,
@@ -399,12 +393,6 @@ export default {
       page: 1,
       page_size: 20,
       total: 0,
-      rankKeywords: '',
-      statisticsKeywords: '',
-      policyStatusArray,manualReview,
-      insuranceTypeArray,
-      visitStatus,
-      visitStatusArray,
       productList: [],
       salesList: [],
       salesTeamList: [],
@@ -412,12 +400,9 @@ export default {
       companyList: [],
       dateRange: [],
       statisticInfo: {},
-      tableLoading: true,
-      statisticLoading: true,
-      scrol2Lvisible: false,
-      scrol2Rvisible: false,
+      tableLoading: false,
+      statisticLoading: false,
       exporting: false,
-      scrollTranslateX: 0,
       tabsData: Object.freeze([
         { label: '全部续保续期', name: 'all' },
         { label: '短险续保', name: 'rank' },
@@ -428,39 +413,47 @@ export default {
         policy_status: [],
         products: [],
         supplier_id: [],
-        product_insurance_class: [],
         date_range: [+new Date(), +new Date()],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: '0',
-        visit_status: [],
-        manpower_underwriting_status: ''
+        include_child_team: '0'
       },
-      tableMaxHeight: null,
+      tableMaxHeight: null
     }
   },
   methods: {
     formatYYMMDD,
+    showQrCode({ src }) {
+      this.qrCodeSrc = src
+      this.qrCodeDialogVisible = true
+    },
+    showSendLetter(obj) {
+      this.detailObj = obj
+      this.letterDialogVisible = true
+    },
+    // 跟踪
+    trace({ id }, isView) {
+      window.open(this.$router.resolve({
+        name: isView ? 'RenewalOrderView' : 'RenewalOrderTrace',
+        params: { id }
+      }).href)
+    },
     tabChange() {
       Object.assign(this.searchModel, {
         keyword: '',
         policy_status: [],
         products: [],
         supplier_id: [],
-        product_insurance_class: [],
         date_range: [+new Date(), +new Date()],
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0',
       })
-      this.rankKeywords = ''
-      this.statisticsKeywords = ''
-      this.tableLoading = true
-      this.statisticLoading = true
-      this.getCompanyPolicyList()
-      this.getCompanyPolicyStatistics()
+      this.getData()
     },
-    copyLink() {},
+    copyLink({ src }) {
+      this.$copyText(src).then(() => this.$message.success('链接已复制到粘贴板'))
+    },
     policyExport() {
       const url = `${exportCompanyPolicy}?${qs.stringify({
         ...this.searchModelFormat(true),
@@ -497,12 +490,7 @@ export default {
       if (page * page_size < total) {
         this.tableLoading = true
         this.page += 1
-        this.getCompanyPolicyList()
-        this.getCompanyPolicyStatistics()
       }
-    },
-    filterListConfirm() {
-      this.searchModelChange()
     },
     searchModelChange() {
       const func = debounce(() => {
@@ -515,8 +503,7 @@ export default {
         this.$refs.table.$el
             .querySelector('.el-table__body-wrapper')
             .scrollTo(0, 0)
-        this.getCompanyPolicyList()
-        this.getCompanyPolicyStatistics()
+        this.getData()
       }, 300)
       func()
       this.searchModelChange = func
@@ -532,10 +519,6 @@ export default {
       // )
       // window.open(routeUrl.href, '_blank')
       // this.$router.push({ path: `/achievement-company/detail/${row.id}` })
-    },
-    showBelongDialog(row) {
-      this.belongData = row
-      this.belongVisible = true
     },
     searchModelFormat() {
       const model = { ...this.searchModel }
@@ -556,33 +539,14 @@ export default {
       delete model.date_range
       return model
     },
-    getCompanyPolicyList() {
-      const { page, page_size, list } = this
-      getCompanyPolicyList({ ...this.searchModelFormat(), page, page_size })
-          .then((res) => {
-            this.tableLoading = false
-            this.list = this.page === 1 ? res.data : [...list, ...res.data]
-            this.total = res.total
-          })
-          .catch(() => {
-            this.page = Math.max(1, page - 1)
-            if (this.page === 1) {
-              this.list = []
-              this.total = 0
-            }
-            this.tableLoading = false
-          })
-    },
-    getCompanyPolicyStatistics() {
-      getCompanyPolicyStatistics(this.searchModelFormat())
-          .then((res) => {
-            this.statisticInfo = res
-            this.statisticLoading = false
-          })
-          .catch((err) => {
-            console.log(err)
-            this.statisticLoading = false
-          })
+    getData() {
+      this.tableLoading = true
+      getRenewalList(this.searchModelFormat()).then(res => {
+        this.total = res.total
+        this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+      }).finally(() => {
+        this.tableLoading = false
+      })
     },
     getSalesData() {
       getSalesData()
@@ -626,8 +590,7 @@ export default {
     }, 300)
   },
   created() {
-    this.getCompanyPolicyList()
-    this.getCompanyPolicyStatistics()
+    this.getData()
     this.getSalesData()
     this.getDateRange()
     this.getSalesTeamData()

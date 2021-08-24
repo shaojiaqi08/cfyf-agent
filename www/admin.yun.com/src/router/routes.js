@@ -415,6 +415,30 @@ export const routers = [
         component: getView('renewal-order/renewal')
       },
       {
+        path: '/renewal-order-trace/:id',
+        name: 'RenewalOrderTrace',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/:id',
+        name: 'RenewalOrderView',
+        meta: {
+          title: '查看续保续期详情',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
         path: '/renewal-notify',
         name: 'RenewalNotify',
         meta: {
