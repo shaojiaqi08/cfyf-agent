@@ -27,7 +27,7 @@ Vue.prototype.$checkAuth = function(keys) {
   keys = [keys].flat()
   // 已读取过的权限
   const reads = this.$store.state.users.readPermission
-  if (reads in reads) return reads[keys]
+  if (keys in reads) return reads[keys]
   let res = keys.some(i => permissions.includes(i))
   this.$store.dispatch('users/setReadPermission', [ keys, res ])
   return res
