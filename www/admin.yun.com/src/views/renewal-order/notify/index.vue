@@ -6,9 +6,11 @@
     <el-scrollbar class="content-body scrollbar" v-loading="loading">
       <el-switch
         class="mb16"
-        v-model="isAutoSend"
+        v-model="is_granted_send_msg"
         inactive-text="是否自动发送续保续期短信给客户（投保人）"
-        :active-text="isAutoSend ? '是' : '否'"
+        :inactive-value="0"
+        :active-value="1"
+        :active-text="is_granted_send_msg ? '是' : '否'"
       ></el-switch>
       <template v-if="isSales">
         <div class="sales-wrap">
@@ -26,7 +28,7 @@
             </el-tooltip>
             <b>138000138000</b>
             <el-tooltip content="去修改个人信息" placement="top" :open-delay="1000">
-              <i class="ml4 iconfont iconxiao16_bianji" style="cursor: pointer;"></i>
+              <i class="ml4 iconfont iconxiao16_bianji" style="cursor: pointer;" @click="toInfo"></i>
             </el-tooltip>
           </div>
         </div>
@@ -39,9 +41,11 @@
       <el-switch
           v-if="!isSales"
           class="mb16"
-          v-model="isAuth"
+          v-model="is_granted_follow"
           inactive-text="是否授权创富云服协助跟进续保续期"
-          :active-text="isAuth ? '是' : '否'"
+          :inactive-value="0"
+          :active-value="1"
+          :active-text="is_granted_follow ? '是' : '否'"
       ></el-switch>
       <el-button
         type="primary"
@@ -56,6 +60,8 @@
 </template>
 
 <script>
+import { getAdminNotifySetting, setAminNotifySetting, getSalesNotifySetting, setSalesNotifySetting } from '@/apis/modules/renewal-order'
+import { mapState } from 'vuex'
 export default {
   name: 'RenewalNotify',
   data() {
@@ -65,22 +71,49 @@ export default {
       isAutoSend: false,
       isAuth: false,
       dialogVisible: false,
-      formModel: {
-        name: '',
-        mobile: ''
-      },
+      is_granted_send_msg: '',
+      is_granted_follow: '',
       rules: {
         name: { required: true, message: '' }
       }
     }
   },
   computed: {
+    ...mapState('users', ['userInfo']),
     isSales() {
-      return true
+      return this.userInfo.role === 'sales'
+    },
+    getDataFunc() {
+      return this.isSales ? getSalesNotifySetting : getAdminNotifySetting
+    },
+    submitFunc() {
+      return this.isSales ? setSalesNotifySetting : setAminNotifySetting
     }
   },
   methods: {
-    save() {}
+    getData() {
+      this.loading = true
+      this.getDataFunc().then(res => {
+        this.is_granted_send_msg = this.isSales ? res.is_company_granted_send_msg : res.is_granted_send_msg
+        this.is_granted_follow = this.isSales ? res.is_company_granted_follow : res.is_granted_follow
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    save() {
+      this.submitting = true
+      const params = { is_granted_send_msg: this.is_granted_send_msg }
+      if (!this.isSales) {
+        params.is_granted_follow = this.is_granted_follow
+      }
+      this.submitFunc(params).then(() => this.$message.success('保存成功!')).finally(() => { this.submitting = false })
+    },
+    toInfo() {
+      this.$router.push({name: 'userInfo'})
+    }
+  },
+  created() {
+    this.getData()
   }
 }
 </script>

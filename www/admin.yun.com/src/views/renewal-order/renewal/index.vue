@@ -1,7 +1,7 @@
 <template>
   <div class="renewal-container page-container">
     <div class="header">
-      <common-tabs-header :data="tabsData" v-model="tabIndex" @tab-click="tabChange" :disabled="tableLoading"></common-tabs-header>
+      <common-tabs-header :data="tabsData" v-model="searchModel.product_insurance_duration_type" @tab-click="tabChange" :disabled="loading"></common-tabs-header>
       <el-input
           v-model="searchModel.keyword"
           placeholder="搜索单号或投被保人信息"
@@ -205,24 +205,24 @@
         <div>
           <span>续保状态</span>
           <i class="iconfont iconxiao16_gengduoxinxi"></i>
-          <el-checkbox-group v-model="page">
-            <el-checkbox label="待续保"></el-checkbox>
-            <el-checkbox label="续保失败"></el-checkbox>
-            <el-checkbox label="已续保"></el-checkbox>
-            <el-checkbox label="无需续保"></el-checkbox>
+          <el-checkbox-group v-model="searchModel.renewal_status" @change="searchModelChange">
+            <el-checkbox
+              size="small"
+              v-for="item in renewalStatusOptions"
+              :label="item.value"
+              :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </div>
         <div>
           <span>跟踪状态</span>
           <i class="iconfont iconxiao16_gengduoxinxi"></i>
-          <el-checkbox-group v-model="page">
-            <el-checkbox label="全部"></el-checkbox>
-            <el-checkbox label="未跟踪"></el-checkbox>
-            <el-checkbox label="已跟踪"></el-checkbox>
-            <el-checkbox label="未联系上"></el-checkbox>
-            <el-checkbox label="放弃续保"></el-checkbox>
-            <el-checkbox label="已续保"></el-checkbox>
-            <el-checkbox label="其他"></el-checkbox>
+          <el-checkbox class="mr30" label="全部" v-model="isCheckAll" @change="handleCheckAll"></el-checkbox>
+          <el-checkbox-group v-model="searchModel.follow_status" @change="handleCheckFollow">
+            <el-checkbox size="small"
+               v-for="item in followStatusOptions"
+               :type="item.value === searchModel.follow_status ? 'primary' : 'default'"
+               :label="item.value"
+               :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
@@ -287,35 +287,46 @@
           stripe
           ref="table"
       >
-        <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
-        <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
-        <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="应续日期" prop="proposal_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="宽限日期" prop="policy_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="投保人" prop="policy_holder_basic_info_str" width="180px" align="center"></el-table-column>
-        <el-table-column label="被保人" prop="recognizee_basic_info" width="180px" align="center">
-          <template slot-scope="{row}">
-            <div
-                v-for="(item, index) in row.recognizee_basic_info"
-                :key="index"
-            >{{ item.basic_info }}</div>
+        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
+        <el-table-column label="出单人" prop="policy.sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
+        <el-table-column label="保险公司" prop="policy.supplier_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="产品名称" prop="policy.product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="应续日期" prop="renewal_date_format" width="170px" align="center"></el-table-column>
+        <el-table-column label="宽限日期" prop="policy_at_str" width="170px" align="center">
+          <template v-slot="{ row }">
+            <div v-if="row.grace_start_at && row.grace_end_at">
+              {{ formatDate(row.grace_start_at * 1000, 'yyyyMMdd') }}
+              -
+              {{ formatDate(row.grace_end_at * 1000, 'yyyyMMdd') }}
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="应收保费" prop="actually_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="续收期间" prop="guarantee_quota_str" align="center"></el-table-column>
+        <el-table-column label="投保人" prop="policy.policy_holder_info.name" width="180px" align="center"></el-table-column>
+        <el-table-column label="被保人" prop="policy.policy_recognizee_policies" width="180px" align="center">
+          <template slot-scope="{row}">
+            {{
+              row.policy &&
+              row.policy.policy_recognizee_policies &&
+              row.policy.policy_recognizee_policies
+                  .map(item => item.name)
+                  .join()
+            }}
+          </template>
+        </el-table-column>
+        <el-table-column label="应收保费" prop="premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="续收期间" prop="renewal_date" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
-        <el-table-column label="投保人手机号" prop="order_no" align="center" width="210px"></el-table-column>
-        <el-table-column label="续保状态" prop="policy_status_str" align="center"></el-table-column>
-        <el-table-column label="续保链接" prop="visit_status_str" align="center">
+        <el-table-column label="投保人手机号" prop="policy.policy_holder_info.mobile" align="center" width="210px"></el-table-column>
+        <el-table-column label="续保状态" prop="renewal_status_name" align="center"></el-table-column>
+        <el-table-column label="续保链接" prop="renewal_link" align="center">
           <template v-slot="{ row }">
-            <text-hidden-ellipsis :popoverTip="'aaa' + row.link" width="248px"></text-hidden-ellipsis>
+            <text-hidden-ellipsis :popoverTip="row.renewal_link" width="248px" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
           </template>
         </el-table-column>
-        <el-table-column label="跟踪状态" prop="visit_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="最近跟踪人员" prop="over_hesitation_at_str" width="170px" align="center"></el-table-column>
-        <el-table-column label="最近跟踪记录" prop="is_hesitate_surrender_str" width="170px" align="center"></el-table-column>
+        <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
+        <el-table-column label="最近跟踪人员" prop="cs_admin_name" width="170px" align="center"></el-table-column>
+        <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
             <el-link
@@ -384,7 +395,6 @@ export default {
       letterDialogVisible: false,
       detailObj: null,
       loading: false,
-      tabIndex: 'all',
       formatDate,
       filterValue: false,
       belongVisible: false,
@@ -404,12 +414,15 @@ export default {
       statisticLoading: false,
       exporting: false,
       tabsData: Object.freeze([
-        { label: '全部续保续期', name: 'all' },
-        { label: '短险续保', name: 'rank' },
-        { label: '长期续保', name: 'statistics' }
+        { label: '全部续保续期', name: ' ' },
+        { label: '短险续保', name: '0' },
+        { label: '长期续保', name: '1' }
       ]),
       searchModel: {
+        product_insurance_duration_type: '',
         keyword: '',
+        renewal_status: [],
+        follow_status: [],
         policy_status: [],
         products: [],
         supplier_id: [],
@@ -418,11 +431,38 @@ export default {
         sales_team_id: [],
         include_child_team: '0'
       },
-      tableMaxHeight: null
+      tableMaxHeight: null,
+      followStatusOptions: Object.freeze([
+        { label: '未跟踪', value: 'not_follow' },
+        { label: '已跟踪', value: 'already_follow' },
+        { label: '未联系上', value: 'cannot_get_in_touch' },
+        { label: '放弃续保', value: 'refuse_renewal' },
+        { label: '已续保', value: 'already_renewal' },
+        { label: '其他', value: 'other' }
+      ]),
+      isCheckAll: false,
+      renewalStatusOptions: Object.freeze([
+        { label: '待续保', value: 'need_renewal' },
+        { label: '续期失败', value: 'renewal_failed' },
+        { label: '已续保', value: 'already_renewal' },
+        { label: '无需续保', value: 'not_need_renewal' },
+        { label: '不可续保', value: 'cannot_renewal' }
+      ])
     }
   },
   methods: {
     formatYYMMDD,
+    handleCheckAll(v) {
+      this.searchModel.follow_status = v ? this.followStatusOptions.map(i => i.value) : []
+      this.searchModelChange()
+    },
+    handleCheckFollow(v) {
+      this.isCheckAll = v.length === this.followStatusOptions.length
+      this.searchModelChange()
+    },
+    copyRenewalLink(link) {
+      this.$copyText(link).then(() => this.$message.success('续保链接已复制到粘贴板'))
+    },
     showQrCode({ src }) {
       this.qrCodeSrc = src
       this.qrCodeDialogVisible = true
@@ -522,13 +562,10 @@ export default {
     searchModelFormat() {
       const model = { ...this.searchModel }
       Object.keys(model).forEach((key) => {
-        const cur = model[key]
         if (key === 'date_range') {
           const [start, end] = model.date_range
-          model.proposal_at_start = start ? formatDate(start, 'yyyyMMdd') : ''
-          model.proposal_at_end = end ? formatDate(end, 'yyyyMMdd') : ''
-        } else if (Array.isArray(cur)) {
-          model[key] = model[key].join(',')
+          model.policy_renewal_date_start = start ? formatDate(start, 'yyyyMMdd') : ''
+          model.policy_renewal_date_end = end ? formatDate(end, 'yyyyMMdd') : ''
         }
       })
       // 没有选择团队删除包含子团队参数
@@ -539,12 +576,12 @@ export default {
       return model
     },
     getData() {
-      this.tableLoading = true
+      this.loading = true
       getRenewalList(this.searchModelFormat()).then(res => {
         this.total = res.total
         this.list = this.page === 1 ? res.data : this.list.concat(res.data)
       }).finally(() => {
-        this.tableLoading = false
+        this.loading = false
       })
     },
     getSalesData() {

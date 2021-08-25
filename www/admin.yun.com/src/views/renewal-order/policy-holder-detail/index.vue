@@ -159,6 +159,7 @@
 <script>
 // 投保人详情
 import { formatDate } from '@/utils/formatTime'
+import { getSalesDetail } from '@/apis/modules/renewal-order'
 export default {
   name: 'PolicyHolderDetail',
   data() {
@@ -181,7 +182,9 @@ export default {
       detail: {
         follow_logs: []
       },
-      row: {},
+      row: {
+        current_renewal_stage: {}
+      },
       messageTypes: {
         // 客服跟进
         following: 'following',
@@ -222,12 +225,21 @@ export default {
   },
   methods: {
     formatDate,
+    getData() {
+      getSalesDetail().then(res => {
+        console.log(res)
+        this.detail = res
+      })
+    },
     send() {
 
     },
     isToday(timestamp) {
       return new Date(timestamp).toLocaleDateString() === new Date().toLocaleDateString()
     }
+  },
+  created() {
+    this.getData()
   }
 }
 </script>

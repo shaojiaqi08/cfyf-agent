@@ -10,8 +10,8 @@
     </span>
     <template #footer>
       <el-button @click="handleClose" class="mr20">取消</el-button>
-      <el-button v-if="!isEdit" tyle="primary" @click="handleEnter">确认发送</el-button>
-      <el-button v-else tyle="primary" @click="handleEnter">修改昵称、手机</el-button>
+      <el-button v-if="!isEdit" type="primary" @click="handleEnter">确认发送</el-button>
+      <el-button v-else type="primary" @click="handleEnter">修改昵称、手机</el-button>
     </template>
   </el-dialog>
 </template>
@@ -32,7 +32,7 @@ export default {
       this.emit('handleSuccess')
     },
     handleClose() {
-      this.emit('update:visible', false)
+      this.$emit('update:visible', false)
     }
   }
 }
@@ -45,6 +45,7 @@ export default {
       font-size: 16px;
       color: #333;
       line-height: 16px;
+      margin-top: 0;
       margin-bottom: 16px;
     }
     .letter-content {
@@ -54,8 +55,8 @@ export default {
         color: #1F78FF;
       }
     }
-    ::v-deep .el-dialog__footer .el-button {
-      width: 114px;
-    }
+  }
+  ::v-deep .el-dialog__footer .el-button {
+    width: 114px;
   }
 </style>

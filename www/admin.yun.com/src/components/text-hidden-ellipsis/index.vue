@@ -3,6 +3,7 @@
     class="text-hidden-ellipsis-component"
     :style="{ width: computedWidth, maxWidth: computedMaxWidth }"
     ref="container"
+    v-on="$listeners"
   >
     <div
       :class="['text', hiddenEllipsis ? 'text-hidden-ellipsis' : '']"
