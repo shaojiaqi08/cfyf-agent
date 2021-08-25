@@ -195,6 +195,16 @@
           </template>
         </filter-shell>
       </div>
+      <div class="table-head">
+        <span
+          class="action-block"
+          style="display: inline-flex"
+          v-for="(actions, color) in actionGroup"
+          :key="color">
+            <span class="color-block" :style="{ 'background-color': color}"></span>
+            <span v-for="(item, index) in actions" :key="index">{{item.label + (index !== actions.length - 1 ? '、' : '')}}</span>
+          </span>
+      </div>
       <el-table
         :data="list"
         :max-height="tableMaxHeight"
@@ -204,69 +214,31 @@
         v-loading="loading"
         :row-style="rowStyleFormat"
         ref="table">
-        <el-table-column>
-          <template #header>
-            <span
-              class="action-block"
-              style="display: inline-flex"
-              v-for="(actions, color) in actionGroup"
-              :key="color">
-              <span class="color-block" :style="{ 'background-color': color}"></span>
-              <span v-for="(item, index) in actions" :key="index">{{item.label + (index !== actions.length - 1 ? '、' : '')}}</span>
-            </span>
+        <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
+        <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
+        <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
+        <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
+        <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
+        <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
+        <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
+          <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+        </el-table-column>
+        <el-table-column label="更新时间" prop="last_update_time" width="180px" align="center">
+          <template v-slot="{ row }">{{row.last_update_time ? formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+        </el-table-column>
+        <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
+          <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
+        </el-table-column>
+        <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
+        <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" width="180px" align="center">
+          <template v-slot="{ row }">
+            <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
+            <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
           </template>
-          <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
-          <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
-          <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
-          <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
-          <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
-          <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
-            <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="更新时间" prop="last_update_time" width="180px" align="center">
-            <template v-slot="{ row }">{{row.last_update_time ? formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
-            <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
-          <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
-          <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
-          <el-table-column label="操作" fixed="right" width="180px" align="center">
-            <template v-slot="{ row }">
-              <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
-              <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
-            </template>
-          </el-table-column>
-          <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
-          <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
-          <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
-          <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
-          <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
-          <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="人核进度" prop="action_str" width="180px" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="人核结论" prop="result_str" width="180px" align="center" min-width="120px"></el-table-column>
-          <el-table-column label="保单状态" min-width="120px" prop="policy.policy_status_str" align="center"></el-table-column>
-          <el-table-column label="申请时间" prop="apply_at" width="180px" align="center">
-            <template v-slot="{ row }">{{row.apply_at ? formatDate(row.apply_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="更新时间" prop="last_update_time" width="180px" align="center">
-            <template v-slot="{ row }">{{row.last_update_time ? formatDate(row.last_update_time * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="过期时间" prop="last_update_time" width="180px" align="center">
-            <template v-slot="{ row }">{{row.expire_at ? formatDate(row.expire_at * 1000, 'yyyy-MM-dd hh:mm:ss') : ''}}</template>
-          </el-table-column>
-          <el-table-column label="关联订单号" prop="policy.order_no" width="220px" align="center"></el-table-column>
-          <el-table-column label="关联保单号" prop="policy.policy_sn" width="180px" align="center"></el-table-column>
-          <el-table-column label="操作" fixed="right" width="180px" align="center">
-            <template v-slot="{ row }">
-              <el-link class="mr16" type="primary" @click="toDetail(row.policy.order_no)" v-if="showDetailBtn">详情</el-link>
-              <el-link v-if="row.policy.underwrite_url" type="primary" @click="copyManpowerLink(row.policy.underwrite_url)">复制人核链接</el-link>
-            </template>
-          </el-table-column>
         </el-table-column>
       </el-table>
     </div>
@@ -347,9 +319,21 @@ export default {
         cancel: { label: '审核不通过', color: '#FF4C4C'},
         refuse: { label: '拒保', color: '#FF4C4C'},
         waiting_reply: { label: '问题下发', color: '#09ba08'},
-        waiting_confirm_except: { label: '除责下发', color: '#4497eb'},
+        waiting_counteroffer_reply: { label: '照会待回复', color: '#09ba08'},
+        waiting_confirm_except: { label: '除责下发', color: '#09ba08'},
         pass: { label: '审核通过', color: '#4497eb' },
         overtime: { label: '超时', color: '#999999'}
+      }),
+      resultMap: Object.freeze({
+        refuse: { label: '拒保', color: '#FF4C4C'},
+        normal: { label: '标准', color: '#4497eb'},
+        sub_normal: { label: '次标准', color: '#4497eb'},
+        except: { label: '次标准除责', color: '#4497eb'},
+        pass: { label: '通过', color: '#4497eb'},
+        increases: { label: '加费承保', color: '#4497eb'},
+        exclusions: { label: '除外承保', color: '#4497eb'},
+        quota: { label: '限额承保', color: '#4497eb'},
+        cancel: { label: '撤件', color: '#999999'}
       })
     };
   },
@@ -359,7 +343,7 @@ export default {
       return obj ? this.$checkAuth(obj.permission) : false
     },
     actionGroup() {
-      const { actionMap } = this
+      const { actionMap, resultMap } = this
       const res = {}
       Object.keys(actionMap).forEach(key => {
         const cur = actionMap[key]
@@ -370,13 +354,24 @@ export default {
           res[color] = [cur]
         }
       })
+      Object.keys(resultMap).forEach(key => {
+        if (key !== 'refuse') { // 结论拒保跟进度拒保重复, 跳过
+          const cur = resultMap[key]
+          const color = cur.color
+          if (res[color]) {
+            res[color].push(cur)
+          } else {
+            res[color] = [cur]
+          }
+        }
+      })
       return res
     }
   },
   methods: {
     formatDate,
     rowStyleFormat({ row }) {
-      return { color: (this.actionMap[row.action] || {}).color }
+      return { color: (this.actionMap[row.action] || this.resultMap[row.result] || {}).color }
     },
     getData() {
       this.loading = true
@@ -548,16 +543,24 @@ export default {
         white-space: nowrap;
       }
     }
-
-    ::v-deep .action-block {
-      display: inline-flex;
+    .table-head {
+      height: 45px;
+      display: flex;
       align-items: center;
-      margin-right: 20px;
-      & > .color-block {
-        display: block;
-        width: 12px;
-        height: 12px;
-        margin-right: 4px;
+      background-color: #F5F5F5;
+      padding: 0 16px;
+      border: 1px solid #E6E6E6;
+      border-bottom: transparent;
+      .action-block {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 20px;
+        & > .color-block {
+          display: block;
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+        }
       }
     }
   }
