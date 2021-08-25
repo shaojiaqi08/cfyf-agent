@@ -316,24 +316,24 @@ export default {
       manpowerResult: [],
       tableMaxHeight: null,
       actionMap: Object.freeze({
-        cancel: { label: '审核不通过', color: '#FF4C4C'},
-        refuse: { label: '拒保', color: '#FF4C4C'},
-        waiting_reply: { label: '问题下发', color: '#09ba08'},
-        waiting_counteroffer_reply: { label: '照会待回复', color: '#09ba08'},
-        waiting_confirm_except: { label: '除责下发', color: '#09ba08'},
-        pass: { label: '审核通过', color: '#4497eb' },
-        overtime: { label: '超时', color: '#999999'}
+        cancel: {label: '审核不通过', color: '#FF4C4C', sort: 0},
+        refuse: {label: '拒保', color: '#FF4C4C', sort: 1},
+        waiting_reply: {label: '问题下发', color: '#09ba08', sort: 0},
+        waiting_counteroffer_reply: {label: '照会待回复', color: '#09ba08', sort: 1},
+        waiting_confirm_except: {label: '除责下发', color: '#4497eb', sort: 7},
+        pass: {label: '审核通过', color: '#4497eb', sort: 0},
+        overtime: {label: '超时', color: '#999999', sort: 0}
       }),
       resultMap: Object.freeze({
-        refuse: { label: '拒保', color: '#FF4C4C'},
-        normal: { label: '标准', color: '#4497eb'},
-        sub_normal: { label: '次标准', color: '#4497eb'},
-        except: { label: '次标准除责', color: '#4497eb'},
-        pass: { label: '通过', color: '#4497eb'},
-        increases: { label: '加费承保', color: '#4497eb'},
-        exclusions: { label: '除外承保', color: '#4497eb'},
-        quota: { label: '限额承保', color: '#4497eb'},
-        cancel: { label: '撤件', color: '#999999'}
+        refuse: {label: '拒保', color: '#FF4C4C', sort: 2},
+        normal: {label: '标准', color: '#4497eb', sort: 1},
+        sub_normal: {label: '次标准', color: '#4497eb', sort: 2},
+        except: {label: '次标准除责', color: '#4497eb', sort: 3},
+        pass: {label: '通过', color: '#4497eb', sort: 4},
+        increases: {label: '加费承保', color: '#4497eb', sort: 5},
+        exclusions: {label: '除外承保', color: '#4497eb', sort: 6},
+        quota: {label: '限额承保', color: '#4497eb', sort: 8},
+        cancel: {label: '撤件', color: '#999999', sort: 1}
       })
     };
   },
@@ -365,12 +365,17 @@ export default {
           }
         }
       })
+      // 排序
+      Object.keys(res).forEach(k => {
+        res[k] = res[k].sort((a, b) => a.sort - b.sort)
+      })
       return res
     }
   },
   methods: {
     formatDate,
     rowStyleFormat({ row }) {
+      if (row.policy.policy_status === 'accepted_insure') return {}
       return { color: (this.actionMap[row.action] || this.resultMap[row.result] || {}).color }
     },
     getData() {
