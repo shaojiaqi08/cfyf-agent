@@ -1,45 +1,75 @@
 <template>
   <div class="renewal-notify page-container">
-    <div class="left-content">
+    <div class="left-content" v-loading="contentLoading">
       <div class="header">投保人信息</div>
       <div class="content-body">
         <el-row>
           <el-col :span="8">
-            <span class="mr8">姓名</span>xxx
+            <span class="mr8">姓名</span>{{detail.customer.real_name}}
           </el-col>
           <el-col :span="8">
-            <span class="mr8">手机号</span>xxx
+            <span class="mr8">手机号</span>{{detail.customer.mobile}}
           </el-col>
           <el-col :span="8">
-            <span class="mr8">身份证号</span>xxx
+            <span class="mr8">身份证号</span>{{detail.customer.certificate_number}}
           </el-col>
           <el-col :span="8">
-            <span class="mr8">出生日期</span>xxx
+            <span class="mr8">出生日期</span>{{detail.customer.format_birthday}}
           </el-col>
-          <el-col :span="8" class="mt10 ">
+          <!-- <el-col :span="8" class="mt10 ">
             <span class="mr8">邮箱</span>xxx
-          </el-col>
+          </el-col> -->
         </el-row>
         <div class="table-wrap">
           <p>关联家庭</p>
           <el-table
+              ref="detailTable"
+              highlight-current-row
+              :data="detail.customer_policy"
+              :resizable="false"
               height="calc(50% - 68px)"
               border
-              stripe>
-            <el-table-column label="产品种类" align="center" width="80px"></el-table-column>
-            <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
-            <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" align="center" width="280px"></el-table-column>
-            <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
-            <el-table-column label="保单号" align="center" width="160px"></el-table-column>
-            <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
-            <el-table-column label="投保人" align="center" width="100px"></el-table-column>
-            <el-table-column label="被保人" align="center" width="100px"></el-table-column>
-            <el-table-column label="保费" align="center" width="100px"></el-table-column>
-            <el-table-column label="应续日期" align="center" width="120px" ></el-table-column>
-            <el-table-column label="宽限日期" align="center" width="120px"></el-table-column>
-            <el-table-column label="操作" align="center" width="150px" fixed="right"></el-table-column>
+              stripe
+              :header-cell-style="{ backgroundColor: '#EBEBEB', color: '#333333', borderTop: '1px solid rgba(0, 0, 0, .1)' }"
+              @row-click="handleRowClick">
+            <el-table-column label="产品种类" prop="product_insurance_class_name" align="center" width="80px"></el-table-column>
+            <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
+            <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
+            <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
+            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_link" align="center" width="280px"></el-table-column>
+            <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
+            <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人" prop="policy_holder_info.name" align="center" width="100px"></el-table-column>
+            <el-table-column label="被保人" align="center" width="100px">
+              <template v-slot="{ row }">
+                <div v-if="row.policy_recognizee_policies.length">
+                  {{row.policy_recognizee_policies | namefilter }}
+                </div>
+              </template>  
+            </el-table-column>
+            <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date" align="center" width="120px" ></el-table-column>
+            <el-table-column label="宽限日期" width="170px" align="center">
+              <template v-slot="{ row }">
+                <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
+                  {{ formatDate(row.current_renewal_stage.grace_start_at * 1000, 'yyyyMMdd') }}
+                  -
+                  {{ formatDate(row.current_renewal_stage.grace_end_at * 1000, 'yyyyMMdd') }}
+                </div>
+              </template>
+          </el-table-column>
+            <el-table-column label="操作" align="center" width="150px" fixed="right">
+              <template slot-scope="{row}">
+                <el-link
+                  @click="insurancePolicy(row)"
+                  type="primary"
+                  class="mr8">保单详情</el-link>
+                  <el-link
+                  type="primary"
+                  class="mr8">短信通知</el-link>
+              </template>
+            </el-table-column>
           </el-table>
           <p>关联家庭保单</p>
           <el-table
@@ -64,12 +94,12 @@
         </div>
       </div>
     </div>
-    <div class="right-content">
+    <div class="right-content" v-loading="rightLoading">
       <div class="follow-head">
         <el-tooltip :content="curRenewalDetail.product_name" placement="top">
           <span class="order-name">{{curRenewalDetail.product_name}}</span>
         </el-tooltip>
-        <el-dropdown>
+        <el-dropdown @command="handleClick($event)">
           <span class="el-dropdown-link">
             {{curRenewalDetail.label}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -79,16 +109,19 @@
               v-for="item in renewalOptions"
               :command="item.value"
               :key="item.value"
-              :class="{ 'renewal-dropdown-active': item.value === curRenewalId }">{{ item.label }}</el-dropdown-item>
+              :class="{ 'renewal-dropdown-active': item.value === curRenewalId }"
+            >{{ item.label }}</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div class="step-wrap">
         <div
-            v-for="(item, index) in stepData"
-            :key="index"
-            class="step-item"
-            :class="{ active: item.value === step }">
+          v-for="(item, index) in stepData"
+          :key="index"
+          class="step-item"
+          :class="{ active: item.value === step }"
+          @click="handleItem(item)"
+        >
           <i class="iconfont" :class="item.value === step ? 'icona-zhong20_duigou_xuanzhong' : 'icona-zhong20_duigou_weixuanzhong'"></i>
           <span>{{item.label}}</span>
         </div>
@@ -96,7 +129,7 @@
       <div class="year-wrap">{{ currentYear }}</div>
       <el-scrollbar class="scrollbar">
         <div
-          v-for="(item, index) in detail.follow_logs"
+          v-for="(item, index) in followData.follow_logs"
           :key="index"
           class="list-item active"
           :class="{ active: isToday(item.follow_at) }">
@@ -106,9 +139,9 @@
           <div class="content-wrap">
             <span class="title-wrap">
               <i class="status-dot"></i>
-              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus" :src="item.cs_admin_avatar_url"></el-avatar>
-              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.cs_admin_name}}</span>
-              <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span>
+              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus" :src="item.follow_obj_avatar_url"></el-avatar>
+              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
+              <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
               <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
               <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
               <span
@@ -128,7 +161,7 @@
       <div class="follow-footer" v-if="!readonly">
         <div>
           跟踪标题
-          <el-input size="mini" placeholder="必填"></el-input>
+          <el-input v-model="sendData.title" size="mini" placeholder="必填"></el-input>
         </div>
         <div>
           <div>
@@ -139,6 +172,7 @@
                 type="textarea"
                 size="mini"
                 placeholder="必填"
+                v-model="sendData.remark"
                 @keyup.ctrl.enter.native="send"
                 class="mr8"></el-input>
           </div>
@@ -159,7 +193,12 @@
 <script>
 // 投保人详情
 import { formatDate } from '@/utils/formatTime'
-import { getSalesDetail } from '@/apis/modules/renewal-order'
+import { 
+  getSalesDetail, 
+  addFollowStatusLogs,
+  modifyFollowStatus, 
+  getFollowLogs
+} from '@/apis/modules/renewal-order'
 export default {
   name: 'PolicyHolderDetail',
   data() {
@@ -180,7 +219,9 @@ export default {
       list: [{}],
       curRenewalId: null,
       detail: {
-        follow_logs: []
+        customer: {},
+        customer_policy: [],
+        family_policy: []
       },
       row: {
         current_renewal_stage: {}
@@ -202,12 +243,26 @@ export default {
         refuse_renewal: '放弃续保',
         already_renewal: '已续保',
         other: '其他'
+      },
+      sendData: {
+        title: '', //标题写点什么
+        remark: '', //内容
+      },
+      rightLoading: false, //加载提示
+      contentLoading: false, //内容加载提示
+      obj: {
+        stage_version: '', //续期记录version，列表中的version
+        order_no: '' //订单号
+      },
+      followData: {
+        follow_logs: [],
+        stage_list: []
       }
     }
   },
   computed: {
     renewalOptions() {
-      let { stage_list } = this.detail
+      let { stage_list } = this.followData
       const { id } = this.row.current_renewal_stage
       stage_list = stage_list || []
       return stage_list.map(item => ({
@@ -226,16 +281,148 @@ export default {
   methods: {
     formatDate,
     getData() {
-      getSalesDetail().then(res => {
-        console.log(res)
+      let route = this.$route.params
+      this.contentLoading = true;
+      this.rightLoading = true;
+      getSalesDetail({version: route.version}).then(res => {
         this.detail = res
+        let customer_policy = res.customer_policy[0]
+        if(res.customer_policy.length > 0) {
+          this.obj.stage_version = customer_policy.current_renewal_stage.version //设置默认选中第一条data
+          this.obj.order_no = customer_policy.order_no //设置默认选中第一条data
+          this.$refs.detailTable.setCurrentRow(customer_policy)
+        }
+        this.contentLoading = false;
+        this.getFollowLogs();
+      }).catch(() => {
+        this.contentLoading = false;
+        this.rightLoading = false;
       })
     },
+    // 保单详情
+    insurancePolicy({id}) {
+      window.open(this.$router.resolve({
+        name: 'renewal-trace-detail',
+        params: { id }
+      }).href)
+    },
+    //选中跟踪状态
+    handleItem(item) {
+      this.step = item.value;
+      this.modifyFollow();
+    },
+    handleClick(id) {
+      this.rightLoading = true;
+      this.curRenewalId = id;
+      this.followData.stage_list.forEach(k => {
+        if(k.id === id) {
+          this.obj.stage_version = k.version;
+          this.obj.order_no = k.policy.order_no;
+          this.getFollowLogs();
+        }
+      })
+    },
+    modifyFollow() {
+      let { obj, step } = this,
+      data = {
+        stage_version: obj.stage_version,
+        follow_status: step
+      };
+      this.rightLoading = true
+      modifyFollowStatus(data).then(() => {
+        this.$message.success(`修改跟踪状态成功!`)
+        this.rightLoading = false
+      }).catch(() => {
+        this.$message.error(`修改失败!`)
+        this.rightLoading = false
+      })
+    },
+    //获取跟进记录列表
+    getFollowLogs(value) {
+      let { obj } = this,
+      data = {
+        stage_version: obj.stage_version, 
+        order_no: obj.order_no
+      };
+      this.rightLoading = true
+      getFollowLogs(data).then(res => {
+        this.rightLoading = false
+        this.followData = res;
+        let stage_list = res.stage_list[0];
+        this.curRenewalId = stage_list.id;
+        this.step = stage_list.follow_status;
+      }).catch(() => {
+        this.rightLoading = false
+      })
+    },
+    //点击tableRow
+    handleRowClick(row) {
+      let { obj } = this;
+      if(row.order_no === obj.order_no) {
+        return;
+      }
+      this.row.current_renewal_stage = row.current_renewal_stage
+      obj.stage_version = row.current_renewal_stage.version;
+      obj.order_no = row.order_no;
+      this.getFollowLogs()
+    },
+    //发送
     send() {
-
+      let d = this.sendData;
+      if(this.step === '') {
+        this.$notify({
+          type: 'error',
+          title: '',
+          message: '请选择跟踪状态！'
+        });
+        return;
+      }
+      if(d.title === '') {
+        this.$notify({
+          type: 'error',
+          title: '',
+          message: '请输入标题！'
+        });
+        return;
+      }
+      if(d.remark === '') {
+        this.$notify({
+          type: 'error',
+          title: '',
+          message: '请输入内容！'
+        });
+        return;
+      }
+      let data = {
+        stage_version: this.obj.stage_version, //续期记录version，列表中的version
+        title: d.title, //标题写点什么
+        remark: d.remark, //内容
+        follow_status: this.step //跟进状态
+      }
+      this.rightLoading = true
+      addFollowStatusLogs(data).then(() => {
+        this.$message.success(`发送成功!`)
+        this.rightLoading = false
+        d.title = ''; //标题写点什么
+        d.remark = ''; //内容
+        this.getFollowLogs()
+      }).catch(() => {
+        this.$message.error(`发送失败!`)
+        this.rightLoading = false
+      }) 
     },
     isToday(timestamp) {
       return new Date(timestamp).toLocaleDateString() === new Date().toLocaleDateString()
+    }
+  },
+  filters: {
+    //被保人过滤器，并转化成字符串
+    namefilter(v) {
+      let arr = [];
+      v.map(k => {
+        arr.push(k.name)
+      })
+      return arr.join(',')
     }
   },
   created() {

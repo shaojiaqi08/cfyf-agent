@@ -81,14 +81,14 @@
 
         <!--保险产品-->
         <filter-shell
-            v-model="searchModel.products"
+            v-model="searchModel.product_id_type"
             autoFocus
             class="mb16"
             @input="searchModelChange"
         >
           <el-select
               class="block"
-              v-model="searchModel.products"
+              v-model="searchModel.product_id_type"
               multiple
               clearable
               filterable
@@ -104,7 +104,7 @@
           </el-select>
           <template
               v-slot:label
-          >{{ hasValue(searchModel.products) ? '保险产品' + productList.find(i => i.id_type === searchModel.products[0]).name : '保险产品' }}</template>
+          >{{ hasValue(searchModel.product_id_type) ? '保险产品' + productList.find(i => i.id_type === searchModel.product_id_type[0]).name : '保险产品' }}</template>
         </filter-shell>
 
         <!--保险公司-->
@@ -136,15 +136,15 @@
         </filter-shell>
 
         <!--B端公司-->
-        <filter-shell
-            v-model="searchModel.supplier_id"
+        <!-- <filter-shell
+            v-model="searchModel.sales_company_id"
             autoFocus
             class="mb16"
             @input="searchModelChange"
         >
           <el-select
               class="block"
-              v-model="searchModel.supplier_id"
+              v-model="searchModel.sales_company_id"
               multiple
               clearable
               filterable
@@ -152,7 +152,7 @@
               @change="searchModelChange"
           >
             <el-option
-                v-for="item in supplierList"
+                v-for="item in companyList"
                 :key="item.id"
                 :label="item.name"
                 :value="item.id"
@@ -160,8 +160,8 @@
           </el-select>
           <template
               v-slot:label
-          >{{ hasValue(searchModel.supplier_id) ? 'B端公司' + supplierList.find(i => i.id === searchModel.supplier_id[0]).name : 'B端公司' }}</template>
-        </filter-shell>
+          >{{ hasValue(searchModel.sales_company_id) ? 'B端公司' + companyList.find(i => i.id === searchModel.sales_company_id[0]).name : 'B端公司' }}</template>
+        </filter-shell> -->
 
         <!--全部团队-->
         <filter-shell
@@ -204,7 +204,7 @@
       <div class="status-filter-wrap">
         <div>
           <span>续保状态</span>
-          <i class="iconfont iconxiao16_gengduoxinxi"></i>
+          <i @click="handleTip(0)" class="iconfont iconxiao16_gengduoxinxi"></i>
           <el-checkbox-group v-model="searchModel.renewal_status" @change="searchModelChange">
             <el-checkbox
               size="small"
@@ -215,7 +215,7 @@
         </div>
         <div>
           <span>跟踪状态</span>
-          <i class="iconfont iconxiao16_gengduoxinxi"></i>
+          <i @click="handleTip(1)" class="iconfont iconxiao16_gengduoxinxi"></i>
           <el-checkbox class="mr30" label="全部" v-model="isCheckAll" @change="handleCheckAll"></el-checkbox>
           <el-checkbox-group v-model="searchModel.follow_status" @change="handleCheckFollow">
             <el-checkbox size="small"
@@ -302,20 +302,10 @@
           </template>
         </el-table-column>
         <el-table-column label="投保人" prop="policy.policy_holder_info.name" width="180px" align="center"></el-table-column>
-        <el-table-column label="被保人" prop="policy.policy_recognizee_policies" width="180px" align="center">
-          <template slot-scope="{row}">
-            {{
-              row.policy &&
-              row.policy.policy_recognizee_policies &&
-              row.policy.policy_recognizee_policies
-                  .map(item => item.name)
-                  .join()
-            }}
-          </template>
-        </el-table-column>
+        <el-table-column label="被保人" prop="policy.recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="应收保费" prop="premium" align="center" width="100px"></el-table-column>
         <el-table-column label="续收期间" prop="renewal_date" align="center"></el-table-column>
-        <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
+        <el-table-column label="缴费期限" prop="policy.payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保人手机号" prop="policy.policy_holder_info.mobile" align="center" width="210px"></el-table-column>
         <el-table-column label="续保状态" prop="renewal_status_name" align="center"></el-table-column>
@@ -324,8 +314,8 @@
             <text-hidden-ellipsis :popoverTip="row.renewal_link" width="248px" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
           </template>
         </el-table-column>
-        <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
-        <el-table-column label="最近跟踪人员" prop="cs_admin_name" width="170px" align="center"></el-table-column>
+        <el-table-column label="跟踪状态" prop="follow_status" width="170px" align="center"></el-table-column>
+        <el-table-column label="最近跟踪人员" prop="follow_obj_name" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
@@ -368,7 +358,7 @@ import {
   getDateRange,
   exportCompanyPolicy,
 } from '@/apis/modules/achievement'
-import { getRenewalList } from '@/apis/modules/renewal-order'
+import { getRenewalCompanyList, getRenewalTeamList, getRenewalSalesList } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -407,7 +397,7 @@ export default {
       salesList: [],
       salesTeamList: [],
       supplierList: [],
-      companyList: [],
+      // companyList: [],
       dateRange: [],
       statisticInfo: {},
       tableLoading: false,
@@ -424,7 +414,7 @@ export default {
         renewal_status: [],
         follow_status: [],
         policy_status: [],
-        products: [],
+        product_id_type: [],
         supplier_id: [],
         date_range: [+new Date(), +new Date()],
         sales_id: [],
@@ -447,7 +437,12 @@ export default {
         { label: '已续保', value: 'already_renewal' },
         { label: '无需续保', value: 'not_need_renewal' },
         { label: '不可续保', value: 'cannot_renewal' }
-      ])
+      ]),
+      renewalApiMap: Object.freeze({
+        renewalCompany: getRenewalCompanyList, 
+        renewalTeam: getRenewalTeamList, 
+        RenewalOrder: getRenewalSalesList
+      })
     }
   },
   methods: {
@@ -455,6 +450,13 @@ export default {
     handleCheckAll(v) {
       this.searchModel.follow_status = v ? this.followStatusOptions.map(i => i.value) : []
       this.searchModelChange()
+    },
+    handleTip(v) {
+      if(v === 0) {
+        this.$message('续保状态为系统内该续保续期订单的续保状态!');
+      } else if(v === 1) {
+        this.$message('跟踪状态为跟踪人员手工选择状态，不代表真实的续保状态!');
+      }
     },
     handleCheckFollow(v) {
       this.isCheckAll = v.length === this.followStatusOptions.length
@@ -464,6 +466,7 @@ export default {
       this.$copyText(link).then(() => this.$message.success('续保链接已复制到粘贴板'))
     },
     showQrCode({ src }) {
+      console.log('src',src)
       this.qrCodeSrc = src
       this.qrCodeDialogVisible = true
     },
@@ -472,10 +475,10 @@ export default {
       this.letterDialogVisible = true
     },
     // 跟踪
-    trace({ id }, isView) {
+    trace({version}, isView) {
       window.open(this.$router.resolve({
         name: isView ? 'RenewalOrderView' : 'RenewalOrderTrace',
-        params: { id }
+        params: { version }
       }).href)
     },
     tabChange() {
@@ -576,8 +579,9 @@ export default {
       return model
     },
     getData() {
-      this.loading = true
-      getRenewalList(this.searchModelFormat()).then(res => {
+      this.loading = true;
+      let getList = this.renewalApiMap[this.$route.name];
+      getList(this.searchModelFormat()).then(res => {
         this.total = res.total
         this.list = this.page === 1 ? res.data : this.list.concat(res.data)
       }).finally(() => {
@@ -612,6 +616,11 @@ export default {
           })
           .catch((err) => console.log(err))
     },
+    // getCompanyList() {
+    //   getCompanyList().then(res => {
+    //     this.companyList = res
+    //   }).catch(err => console.log(err))
+    // },
     getDateRange() {
       getDateRange().then((res) => {
         this.dateRange = res
@@ -632,6 +641,7 @@ export default {
     this.getSalesTeamData()
     this.getAllProducts()
     this.getSupplierList()
+    // this.getCompanyList()
   },
   mounted() {
     window.addEventListener('resize', this.calcTableHeight)
@@ -827,6 +837,7 @@ export default {
         color: #1F78FF;
         font-size: 16px;
         line-height: 16px;
+        cursor: pointer;
       }
     }
   }

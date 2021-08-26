@@ -74,3 +74,6 @@ export const getAnnouncementDetail = params => post('/agent/proxy/announcement/d
 
 // 获取未读公告数量(首次访问页面时用)
 export const getAnnNoReadCnt = params => get('/agent/proxy/announcement/not-read-count', params)
+
+// B端公司列表
+// export const getCompanyList = params => get('/management/proxy/company/list', params)

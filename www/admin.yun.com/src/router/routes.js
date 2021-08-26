@@ -379,10 +379,10 @@ export const routers = [
     icon: 'icona-cebiandaohang20_xubaoxuqi',
     children: [
       {
-        path: '/renewal-order',
+        path: '/renewal-order/my',
         name: 'RenewalOrder',
         meta: {
-          title: '续保续期订单',
+          title: '我的续保续期',
           header: true,
           menu: true,
           show: true,
@@ -391,7 +391,31 @@ export const routers = [
         component: getView('renewal-order/renewal')
       },
       {
-        path: '/renewal-order-trace/:id',
+        path: '/renewal-order/team',
+        name: 'renewalTeam',
+        meta: {
+          title: '团队续保续期',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-order/company',
+        name: 'renewalCompany',
+        meta: {
+          title: '公司续保续期',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-order-trace/:version',
         name: 'RenewalOrderTrace',
         meta: {
           title: '跟踪续保续期详情',
@@ -403,7 +427,7 @@ export const routers = [
         component: getView('renewal-order/policy-holder-detail')
       },
       {
-        path: '/renewal-order-view/:id',
+        path: '/renewal-order-view/:version',
         name: 'RenewalOrderView',
         meta: {
           title: '查看续保续期详情',
@@ -418,14 +442,26 @@ export const routers = [
         path: '/renewal-notify',
         name: 'RenewalNotify',
         meta: {
-          title: '续保续期通知',
+          title: '通知客户设置',
           header: true,
           menu: true,
           show: true,
           permission: '/manager'
         },
         component: getView('renewal-order/notify')
-      }
+      },
+      {
+        path: '/renewal-order/detail/:id',
+        name: 'renewal-trace-detail',
+        meta: {
+          title: '保单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/company_performance/detail'
+        },
+        component: getView('renewal-order/order-detail')
+      },
     ]
   },
   {

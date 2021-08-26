@@ -26,6 +26,7 @@ export default {
 
 <style scoped lang="scss">
   ::v-deep .el-dialog__body {
+    padding: 20px;
     text-align: center;
     .title {
       font-size: 11px;
