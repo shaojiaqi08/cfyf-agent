@@ -204,7 +204,9 @@
       <div class="status-filter-wrap">
         <div>
           <span>续保状态</span>
-          <i @click="handleTip(0)" class="iconfont iconxiao16_gengduoxinxi"></i>
+          <el-tooltip content="续保状态为系统内该续保续期订单的续保状态" placement="top">
+            <i class="iconfont iconxiao16_gengduoxinxi"></i>    
+          </el-tooltip>
           <el-checkbox-group v-model="searchModel.renewal_status" @change="searchModelChange">
             <el-checkbox
               size="small"
@@ -215,7 +217,9 @@
         </div>
         <div>
           <span>跟踪状态</span>
-          <i @click="handleTip(1)" class="iconfont iconxiao16_gengduoxinxi"></i>
+          <el-tooltip content="跟踪状态为跟踪人员手工选择状态，不代表真实的续保状态" placement="top">
+            <i class="iconfont iconxiao16_gengduoxinxi"></i>
+          </el-tooltip>
           <el-checkbox class="mr30" label="全部" v-model="isCheckAll" @change="handleCheckAll"></el-checkbox>
           <el-checkbox-group v-model="searchModel.follow_status" @change="handleCheckFollow">
             <el-checkbox size="small"
@@ -233,38 +237,38 @@
               <div>
                 长险应续保费(元)
                 <template>
-                  <span class="primary">{{ statisticInfo.company_actually_commission }}</span>
+                  <span class="primary">{{ statisticInfo.long_predict_premium }}</span>
                 </template>
               </div>
               <div>
                 长险已续保费(元)
-                <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+                <span class="primary">{{ statisticInfo.long_success_premium }}</span>
               </div>
               <div>
                 长险应续保单
-                <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+                <span class="primary">{{ statisticInfo.long_predict_count }}</span>
               </div>
               <div>
                 长险已续保单
-                <span class="primary">{{ statisticInfo.sales_position_commission }}</span>
+                <span class="primary">{{ statisticInfo.long_success_count }}</span>
               </div>
             </div>
             <div class="item-block">
               <div>
                 短险应续保费(元)
-                <span class="primary">{{ statisticInfo.actual_underwrite_total_premium }}</span>
+                <span class="primary">{{ statisticInfo.short_predict_premium }}</span>
               </div>
               <div>
                 短险已续保费(元)
-                <span class="primary">{{ statisticInfo.actual_underwrite_total_count }}</span>
+                <span class="primary">{{ statisticInfo.short_success_premium }}</span>
               </div>
               <div>
                 短险应续保单
-                <span class="primary">{{ statisticInfo.actual_underwrite_average_premium }}</span>
+                <span class="primary">{{ statisticInfo.short_predict_count }}</span>
               </div>
               <div>
                 短险已续保单
-                <span class="primary">{{ statisticInfo.actual_underwrite_average_premium }}</span>
+                <span class="primary">{{ statisticInfo.short_success_count }}</span>
               </div>
             </div>
           </div>
@@ -326,10 +330,12 @@
             <el-link
               type="primary"
               @click="copyLink(row)"
+              v-if="row.renewal_link !== ''"
               class="mr8">复制链接</el-link>
             <el-link
               type="primary"
               @click="showQrCode(row)"
+              v-if="row.renewal_link !== ''"
               class="mr8">链接二维码</el-link>
             <el-link
               type="primary"
@@ -348,7 +354,11 @@
       :src="qrCodeSrc"></qr-code-dialog>
     <letter-dialog
       :visible.sync="letterDialogVisible"
-      :data="detailObj"></letter-dialog>
+      :data="detailObj"
+      :sendLoading="sendLoading"
+      @handleSuccess="handleSuccess"
+    >
+    </letter-dialog>
   </div>
 </template>
 <script>
@@ -358,7 +368,16 @@ import {
   getDateRange,
   exportCompanyPolicy,
 } from '@/apis/modules/achievement'
-import { getRenewalCompanyList, getRenewalTeamList, getRenewalSalesList } from '@/apis/modules/renewal-order'
+import { 
+  getRenewalCompanyList, 
+  getRenewalTeamList, 
+  getRenewalSalesList,
+  getStatisticsForSales,
+  getStatisticsForTeam,
+  getStatisticsForCompany,
+  getMsgTemplate,
+  sendCustomerMsg
+} from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -367,7 +386,8 @@ import FilterShell, { hasValue } from '@/components/filters/filter-shell'
 import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
 import CommonTabsHeader from '@/components/common-tabs-header'
 import QrCodeDialog from './dialog/qrcode-dialog'
-import LetterDialog from './dialog/letter-dialog'
+import LetterDialog from '../component/dialog/letter-dialog.vue'
+import QRCode from 'qrcode'
 // 续保续期订单
 export default {
   name: 'renewal-order',
@@ -383,7 +403,10 @@ export default {
       qrCodeDialogVisible: false,
       qrCodeSrc: '',
       letterDialogVisible: false,
-      detailObj: null,
+      detailObj: {
+        msg_template: ''
+      },
+      sendLoading: false,
       loading: false,
       formatDate,
       filterValue: false,
@@ -442,7 +465,8 @@ export default {
         renewalCompany: getRenewalCompanyList, 
         renewalTeam: getRenewalTeamList, 
         RenewalOrder: getRenewalSalesList
-      })
+      }),
+      templateVersion: ''
     }
   },
   methods: {
@@ -451,12 +475,16 @@ export default {
       this.searchModel.follow_status = v ? this.followStatusOptions.map(i => i.value) : []
       this.searchModelChange()
     },
-    handleTip(v) {
-      if(v === 0) {
-        this.$message('续保状态为系统内该续保续期订单的续保状态!');
-      } else if(v === 1) {
-        this.$message('跟踪状态为跟踪人员手工选择状态，不代表真实的续保状态!');
-      }
+    getStaticData() {
+      let getApiRequest = Object.freeze({
+        RenewalOrder: getStatisticsForSales, 
+        renewalTeam: getStatisticsForTeam, 
+        renewalCompany: getStatisticsForCompany
+      })
+      let getStatic = getApiRequest[this.$route.name];
+      getStatic().then(res => {
+        this.statisticInfo = res
+      })
     },
     handleCheckFollow(v) {
       this.isCheckAll = v.length === this.followStatusOptions.length
@@ -465,19 +493,58 @@ export default {
     copyRenewalLink(link) {
       this.$copyText(link).then(() => this.$message.success('续保链接已复制到粘贴板'))
     },
-    showQrCode({ src }) {
-      console.log('src',src)
-      this.qrCodeSrc = src
-      this.qrCodeDialogVisible = true
+    showQrCode({ renewal_link }) {
+      QRCode.toDataURL(renewal_link).then(result => {
+        this.qrCodeSrc = result
+        this.qrCodeDialogVisible = true
+      })
     },
+    //获取消息模板
     showSendLetter(obj) {
-      this.detailObj = obj
       this.letterDialogVisible = true
+      this.sendLoading = true
+      this.templateVersion = obj.version
+      getMsgTemplate({version: obj.version}).then(res => {
+        this.sendLoading = false
+        this.detailObj = res
+      }).catch(() => {
+        this.sendLoading = false
+      })
+    },
+    handleSuccess(v) {
+      if(v === 'send') {
+        this.sendLoading = true
+        sendCustomerMsg({version: this.templateVersion}).then(() => {
+          this.$message.success(`发送成功!`)
+          this.letterDialogVisible = false
+          this.sendLoading = false
+        }).catch(() => {
+          this.sendLoading = false
+          this.$notify({
+            type: 'error',
+            title: '',
+            message: '发送失败!'
+          })
+        })
+      } else if(v === 'modify') {
+        this.$router.push('/user-info')
+      } 
     },
     // 跟踪
     trace({version}, isView) {
+      let paths = {
+        'renewalCompany': isView? 'RenewalOrderViewMyCompany' : "RenewalOrderTraceCompany",
+        'renewalTeam': isView? 'RenewalOrderViewMyTeam' : 'RenewalOrderTraceTeam',
+        'RenewalOrder': isView? 'RenewalOrderViewMy' : 'RenewalOrderTraceMy'
+      }
+      let pathName = ''
+      Object.keys(paths).filter(v => {
+        if(v === this.$route.name) {
+          pathName = paths[v]
+        }
+      })
       window.open(this.$router.resolve({
-        name: isView ? 'RenewalOrderView' : 'RenewalOrderTrace',
+        name: pathName,
         params: { version }
       }).href)
     },
@@ -493,9 +560,10 @@ export default {
         include_child_team: '0',
       })
       this.getData()
+      this.getStaticData()
     },
-    copyLink({ src }) {
-      this.$copyText(src).then(() => this.$message.success('链接已复制到粘贴板'))
+    copyLink({ renewal_link }) {
+      this.$copyText(renewal_link).then(() => this.$message.success('链接已复制到粘贴板'))
     },
     policyExport() {
       const url = `${exportCompanyPolicy}?${qs.stringify({
@@ -546,6 +614,7 @@ export default {
             .querySelector('.el-table__body-wrapper')
             .scrollTo(0, 0)
         this.getData()
+        this.getStaticData()
       }, 300)
       func()
       this.searchModelChange = func
@@ -636,6 +705,7 @@ export default {
   },
   created() {
     this.getData()
+    this.getStaticData()
     this.getSalesData()
     this.getDateRange()
     this.getSalesTeamData()

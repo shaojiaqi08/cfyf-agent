@@ -10,6 +10,12 @@ export const getRenewalSalesList = data => get('/agent/proxy/policy-renewal/list
 // 销售人员跟踪详情
 export const getSalesDetail = data => get('/agent/proxy/policy-renewal/detail-for-sales', data)
 
+// 团队跟踪详情
+export const getTeamDetail = data => get('/agent/proxy/policy-renewal/detail-for-team', data)
+
+// 公司跟踪详情
+export const getCompanyDetail = data => get('/agent/proxy/policy-renewal/detail-for-company', data)
+
 // 获取管理员设置续保通知
 export const getAdminNotifySetting = data => get('/agent/proxy/policy-renewal/get-company-notify-setting', data)
 
@@ -30,3 +36,18 @@ export const modifyFollowStatus = data => post('/agent/proxy/policy-renewal/modi
 
 //获取跟进记录列表
 export const getFollowLogs= data => get('/agent/proxy/policy-renewal/follow-logs', data)
+
+//个人统计
+export const getStatisticsForSales = data => get('/agent/proxy/policy-renewal/statistics-for-sales', data)
+
+//团队统计
+export const getStatisticsForTeam = data => get('/agent/proxy/policy-renewal/statistics-for-team', data)
+
+//公司统计
+export const getStatisticsForCompany = data => get('/agent/proxy/policy-renewal/statistics-for-company', data)
+
+//获取客户短信发送模板
+export const getMsgTemplate = data => get('/agent/proxy/policy-renewal/get-msg-template', data)
+
+//给投保人发送续保短信
+export const sendCustomerMsg = data => get('/agent/proxy/policy-renewal/send-customer-msg', data)

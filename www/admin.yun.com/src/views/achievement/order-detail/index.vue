@@ -545,7 +545,10 @@ export default {
       const map = {
         'achievement-company-detail': '/company_performance/',
         'achievement-team-detail': '/team_performance/',
-        'achievement-self-detail': '/my_performance/'
+        'achievement-self-detail': '/my_performance/',
+        'renewal-company-detail': '/company_performance/',
+        'renewal-team-detail': '/team_performance/',
+        'renewal-self-detail': '/my_performance/',
       }
       return map[this.$route.name]
     }

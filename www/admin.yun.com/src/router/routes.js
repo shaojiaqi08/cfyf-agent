@@ -107,6 +107,18 @@ export const routers = [
         component: getView('achievement/order-detail')
       },
       {
+        path: '/renewal-company/detail/:id',
+        name: 'renewal-company-detail',
+        meta: {
+          title: '公司保单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/company_performance/detail'
+        },
+        component: getView('achievement/order-detail')
+      },
+      {
         path: '/achievement-team',
         name: 'achievement-team',
         meta: {
@@ -131,6 +143,18 @@ export const routers = [
         component: getView('achievement/order-detail')
       },
       {
+        path: '/renewal-team/detail/:id',
+        name: 'renewal-team-detail',
+        meta: {
+          title: '团队保单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/company_performance/detail'
+        },
+        component: getView('achievement/order-detail')
+      },
+      {
         path: '/achievement-self',
         name: 'achievement-self',
         meta: {
@@ -151,6 +175,18 @@ export const routers = [
           menu: false,
           show: false,
           permission: '/my_performance/detail'
+        },
+        component: getView('achievement/order-detail')
+      },
+      {
+        path: '/renewal-self/detail/:id',
+        name: 'renewal-self-detail',
+        meta: {
+          title: '个人保单详情',
+          header: true,
+          menu: false,
+          show: false,
+          permission: '/company_performance/detail'
         },
         component: getView('achievement/order-detail')
       },
@@ -415,8 +451,8 @@ export const routers = [
         component: getView('renewal-order/renewal')
       },
       {
-        path: '/renewal-order-trace/:version',
-        name: 'RenewalOrderTrace',
+        path: '/renewal-order-trace/my/:version',
+        name: 'RenewalOrderTraceMy',
         meta: {
           title: '跟踪续保续期详情',
           header: false,
@@ -427,8 +463,68 @@ export const routers = [
         component: getView('renewal-order/policy-holder-detail')
       },
       {
-        path: '/renewal-order-view/:version',
-        name: 'RenewalOrderView',
+        path: '/renewal-order-trace/team/:version',
+        name: 'RenewalOrderTraceTeam',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-trace/company/:version',
+        name: 'RenewalOrderTraceCompany',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      // {
+      //   path: '/renewal-order-view/:version',
+      //   name: 'RenewalOrderView',
+      //   meta: {
+      //     title: '查看续保续期详情',
+      //     header: false,
+      //     menu: false,
+      //     show: false,
+      //     permission: '/sale'
+      //   },
+      //   component: getView('renewal-order/policy-holder-detail')
+      // },
+      {
+        path: '/renewal-order-view/my/:version',
+        name: 'RenewalOrderViewMy',
+        meta: {
+          title: '查看续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/team/:version',
+        name: 'RenewalOrderViewMyTeam',
+        meta: {
+          title: '查看续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/sale'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/company/:version',
+        name: 'RenewalOrderViewMyCompany',
         meta: {
           title: '查看续保续期详情',
           header: false,
@@ -450,18 +546,42 @@ export const routers = [
         },
         component: getView('renewal-order/notify')
       },
-      {
-        path: '/renewal-order/detail/:id',
-        name: 'renewal-trace-detail',
-        meta: {
-          title: '保单详情',
-          header: true,
-          menu: false,
-          show: false,
-          permission: '/company_performance/detail'
-        },
-        component: getView('renewal-order/order-detail')
-      },
+      // {
+      //   path: '/renewal-my/detail/:order_no',
+      //   name: 'renewal-my-detail',
+      //   meta: {
+      //     title: '保单详情',
+      //     header: true,
+      //     menu: false,
+      //     show: false,
+      //     permission: '/my_performance/detail'
+      //   },
+      //   component: getView('renewal-order/order-detail')
+      // },
+      // {
+      //   path: '/renewal-team/detail/:order_no',
+      //   name: 'renewal-team-detail',
+      //   meta: {
+      //     title: '保单详情',
+      //     header: true,
+      //     menu: false,
+      //     show: false,
+      //     permission: '/team_performance/detail'
+      //   },
+      //   component: getView('renewal-order/order-detail')
+      // },
+      // {
+      //   path: '/renewal-company/detail/:order_no',
+      //   name: 'renewal-company-detail',
+      //   meta: {
+      //     title: '保单详情',
+      //     header: true,
+      //     menu: false,
+      //     show: false,
+      //     permission: '/my_performance/detail'
+      //   },
+      //   component: getView('renewal-order/order-detail')
+      // },
     ]
   },
   {

@@ -19,14 +19,14 @@
             <el-tooltip content="昵称用于发送给客户相关短信时的称呼" placement="top">
               <i class="iconfont iconxiao16_gengduoxinxi ml4 mr12"></i>
             </el-tooltip>
-            <b>李四</b>
+            <b>{{notifyData.sales_work_nickname === '' ? '-' : notifyData.sales_work_nickname}}</b>
           </div>
           <div>
             <span>工作手机</span>
             <el-tooltip content="工作手机用于接收本平台各类提醒，同时，也用于发送给客户相关短信，以便客户回拨电话时，联系您" placement="top">
               <i class="iconfont iconxiao16_gengduoxinxi ml4 mr12"></i>
             </el-tooltip>
-            <b>138000138000</b>
+            <b>{{notifyData.sales_work_mobile === '' ? '-' : notifyData.sales_work_mobile}}</b>
             <el-tooltip content="去修改个人信息" placement="top" :open-delay="1000">
               <i class="ml4 iconfont iconxiao16_bianji" style="cursor: pointer;" @click="toInfo"></i>
             </el-tooltip>
@@ -34,10 +34,10 @@
         </div>
       </template>
       <h3>短信示例</h3>
-      <div class="main-text">【保单管理助手】尊敬的张三：您去年投保的“复星联合康乐一生重大疾病保险B款”，保单号8001005186于2020年08月08日保险到期。为使您未来一年得到相应的保障，请您及时完成续保。</div>
-      <div class="main-text">【保单管理助手】尊敬的张三：您去年投保的“复星联合康乐一生重大疾病保险B款”，保单号8001005186于2020年08月08日保险到期。为使您未来一年得到相应的保障，请您及时完成续保。</div>
+      <div class="main-text">{{notifyData.short_insurance_msg_template}}</div>
+      <div class="main-text">{{notifyData.long_insurance_msg_template}}</div>
       <h3>短信发送规则</h3>
-      <div class="main-text">短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则短信发送规则超长换行展示</div>
+      <div class="main-text">{{notifyData.send_msg_rule === '' ? '-' : notifyData.send_msg_rule}}</div>
       <el-switch
           v-if="!isSales"
           class="mb16"
@@ -75,7 +75,8 @@ export default {
       is_granted_follow: '',
       rules: {
         name: { required: true, message: '' }
-      }
+      },
+      notifyData: null
     }
   },
   computed: {
@@ -94,6 +95,7 @@ export default {
     getData() {
       this.loading = true
       this.getDataFunc().then(res => {
+        this.notifyData = res
         this.is_granted_send_msg = this.isSales ? res.is_company_granted_send_msg : res.is_granted_send_msg
         this.is_granted_follow = this.isSales ? res.is_company_granted_follow : res.is_granted_follow
       }).finally(() => {

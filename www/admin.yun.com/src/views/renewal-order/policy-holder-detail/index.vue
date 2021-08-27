@@ -66,30 +66,64 @@
                   type="primary"
                   class="mr8">保单详情</el-link>
                   <el-link
+                  @click="showSendLetter(row)"
                   type="primary"
+                  v-if="!readonly"
                   class="mr8">短信通知</el-link>
               </template>
             </el-table-column>
           </el-table>
           <p>关联家庭保单</p>
           <el-table
+              ref="bottomDetailTable"
+              highlight-current-row
+              :data="detail.family_policy"
+              :resizable="false"
               height="calc(50% - 68px)"
               border
-              stripe>
-            <el-table-column label="产品种类" align="center" width="80px"></el-table-column>
-            <el-table-column label="产品名称" align="center" width="200px"></el-table-column>
-            <el-table-column label="续保状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="跟踪状态" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" align="center" width="280px"></el-table-column>
-            <el-table-column label="投保单号" align="center" width="160px"></el-table-column>
-            <el-table-column label="保单号" align="center" width="160px"></el-table-column>
-            <el-table-column label="投保人手机号" align="center" width="160px"></el-table-column>
-            <el-table-column label="投保人" align="center" width="100px"></el-table-column>
-            <el-table-column label="被保人" align="center" width="100px"></el-table-column>
-            <el-table-column label="保费" align="center" width="100px"></el-table-column>
-            <el-table-column label="应续日期" align="center" width="120px" ></el-table-column>
-            <el-table-column label="宽限日期" align="center" width="120px"></el-table-column>
-            <el-table-column label="操作" align="center" width="150px" fixed="right"></el-table-column>
+              stripe
+              :header-cell-style="{ backgroundColor: '#EBEBEB', color: '#333333', borderTop: '1px solid rgba(0, 0, 0, .1)' }"
+              @row-click="handleRowClick">
+            <el-table-column label="产品种类" prop="product_insurance_class_name" align="center" width="80px"></el-table-column>
+            <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
+            <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
+            <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
+            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_link" align="center" width="280px"></el-table-column>
+            <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
+            <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
+            <el-table-column label="投保人" prop="policy_holder_info.name" align="center" width="100px"></el-table-column>
+            <el-table-column label="被保人" align="center" width="100px">
+              <template v-slot="{ row }">
+                <div v-if="row.policy_recognizee_policies.length">
+                  {{row.policy_recognizee_policies | namefilter }}
+                </div>
+              </template>  
+            </el-table-column>
+            <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date" align="center" width="120px" ></el-table-column>
+            <el-table-column label="宽限日期" width="170px" align="center">
+              <template v-slot="{ row }">
+                <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
+                  {{ formatDate(row.current_renewal_stage.grace_start_at * 1000, 'yyyyMMdd') }}
+                  -
+                  {{ formatDate(row.current_renewal_stage.grace_end_at * 1000, 'yyyyMMdd') }}
+                </div>
+              </template>
+          </el-table-column>
+            <el-table-column label="操作" align="center" width="150px" fixed="right">
+              <template slot-scope="{row}">
+                <el-link
+                  @click="insurancePolicy(row)"
+                  type="primary"
+                  class="mr8">保单详情</el-link>
+                  <el-link
+                  type="primary"
+                  @click="showSendLetter(row)"
+                  v-if="!readonly"
+                  class="mr8">短信通知</el-link>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </div>
@@ -187,6 +221,13 @@
         </div>
       </div>
     </div>
+    <letter-dialog
+      :visible.sync="letterDialogVisible"
+      :data="detailObj"
+      :sendLoading="sendLoading"
+      @handleSuccess="handleSuccess"
+    >
+    </letter-dialog>
   </div>
 </template>
 
@@ -195,14 +236,28 @@
 import { formatDate } from '@/utils/formatTime'
 import { 
   getSalesDetail, 
+  getTeamDetail,
+  getCompanyDetail,
   addFollowStatusLogs,
   modifyFollowStatus, 
-  getFollowLogs
+  getFollowLogs,
+  getMsgTemplate,
+  sendCustomerMsg
 } from '@/apis/modules/renewal-order'
+import LetterDialog from '../component/dialog/letter-dialog.vue'
 export default {
   name: 'PolicyHolderDetail',
+  components: {
+    LetterDialog
+  },
   data() {
     return {
+      letterDialogVisible: false,
+      detailObj: {
+        msg_template: ''
+      },
+      sendLoading: false,
+      templateVersion: '',
       readonly: false,
       loading: false,
       followLoading: false,
@@ -257,7 +312,15 @@ export default {
       followData: {
         follow_logs: [],
         stage_list: []
-      }
+      },
+      detailApiMap: Object.freeze({
+        RenewalOrderTraceMy: getSalesDetail, 
+        RenewalOrderTraceTeam: getTeamDetail, 
+        RenewalOrderTraceCompany: getCompanyDetail,
+        RenewalOrderViewMy: getSalesDetail, 
+        RenewalOrderViewMyTeam: getTeamDetail, 
+        RenewalOrderViewMyCompany: getCompanyDetail
+      })
     }
   },
   computed: {
@@ -280,34 +343,91 @@ export default {
   },
   methods: {
     formatDate,
+    //获取消息模板
+    showSendLetter({current_renewal_stage}) {
+      this.letterDialogVisible = true
+      this.sendLoading = true
+      this.templateVersion = current_renewal_stage.version
+      getMsgTemplate({version: current_renewal_stage.version}).then(res => {
+        this.sendLoading = false
+        this.detailObj = res
+      }).catch(() => {
+        this.sendLoading = false
+      })
+    },
+    handleSuccess(v) {
+      if(v === 'send') {
+        this.sendLoading = true
+        sendCustomerMsg({version: this.templateVersion}).then(() => {
+          this.$message.success(`发送成功!`)
+          this.letterDialogVisible = false
+          this.sendLoading = false
+        }).catch(() => {
+          this.sendLoading = false
+          this.$notify({
+            type: 'error',
+            title: '',
+            message: '发送失败!'
+          })
+        })
+      } else if(v === 'modify') {
+        this.$router.push('/user-info')
+      } 
+    },
     getData() {
       let route = this.$route.params
       this.contentLoading = true;
       this.rightLoading = true;
-      getSalesDetail({version: route.version}).then(res => {
+      let getDataDetail = this.detailApiMap[this.$route.name];
+      getDataDetail({version: route.version}).then(res => {
         this.detail = res
-        let customer_policy = res.customer_policy[0]
-        if(res.customer_policy.length > 0) {
+        if(res.customer_policy.length > 0 && res.customer_policy[0] !== null) {
+          let customer_policy = res.customer_policy[0]
           this.obj.stage_version = customer_policy.current_renewal_stage.version //设置默认选中第一条data
           this.obj.order_no = customer_policy.order_no //设置默认选中第一条data
           this.$refs.detailTable.setCurrentRow(customer_policy)
         }
+        if(res.customer_policy.length === 0 && res.family_policy.length > 0) {
+          let family_policy = res.family_policy[0]
+          this.obj.stage_version = family_policy.current_renewal_stage.version //设置默认选中第一条data
+          this.obj.order_no = family_policy.order_no //设置默认选中第一条data
+          this.$refs.bottomDetailTable.setCurrentRow(family_policy)
+        }
         this.contentLoading = false;
-        this.getFollowLogs();
+        if(this.obj.stage_version !== '') {
+          this.getFollowLogs();
+        } else {
+          this.rightLoading = false;
+        }
       }).catch(() => {
         this.contentLoading = false;
         this.rightLoading = false;
       })
     },
     // 保单详情
-    insurancePolicy({id}) {
+    insurancePolicy({order_no}) {
+      let paths = {
+        'RenewalOrderTraceMy': 'renewal-self-detail',
+        'RenewalOrderTraceTeam': 'renewal-team-detail',
+        'RenewalOrderTraceCompany': 'renewal-company-detail',
+        'RenewalOrderViewMy': 'renewal-self-detail',
+        'RenewalOrderViewMyTeam': 'renewal-team-detail',
+        'RenewalOrderViewMyCompany': 'renewal-company-detail'
+      }
+      let pathName = paths[this.$route.name],
+          id = order_no;
+          
+      console.log(pathName)
       window.open(this.$router.resolve({
-        name: 'renewal-trace-detail',
+        name: pathName,
         params: { id }
       }).href)
     },
     //选中跟踪状态
     handleItem(item) {
+      if(this.readonly) {
+        return
+      }
       this.step = item.value;
       this.modifyFollow();
     },
@@ -338,7 +458,7 @@ export default {
       })
     },
     //获取跟进记录列表
-    getFollowLogs(value) {
+    getFollowLogs() {
       let { obj } = this,
       data = {
         stage_version: obj.stage_version, 
@@ -427,6 +547,11 @@ export default {
   },
   created() {
     this.getData()
+    let routeName = ['RenewalOrderViewMy', 'RenewalOrderViewMyTeam', 'RenewalOrderViewMyCompany']
+  
+    if(routeName.includes(this.$route.name)) {
+      this.readonly = true;
+    }
   }
 }
 </script>
