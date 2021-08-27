@@ -151,6 +151,16 @@
         <el-card class="proposal-card-shell" shadow="never">
           <div class="proposal-card-header no-bottom">保险方案设计</div>
           <div class="proposal-card-body" style="overflow: visible">
+            <el-button class="proposal-add-scheme proposal-edit-scheme"
+                       type="primary"
+                       size="small"
+                       plain
+                       @click="showEditMemberStructFunc"
+                       v-allowed="['proposal-customer-edit']">
+              <i class="iconfont fs12 iconchaoxiao_jiahao"></i>
+              家庭结构编辑
+            </el-button>
+            
             <el-button class="proposal-add-scheme"
                        type="primary"
                        size="mini"
@@ -748,6 +758,18 @@
     <el-backtop target=".whole-scroller-container .el-scrollbar__wrap" :bottom="100" :right="20">
       <i class="el-icon-caret-top"></i>
     </el-backtop>
+    
+    
+    <template v-if="showEditMemberStruct">
+      <edit-member-struct :show.sync="showEditMemberStruct"
+                          :list="relations"
+                          :dataObj="{
+                            id: proposal_struct_id,
+                            type: 'safeguard_proposal',
+                            customer_name: customerName,
+                          }"
+                          @save="saveChange"></edit-member-struct>
+    </template>
   </div>
 </template>
 
@@ -760,6 +782,7 @@ import InsuranceCompany from './components/filters/insurance-company'
 import PaymentPeriod from './components/filters/payment-period'
 import ProposalMaterial from './modal/proposal-material'
 import addDiyProduct from './modal/add-diy-product'
+import editMemberStruct from './modal/edit-member-struct'
 import {
   getInsuranceList,
   getSupplierList,
@@ -798,7 +821,8 @@ export default {
     InsuranceCompany,
     PaymentPeriod,
     ProposalMaterial,
-    addDiyProduct
+    addDiyProduct,
+    editMemberStruct
   },
   watch: {
     productsSelected(v) {
@@ -938,53 +962,66 @@ export default {
       is_show_company_profile: 1,
       is_show_link: 0,
       is_show_coverage_aggregate: 0,
-      fixedRightPoint: 0
+      fixedRightPoint: 0,
+      showEditMemberStruct: false
     }
   },
   created() {
-    const id = this.$route.query.id
-    const proposalId = this.$route.query.proposal_id
-    this.customerName = this.$route.query.customer_name || ''
-    this.customerId = this.$route.query.customer_id || 0
-    // 计划书入口有三个
-    // 1. 计划书列表 > 新增计划书 (query: customer_id&customer_name)
-    // 2. 我的客户管理 > 新增计划书 (query: id)
-    // 3. 计划书列表 > 编辑/复制 (query: proposal_id)
-    if (proposalId) {
-      // 3 进入 先请求计划书详情接口，再获取家庭关系
-      if (this.customerId > 0) {
-        this.getProposalCustomerSync(this.customerId, () => {
-          this.getProposalInfo(proposalId)
-        })
-      } else {
-        this.getProposalInfo(proposalId)
-      }
-    } else {
-      if (id) {
-        // 2 进入 先获取用户id，再获取家庭关系
-        this.getProposalCustomerSync(id)
-      } else {
-        // 1 进入 获取家庭关系
-        this.getRelations(this.customerId)
-        this.customerId = 0
-        this.proposal_struct_id = this.$route.query.customer_id
-      }
-    }
-    // this.getInsuranceList()
-    // this.getSupplierList()
-    this.getInsuranceProductList()
-    setTimeout(() => {
-      this.bindScrollEvent()
-      const shell = document.querySelector('.proposal-card-shell').getBoundingClientRect()
-      this.containerWidth = shell.width
-      const shellRightPoint = shell.left + shell.width
-      this.fixedRightPoint = innerWidth - shellRightPoint
-    }, 300)
+    this.init()
   },
   beforeDestroy() {
     this.unBindScrollEvent()
   },
   methods: {
+    init () {
+      const id = this.$route.query.id
+      const proposalId = this.$route.query.proposal_id
+      this.customerName = this.$route.query.customer_name || ''
+      this.customerId = this.$route.query.customer_id || 0
+      // 计划书入口有三个
+      // 1. 计划书列表 > 新增计划书 (query: customer_id&customer_name)
+      // 2. 我的客户管理 > 新增计划书 (query: id)
+      // 3. 计划书列表 > 编辑/复制 (query: proposal_id)
+      if (proposalId) {
+        // 3 进入 先请求计划书详情接口，再获取家庭关系
+        if (this.customerId > 0) {
+          this.getProposalCustomerSync(this.customerId, () => {
+            this.getProposalInfo(proposalId)
+          })
+        } else {
+          this.getProposalInfo(proposalId)
+        }
+      } else {
+        if (id) {
+          // 2 进入 先获取用户id，再获取家庭关系
+          this.getProposalCustomerSync(id)
+        } else {
+          // 1 进入 获取家庭关系
+          this.getRelations(this.customerId)
+          this.customerId = 0
+          this.proposal_struct_id = this.$route.query.customer_id
+        }
+      }
+      // this.getInsuranceList()
+      // this.getSupplierList()
+      this.getInsuranceProductList()
+      setTimeout(() => {
+        this.bindScrollEvent()
+        const shell = document.querySelector('.proposal-card-shell').getBoundingClientRect()
+        this.containerWidth = shell.width
+        const shellRightPoint = shell.left + shell.width
+        this.fixedRightPoint = innerWidth - shellRightPoint
+      }, 300)
+    },
+    saveChange (type) { // 修改家庭关系结构后调用
+      console.log('修改类型', type)
+      this.insureDetailLoading = true
+      if (type === 'update-member') {
+        this.getRelations(this.proposal_struct_id)
+      } else if (type === 'update-detail') {
+        this.init()
+      }
+    },
     removeSelectedProduct(index) {
       this.$confirm('是否删全部产品?', '提示', {
         confirmButtonText: '确定',
@@ -1905,6 +1942,9 @@ export default {
     addProposal() {
       this.addDialogVisible = true
     },
+    showEditMemberStructFunc () {
+      this.showEditMemberStruct = true
+    },
     addHandleClose() {
       this.addDialogVisible = false
       this.relationModel = {
@@ -1990,6 +2030,9 @@ export default {
   top: -2px !important;
   display: flex;
   align-items: center;
+}
+.proposal-edit-scheme {
+  right: 126px !important;
 }
 
 .el-tabs__header {

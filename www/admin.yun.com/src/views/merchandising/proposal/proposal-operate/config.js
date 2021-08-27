@@ -72,3 +72,9 @@ export const productFrom = {
   MANUALLY_ENTER: 'manually_enter',
   FROM_INSURANCE: 'from_insurance'
 }
+
+// 性别
+export const sexTypes = [
+  { label: '男', value: 1 },
+  { label: '女', value: 2 }
+]

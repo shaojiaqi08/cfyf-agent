@@ -26,6 +26,9 @@ export const getCost = (data) => post('/agent/proxy/proposal/cost', data)
 export const saveProposal = (data) => post('/agent/proxy/proposal/add', data)
 // 新增客户和其家庭成员
 export const addCustomer = (data) => post('/agent/proxy/proposal/customer/add', data)
+// 修改客户和其家庭成员(V2.0)
+export const changeCustomer = (data) => post('/agent/proxy/proposal/customer/edit', data)
+
 // 同步客户信息
 export const getProposalCustomerSync = (data) => post('', data)
 // 计划书详情
