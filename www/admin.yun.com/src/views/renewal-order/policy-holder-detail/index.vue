@@ -425,6 +425,9 @@ export default {
     },
     //选中跟踪状态
     handleItem(item) {
+      if(this.obj.stage_version === '') {
+        return
+      }
       if(this.readonly) {
         return
       }

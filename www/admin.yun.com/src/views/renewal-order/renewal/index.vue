@@ -473,7 +473,7 @@ export default {
         renewalCompany: exportCompanyPolicy, 
         renewalTeam: exportTeamPolicy, 
         RenewalOrder: exportSalesPolicy
-      }),
+      })
     }
   },
   methods: {
@@ -605,10 +605,14 @@ export default {
     },
     scroll2Bottom() {
       const { page, page_size, total } = this
+      if(total < 20) {
+        return
+      }
       if (page * page_size < total) {
         this.tableLoading = true
         this.page += 1
       }
+      this.getData()
     },
     searchModelChange() {
       const func = debounce(() => {
@@ -639,8 +643,8 @@ export default {
       // window.open(routeUrl.href, '_blank')
       // this.$router.push({ path: `/achievement-company/detail/${row.id}` })
     },
-    searchModelFormat() {
-      const model = { ...this.searchModel }
+    searchModelFormat(withPage = false) {
+      let model = { ...this.searchModel }
       Object.keys(model).forEach((key) => {
         if (key === 'date_range') {
           const [start, end] = model.date_range
@@ -653,14 +657,22 @@ export default {
         delete model.include_child_team
       }
       delete model.date_range
+      if (withPage) {
+        model = Object.assign(model, {
+          page: this.page,
+          page_size: 20
+        })
+      }
+      console.log('model',model)
       return model
     },
     getData() {
       this.loading = true;
       let getList = this.renewalApiMap[this.$route.name];
-      getList(this.searchModelFormat()).then(res => {
-        this.total = res.total
+      getList(this.searchModelFormat(true)).then(res => {
         this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+        this.total = res.total
+        this.page = res.current_page
       }).finally(() => {
         this.loading = false
       })
