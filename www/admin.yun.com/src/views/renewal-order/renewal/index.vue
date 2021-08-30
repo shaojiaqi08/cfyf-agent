@@ -365,8 +365,7 @@
 import {
   getSalesData,
   getSalesTeamData,
-  getDateRange,
-  exportCompanyPolicy,
+  getDateRange
 } from '@/apis/modules/achievement'
 import { 
   getRenewalCompanyList, 
@@ -376,7 +375,10 @@ import {
   getStatisticsForTeam,
   getStatisticsForCompany,
   getMsgTemplate,
-  sendCustomerMsg
+  sendCustomerMsg,
+  exportSalesPolicy,
+  exportTeamPolicy,
+  exportCompanyPolicy
 } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
@@ -466,7 +468,12 @@ export default {
         renewalTeam: getRenewalTeamList, 
         RenewalOrder: getRenewalSalesList
       }),
-      templateVersion: ''
+      templateVersion: '',
+      exportApiMap: Object.freeze({
+        renewalCompany: exportCompanyPolicy, 
+        renewalTeam: exportTeamPolicy, 
+        RenewalOrder: exportSalesPolicy
+      }),
     }
   },
   methods: {
@@ -566,7 +573,8 @@ export default {
       this.$copyText(renewal_link).then(() => this.$message.success('链接已复制到粘贴板'))
     },
     policyExport() {
-      const url = `${exportCompanyPolicy}?${qs.stringify({
+      let exportData = this.exportApiMap[this.$route.name];
+      const url = `${exportData}?${qs.stringify({
         ...this.searchModelFormat(true),
       })}`
       this.exporting = true

@@ -51,3 +51,12 @@ export const getMsgTemplate = data => get('/agent/proxy/policy-renewal/get-msg-t
 
 //给投保人发送续保短信
 export const sendCustomerMsg = data => get('/agent/proxy/policy-renewal/send-customer-msg', data)
+
+// 导出订单数据(个人)
+export const exportSalesPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy-renewal/export-for-sales`
+
+// 导出订单数据(团队)
+export const exportTeamPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy-renewal/export-for-team`
+
+// 导出订单数据(公司)
+export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy-renewal/export-for-company`
