@@ -381,10 +381,6 @@ export default {
           }
         }
       })
-      // 排序
-      Object.keys(res).forEach(k => {
-        res[k] = res[k].sort((a, b) => a.sort - b.sort)
-      })
       return res
     }
   },
