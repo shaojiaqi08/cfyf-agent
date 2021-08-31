@@ -318,7 +318,7 @@
             <text-hidden-ellipsis :popoverTip="row.renewal_link" width="248px" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
           </template>
         </el-table-column>
-        <el-table-column label="跟踪状态" prop="follow_status" width="170px" align="center"></el-table-column>
+        <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪人员" prop="follow_obj_name" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
@@ -406,7 +406,7 @@ export default {
       qrCodeSrc: '',
       letterDialogVisible: false,
       detailObj: {
-        msg_template: ''
+        message: ''
       },
       sendLoading: false,
       loading: false,
