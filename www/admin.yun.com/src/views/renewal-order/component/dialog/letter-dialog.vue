@@ -10,10 +10,11 @@
       <!-- 【保单管理助手】尊敬的张三：您去年投保的“复星联合康乐一生重大疾病保险B款”，保单号8001005186于2020年08月08日保险到期。为使您未来一年得到相应的保障，请您及时完成续保。<span class="high-light">https://www.baidu.com/s?ie=ut</span>如有疑问请致电您的规划师李四<span class="high-light">1595554569</span>。如已续保请忽略本短信。 -->
       {{data.message}}
     </span>
+    <p class="tip" v-if="data.is_sales_profile_ok === false">提示：缺少销售人员昵称、手机，无法发送短信，请联系销售人员补充昵称、手机</p>
     <template #footer>
       <el-button @click="handleClose" class="mr20">取消</el-button>
-      <el-button type="primary" v-if="!data.is_sales_profile_ok" @click="handleEnter('send')">确认发送</el-button>
-      <el-button type="primary" v-else @click="handleEnter('modify')">修改昵称、手机</el-button>
+      <el-button type="primary" v-if="data.is_sales_profile_ok === true" @click="handleEnter('send')">确认发送</el-button>
+      <el-button type="primary" v-if="data.is_sales_profile_ok === false && data.is_self_policy === true" @click="handleEnter('modify')">修改昵称、手机</el-button>
     </template>
   </el-dialog>
 </template>
@@ -67,5 +68,10 @@ export default {
   }
   ::v-deep .el-dialog__footer .el-button {
     width: 114px;
+  }
+  .tip {
+    color: #ff5151;
+    font-size: 12px;
+    text-align: left;
   }
 </style>

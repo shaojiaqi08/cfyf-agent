@@ -58,11 +58,11 @@
           </div>
           <div class="value editable">
             <template v-if="editingFields.includes('nickname')">
-              <el-input placeholder="请输入工作昵称" size="small"></el-input>
+              <el-input placeholder="请输入工作昵称" size="small" v-model="work_nickname"></el-input>
               <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('nickname')"></i>
             </template>
             <template v-else>
-              <span>-</span>
+              <span>{{work_nickname === ''? '-': work_nickname}}</span>
               <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('nickname')"></i>
             </template>
           </div>
@@ -76,11 +76,11 @@
           </div>
           <div class="value editable">
             <template v-if="editingFields.includes('mobile')">
-              <el-input placeholder="请输入工作手机" size="small"></el-input>
+              <el-input placeholder="请输入工作手机" size="small" v-model="work_mobile"></el-input>
               <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('mobile')"></i>
             </template>
             <template v-else>
-              <span>-</span>
+              <span>{{work_mobile === ''? '-': work_mobile}}</span>
               <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('mobile')"></i>
             </template>
           </div>
@@ -89,11 +89,11 @@
           <div class="label">工作微信</div>
           <div class="value editable">
             <template v-if="editingFields.includes('wechat')">
-              <el-input placeholder="请输入工作微信" size="small"></el-input>
+              <el-input placeholder="请输入工作微信" size="small" v-model="work_wx_account"></el-input>
               <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('wechat')"></i>
             </template>
             <template v-else>
-              <span>-</span>
+              <span>{{work_wx_account === ''? '-': work_wx_account}}</span>
               <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('wechat')"></i>
             </template>
           </div>
@@ -106,7 +106,7 @@
 
 <script>
   import modifyPassword from './modal/modify-password'
-  import {uploadHeadImg, getUserDetail} from '@/apis/modules'
+  import {uploadHeadImg, getUserDetail, updateProfile} from '@/apis/modules'
   import {mapState, mapActions} from 'vuex'
   export default {
     components: {
@@ -116,7 +116,10 @@
       return {
         isModiifyPasswordShow: false,
         loading: false,
-        editingFields: []
+        editingFields: [],
+        work_nickname: '', //工作昵称
+        work_wx_account: '', //工作微信
+        work_mobile: '' //工作手机
       }
     },
     computed: {
@@ -129,6 +132,16 @@
       ...mapActions('users', ['updateUserInfo']),
       submitInfo(key) {
         this.editingFields = this.editingFields.filter(i => i !== key)
+        let { work_nickname, work_wx_account, work_mobile} = this;
+        let data = {
+          work_nickname,
+          work_wx_account,
+          work_mobile
+        }
+        updateProfile(data).then(() => {
+          this.$message.success('更新成功!')
+          this.getUserDetail()
+        })
       },
       changePassword() {
         this.isModiifyPasswordShow = true
@@ -159,6 +172,9 @@
         this.loading = true
         getUserDetail().then(ud => {
           this.updateUserInfo({...this.userInfo, ...ud})
+          this.work_nickname = ud.work_nickname, //工作昵称
+          this.work_wx_account = ud.work_wx_account, //工作微信
+          this.work_mobile = ud.work_mobile //工作手机
         }).finally(() => {
           this.loading = false
         })

@@ -76,4 +76,4 @@ export const getAnnouncementDetail = params => post('/agent/proxy/announcement/d
 export const getAnnNoReadCnt = params => get('/agent/proxy/announcement/not-read-count', params)
 
 // B端公司列表
-// export const getCompanyList = params => get('/management/proxy/company/list', params)
+export const updateProfile = params => post('/agent/proxy/sales/update_profile', params)
