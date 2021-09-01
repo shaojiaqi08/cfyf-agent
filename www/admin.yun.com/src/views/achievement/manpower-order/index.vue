@@ -198,12 +198,28 @@
       <div class="table-head">
         <span
           class="action-block"
-          style="display: inline-flex"
-          v-for="(actions, color) in actionGroup"
-          :key="color">
-            <span class="color-block" :style="{ 'background-color': color}"></span>
-            <span v-for="(item, index) in actions" :key="index">{{item.label + (index !== actions.length - 1 ? '、' : '')}}</span>
-          </span>
+          style="display: inline-flex">
+          <span class="color-block" :style="{ 'background-color': '#FF4C4C'}"></span>
+          <span>审核不通过、拒保</span>
+        </span>
+        <span
+          class="action-block"
+          style="display: inline-flex">
+          <span class="color-block" :style="{ 'background-color': '#09ba08'}"></span>
+          <span>问题下发、照会待回复</span>
+        </span>
+        <span
+          class="action-block"
+          style="display: inline-flex">
+          <span class="color-block" :style="{ 'background-color': '#4497eb'}"></span>
+          <span>审核通过、标准、次标准、次标准除责、通过、加费承保、除外承保、除责下发、限额承保</span>
+        </span>
+        <span
+          class="action-block"
+          style="display: inline-flex">
+          <span class="color-block" :style="{ 'background-color': '#999'}"></span>
+          <span>超时、撤件、无效单</span>
+        </span>
       </div>
       <el-table
         :data="list"
@@ -316,24 +332,24 @@ export default {
       manpowerResult: [],
       tableMaxHeight: null,
       actionMap: Object.freeze({
-        cancel: {label: '审核不通过', color: '#FF4C4C', sort: 0},
-        refuse: {label: '拒保', color: '#FF4C4C', sort: 1},
-        waiting_reply: {label: '问题下发', color: '#09ba08', sort: 0},
-        waiting_counteroffer_reply: {label: '照会待回复', color: '#09ba08', sort: 1},
-        waiting_confirm_except: {label: '除责下发', color: '#4497eb', sort: 7},
-        pass: {label: '审核通过', color: '#4497eb', sort: 0},
-        overtime: {label: '超时', color: '#999999', sort: 0}
+        cancel: {label: '审核不通过', color: '#FF4C4C'},
+        refuse: {label: '拒保', color: '#FF4C4C'},
+        waiting_reply: {label: '问题下发', color: '#09ba08'},
+        waiting_counteroffer_reply: {label: '照会待回复', color: '#09ba08'},
+        waiting_confirm_except: {label: '除责下发', color: '#4497eb'},
+        pass: {label: '审核通过', color: '#4497eb'},
+        overtime: {label: '超时', color: '#999999'}
       }),
       resultMap: Object.freeze({
-        refuse: {label: '拒保', color: '#FF4C4C', sort: 2},
-        normal: {label: '标准', color: '#4497eb', sort: 1},
-        sub_normal: {label: '次标准', color: '#4497eb', sort: 2},
-        except: {label: '次标准除责', color: '#4497eb', sort: 3},
-        pass: {label: '通过', color: '#4497eb', sort: 4},
-        increases: {label: '加费承保', color: '#4497eb', sort: 5},
-        exclusions: {label: '除外承保', color: '#4497eb', sort: 6},
-        quota: {label: '限额承保', color: '#4497eb', sort: 8},
-        cancel: {label: '撤件', color: '#999999', sort: 1}
+        refuse: {label: '拒保', color: '#FF4C4C'},
+        normal: {label: '标准', color: '#4497eb'},
+        sub_normal: {label: '次标准', color: '#4497eb'},
+        except: {label: '次标准除责', color: '#4497eb'},
+        pass: {label: '通过', color: '#4497eb'},
+        increases: {label: '加费承保', color: '#4497eb'},
+        exclusions: {label: '除外承保', color: '#4497eb'},
+        quota: {label: '限额承保', color: '#4497eb'},
+        cancel: {label: '撤件', color: '#999999'}
       })
     };
   },
@@ -365,17 +381,15 @@ export default {
           }
         }
       })
-      // 排序
-      Object.keys(res).forEach(k => {
-        res[k] = res[k].sort((a, b) => a.sort - b.sort)
-      })
       return res
     }
   },
   methods: {
     formatDate,
     rowStyleFormat({ row }) {
-      if (row.policy.policy_status === 'accepted_insure') return {}
+      const status = row.policy.policy_status
+      if (status === 'accepted_insure' || status === 'accepted_insure' || status === 'terminated' || status === 'surrendered') return {}
+      if (status === 'invalid') return { color: '#999' }
       return { color: (this.actionMap[row.action] || this.resultMap[row.result] || {}).color }
     },
     getData() {
