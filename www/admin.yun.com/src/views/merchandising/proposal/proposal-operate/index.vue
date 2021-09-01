@@ -180,7 +180,7 @@
                 v-for="(item, index) in relationsSelected"
                 :key="`${item.recognizee_policy_member.id}-${index}`"
                 :label="`${item.name || ''} (${familyTypes.filter(i => i.value === item.recognizee_policy_member.relation)[0].label})`"
-                :name="`${index}`"
+                :name="`${item.member_id}`"
               >
                 <div class="tab-container">
                   <div class="form-item no-margin-bottom">
@@ -909,7 +909,8 @@ export default {
           sex: '',
           birthday: ''
         },
-        name: ''
+        name: '',
+        member_id: ''
       },
       proposal_struct_id: 0,
       insuranceList: [],
@@ -1013,13 +1014,28 @@ export default {
         this.fixedRightPoint = innerWidth - shellRightPoint
       }, 300)
     },
-    saveChange (type) { // 修改家庭关系结构后调用
-      console.log('修改类型', type)
-      this.insureDetailLoading = true
-      if (type === 'update-member') {
+    saveChange (value) { // 修改家庭关系结构后调用
+      // console.log('修改类型', type)
+      // this.insureDetailLoading = true
+      // if (type === 'update-member') {
+      //   this.getRelations(this.proposal_struct_id)
+      // } else if (type === 'update-detail') {
+      //   this.init()
+      // }
+      console.log('修改类型', value)
+      if (value === 'update-member') {
         this.getRelations(this.proposal_struct_id)
-      } else if (type === 'update-detail') {
-        this.init()
+      } else {
+        // this.init()
+        this.changeMemberSchemes(value)
+      }
+    },
+    changeMemberSchemes (list) {
+      let self = this
+      if (list) {
+        list.map(item => {
+          self.removeTab(item)
+        })
       }
     },
     removeSelectedProduct(index) {
@@ -1178,6 +1194,7 @@ export default {
           }
           this.relationsSelected = res.schemes.map(item => {
             return {
+              member_id: item.recognizee_policy_member_id.toString() || '',
               name: item.recognizee_policy_name,
               recognizee_policy_member: {
                 id: item.recognizee_policy_member_id,
@@ -1197,6 +1214,8 @@ export default {
               }
             }
           })
+          
+          this.schemesTab = this.relationsSelected.length > 0 ? this.relationsSelected[0].member_id : 0
           // 获取已选择产品数据，再次进行费率计算
           const selectedData = res.schemes.map((item, index) => {
             const relation = this.relationsSelected[index]
@@ -1900,10 +1919,13 @@ export default {
       this.relationModel.policy_holder_member = this.relations.filter(
         i => i.id === this.relationModel.policy_holder_member.id
       )[0]
+      this.relationModel.member_id = this.relations.filter(
+        i => i.id === this.relationModel.recognizee_policy_member.id
+      )[0].id.toString()
 
       this.relationsSelected.push(this.relationModel)
       this.addDialogVisible = false
-      this.schemesTab = `${this.relationsSelected.length - 1}`
+      this.schemesTab = this.relationModel.member_id.toString() // `${this.relationsSelected.length - 1}`
       // this.formData.schemes.push(JSON.parse(JSON.stringify(this.schemesModel)))
       this.schemesFilters.push(
         JSON.parse(JSON.stringify(this.schemesFilterModel))
@@ -1929,7 +1951,8 @@ export default {
           sex: '',
           birthday: ''
         },
-        name: ''
+        name: '',
+        member_id: ''
       }
 
       // this.search({}, this.schemesFilters.length - 1)
@@ -1984,16 +2007,30 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const index = +targetName
-        this.relationsSelected.splice(index, 1)
-        this.schemesFilters.splice(index, 1)
-        this.productsSelected.splice(index, 1)
-        this.ect.splice(index, 1)
-        this.schemesTab = `${this.relationsSelected.length - 1}`
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
+        const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
+        if (index > -1) {
+          this.relationsSelected.splice(index, 1)
+          this.schemesFilters.splice(index, 1)
+          this.productsSelected.splice(index, 1)
+          this.ect.splice(index, 1)
+          this.schemesTab = this.relationsSelected[0].member_id.toString()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+        
+        
+        // const index = +targetName
+        // this.relationsSelected.splice(index, 1)
+        // this.schemesFilters.splice(index, 1)
+        // this.productsSelected.splice(index, 1)
+        // this.ect.splice(index, 1)
+        // this.schemesTab = `${this.relationsSelected.length - 1}`
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功!'
+        // })
       })
     }
   }

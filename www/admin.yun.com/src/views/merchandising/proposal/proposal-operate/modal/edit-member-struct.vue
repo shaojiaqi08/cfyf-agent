@@ -121,9 +121,11 @@ export default {
       // ]
       members: [],
       is_delete: false, // 是否删除已经存在的，若无则只更新人员列表
+      delete_ids: [], // 删除的人的id
     }
   },
   created () {
+    this.delete_ids = []
     this.members = this.list.map(item => {
         return {
           id: item.id || '',
@@ -180,7 +182,8 @@ export default {
         console.log('修改成员成功', res)
         this.editLoading = false
         this.$message.success('保存成功')
-        this.$emit('save', this.is_delete ? 'update-detail' : 'update-member')
+        // this.$emit('save', this.is_delete ? 'update-detail' : 'update-member')
+        this.$emit('save', this.is_delete ? this.delete_ids : 'update-member')
         this.modalClose()
       }).catch(res => {
         console.log('修改成员失败', res)
@@ -193,6 +196,7 @@ export default {
     deleteMember(index) {
       if (this.members[index].id) {
         this.is_delete = true
+        this.delete_ids.push(this.members[index].id)
       }
       this.members.splice(index, 1)
     },
