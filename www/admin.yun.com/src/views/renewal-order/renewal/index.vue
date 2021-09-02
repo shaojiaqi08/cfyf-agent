@@ -34,6 +34,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :clearable="false"
+              :picker-options="pickerOptions"
               @change="searchModelChange"
           ></el-date-picker>
           <template
@@ -364,8 +365,7 @@
 <script>
 import {
   getSalesData,
-  getSalesTeamData,
-  getDateRange
+  getSalesTeamData
 } from '@/apis/modules/achievement'
 import { 
   getRenewalCompanyList, 
@@ -378,7 +378,8 @@ import {
   sendCustomerMsg,
   exportSalesPolicy,
   exportTeamPolicy,
-  exportCompanyPolicy
+  exportCompanyPolicy,
+  getDateRange
 } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
@@ -473,7 +474,16 @@ export default {
         renewalCompany: exportCompanyPolicy, 
         renewalTeam: exportTeamPolicy, 
         RenewalOrder: exportSalesPolicy
-      })
+      }),
+      pickerOptions: {
+        disabledDate(time) {
+          let curDate = (new Date()).getTime();
+          let three = 90 * 24 * 3600 * 1000;
+          let threeMonths = curDate - three;
+          let threeMonths1 = curDate + three;
+          return  time.getTime() < threeMonths || time.getTime() > threeMonths1;
+        }
+      }
     }
   },
   methods: {
@@ -712,12 +722,7 @@ export default {
     // },
     getDateRange() {
       getDateRange().then((res) => {
-        const arrDate = ['今天', '昨天', '本年', '全部']
-        this.dateRange = res.filter(v => {
-          if(!arrDate.includes(v.name)) {
-            return v
-          }
-        })  
+        this.dateRange = res
         // 确定表格top值, 可以计算表格最高度
         this.$nextTick(() => this.calcTableHeight())
       })

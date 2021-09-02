@@ -60,3 +60,6 @@ export const exportTeamPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/poli
 
 // 导出订单数据(公司)
 export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/policy-renewal/export-for-company`
+
+//时间选择项
+export const getDateRange = (data) => get('/common/policy-renewal-date-ranges', data)
