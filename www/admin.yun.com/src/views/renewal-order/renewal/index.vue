@@ -489,7 +489,7 @@ export default {
         renewalCompany: getStatisticsForCompany
       })
       let getStatic = getApiRequest[this.$route.name];
-      getStatic().then(res => {
+      getStatic(this.searchModelFormat(true)).then(res => {
         this.statisticInfo = res
       })
     },

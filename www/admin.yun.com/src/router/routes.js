@@ -534,6 +534,7 @@ export const routers = [
         },
         component: getView('renewal-order/policy-holder-detail')
       },
+      //销售员通知客户设置
       {
         path: '/renewal-notify',
         name: 'RenewalNotify',
@@ -542,9 +543,22 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/manager'
+          permission: '/policy_renewal/notify_sales_setting'
         },
-        component: getView('renewal-order/notify')
+        component: getView('renewal-order/notify/sales')
+      },
+      //管理员通知客户设置
+      {
+        path: '/renewal-admin-notify',
+        name: 'RenewalAdminNotify',
+        meta: {
+          title: '通知客户设置',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/policy_renewal/notify_admin_setting'
+        },
+        component: getView('renewal-order/notify/admin')
       },
       // {
       //   path: '/renewal-my/detail/:order_no',
