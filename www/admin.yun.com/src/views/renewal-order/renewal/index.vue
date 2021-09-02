@@ -712,7 +712,12 @@ export default {
     // },
     getDateRange() {
       getDateRange().then((res) => {
-        this.dateRange = res
+        const arrDate = ['今天', '昨天', '本年', '全部']
+        this.dateRange = res.filter(v => {
+          if(!arrDate.includes(v.name)) {
+            return v
+          }
+        })  
         // 确定表格top值, 可以计算表格最高度
         this.$nextTick(() => this.calcTableHeight())
       })
