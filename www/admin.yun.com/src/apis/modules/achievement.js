@@ -90,3 +90,6 @@ export const manpowerListForCompany = params => get('/agent/proxy/manpower-order
 // 人核筛选数据
 export const getManpowerOptions = params => get('/agent/proxy/manpower-order/select-options', params)
 
+//续保续期信息-历史续保记录
+export const getRenewalInfo = params => get('/agent/proxy/policy_info/get_renewal', params)
+

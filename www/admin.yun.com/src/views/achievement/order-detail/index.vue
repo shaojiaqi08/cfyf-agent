@@ -302,6 +302,48 @@
           </div>
           <el-divider></el-divider>
         </template>
+
+        <!--续保续期信息-->
+        <template>
+          <h3>续保续期信息</h3>
+          <div class="item-block" v-loading="historyLoading">
+            <div class="item">
+              <div class="label">当年度状态：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_status_name}}</div>
+            </div>
+            <div class="item">
+              <div class="label">续保时间：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at}}</div>
+            </div>
+            <div class="item">
+              <div class="label">无需续保原因：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.unwanted_reason}}</div>
+            </div>
+            <div class="item">
+              <div class="label">扣款时间：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.pay_at}}</div>
+            </div>
+            <div class="item">
+              <div class="label">扣款失败原因：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.fail_reason}}</div>
+            </div>
+            <el-divider></el-divider>
+          </div>
+        </template>
+
+        <!--续保续期信息-->
+        <template>
+          <h3>历史续保记录</h3>
+          <div v-loading="historyLoading">
+            <el-table class="mt20" border stripe :data="getDataInfo.renewal_stage_history">
+              <el-table-column label="应续日期" prop="renewal_date_format"></el-table-column>
+              <el-table-column label="续保状态" prop="renewal_status_name"></el-table-column>
+              <el-table-column label="续保时间" prop="renewal_at"></el-table-column>
+              <el-table-column label="跟踪人员" prop="follow_obj_name"></el-table-column>
+              <el-table-column label="续保单号" prop="next_policy_sn"></el-table-column>
+            </el-table>
+          </div>
+        </template>
       </el-scrollbar>
     </div>
     <el-dialog
@@ -472,7 +514,8 @@ import {
   getPolicyInsurances,
   getPolicySales,
   getManPowerInfo,
-  getPolicyVisit
+  getPolicyVisit,
+  getRenewalInfo
 } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
@@ -529,7 +572,12 @@ export default {
       manPowerDetail: {},
       activeName: '0',
       collapseCount: 5,
-      manPowerInfo: null
+      manPowerInfo: null,
+      getDataInfo: {
+        current_renewal_stage: {},
+        renewal_stage_history: []
+      }, 
+      historyLoading: false
     }
   },
   computed: {
@@ -555,6 +603,7 @@ export default {
   },
   mounted() {
     this.init()
+    this.getRenewalInfo()
   },
   methods: {
     formatDate,
@@ -569,6 +618,15 @@ export default {
       //     }
       //   })
       //   .finally(() => (this.downloading = false))
+    },
+    getRenewalInfo() {
+      this.historyLoading = true
+      getRenewalInfo({order_no: this.$route.params.id}).then(res => {
+        this.getDataInfo = res;
+        this.historyLoading = false
+      }).catch(() => {
+        this.historyLoading = false
+      })
     },
     init() {
       const { perPreFix } = this

@@ -33,7 +33,7 @@
               border
               stripe
               :header-cell-style="{ backgroundColor: '#EBEBEB', color: '#333333', borderTop: '1px solid rgba(0, 0, 0, .1)' }"
-              @row-click="handleRowClick">
+              @row-click="handleRowClick($event,'1')">
             <el-table-column label="产品种类" prop="product_insurance_class_name" align="center" width="80px"></el-table-column>
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
@@ -85,7 +85,7 @@
               border
               stripe
               :header-cell-style="{ backgroundColor: '#EBEBEB', color: '#333333', borderTop: '1px solid rgba(0, 0, 0, .1)' }"
-              @row-click="handleRowClick">
+              @row-click="handleRowClick($event,'2')">
             <el-table-column label="产品种类" prop="product_insurance_class_name" align="center" width="80px"></el-table-column>
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
@@ -141,11 +141,10 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item
-              :disabled="readonly"
               v-for="item in renewalOptions"
               :command="item.value"
               :key="item.value"
-              :class="{ 'renewal-dropdown-active': item.value === curRenewalId }"
+              :class="{ 'renewal-dropdown-active': item.value === obj.stage_version }"
             >{{ item.label }}</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
@@ -184,7 +183,8 @@
                 class="status-block"
                 :class="[item.renewal_status]"
                 v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
-                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>{{messageStatus[item.renewal_status].label}}
+                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
+                <!-- {{messageStatus[item.renewal_status].label}} -->
               </span>
             </span>
             <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
@@ -271,6 +271,7 @@ export default {
         { label: '跟踪中', value: 'already_follow' },
         { label: '未联系上', value: 'cannot_get_in_touch' },
         { label: '放弃续保', value: 'refuse_renewal' },
+        { label: '已续保', value: 'already_renewal' },
         { label: '其他', value: 'other' }
       ]),
       list: [{}],
@@ -322,25 +323,27 @@ export default {
         RenewalOrderViewMy: getSalesDetail, 
         RenewalOrderViewMyTeam: getTeamDetail, 
         RenewalOrderViewMyCompany: getCompanyDetail
-      })
+      }),
+      renewalOptions: [],
+      current_version: ''
     }
   },
   computed: {
-    renewalOptions() {
-      let { stage_list } = this.followData
-      const { id } = this.row.current_renewal_stage
-      stage_list = stage_list || []
-      return stage_list.map(item => ({
-        label: item.id === +id ? '本次续保' : `第${item.stage - 1}次续保`,
-        value: item.id,
-        stage: item.stage,
-        follow_status: item.follow_status,
-        product_name: item.policy.product_name,
-        is_current: item.id === +id
-      }))
-    },
+    // renewalOptions() {
+    //   let { stage_list } = this.followData
+    //   const { id } = this.row.current_renewal_stage
+    //   stage_list = stage_list || []
+    //   return stage_list.map(item => ({
+    //     label: item.id === +id ? '本次续保' : `第${item.stage - 1}次续保`,
+    //     value: item.id,
+    //     stage: item.stage,
+    //     follow_status: item.follow_status,
+    //     product_name: item.policy.product_name,
+    //     is_current: item.id === +id
+    //   }))
+    // },
     curRenewalDetail() {
-      return this.renewalOptions.find(i => i.value === this.curRenewalId) || {}
+      return this.renewalOptions.find(i => i.value === this.obj.stage_version) || {}
     }
   },
   methods: {
@@ -386,6 +389,7 @@ export default {
         if(res.customer_policy.length > 0 && res.customer_policy[0] !== null) {
           let customer_policy = res.customer_policy[0]
           this.obj.stage_version = customer_policy.current_renewal_stage.version //设置默认选中第一条data
+          this.current_version = customer_policy.current_renewal_stage.version //设置默认选中第一条data
           this.obj.order_no = customer_policy.order_no //设置默认选中第一条data
           this.$refs.detailTable.setCurrentRow(customer_policy)
         }
@@ -438,11 +442,12 @@ export default {
     },
     handleClick(id) {
       this.rightLoading = true;
-      this.curRenewalId = id;
+      this.obj.stage_version = id;
       this.followData.stage_list.forEach(k => {
-        if(k.id === id) {
+        if(k.version === id) {
           this.obj.stage_version = k.version;
           this.obj.order_no = k.policy.order_no;
+          this.readonly = k.is_editable === '0' || this.$route.name === 'RenewalOrderViewMy' || this.$route.name === 'RenewalOrderViewMyTeam' || this.$route.name === 'RenewalOrderViewMyCompany'? true : false;
           this.getFollowLogs();
         }
       })
@@ -472,21 +477,35 @@ export default {
       this.rightLoading = true
       getFollowLogs(data).then(res => {
         this.rightLoading = false
+        console.log('res',res)
         this.followData = res;
         let stage_list = res.stage_list[0];
-        this.curRenewalId = stage_list.id;
+        this.readonly = res.stage_list[0].is_editable === '0' || this.$route.name === 'RenewalOrderViewMy' || this.$route.name === 'RenewalOrderViewMyTeam' || this.$route.name === 'RenewalOrderViewMyCompany'? true : false;
         this.step = stage_list.follow_status;
+        this.renewalOptions = this.followData.stage_list.map(item => ({
+          label: item.version === this.current_version ? '本次续保' : `第${item.stage - 1}次续保`,
+          value: item.version,
+          stage: item.stage,
+          follow_status: item.follow_status,
+          product_name: item.policy.product_name,
+          is_current: item.version === obj.stage_version
+        }))
+        console.log('renewalOptions',this.renewalOptions)
       }).catch(() => {
         this.rightLoading = false
       })
     },
     //点击tableRow
-    handleRowClick(row) {
+    handleRowClick(row, type) {
+      if(type === '1') {
+        this.$refs.bottomDetailTable.setCurrentRow({})
+      } else if(type === '2') {
+        this.$refs.detailTable.setCurrentRow({})
+      }
       let { obj } = this;
       if(row.order_no === obj.order_no) {
         return;
       }
-      this.row.current_renewal_stage = row.current_renewal_stage
       obj.stage_version = row.current_renewal_stage.version;
       obj.order_no = row.order_no;
       this.getFollowLogs()
@@ -499,14 +518,6 @@ export default {
           type: 'error',
           title: '',
           message: '请选择跟踪状态！'
-        });
-        return;
-      }
-      if(d.title === '') {
-        this.$notify({
-          type: 'error',
-          title: '',
-          message: '请输入标题！'
         });
         return;
       }
