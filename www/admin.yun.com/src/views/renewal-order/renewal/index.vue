@@ -21,6 +21,7 @@
             :width="300"
             :textOverflow="false"
             :collapse="false"
+            :clearable="false"
             autoClose
             autofocus
             class="mb16"
