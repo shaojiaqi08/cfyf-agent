@@ -23,7 +23,7 @@
             :collapse="false"
             :clearable="false"
             autoClose
-            autofocus
+            autoFocus
             class="mb16"
             @input="searchModelChange"
         >
@@ -315,9 +315,10 @@
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保人手机号" prop="policy.policy_holder_info.mobile" align="center" width="210px"></el-table-column>
         <el-table-column label="续保状态" prop="renewal_status_name" align="center"></el-table-column>
-        <el-table-column label="续保链接" prop="renewal_link" align="center">
+        <el-table-column label="续保链接" prop="renewal_link" width="130px" align="center">
           <template v-slot="{ row }">
-            <text-hidden-ellipsis :popoverTip="row.renewal_link" width="248px" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
+            <text-hidden-ellipsis :popoverTip="row.renewal_link" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
+            <a class="copy-class" href="javascript:;" v-if="row.renewal_link != ''" @click="copyRenewalLink(row.renewal_link)">复制链接</a>
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
@@ -403,6 +404,7 @@ export default {
     LetterDialog
   },
   data() {
+    const date = new Date();
     return {
       qrCodeDialogVisible: false,
       qrCodeSrc: '',
@@ -432,8 +434,8 @@ export default {
       exporting: false,
       tabsData: Object.freeze([
         { label: '全部续保续期', name: ' ' },
-        { label: '短险续保', name: '0' },
-        { label: '长期续保', name: '1' }
+        { label: '短险续保', name: '1' },
+        { label: '长险续期', name: '0' }
       ]),
       searchModel: {
         product_insurance_duration_type: '',
@@ -443,7 +445,7 @@ export default {
         policy_status: [],
         product_id_type: [],
         supplier_id: [],
-        date_range: [+new Date(), +new Date()],
+        date_range: [date.getTime() - 3600 * 1000 * 24 * 90, date.getTime() + 3600 * 1000 * 24 * 90],
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0'
@@ -519,14 +521,15 @@ export default {
     },
     //获取消息模板
     showSendLetter(obj) {
-      this.letterDialogVisible = true
-      this.sendLoading = true
+      this.loading = true
       this.templateVersion = obj.version
+      this.detailObj.message = ''
       getMsgTemplate({version: obj.version}).then(res => {
-        this.sendLoading = false
+        this.loading = false
+        this.letterDialogVisible = true
         this.detailObj = res
       }).catch(() => {
-        this.sendLoading = false
+        this.loading = false
       })
     },
     handleSuccess(v) {
@@ -538,11 +541,6 @@ export default {
           this.sendLoading = false
         }).catch(() => {
           this.sendLoading = false
-          this.$notify({
-            type: 'error',
-            title: '',
-            message: '发送失败!'
-          })
         })
       } else if(v === 'modify') {
         this.$router.push('/user-info')
@@ -567,16 +565,24 @@ export default {
       }).href)
     },
     tabChange() {
+      const date = new Date();
       Object.assign(this.searchModel, {
         keyword: '',
         policy_status: [],
         products: [],
         supplier_id: [],
-        date_range: [+new Date(), +new Date()],
+        date_range: [date.getTime() - 3600 * 1000 * 24 * 90, date.getTime() + 3600 * 1000 * 24 * 90],
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0',
+        renewal_status: [],
+        follow_status: []
       })
+      this.isCheckAll = false;
+      this.list = []
+      this.page = 1;
+      this.page_size = 20;
+      this.total = 0;
       this.getData()
       this.getStaticData()
     },
@@ -616,7 +622,7 @@ export default {
     },
     scroll2Bottom() {
       const { page, page_size, total } = this
-      if(total < 20) {
+      if(total < 20 || this.list.length > total) {
         return
       }
       if (page * page_size < total) {
@@ -991,5 +997,12 @@ export default {
       box-shadow: 0px 1px 8px 0px rgba(0, 0, 0, 0.1);
     }
   }
+}
+.copy-class {
+  text-decoration: underline;
+  color: #1F78FF;
+}
+.copy-class:active {
+  opacity: 0.6;
 }
 </style>

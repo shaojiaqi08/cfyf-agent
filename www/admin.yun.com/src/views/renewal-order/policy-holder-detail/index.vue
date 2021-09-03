@@ -4,24 +4,26 @@
       <div class="header">投保人信息</div>
       <div class="content-body">
         <el-row>
-          <el-col :span="8">
+          <el-row>
+          <el-col :span="8" class="bottom-col">
             <span class="mr8">姓名</span>{{detail.customer.real_name}}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" class="bottom-col">
             <span class="mr8">手机号</span>{{detail.customer.mobile}}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" class="bottom-col">
             <span class="mr8">身份证号</span>{{detail.customer.certificate_number}}
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" class="bottom-col">
             <span class="mr8">出生日期</span>{{detail.customer.format_birthday}}
           </el-col>
-          <!-- <el-col :span="8" class="mt10 ">
-            <span class="mr8">邮箱</span>xxx
-          </el-col> -->
+          <el-col :span="8" class="mt10 bottom-col" v-if="detail.customer.family_name !== ''">
+            <span class="mr8">关联家庭</span>{{detail.customer.family_name}}
+          </el-col>
+        </el-row>
         </el-row>
         <div class="table-wrap">
-          <p>关联家庭</p>
+          <!-- <p>关联家庭</p> -->
           <el-table
               ref="detailTable"
               highlight-current-row
@@ -877,6 +879,9 @@ export default {
   ::v-deep .el-table__empty-block{
     width: 100% !important;
   }
+}
+.bottom-col {
+  margin-bottom: 14px;
 }
 </style>
 <style lang="scss">
