@@ -315,10 +315,10 @@
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保人手机号" prop="policy.policy_holder_info.mobile" align="center" width="210px"></el-table-column>
         <el-table-column label="续保状态" prop="renewal_status_name" align="center"></el-table-column>
-        <el-table-column label="续保链接" prop="renewal_link" width="130px" align="center">
+        <el-table-column label="续保链接" prop="renewal_url" width="130px" align="center">
           <template v-slot="{ row }">
-            <text-hidden-ellipsis :popoverTip="row.renewal_link" @click="copyRenewalLink(row.renewal_link)"></text-hidden-ellipsis>
-            <a class="copy-class" href="javascript:;" v-if="row.renewal_link != ''" @click="copyRenewalLink(row.renewal_link)">复制链接</a>
+            <text-hidden-ellipsis :popoverTip="row.renewal_url" @click="copyRenewalLink(row.renewal_url)"></text-hidden-ellipsis>
+            <a class="copy-class" href="javascript:;" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</a>
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
@@ -333,12 +333,12 @@
             <el-link
               type="primary"
               @click="copyLink(row)"
-              v-if="row.renewal_link !== ''"
+              v-if="row.renewal_url !== ''"
               class="mr8">复制链接</el-link>
             <el-link
               type="primary"
               @click="showQrCode(row)"
-              v-if="row.renewal_link !== ''"
+              v-if="row.renewal_url !== ''"
               class="mr8">链接二维码</el-link>
             <el-link
               type="primary"
@@ -513,8 +513,8 @@ export default {
     copyRenewalLink(link) {
       this.$copyText(link).then(() => this.$message.success('续保链接已复制到粘贴板'))
     },
-    showQrCode({ renewal_link }) {
-      QRCode.toDataURL(renewal_link).then(result => {
+    showQrCode({ renewal_url }) {
+      QRCode.toDataURL(renewal_url).then(result => {
         this.qrCodeSrc = result
         this.qrCodeDialogVisible = true
       })
@@ -586,8 +586,8 @@ export default {
       this.getData()
       this.getStaticData()
     },
-    copyLink({ renewal_link }) {
-      this.$copyText(renewal_link).then(() => this.$message.success('链接已复制到粘贴板'))
+    copyLink({ renewal_url }) {
+      this.$copyText(renewal_url).then(() => this.$message.success('链接已复制到粘贴板'))
     },
     policyExport() {
       let exportData = this.exportApiMap[this.$route.name];
