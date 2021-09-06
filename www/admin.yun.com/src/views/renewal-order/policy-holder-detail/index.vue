@@ -38,7 +38,7 @@
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_link" align="center" width="280px"></el-table-column>
+            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_url" align="center" width="280px"></el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
@@ -90,7 +90,7 @@
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_link" align="center" width="280px"></el-table-column>
+            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_url" align="center" width="280px"></el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
