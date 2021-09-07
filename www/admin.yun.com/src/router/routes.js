@@ -422,7 +422,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/sale'
+          permission: 'sales_policy_renewal_list'
         },
         component: getView('renewal-order/renewal')
       },
@@ -434,7 +434,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/sale'
+          permission: 'team_policy_renewal_list'
         },
         component: getView('renewal-order/renewal')
       },
@@ -446,7 +446,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: '/sale'
+          permission: 'company_policy_renewal_list'
         },
         component: getView('renewal-order/renewal')
       },

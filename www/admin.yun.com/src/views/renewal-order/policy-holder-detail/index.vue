@@ -542,7 +542,6 @@ export default {
         this.rightLoading = false
         console.log('res',res)
         this.followData = res;
-        let stage_list = res.stage_list[0];
         this.readonly = res.stage_list[0].is_editable === '0' || this.$route.name === 'RenewalOrderViewMy' || this.$route.name === 'RenewalOrderViewMyTeam' || this.$route.name === 'RenewalOrderViewMyCompany'? true : false;
         // this.step = stage_list.follow_status;
         this.renewalOptions = this.followData.stage_list.map(item => ({

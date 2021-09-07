@@ -281,7 +281,7 @@
             class="mb16"
             :loading="exporting"
             icon="iconfont iconxiao16_xiazai mr4"
-            v-if="$checkAuth('/company_performance/export')"
+            v-if="$checkAuth('/policy_renewal/export_for_sales' || '/policy_renewal/export_for_team' || '/policy_renewal/export_for_company')"
             @click="policyExport"
         >导出数据</el-button>
       </div>
@@ -329,25 +329,26 @@
             <el-link
               type="primary"
               @click="trace(row)"
-              class="mr8">跟踪</el-link>
+              class="mr8" v-if="$checkAuth('/policy_renewal/sales_follow' || '/policy_renewal/team_follow' || '/policy_renewal/company_follow')">跟踪</el-link>
             <el-link
               type="primary"
-              @click="copyLink(row)"
-              v-if="row.renewal_url !== ''"
-              class="mr8">复制链接</el-link>
+              class="mr8" v-if="$checkAuth('/policy_renewal/sales_copy_renewal_link' || '/policy_renewal/team_copy_renewal_link' || '/policy_renewal/company_copy_renewal_link')">
+              <p @click="copyLink(row)" v-if="row.renewal_url !== ''">复制链接</p></el-link>
             <el-link
               type="primary"
-              @click="showQrCode(row)"
-              v-if="row.renewal_url !== ''"
-              class="mr8">链接二维码</el-link>
+              class="mr8"
+              v-if="$checkAuth('/policy_renewal/sales_renewal_link_qrcode' || '/policy_renewal/renewal_link_qrcode_team' || '/policy_renewal/company_copy_renewal_link  ')"
+              >
+                <p @click="showQrCode(row)" v-if="row.renewal_url !== ''">链接二维码</p>
+              </el-link>
             <el-link
               type="primary"
               @click="showSendLetter(row)"
-              class="mr8">发送短信</el-link>
+              class="mr8" v-if="$checkAuth('/policy_renewal/sales_send_msg' || '/policy_renewal/team_send_msg' || '/policy_renewal/company_send_msg')">发送短信</el-link>
             <el-link
               type="primary"
               @click="trace(row, true)"
-              class="mr8">查看</el-link>
+              class="mr8" v-if="$checkAuth('/policy_renewal/detail_for_sales' || '/policy_renewal/detail_for_team' || '/policy_renewal/company_for_detail')">查看</el-link>
           </template>
         </el-table-column>
       </el-table>
