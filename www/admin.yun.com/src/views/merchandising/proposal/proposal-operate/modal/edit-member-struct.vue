@@ -191,7 +191,13 @@ export default {
       })
     },
     addNewMember() {
-      this.members.push(member_item)
+      this.members.push({
+  id: '',
+  relation: '',
+  sex: 1,
+  member_name: '',
+  birthday: ''
+})
     },
     deleteMember(index) {
       if (this.members[index].id) {

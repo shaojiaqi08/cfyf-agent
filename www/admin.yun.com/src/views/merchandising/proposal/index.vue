@@ -301,13 +301,15 @@ export default {
       });
     },
     copyProposal(item) {
-      console.log("this.isDeposit", this.isDeposit);
+      // console.log("this.isDeposit", this.isDeposit);
+      this.loading = true;
       if (this.isDeposit) {
         let routeUrl = this.$router.resolve(
           `/proposal/proposal-operate${
             this.isDeposit ? "-deposit" : ""
           }?proposal_id=${item.id}&customer_id=${item.customer_id}`
         );
+        this.loading = false;
         window.open(routeUrl.href, "_blank");
       } else {
         //   复制家庭成员
@@ -319,6 +321,7 @@ export default {
               this.isDeposit ? "-deposit" : ""
             }?proposal_id=${item.id}&customer_id=${item.customer_id}&family_struct_id=${res.id}`
           );
+          this.loading = false;
           window.open(routeUrl.href, "_blank");
         });
       }

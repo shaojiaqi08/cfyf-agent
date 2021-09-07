@@ -2523,6 +2523,7 @@ export default {
       this.isSelectedTextHidden = !this.isSelectedTextHidden
     },
     removeTabInchange(targetName) {
+      let that = this
       const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
       if (index > -1) {
         this.relationsSelected.splice(index, 1)
@@ -2530,11 +2531,26 @@ export default {
         this.productsSelected.splice(index, 1)
         this.ect.splice(index, 1)
         this.schemesTab = this.relationsSelected[0].member_id.toString()
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功!'
+        // })
       }
+      // 2021 0907 增加一个判断  如果是本人 但是本人的投保人或者被保人是已经删除的人 也要一并删掉
+      this.relationsSelected.map((item) => {
+        if (+targetName === +item.recognizee_policy_member.id || +targetName === +item.policy_holder_member.id) {
+          const index1 = that.relationsSelected.findIndex(
+            (item1) => item1.member_id == item.member_id
+          )
+          if (index1 > -1) {
+            that.relationsSelected.splice(index1, 1)
+            that.schemesFilters.splice(index1, 1)
+            that.productsSelected.splice(index1, 1)
+            that.ect.splice(index1, 1)
+            that.schemesTab = that.relationsSelected[0].member_id.toString()
+          }
+        }
+      })
     },
     removeTab(targetName) {
       this.$confirm('请确认删除该项方案?', '提示', {
