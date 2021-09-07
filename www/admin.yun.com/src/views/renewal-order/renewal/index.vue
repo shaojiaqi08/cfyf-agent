@@ -78,7 +78,7 @@
           </el-select>
           <template
               v-slot:label
-          >{{hasValue(searchModel.sales_id) ? '出单人' + salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
+          >{{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}</template>
         </filter-shell>
 
         <!--保险产品-->
@@ -106,7 +106,7 @@
           </el-select>
           <template
               v-slot:label
-          >{{ hasValue(searchModel.product_id_type) ? '保险产品' + productList.find(i => i.id_type === searchModel.product_id_type[0]).name : '保险产品' }}</template>
+          >{{ hasValue(searchModel.product_id_type) ? productList.find(i => i.id_type === searchModel.product_id_type[0]).name : '保险产品' }}</template>
         </filter-shell>
 
         <!--保险公司-->
@@ -134,7 +134,7 @@
           </el-select>
           <template
               v-slot:label
-          >{{ hasValue(searchModel.supplier_id) ? '保险公司' + supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}</template>
+          >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}</template>
         </filter-shell>
 
         <!--B端公司-->
@@ -310,7 +310,7 @@
         <el-table-column label="投保人" prop="policy.policy_holder_info.name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy.recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="应收保费" prop="premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="续收期间" prop="renewal_date" align="center"></el-table-column>
+        <el-table-column label="续收期间" prop="stage_desc" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="policy.payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="投保人手机号" prop="policy.policy_holder_info.mobile" align="center" width="210px"></el-table-column>
@@ -567,7 +567,7 @@ export default {
     tabChange() {
       const date = new Date();
       Object.assign(this.searchModel, {
-        keyword: '',
+        // keyword: '',
         policy_status: [],
         products: [],
         supplier_id: [],

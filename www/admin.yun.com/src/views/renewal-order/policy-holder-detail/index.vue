@@ -38,7 +38,12 @@
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_url" align="center" width="280px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="130px">
+              <template v-slot="{ row }">
+                <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
+                <a class="copy-class" href="javascript:;" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</a>
+              </template>
+            </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
@@ -51,7 +56,7 @@
               </template>  
             </el-table-column>
             <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
-            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date" align="center" width="120px" ></el-table-column>
+            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
             <el-table-column label="宽限日期" width="170px" align="center">
               <template v-slot="{ row }">
                 <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
@@ -90,7 +95,12 @@
             <el-table-column label="产品名称" prop="product_name" align="center" width="200px"></el-table-column>
             <el-table-column label="续保状态" prop="current_renewal_stage.renewal_status_name" align="center" width="100px"></el-table-column>
             <el-table-column label="跟踪状态" prop="current_renewal_stage.follow_status_name" align="center" width="100px"></el-table-column>
-            <el-table-column label="续保链接" prop="current_renewal_stage.renewal_url" align="center" width="280px"></el-table-column>
+            <el-table-column label="续保链接" align="center" width="130px">
+              <template v-slot="{ row }">
+                <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
+                <a class="copy-class" href="javascript:;" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</a>
+              </template>
+            </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="保单号" prop="policy_sn" align="center" width="160px"></el-table-column>
             <el-table-column label="投保人手机号" prop="policy_holder_info.mobile" align="center" width="160px"></el-table-column>
@@ -103,7 +113,7 @@
               </template>  
             </el-table-column>
             <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
-            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date" align="center" width="120px" ></el-table-column>
+            <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
             <el-table-column label="宽限日期" width="170px" align="center">
               <template v-slot="{ row }">
                 <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
@@ -162,42 +172,48 @@
         </div>
       </div>
       <div class="year-wrap">{{ currentYear }}</div>
-      <el-scrollbar class="scrollbar">
+      <div class="scrollbar scrollbar-theme" ref="body">
+        <div class="scroll-content">
         <div
           v-for="(item, index) in followData.follow_logs"
           :key="index"
           class="list-item active"
           :class="{ active: isToday(item.follow_at) }">
-          <div class="date-wrap">
-            <span>{{isToday(item.follow_at * 1000) ? '今天' : formatDate(item.follow_at * 1000, 'yyyy-MM')}}</span><br><span>{{formatDate(item.follow_at * 1000, 'hh:mm')}}</span>
+          <div class="date-wrap" :class="isToday(item.follow_at * 1000) ? 'active':''">
+            <span>{{isToday(item.follow_at * 1000) ? '今天' : formatDate(item.follow_at * 1000, 'MM-dd')}}</span><br><span>{{formatDate(item.follow_at * 1000, 'hh:mm')}}</span>
           </div>
           <div class="content-wrap">
             <span class="title-wrap">
-              <i class="status-dot"></i>
+              <i :class="isToday(item.follow_at * 1000) ?'cur-status-dot':'status-dot'"></i>
               <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus" :src="item.follow_obj_avatar_url"></el-avatar>
               <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
               <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
               <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
               <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
-              <span
+              <!-- <span
                 class="status-block"
                 :class="[item.renewal_status]"
                 v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
                 <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
-                <!-- {{messageStatus[item.renewal_status].label}} -->
-              </span>
+                {{messageStatus[item.renewal_status].label}}
+              </span> -->
             </span>
+            <div class="msg-wrap" v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
+              <p>{{item.title}}</p>
+              <span>{{item.remark}}</span>
+            </div>
             <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
               <p>{{item.title}}</p>
               <span>{{item.remark}}</span>
             </div>
           </div>
         </div>
-      </el-scrollbar>
+        </div>
+      </div>
       <div class="follow-footer" v-if="!readonly">
         <div>
           跟踪标题
-          <el-input v-model="sendData.title" size="mini" placeholder="必填"></el-input>
+          <el-input v-model="sendData.title" size="mini" placeholder="选填"></el-input>
         </div>
         <div>
           <div>
@@ -247,10 +263,12 @@ import {
   sendCustomerMsg
 } from '@/apis/modules/renewal-order'
 import LetterDialog from '../component/dialog/letter-dialog.vue'
+import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
 export default {
   name: 'PolicyHolderDetail',
   components: {
-    LetterDialog
+    LetterDialog,
+    textHiddenEllipsis
   },
   data() {
     return {
@@ -346,8 +364,52 @@ export default {
       return this.renewalOptions.find(i => i.value === this.obj.stage_version) || {}
     }
   },
+  mounted() {
+    let $scrollBody = this.$refs.body
+    this.bindSetCurrentYear = this.setCurrentYear.bind(this)
+    $scrollBody.addEventListener('scroll', this.bindSetCurrentYear)
+    if ($scrollBody && $scrollBody.scrollHeight > $scrollBody.clientHeight) {
+      $scrollBody.scrollTop = $scrollBody.scrollHeight
+    }
+  },
+  beforeDestroy() {
+    let $scrollBody = this.$refs.body
+    $scrollBody.removeEventListener('scroll', this.bindSetCurrentYear)
+  },
   methods: {
     formatDate,
+    setCurrentYear(e) {
+      let $container = e && e.target ? e.target : this.$refs.body
+      let clientHeight = $container.clientHeight
+      let scrollHeight = $container.scrollHeight
+      let messageItems = document.querySelectorAll(
+        `.message-item`
+      )
+      if (!messageItems.length) {
+        this.currentYear = new Date().getFullYear()
+        return
+      }
+      if (clientHeight >= scrollHeight) {
+        this.currentYear = new Date(
+            parseInt(messageItems[messageItems.length - 1].getAttribute('data-date-time'))
+          ).getFullYear()
+        return
+      }
+      let scrollTop = $container.scrollTop || 0
+      let offsetTopList = [...messageItems].map(item => item.offsetTop)
+      for (let i = 0; i < offsetTopList.length; i++) {
+        if (scrollTop >= offsetTopList[i]) {
+          this.currentYear = new Date(
+            parseInt(messageItems[i].getAttribute('data-date-time'))
+          ).getFullYear()
+        } else {
+          break
+        }
+      }
+    },
+    copyRenewalLink(link) {
+      this.$copyText(link).then(() => this.$message.success('续保链接已复制到粘贴板'))
+    },
     //获取消息模板
     showSendLetter({current_renewal_stage}) {
       this.letterDialogVisible = true
@@ -460,6 +522,7 @@ export default {
       };
       this.rightLoading = true
       modifyFollowStatus(data).then(() => {
+        this.getFollowLogs()
         this.$message.success(`修改跟踪状态成功!`)
         this.rightLoading = false
       }).catch(() => {
@@ -481,7 +544,7 @@ export default {
         this.followData = res;
         let stage_list = res.stage_list[0];
         this.readonly = res.stage_list[0].is_editable === '0' || this.$route.name === 'RenewalOrderViewMy' || this.$route.name === 'RenewalOrderViewMyTeam' || this.$route.name === 'RenewalOrderViewMyCompany'? true : false;
-        this.step = stage_list.follow_status;
+        // this.step = stage_list.follow_status;
         this.renewalOptions = this.followData.stage_list.map(item => ({
           label: item.version === this.current_version ? '本次续保' : `第${item.stage - 1}次续保`,
           value: item.version,
@@ -490,7 +553,16 @@ export default {
           product_name: item.policy.product_name,
           is_current: item.version === obj.stage_version
         }))
-        console.log('renewalOptions',this.renewalOptions)
+        this.$nextTick(() => {
+          if (this.$refs.body) {
+            if (this.$refs.body.scrollHeight <= this.$refs.body.clientHeight) {
+              this.setCurrentYear()
+            } else {
+              this.$refs.body.scrollTop = this.$refs.body.scrollHeight
+            }
+            this.step = this.curRenewalDetail.follow_status || 'not_follow';
+          }
+        })
       }).catch(() => {
         this.rightLoading = false
       })
@@ -688,157 +760,6 @@ export default {
       border-bottom: 1px solid #E6E6E6;
       font-weight: bold;
     }
-    .el-scrollbar {
-      flex: 1;
-      overflow: hidden;
-      .list-item {
-        display: flex;
-        .date-wrap {
-          width: 72px;
-          height: 34px;
-          box-sizing: border-box;
-          color: #333;
-          text-align: center;
-          position: relative;
-          font-size: 12px;
-          margin-top: 8px;
-          span {
-            line-height: 17px;
-          }
-          &.active {
-            color: #1F78FF;
-          }
-        }
-        .content-wrap {
-          flex: 1;
-          font-size: 12px;
-          padding: 8px 16px 8px 12px;
-          border-left: 1px solid #d8d8d8;
-          box-sizing: border-box;
-          .title-wrap {
-            display: flex;
-            align-items: center;
-            color: #333;
-            transform: translateX(-20.5px);
-            height: 34px;
-            & > .status-dot {
-              color: #D8D8D8;
-              box-sizing: border-box;
-              border: 4px solid #fff;
-              margin-right: 2px;
-              width: 16px;
-              height: 16px;
-              border-radius: 50%;
-              background-color: #D8D8D8;
-            }
-
-            .el-avatar {
-              width: 20px;
-              height: 20px;
-              margin-right: 8px;
-            }
-            .name-span {
-              font-weight: 800;
-            }
-            .name-txt-overflow {
-              display: inline-block;
-              max-width: 70px;
-              overflow: hidden;
-              white-space: nowrap;
-              overflow: hidden;
-              text-overflow: ellipsis;
-            }
-            .action-span {
-              color: #999;
-              margin: 0 4px;
-            }
-            .status-block {
-              background-color: #F5F5F5;
-              border-style: solid;
-              border-width: 1px;
-              border-color: rgba(204, 204, 204, 0.2);
-              border-radius: 2px;
-              height: 20px;
-              box-sizing: border-box;
-              display: flex;
-              align-items: center;
-              padding: 0 8px;
-              color: #999;
-              font-size: 12px;
-              & > .iconfont {
-                font-size: 12px;
-                color: #999;
-                margin-right: 4px;
-              }
-              &.cannot_get_in_touch, &.refuse_renewal {
-                color: #ff5151;
-                background: #ffeded;
-                border: 1px solid rgba(255, 81, 81, 0.1);
-              }
-              &.already_renewal {
-                color: #4497eb;
-                background: #ecf4fd;
-                border: 1px solid #daeafb;
-              }
-            }
-          }
-          .msg-wrap {
-            background-color: #F5F5F5;
-            padding: 16px;
-            color: #131415;
-            border-radius: 0px 12px 12px 12px;
-            & > p {
-              margin: 0 0 4px 0;
-              line-height: 20px;
-              font-size: 14px;
-              font-weight: bold;
-            }
-
-            & > span {
-              font-size: 14px;
-              text-align: justify;
-              line-height: 20px;
-            }
-          }
-        }
-        &.active {
-          .date-wrap {
-            color: #1F78FF;
-          }
-          .content-wrap {
-            .iconfont {
-              background-color: #1F78FF;
-            }
-            .msg-wrap {
-              background-color: #1F78FF;
-              color: #fff;
-            }
-          }
-        }
-        &.completed {
-          .content-wrap {
-            position: relative;
-            &::after {
-              content: '';
-              width: 2px;
-              position: absolute;
-              background-color: #fff;
-              left: -1px;
-              top: 35px;
-              bottom: 0;
-            }
-            .title-wrap > .iconfont {
-              border: transparent;
-              font-size: 16px;
-              margin-right: 4px;
-              background-color: #fff;
-              color: #1F78FF;
-              position: relative;
-            }
-          }
-        }
-      }
-    }
     .follow-footer {
       min-height: 84px;
       overflow: hidden;
@@ -893,6 +814,183 @@ export default {
 }
 .bottom-col {
   margin-bottom: 14px;
+}
+.copy-class {
+  text-decoration: underline;
+  color: #1F78FF;
+}
+.copy-class:active {
+  opacity: 0.6;
+}
+.scrollbar {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  .scrollbar-theme::-webkit-scrollbar {
+    width: 6px;
+    height: 10px;
+    background-color: transparent;
+  }
+  .list-item {
+    display: flex;
+    .date-wrap {
+      width: 72px;
+      height: 34px;
+      box-sizing: border-box;
+      color: #333;
+      text-align: center;
+      position: relative;
+      font-size: 12px;
+      margin-top: 8px;
+      span {
+        line-height: 17px;
+      }
+      &.active {
+        color: #1F78FF;
+      }
+    }
+    .content-wrap {
+      flex: 1;
+      font-size: 12px;
+      padding: 8px 16px 8px 12px;
+      border-left: 1px solid #d8d8d8;
+      box-sizing: border-box;
+      .title-wrap {
+        display: flex;
+        align-items: center;
+        color: #333;
+        transform: translateX(-20.5px);
+        height: 34px;
+        & > .status-dot {
+          color: #D8D8D8;
+          box-sizing: border-box;
+          border: 4px solid #fff;
+          margin-right: 2px;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background-color: #D8D8D8;
+        }
+        & > .cur-status-dot {
+          color: #D8D8D8;
+          box-sizing: border-box;
+          border: 4px solid #fff;
+          margin-right: 2px;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background-color: #1F78FF;
+        }
+
+        .el-avatar {
+          width: 20px;
+          height: 20px;
+          margin-right: 8px;
+          display: inline-block;
+          text-align: center;
+        }
+        .name-span {
+          font-weight: 800;
+        }
+        .name-txt-overflow {
+          display: inline-block;
+          max-width: 70px;
+          overflow: hidden;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .action-span {
+          color: #999;
+          margin: 0 4px;
+        }
+        .status-block {
+          background-color: #F5F5F5;
+          border-style: solid;
+          border-width: 1px;
+          border-color: rgba(204, 204, 204, 0.2);
+          border-radius: 2px;
+          height: 20px;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          padding: 0 8px;
+          color: #999;
+          font-size: 12px;
+          & > .iconfont {
+            font-size: 12px;
+            color: #999;
+            margin-right: 4px;
+          }
+          &.cannot_get_in_touch, &.refuse_renewal {
+            color: #ff5151;
+            background: #ffeded;
+            border: 1px solid rgba(255, 81, 81, 0.1);
+          }
+          &.already_renewal {
+            color: #4497eb;
+            background: #ecf4fd;
+            border: 1px solid #daeafb;
+          }
+        }
+      }
+      .msg-wrap {
+        background-color: #F5F5F5;
+        padding: 16px;
+        color: #131415;
+        border-radius: 0px 12px 12px 12px;
+        & > p {
+          margin: 0 0 4px 0;
+          line-height: 20px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        & > span {
+          font-size: 14px;
+          text-align: justify;
+          line-height: 20px;
+        }
+      }
+    }
+    &.active {
+      .content-wrap {
+        .iconfont {
+          background-color: #1F78FF;
+        }
+        .msg-wrap {
+          background-color: #1F78FF;
+          color: #fff;
+        }
+      }
+    }
+    &.completed {
+      .content-wrap {
+        position: relative;
+        &::after {
+          content: '';
+          width: 2px;
+          position: absolute;
+          background-color: #fff;
+          left: -1px;
+          top: 35px;
+          bottom: 0;
+        }
+        .title-wrap > .iconfont {
+          border: transparent;
+          font-size: 16px;
+          margin-right: 4px;
+          background-color: #fff;
+          color: #1F78FF;
+          position: relative;
+        }
+      }
+    }
+  }
+}
+.scroll-content {
+  width: 100%;
+  height: 100%;
 }
 </style>
 <style lang="scss">

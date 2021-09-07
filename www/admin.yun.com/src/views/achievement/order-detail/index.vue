@@ -304,6 +304,7 @@
         </template>
 
         <!--续保续期信息-->
+        <!--续保续期信息-->
         <template>
           <h3>续保续期信息</h3>
           <div class="item-block" v-loading="historyLoading">
@@ -313,7 +314,7 @@
             </div>
             <div class="item">
               <div class="label">续保时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0? '': getDataInfo.current_renewal_stage.renewal_at}}</div>
             </div>
             <div class="item">
               <div class="label">无需续保原因：</div>
@@ -321,7 +322,7 @@
             </div>
             <div class="item">
               <div class="label">扣款时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.pay_at}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0? '': getDataInfo.current_renewal_stage.pay_at}}</div>
             </div>
             <div class="item">
               <div class="label">扣款失败原因：</div>
@@ -338,7 +339,11 @@
             <el-table class="mt20" border stripe :data="getDataInfo.renewal_stage_history">
               <el-table-column label="应续日期" prop="renewal_date_format"></el-table-column>
               <el-table-column label="续保状态" prop="renewal_status_name"></el-table-column>
-              <el-table-column label="续保时间" prop="renewal_at"></el-table-column>
+              <el-table-column label="续保时间">
+                <template v-slot="{ row }">
+                  <p>{{row.renewal_at === 0? '': formatDate(row.renewal_at * 1000, 'yyyy-MM-dd hh:mm:ss')}}</p>
+                </template>
+              </el-table-column>
               <el-table-column label="跟踪人员" prop="follow_obj_name"></el-table-column>
               <el-table-column label="续保单号" prop="next_policy_sn"></el-table-column>
             </el-table>
