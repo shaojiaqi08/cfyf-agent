@@ -305,6 +305,18 @@
               </span>
             </div>
             <div>
+              人核中保费(元)
+              <span class="warning">
+                {{ statisticInfo.manpower_underwriting_total_premium }}
+              </span>
+            </div>
+            <div>
+              人核中件数(元)
+              <span class="warning">
+                {{ statisticInfo.manpower_underwriting_total_quantity }}
+              </span>
+            </div>
+            <div>
               未支付保费总计(元)
               <span class="warning">
                 {{ statisticInfo.unpaid_total_premium }}

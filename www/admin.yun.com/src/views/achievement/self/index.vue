@@ -20,10 +20,10 @@
             <div class="color-desc-bg" :style="getBgColor('surrendered')"></div>
             <div>已退保</div>
           </div>
-          
+
         </div>
       </div>
-      
+
       <div class="flex-between">
         <el-button size="small"
                    type="primary"
@@ -272,6 +272,18 @@
               投保保费总计(元)
               <span class="info">
                 {{ statisticInfo.total_premium }}
+              </span>
+            </div>
+            <div>
+              人核中保费(元)
+              <span class="warning">
+                {{ statisticInfo.manpower_underwriting_total_premium }}
+              </span>
+            </div>
+            <div>
+              人核中件数(元)
+              <span class="warning">
+                {{ statisticInfo.manpower_underwriting_total_quantity }}
               </span>
             </div>
             <div>
@@ -614,7 +626,7 @@ export default {
   .row-style-auto {
     flex: 1;
   }
-  
+
   .color-desc-box {
     display: flex;
     flex-flow: row nowrap;
