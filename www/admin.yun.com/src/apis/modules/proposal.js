@@ -6,6 +6,8 @@ export const getProposalList = (data) => get('/agent/proxy/proposal/list-with-pa
 export const getProposalMasterInfo = (data) => get('/agent/proxy/proposal/sales-info/detail', data)
 // 保存计划书个人展示详情
 export const updateProposalMasterInfo = (data) => post('/agent/proxy/proposal/sales-info/save', data)
+// 20210907 保障计划书复制改为调用接口
+export const copyProposalFamily = (data) => post('/agent/proxy/proposal/customer/copy-family', data)
 // 有效家庭成员列表
 export const getRelations = (data) => get('', data)
 // 有效家庭成员列表V2
@@ -33,6 +35,8 @@ export const changeCustomer = (data) => post('/agent/proxy/proposal/customer/edi
 export const getProposalCustomerSync = (data) => post('', data)
 // 计划书详情
 export const getProposalInfo = (data) => get('/agent/proxy/proposal/detail', data)
+// 20210907 复制计划书详情
+export const getCopyInfo = (data) => get('/agent/proxy/proposal/copy', data)
 // 查看pdf
 export const getPdf = (data) => get('', data)
 
