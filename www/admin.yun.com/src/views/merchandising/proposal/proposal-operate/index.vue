@@ -1,17 +1,30 @@
 <template>
   <div class="new-layout-common">
     <div class="new-layout-common-body proposal">
-      <el-scrollbar v-loading="!selectedInit" class="whole-scroller-container" style="height: 100vh">
+      <el-scrollbar
+        v-loading="!selectedInit"
+        class="whole-scroller-container"
+        style="height: 100vh"
+      >
         <el-card class="proposal-card-shell" shadow="never">
           <div class="proposal-card-header">计划书基本信息</div>
-          <div class="form-row" style="justify-content: flex-start;margin-top: 16px;">
+          <div
+            class="form-row"
+            style="justify-content: flex-start; margin-top: 16px"
+          >
             <div class="form-item customer">
               <div class="label">所属客户</div>
-              <el-input placeholder="请输入所属客户名称" v-model="customerName"></el-input>
+              <el-input
+                placeholder="请输入所属客户名称"
+                v-model="customerName"
+              ></el-input>
             </div>
             <div class="form-item proposal-name">
               <div class="label">计划书名称</div>
-              <el-input placeholder="请输入计划名称" v-model="formData.name"></el-input>
+              <el-input
+                placeholder="请输入计划名称"
+                v-model="formData.name"
+              ></el-input>
             </div>
           </div>
           <div class="form-row">
@@ -38,19 +51,22 @@
                 <span
                   class="switcher-tips"
                   :class="{ active: formData.has_pdf_illustration }"
-                >{{ formData.has_pdf_illustration ? '展示' : '不展示' }}</span>
+                  >{{ formData.has_pdf_illustration ? "展示" : "不展示" }}</span
+                >
                 <template v-if="formData.has_pdf_illustration">
                   <el-radio
                     class="ml20"
                     v-model="formData.pdf_illustration_type"
                     :label="editorTypes.ORDINARY"
                     @change="pdfIllustrationTypeChange"
-                  >普通文本</el-radio>
+                    >普通文本</el-radio
+                  >
                   <el-radio
                     v-model="formData.pdf_illustration_type"
                     :label="editorTypes.RICH"
                     @change="pdfIllustrationTypeChange"
-                  >富文本</el-radio>
+                    >富文本</el-radio
+                  >
                 </template>
               </div>
               <template v-if="formData.has_pdf_illustration">
@@ -61,7 +77,9 @@
                   v-if="formData.pdf_illustration_type === editorTypes.ORDINARY"
                   v-model="formData.pdf_illustration"
                 ></el-input>
-                <template v-if="formData.pdf_illustration_type === editorTypes.RICH">
+                <template
+                  v-if="formData.pdf_illustration_type === editorTypes.RICH"
+                >
                   <vue-ueditor-wrap
                     v-if="formData.has_pdf_illustration"
                     v-model="formData.pdf_illustration"
@@ -80,12 +98,14 @@
                   v-model="formData.illustration_type"
                   :label="editorTypes.ORDINARY"
                   @change="illustrationTypeChange"
-                >普通文本</el-radio>
+                  >普通文本</el-radio
+                >
                 <el-radio
                   v-model="formData.illustration_type"
                   :label="editorTypes.RICH"
                   @change="illustrationTypeChange"
-                >富文本</el-radio>
+                  >富文本</el-radio
+                >
               </div>
               <el-input
                 placeholder="需对客户进行展示，请输入客户家庭基本信息分析内容"
@@ -95,7 +115,10 @@
                 v-model="formData.illustration"
               ></el-input>
               <template v-if="formData.illustration_type === editorTypes.RICH">
-                <vue-ueditor-wrap v-model="formData.illustration" :config="UEditorConfig"></vue-ueditor-wrap>
+                <vue-ueditor-wrap
+                  v-model="formData.illustration"
+                  :config="UEditorConfig"
+                ></vue-ueditor-wrap>
               </template>
             </div>
           </div>
@@ -114,29 +137,29 @@
               <span
                 class="switcher-tips"
                 :class="{ active: is_show_company_profile }"
-              >{{ is_show_company_profile ? '展示' : '不展示' }}</span>
+                >{{ is_show_company_profile ? "展示" : "不展示" }}</span
+              >
             </div>
           </div>
           <div class="form-row">
             <div>
               投保链接
               <el-switch
-                style="margin-left: 37px;"
+                style="margin-left: 37px"
                 v-model="is_show_link"
                 active-color="#1F78FF"
                 inactive-color="#E6E6E6"
               ></el-switch>
-              <span
-                class="switcher-tips"
-                :class="{ active: is_show_link }"
-              >{{ is_show_link ? '展示' : '不展示' }}</span>
+              <span class="switcher-tips" :class="{ active: is_show_link }">{{
+                is_show_link ? "展示" : "不展示"
+              }}</span>
             </div>
           </div>
           <div class="form-row pb16">
             <div>
               保额总汇
               <el-switch
-                style="margin-left: 37px;"
+                style="margin-left: 37px"
                 v-model="is_show_coverage_aggregate"
                 active-color="#1F78FF"
                 inactive-color="#E6E6E6"
@@ -144,17 +167,33 @@
               <span
                 class="switcher-tips"
                 :class="{ active: is_show_coverage_aggregate }"
-              >{{ is_show_coverage_aggregate ? '展示' : '不展示' }}</span>
+                >{{ is_show_coverage_aggregate ? "展示" : "不展示" }}</span
+              >
             </div>
           </div>
         </el-card>
         <el-card class="proposal-card-shell" shadow="never">
           <div class="proposal-card-header no-bottom">保险方案设计</div>
           <div class="proposal-card-body" style="overflow: visible">
-            <el-button class="proposal-add-scheme"
-                       type="primary"
-                       size="mini"
-                       @click="addProposal">
+            <el-button
+              class="proposal-add-scheme proposal-edit-scheme"
+              type="primary"
+              size="small"
+              plain
+              @click="showEditMemberStructFunc"
+              
+            >
+            <!-- v-allowed="['proposal-customer-edit']"  20210908 21:43 大佬威说先关掉权限🐶 -->
+              <i class="iconfont fs12 iconchaoxiao_jiahao"></i>
+              家庭结构编辑
+            </el-button>
+
+            <el-button
+              class="proposal-add-scheme"
+              type="primary"
+              size="mini"
+              @click="addProposal"
+            >
               <i class="iconfont fs12 iconxiao16_jiahao"></i>
               新建方案
             </el-button>
@@ -169,27 +208,56 @@
               <el-tab-pane
                 v-for="(item, index) in relationsSelected"
                 :key="`${item.recognizee_policy_member.id}-${index}`"
-                :label="`${item.name || ''} (${familyTypes.filter(i => i.value === item.recognizee_policy_member.relation)[0].label})`"
-                :name="`${index}`"
+                :label="`${item.name || ''} (${
+                  familyTypes.filter(
+                    (i) => i.value === item.recognizee_policy_member.relation
+                  )[0].label
+                })`"
+                :name="`${item.member_id}`"
               >
                 <div class="tab-container">
                   <div class="form-item no-margin-bottom">
-                    <span
-                      class="tag orange"
-                    >被保人：{{ familyTypes.filter(i => i.value === item.recognizee_policy_member.relation)[0].label }}</span>
-                    <span
-                      class="tag orange"
-                    >性别： {{ item.recognizee_policy_member.sex === 1 ? '男' : '女' }}</span>
-                    <span
-                      class="tag orange"
-                    >年龄：{{ calcAge(item.recognizee_policy_member.birthday) }} 周岁</span>
+                    <span class="tag orange"
+                      >被保人：{{
+                        familyTypes.filter(
+                          (i) =>
+                            i.value === item.recognizee_policy_member.relation
+                        )[0].label
+                      }}</span
+                    >
+                    <span class="tag orange"
+                      >性别：
+                      {{
+                        item.recognizee_policy_member.sex === 1 ? "男" : "女"
+                      }}</span
+                    >
+                    <span class="tag orange"
+                      >年龄：{{
+                        calcAge(item.recognizee_policy_member.birthday)
+                      }}
+                      周岁</span
+                    >
                   </div>
                   <div class="form-item no-margin-bottom">
-                    <span
-                      class="tag blue"
-                    >投保人：{{ familyTypes.filter(i => i.value === item.policy_holder_member.relation)[0].label }}</span>
-                    <span class="tag blue">性别： {{ item.policy_holder_member.sex === 1 ? '男' : '女' }}</span>
-                    <span class="tag blue">年龄：{{ calcAge(item.policy_holder_member.birthday) }} 周岁</span>
+                    <span class="tag blue"
+                      >投保人：{{
+                        familyTypes.filter(
+                          (i) => i.value === item.policy_holder_member.relation
+                        )[0].label
+                      }}</span
+                    >
+                    <span class="tag blue"
+                      >性别：
+                      {{
+                        item.policy_holder_member.sex === 1 ? "男" : "女"
+                      }}</span
+                    >
+                    <span class="tag blue"
+                      >年龄：{{
+                        calcAge(item.policy_holder_member.birthday)
+                      }}
+                      周岁</span
+                    >
                   </div>
                   <div>
                     <div class="proposal-scheme-header">选择保险产品</div>
@@ -213,18 +281,32 @@
                           :label="item.name"
                         ></el-option>
                       </el-select>
-                      <insurance-types class="product-filter-item" @search="search($event, index)"></insurance-types>
+                      <insurance-types
+                        class="product-filter-item"
+                        @search="search($event, index)"
+                      ></insurance-types>
                       <insurance-company
                         class="product-filter-item"
                         @search="search($event, index)"
                       ></insurance-company>
-                      <payment-period class="product-filter-item" @search="search($event, index)"></payment-period>
-                      <guarantee-times class="product-filter-item" @search="search($event, index)"></guarantee-times>
-                      <coverage class="product-filter-item" @search="search($event, index)"></coverage>
-                      <el-button class="fr flex-center"
-                                 type="primary"
-                                 size="mini"
-                                 @click="addDiyProduct(index)">
+                      <payment-period
+                        class="product-filter-item"
+                        @search="search($event, index)"
+                      ></payment-period>
+                      <guarantee-times
+                        class="product-filter-item"
+                        @search="search($event, index)"
+                      ></guarantee-times>
+                      <coverage
+                        class="product-filter-item"
+                        @search="search($event, index)"
+                      ></coverage>
+                      <el-button
+                        class="fr flex-center"
+                        type="primary"
+                        size="mini"
+                        @click="addDiyProduct(index)"
+                      >
                         <i class="iconfont fs12 iconxiao16_jiahao"></i>
                         新建自定义产品
                       </el-button>
@@ -241,7 +323,11 @@
                         <el-col :span="2">保额</el-col>
                         <el-col :span="2">社保</el-col>
                         <el-col :span="2">组与附加险</el-col>
-                        <el-col :span="4" class="proposal-list-header-col" title="收起">
+                        <el-col
+                          :span="4"
+                          class="proposal-list-header-col"
+                          title="收起"
+                        >
                           <span @click="listTextHidden">
                             保障内容
                             <i class="el-icon-arrow-down bold"></i>
@@ -265,15 +351,21 @@
                           :key="product.id"
                         >
                           <el-row :gutter="10" class="proposal-list-item-row">
-                            <el-col :span="2">{{ product.first_product_category_name }}</el-col>
-                            <el-col :span="2" style="word-break: break-all">{{ product.supplier_name }}</el-col>
+                            <el-col :span="2">{{
+                              product.first_product_category_name
+                            }}</el-col>
+                            <el-col :span="2" style="word-break: break-all">{{
+                              product.supplier_name
+                            }}</el-col>
                             <el-col :span="2">
                               {{ product.proposal_product_name }}
                               <div
                                 v-if="product.common_terms.length"
                                 class="check-terms"
                                 @click="checkTerms(product)"
-                              >查看条款</div>
+                              >
+                                查看条款
+                              </div>
                             </el-col>
                             <el-col :span="2">
                               <el-select
@@ -291,7 +383,9 @@
                             </el-col>
                             <el-col :span="2">
                               <el-select
-                                v-model="productsState[index][idx].guarantee_period"
+                                v-model="
+                                  productsState[index][idx].guarantee_period
+                                "
                                 size="mini"
                                 @change="changeSelector($event, index, idx)"
                               >
@@ -305,7 +399,9 @@
                             </el-col>
                             <el-col :span="2">
                               <el-select
-                                v-model="productsState[index][idx].base_coverage_value"
+                                v-model="
+                                  productsState[index][idx].base_coverage_value
+                                "
                                 size="mini"
                                 @change="changeSelector($event, index, idx)"
                               >
@@ -317,96 +413,243 @@
                                 ></el-option>
                               </el-select>
                             </el-col>
-                            <el-col :span="2" style="text-align: left;">
+                            <el-col :span="2" style="text-align: left">
                               <el-radio
-                                v-model="productsState[index][idx].has_social_security"
+                                v-model="
+                                  productsState[index][idx].has_social_security
+                                "
                                 label="1"
                                 @change="changeRadio($event, index, idx)"
-                              >有社保</el-radio>
+                                >有社保</el-radio
+                              >
                               <el-radio
-                                v-model="productsState[index][idx].has_social_security"
+                                v-model="
+                                  productsState[index][idx].has_social_security
+                                "
                                 label="0"
                                 @change="changeRadio($event, index, idx)"
-                              >无社保</el-radio>
+                                >无社保</el-radio
+                              >
                             </el-col>
-                            <el-col :span="2" style="text-align: left;padding: 10px 0;">
-                                <el-popover
-                                    placement="right"
-                                    trigger="hover"
-                                    v-for="(option, kk) in product.product_insurance_group"
-                                    :key="option.id"
+                            <el-col
+                              :span="2"
+                              style="text-align: left; padding: 10px 0"
+                            >
+                              <el-popover
+                                placement="right"
+                                trigger="hover"
+                                v-for="(
+                                  option, kk
+                                ) in product.product_insurance_group"
+                                :key="option.id"
+                              >
+                                <el-radio-group
+                                  v-model="
+                                    productsState[index][idx].default_ids[kk]
+                                  "
+                                >
+                                  <template
+                                    v-for="radioItem in product
+                                      .product_insurance_group[kk].insurances"
+                                  >
+                                    <div
+                                      :key="radioItem.id"
+                                      style="
+                                        height: 32px;
+                                        display: flex;
+                                        align-items: center;
+                                      "
                                     >
-                                      <el-radio-group v-model="productsState[index][idx].default_ids[kk]">
-                                        <template v-for="radioItem in product.product_insurance_group[kk].insurances">
-										<div :key="radioItem.id" style="height: 32px;display: flex;align-items: center">
-                                          <el-radio
-                                            @change="changeRadioCheckbox($event, index, idx)"
-                                            :value="radioItem.id"
-                                            :label="radioItem.id">{{radioItem.name}}</el-radio>
-                                            <el-select
-                                              :key="radioItem.id+'select'"
-                                              v-model="productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage"
-                                              size="mini"
-                                              :popper-append-to-body="false"
-                                              popper-class="el-select-default"
-                                              style="width: 80px;margin-left: 6px;"
-                                              @change="changeAccidentCheckbox($event, index, idx)"
-                                              v-if="productsState[index][idx].insurances[kk] &&
-                                                    radioItem &&
-                                                    radioItem.id &&
-                                                    radioItem.type === 'accident' &&
-                                                    productsState[index][idx].default_ids[kk] === radioItem.id"
-                                            >
-                                              <el-option
-                                                v-for="a in radioItem.coverages"
-                                                :key="a.value"
-                                                :value="a.value"
-                                                :label="a.value_text"
-                                              >{{ a.value_text }}</el-option>
-                                            </el-select>
-											</div>
-                                          </template>
-                                      </el-radio-group>
-                                  <div slot="reference" class="insurance-checkboxs">
-                                    <el-checkbox
-                                      :disabled="((option.select_status + '' !== 'undefined') && !option.select_status) || !!option.is_main"
-                                      :label="option.id"
-                                      @change="changeClickCheckbox($event, index, idx, kk)"
-                                      :value="productsState[index][idx].default_ids[kk] ? true : false"
-                                    >
-                                      {{ productsState[index][idx].default_ids[kk] ?
-                                      product.product_insurance_group[kk].insurances
-                                      .filter(i=> i.id == productsState[index][idx].default_ids[kk])[0].name
-                                      +(!!productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage ? '/'+productsState[index][idx].insurances[productsState[index][idx].insurances.findIndex(i => i.id === productsState[index][idx].default_ids[kk])].coverage : '' )
-                                      : option.name }}
-										<i class="el-icon-arrow-right"></i>
-                                    </el-checkbox>
-                                  </div>
-                                </el-popover>
+                                      <el-radio
+                                        @change="
+                                          changeRadioCheckbox(
+                                            $event,
+                                            index,
+                                            idx
+                                          )
+                                        "
+                                        :value="radioItem.id"
+                                        :label="radioItem.id"
+                                        >{{ radioItem.name }}</el-radio
+                                      >
+                                      <el-select
+                                        :key="radioItem.id + 'select'"
+                                        v-model="
+                                          productsState[index][idx].insurances[
+                                            productsState[index][
+                                              idx
+                                            ].insurances.findIndex(
+                                              (i) =>
+                                                i.id ===
+                                                productsState[index][idx]
+                                                  .default_ids[kk]
+                                            )
+                                          ].coverage
+                                        "
+                                        size="mini"
+                                        :popper-append-to-body="false"
+                                        popper-class="el-select-default"
+                                        style="width: 80px; margin-left: 6px"
+                                        @change="
+                                          changeAccidentCheckbox(
+                                            $event,
+                                            index,
+                                            idx
+                                          )
+                                        "
+                                        v-if="
+                                          productsState[index][idx].insurances[
+                                            kk
+                                          ] &&
+                                          radioItem &&
+                                          radioItem.id &&
+                                          radioItem.type === 'accident' &&
+                                          productsState[index][idx].default_ids[
+                                            kk
+                                          ] === radioItem.id
+                                        "
+                                      >
+                                        <el-option
+                                          v-for="a in radioItem.coverages"
+                                          :key="a.value"
+                                          :value="a.value"
+                                          :label="a.value_text"
+                                          >{{ a.value_text }}</el-option
+                                        >
+                                      </el-select>
+                                    </div>
+                                  </template>
+                                </el-radio-group>
+                                <div
+                                  slot="reference"
+                                  class="insurance-checkboxs"
+                                >
+                                  <el-checkbox
+                                    :disabled="
+                                      (option.select_status + '' !==
+                                        'undefined' &&
+                                        !option.select_status) ||
+                                      !!option.is_main
+                                    "
+                                    :label="option.id"
+                                    @change="
+                                      changeClickCheckbox(
+                                        $event,
+                                        index,
+                                        idx,
+                                        kk
+                                      )
+                                    "
+                                    :value="
+                                      productsState[index][idx].default_ids[kk]
+                                        ? true
+                                        : false
+                                    "
+                                  >
+                                    {{
+                                      productsState[index][idx].default_ids[kk]
+                                        ? product.product_insurance_group[
+                                            kk
+                                          ].insurances.filter(
+                                            (i) =>
+                                              i.id ==
+                                              productsState[index][idx]
+                                                .default_ids[kk]
+                                          )[0].name +
+                                          (!!productsState[index][idx]
+                                            .insurances[
+                                            productsState[index][
+                                              idx
+                                            ].insurances.findIndex(
+                                              (i) =>
+                                                i.id ===
+                                                productsState[index][idx]
+                                                  .default_ids[kk]
+                                            )
+                                          ].coverage
+                                            ? "/" +
+                                              productsState[index][idx]
+                                                .insurances[
+                                                productsState[index][
+                                                  idx
+                                                ].insurances.findIndex(
+                                                  (i) =>
+                                                    i.id ===
+                                                    productsState[index][idx]
+                                                      .default_ids[kk]
+                                                )
+                                              ].coverage
+                                            : "")
+                                        : option.name
+                                    }}
+                                    <i class="el-icon-arrow-right"></i>
+                                  </el-checkbox>
+                                </div>
+                              </el-popover>
                             </el-col>
-                            <el-col :span="4" style="text-align: left;" class="insurance-col">
+                            <el-col
+                              :span="4"
+                              style="text-align: left"
+                              class="insurance-col"
+                            >
                               <template v-if="!isTextHidden">
                                 <div
-                                  v-for="(item, idx) in productsState[index][idx].guarantee_responsibilities"
+                                  v-for="(item, idx) in productsState[index][
+                                    idx
+                                  ].guarantee_responsibilities"
                                   :key="idx"
-                                >{{ item }}</div>
+                                >
+                                  {{ item }}
+                                </div>
                               </template>
                               <template v-else>
                                 <div
-                                  v-if="productsState[index][idx].guarantee_responsibilities.length"
-                                >{{ productsState[index][idx].guarantee_responsibilities[0] }}</div>
+                                  v-if="
+                                    productsState[index][idx]
+                                      .guarantee_responsibilities.length
+                                  "
+                                >
+                                  {{
+                                    productsState[index][idx]
+                                      .guarantee_responsibilities[0]
+                                  }}
+                                </div>
                               </template>
                             </el-col>
                             <el-col :span="2">
                               <span
-                                v-if="!productsState[index][idx].isError && !productsState[index][idx].isLoading"
-                              >{{ productsState[index][idx].total_premium }} 元</span>
+                                v-if="
+                                  !productsState[index][idx].isError &&
+                                  !productsState[index][idx].isLoading
+                                "
+                                >{{
+                                  productsState[index][idx].total_premium
+                                }}
+                                元</span
+                              >
                             </el-col>
                             <el-col :span="2">
                               <div
                                 class="mb4"
-                                v-if="productsSelected[index] && productsSelected[index].filter(i => i.product_id === productsState[index][idx].product_id).length"
-                              >已添加: {{ productsSelected[index] && productsSelected[index].filter(i => i.product_id === productsState[index][idx].product_id).length }}</div>
+                                v-if="
+                                  productsSelected[index] &&
+                                  productsSelected[index].filter(
+                                    (i) =>
+                                      i.product_id ===
+                                      productsState[index][idx].product_id
+                                  ).length
+                                "
+                              >
+                                已添加:
+                                {{
+                                  productsSelected[index] &&
+                                  productsSelected[index].filter(
+                                    (i) =>
+                                      i.product_id ===
+                                      productsState[index][idx].product_id
+                                  ).length
+                                }}
+                              </div>
                               <el-button
                                 v-if="!productsState[index][idx].isError"
                                 type="primary"
@@ -414,7 +657,9 @@
                                 icon="iconfont fs12 iconchaoxiao_jiahao"
                                 @click="addProduct(index, idx, product)"
                                 title="添加保险"
-                              > 添加</el-button>
+                              >
+                                添加</el-button
+                              >
                             </el-col>
                           </el-row>
                         </div>
@@ -429,8 +674,10 @@
                     </div>
                     <div class="proposal-scheme-header">
                       已选择保险产品
-                      <div class="fr remove-scheme-selected-product"
-                           @click="removeSelectedProduct(index)">
+                      <div
+                        class="fr remove-scheme-selected-product"
+                        @click="removeSelectedProduct(index)"
+                      >
                         <i class="fs16 iconfont iconxiao_lajitong"></i>
                         <span>清除全部已选产品</span>
                       </div>
@@ -445,7 +692,11 @@
                         <el-col :span="2">保额</el-col>
                         <el-col :span="2">社保</el-col>
                         <el-col :span="2">附加险</el-col>
-                        <el-col :span="4" class="proposal-list-header-col" title="收起">
+                        <el-col
+                          :span="4"
+                          class="proposal-list-header-col"
+                          title="收起"
+                        >
                           <span @click="selectedListTextHidden">
                             保障内容
                             <i class="el-icon-arrow-down bold"></i>
@@ -458,7 +709,11 @@
                     <div
                       class="proposal-list-body"
                       v-loading="!selectedInit"
-                      v-if="productsSelected[index] && productsSelected[index].length && selectedInit"
+                      v-if="
+                        productsSelected[index] &&
+                        productsSelected[index].length &&
+                        selectedInit
+                      "
                     >
                       <div class="proposal-list">
                         <div
@@ -467,92 +722,209 @@
                           :key="idx"
                         >
                           <el-row :gutter="10" class="proposal-list-item-row">
-                            <el-col :span="2">{{ item.first_product_category_name }}</el-col>
-                            <el-col :span="2" style="word-break: break-all">{{ item.supplier_name || '-' }}</el-col>
+                            <el-col :span="2">{{
+                              item.first_product_category_name
+                            }}</el-col>
+                            <el-col :span="2" style="word-break: break-all">{{
+                              item.supplier_name || "-"
+                            }}</el-col>
                             <el-col :span="2">
                               {{ item.product_name }}
                               <div
-                                v-if="item.common_terms && item.common_terms.length"
+                                v-if="
+                                  item.common_terms && item.common_terms.length
+                                "
                                 class="check-terms"
                                 @click="checkTerms(item)"
-                              >查看条款</div>
+                              >
+                                查看条款
+                              </div>
                             </el-col>
                             <el-col :span="2">
                               <span
-                                v-if="paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].value !== '6'"
-                              >{{ +item.pay_period.split('_')[0] || '' }}{{ paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].label }}</span>
+                                v-if="
+                                  paytimeTypes.filter(
+                                    (i) =>
+                                      i.value == item.pay_period.split('_')[1]
+                                  )[0].value !== '6'
+                                "
+                                >{{ +item.pay_period.split("_")[0] || ""
+                                }}{{
+                                  paytimeTypes.filter(
+                                    (i) =>
+                                      i.value == item.pay_period.split("_")[1]
+                                  )[0].label
+                                }}</span
+                              >
                               <span v-else>
-                                {{ paytimeTypes.filter(i => i.value == item.pay_period.split('_')[1])[0].label.replace('n', v => {
-                                return item.pay_period.split('_')[0]
-                                }) }}
+                                {{
+                                  paytimeTypes
+                                    .filter(
+                                      (i) =>
+                                        i.value == item.pay_period.split("_")[1]
+                                    )[0]
+                                    .label.replace("n", (v) => {
+                                      return item.pay_period.split("_")[0];
+                                    })
+                                }}
                               </span>
                             </el-col>
                             <el-col :span="2">
                               <span
-                                v-if="guaranteeTimeTypes.filter(i => i.value == item.guarantee_period.split('_')[1])[0].value !== '5'"
-                              >{{ +item.guarantee_period.split('_')[0] || '' }}{{ guaranteeTimeTypes.filter(i => i.value == item.guarantee_period.split('_')[1])[0].label }}</span>
+                                v-if="
+                                  guaranteeTimeTypes.filter(
+                                    (i) =>
+                                      i.value ==
+                                      item.guarantee_period.split('_')[1]
+                                  )[0].value !== '5'
+                                "
+                                >{{ +item.guarantee_period.split("_")[0] || ""
+                                }}{{
+                                  guaranteeTimeTypes.filter(
+                                    (i) =>
+                                      i.value ==
+                                      item.guarantee_period.split("_")[1]
+                                  )[0].label
+                                }}</span
+                              >
                               <span v-else>
-                                {{ guaranteeTimeTypes.filter(i => i.value == item.guarantee_period.split('_')[1])[0].label.replace('n', v => {
-                                return item.guarantee_period.split('_')[0]
-                                }) }}
+                                {{
+                                  guaranteeTimeTypes
+                                    .filter(
+                                      (i) =>
+                                        i.value ==
+                                        item.guarantee_period.split("_")[1]
+                                    )[0]
+                                    .label.replace("n", (v) => {
+                                      return item.guarantee_period.split(
+                                        "_"
+                                      )[0];
+                                    })
+                                }}
                               </span>
                             </el-col>
-                            <el-col :span="2">{{ item.base_coverage_value }}</el-col>
-                            <el-col :span="2">{{ item.source === productFrom.MANUALLY_ENTER ? '-' : +item.has_social_security ? '有社保' : '无社保' }}</el-col>
+                            <el-col :span="2">{{
+                              item.base_coverage_value
+                            }}</el-col>
+                            <el-col :span="2">{{
+                              item.source === productFrom.MANUALLY_ENTER
+                                ? "-"
+                                : +item.has_social_security
+                                ? "有社保"
+                                : "无社保"
+                            }}</el-col>
                             <el-col :span="2" class="col-tal">
                               <div
-                                v-for="(item, index) in insuranceFormat(item.insurances, index, idx)"
+                                v-for="(item, index) in insuranceFormat(
+                                  item.insurances,
+                                  index,
+                                  idx
+                                )"
                                 :key="index"
-                              >{{ item }}</div>
-                              <div v-if="!item.insurances.length"> - </div>
+                              >
+                                {{ item }}
+                              </div>
+                              <div v-if="!item.insurances.length">-</div>
                             </el-col>
                             <el-col :span="4" class="col-tal">
-                              <template v-if="item.proposal_product_guarantee_content">
-                                <div v-for="line in item.proposal_product_guarantee_content.split('\n')"
-                                     :key="line">
+                              <template
+                                v-if="item.proposal_product_guarantee_content"
+                              >
+                                <div
+                                  v-for="line in item.proposal_product_guarantee_content.split(
+                                    '\n'
+                                  )"
+                                  :key="line"
+                                >
                                   {{ line }}
                                 </div>
                               </template>
                               <template v-else>
                                 <template v-if="!isSelectedTextHidden">
                                   <div
-                                    v-for="(item, idx) in item.guarantee_responsibilities"
+                                    v-for="(
+                                      item, idx
+                                    ) in item.guarantee_responsibilities"
                                     :key="idx"
-                                  >{{ item }}</div>
+                                  >
+                                    {{ item }}
+                                  </div>
                                 </template>
                                 <template v-else>
-                                  <div>{{ item.guarantee_responsibilities.length && item.guarantee_responsibilities[0] }}</div>
+                                  <div>
+                                    {{
+                                      item.guarantee_responsibilities.length &&
+                                      item.guarantee_responsibilities[0]
+                                    }}
+                                  </div>
                                 </template>
                               </template>
                             </el-col>
-                            <el-col :span="2">{{ item.total_premium }} 元</el-col>
+                            <el-col :span="2"
+                              >{{ item.total_premium }} 元</el-col
+                            >
                             <el-col :span="2">
                               <div class="button-group">
                                 <div class="move-button">
                                   <i
-                                    class="button iconfont iconxiao16_shangzhixiangjiantou mr8"
+                                    class="
+                                      button
+                                      iconfont
+                                      iconxiao16_shangzhixiangjiantou
+                                      mr8
+                                    "
                                     :class="{ disabled: !idx }"
-                                    @click="changeSelectedPosition(index, idx, 'up', !idx)"
+                                    @click="
+                                      changeSelectedPosition(
+                                        index,
+                                        idx,
+                                        'up',
+                                        !idx
+                                      )
+                                    "
                                   ></i>
                                   <i
-                                    class="button iconfont iconxiao16_xiazhixiangjiantou"
-                                    :class="{ disabled: idx === productsSelected[index].length - 1 }"
-                                    @click="changeSelectedPosition(index, idx, 'down', idx === productsSelected[index].length - 1)"
+                                    class="
+                                      button
+                                      iconfont
+                                      iconxiao16_xiazhixiangjiantou
+                                    "
+                                    :class="{
+                                      disabled:
+                                        idx ===
+                                        productsSelected[index].length - 1,
+                                    }"
+                                    @click="
+                                      changeSelectedPosition(
+                                        index,
+                                        idx,
+                                        'down',
+                                        idx ===
+                                          productsSelected[index].length - 1
+                                      )
+                                    "
                                   ></i>
                                 </div>
                                 <i
-                                  class="iconfont iconxiao16_yuanxingchahao close"
+                                  class="
+                                    iconfont
+                                    iconxiao16_yuanxingchahao
+                                    close
+                                  "
                                   @click="removeProduct(index, idx)"
                                 ></i>
-
                               </div>
-                              <el-button v-if="item.source === productFrom.MANUALLY_ENTER"
-                                         type="primary"
-                                         plain
-                                         class="mt10"
-                                         size="mini"
-                                         style="display: flex;align-items: center"
-                                         @click="editDiyProduct(index, idx, item)">
+                              <el-button
+                                v-if="
+                                  item.source === productFrom.MANUALLY_ENTER
+                                "
+                                type="primary"
+                                plain
+                                class="mt10"
+                                size="mini"
+                                style="display: flex; align-items: center"
+                                @click="editDiyProduct(index, idx, item)"
+                              >
                                 <i class="fs12 iconfont iconxiao16_bianji"></i>
                                 编辑
                               </el-button>
@@ -579,7 +951,10 @@
                       <span
                         class="switcher-tips"
                         :class="{ active: ect[index].has_illustration }"
-                      >{{ ect[index].has_illustration ? '展示' : '不展示' }}</span>
+                        >{{
+                          ect[index].has_illustration ? "展示" : "不展示"
+                        }}</span
+                      >
                     </div>
                     <el-input
                       v-if="ect[index].has_illustration"
@@ -614,12 +989,21 @@
                     class="scheme-info-item"
                   >
                     {{ item.name || item.recognizee_policy_member.name }}
-                    ({{ familyTypeFormat(item.recognizee_policy_member.relation) }})
-                    ：{{ productsSelected[index] && productsSelected[index].length && productsSelected[index].reduce((p, n) => p + Number(n.total_premium), 0) || 0 }}元
+                    ({{
+                      familyTypeFormat(item.recognizee_policy_member.relation)
+                    }}) ：{{
+                      (productsSelected[index] &&
+                        productsSelected[index].length &&
+                        productsSelected[index].reduce(
+                          (p, n) => p + Number(n.total_premium),
+                          0
+                        )) ||
+                      0
+                    }}元
                   </div>
                   <i
                     class="iconfont iconxiao_chakangengduo_cheng fw400"
-                    style="cursor: pointer;"
+                    style="cursor: pointer"
                     slot="reference"
                   ></i>
                 </el-popover>
@@ -633,7 +1017,8 @@
               <span
                 class="switcher-tips footer-tips"
                 :class="{ active: formData.is_show_premium }"
-              >{{ formData.is_show_premium ? '展示' : '不展示' }}</span>
+                >{{ formData.is_show_premium ? "展示" : "不展示" }}</span
+              >
             </div>
             <span>
               <el-button
@@ -642,7 +1027,8 @@
                 :loading="isButtonLoading"
                 plain
                 @click="submit(saveProposalTypes.hold.value)"
-              >暂存</el-button>
+                >暂存</el-button
+              >
               <el-button
                 type="info"
                 size="small"
@@ -650,7 +1036,8 @@
                 :loading="isButtonLoading"
                 plain
                 @click="submit(saveProposalTypes.preview.value)"
-              >预览H5</el-button>
+                >预览H5</el-button
+              >
               <el-button
                 type="info"
                 size="small"
@@ -658,7 +1045,8 @@
                 :loading="isButtonLoading"
                 plain
                 @click="previewPdf(saveProposalTypes.preview.value, 'pdf')"
-              >预览PDF</el-button>
+                >预览PDF</el-button
+              >
               <el-button
                 type="info"
                 size="small"
@@ -666,88 +1054,138 @@
                 :loading="isButtonLoading"
                 plain
                 @click="previewPdf(saveProposalTypes.preview.value, 'image')"
-              >预览图片</el-button>
+                >预览图片</el-button
+              >
               <el-button
                 type="primary"
                 size="small"
                 class="ml8"
                 :loading="isButtonLoading"
                 @click="submit(saveProposalTypes.done.value)"
-              >生成计划书</el-button>
+                >生成计划书</el-button
+              >
             </span>
           </div>
         </div>
       </el-scrollbar>
     </div>
-    <div class="new-preview-wrapper" v-if="previewVisible" @click="previewHandleClose">
+    <div
+      class="new-preview-wrapper"
+      v-if="previewVisible"
+      @click="previewHandleClose"
+    >
       <div class="new-preview-dialog">
         <!-- <div class="new-preview-dialog-close" @click="previewHandleClose"></div> -->
-        <iframe class="new-preview-iframe" :src="proposal.view_url" frameborder="0"></iframe>
+        <iframe
+          class="new-preview-iframe"
+          :src="proposal.view_url"
+          frameborder="0"
+        ></iframe>
       </div>
     </div>
     <el-dialog width="400px" :visible.sync="isTermsShow" title="产品条款">
       <div class="mb20">
         <div
-                v-for="(item, index) in termsData"
-                :key="index"
-                class="term-link"
-                @click="checkTermLink(item.file_url)"
-        >{{ item.name }}</div>
+          v-for="(item, index) in termsData"
+          :key="index"
+          class="term-link"
+          @click="checkTermLink(item.file_url)"
+        >
+          {{ item.name }}
+        </div>
       </div>
     </el-dialog>
     <proposal-material
+      v-if="dialogVisible"
       :show.sync="dialogVisible"
       :proposalInfo="proposal"
       title="成功生成计划书"
       from="proposalOperate"
     ></proposal-material>
-    <add-diy-product :title="diyProductModalTitle"
-                     :show.sync="addDiyProductVisible"
-                     :type="diyType"
-                     :diyData="diyData"
-                     @diyProductSubmit="diyProductSubmit" />
-    <el-dialog width="400px"
-             :visible.sync="addDialogVisible"
-             :before-close="addHandleClose"
-             title="新建方案">
-    <el-form label-position="top">
-      <el-form-item label="被保人" class="add-scheme-form">
-        <el-select class="block"
-                   v-model="relationModel.recognizee_policy_member.id"
-                   placeholder="请选择被保人"
-                   @change="changeRecognizee">
-          <el-option v-for="item in relations"
-                     :disabled="relationsSelected.filter(i => i.recognizee_policy_member.struct_member_id === item.struct_member_id).length > 0"
-                     :key="item.id"
-                     :value="item.id"
-                     :label="item.name"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="投保人" class="add-scheme-form">
-        <el-select class="block"
-                   v-model="relationModel.policy_holder_member.id"
-                   placeholder="请选择投保人">
-          <el-option v-for="item in relations"
-                     :key="item.id"
-                     :value="item.id"
-                     :label="item.name"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="被保人姓名" class="add-scheme-form">
-        <el-input placeholder="请输入被保人姓名"
-                  v-model="relationModel.name"></el-input>
-      </el-form-item>
-    </el-form>
-    <template slot="footer">
-      <div>
-        <el-button @click="addDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="selectRelation">确认</el-button>
-      </div>
-    </template>
-  </el-dialog>
-    <el-backtop target=".whole-scroller-container .el-scrollbar__wrap" :bottom="100" :right="20">
+    <add-diy-product
+      :title="diyProductModalTitle"
+      :show.sync="addDiyProductVisible"
+      :type="diyType"
+      :diyData="diyData"
+      @diyProductSubmit="diyProductSubmit"
+    />
+    <el-dialog
+      width="400px"
+      :visible.sync="addDialogVisible"
+      :before-close="addHandleClose"
+      title="新建方案"
+    >
+      <el-form label-position="top">
+        <el-form-item label="被保人" class="add-scheme-form">
+          <el-select
+            class="block"
+            v-model="relationModel.recognizee_policy_member.id"
+            placeholder="请选择被保人"
+            @change="changeRecognizee"
+          >
+            <el-option
+              v-for="item in relations"
+              :disabled="
+                relationsSelected.filter(
+                  (i) =>
+                    i.recognizee_policy_member.struct_member_id ===
+                    item.struct_member_id
+                ).length > 0
+              "
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="投保人" class="add-scheme-form">
+          <el-select
+            class="block"
+            v-model="relationModel.policy_holder_member.id"
+            placeholder="请选择投保人"
+          >
+            <el-option
+              v-for="item in relations"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="被保人姓名" class="add-scheme-form">
+          <el-input
+            placeholder="请输入被保人姓名"
+            v-model="relationModel.name"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <template slot="footer">
+        <div>
+          <el-button @click="addDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="selectRelation">确认</el-button>
+        </div>
+      </template>
+    </el-dialog>
+    <el-backtop
+      target=".whole-scroller-container .el-scrollbar__wrap"
+      :bottom="100"
+      :right="20"
+    >
       <i class="el-icon-caret-top"></i>
     </el-backtop>
+
+    <template v-if="showEditMemberStruct">
+      <edit-member-struct
+        :show.sync="showEditMemberStruct"
+        :list="relations"
+        :dataObj="{
+          id: proposal_struct_id,
+          type: 'safeguard_proposal',
+          customer_name: customerName,
+        }"
+        @save="saveChange"
+      ></edit-member-struct>
+    </template>
   </div>
 </template>
 
@@ -760,6 +1198,7 @@ import InsuranceCompany from './components/filters/insurance-company'
 import PaymentPeriod from './components/filters/payment-period'
 import ProposalMaterial from './modal/proposal-material'
 import addDiyProduct from './modal/add-diy-product'
+import editMemberStruct from './modal/edit-member-struct'
 import {
   getInsuranceList,
   getSupplierList,
@@ -769,7 +1208,8 @@ import {
   saveProposal,
   getRelationsV2,
   getProposalCustomerSync,
-  getProposalInfo
+  getProposalInfo,
+  getCopyInfo
 } from '@/apis/modules/proposal'
 
 import {
@@ -798,7 +1238,8 @@ export default {
     InsuranceCompany,
     PaymentPeriod,
     ProposalMaterial,
-    addDiyProduct
+    addDiyProduct,
+    editMemberStruct
   },
   watch: {
     productsSelected(v) {
@@ -885,7 +1326,8 @@ export default {
           sex: '',
           birthday: ''
         },
-        name: ''
+        name: '',
+        member_id: ''
       },
       proposal_struct_id: 0,
       insuranceList: [],
@@ -938,53 +1380,92 @@ export default {
       is_show_company_profile: 1,
       is_show_link: 0,
       is_show_coverage_aggregate: 0,
-      fixedRightPoint: 0
+      fixedRightPoint: 0,
+      showEditMemberStruct: false,
+      familyStructId: ''
     }
   },
   created() {
-    const id = this.$route.query.id
-    const proposalId = this.$route.query.proposal_id
-    this.customerName = this.$route.query.customer_name || ''
-    this.customerId = this.$route.query.customer_id || 0
-    // 计划书入口有三个
-    // 1. 计划书列表 > 新增计划书 (query: customer_id&customer_name)
-    // 2. 我的客户管理 > 新增计划书 (query: id)
-    // 3. 计划书列表 > 编辑/复制 (query: proposal_id)
-    if (proposalId) {
-      // 3 进入 先请求计划书详情接口，再获取家庭关系
-      if (this.customerId > 0) {
-        this.getProposalCustomerSync(this.customerId, () => {
-          this.getProposalInfo(proposalId)
-        })
-      } else {
-        this.getProposalInfo(proposalId)
-      }
-    } else {
-      if (id) {
-        // 2 进入 先获取用户id，再获取家庭关系
-        this.getProposalCustomerSync(id)
-      } else {
-        // 1 进入 获取家庭关系
-        this.getRelations(this.customerId)
-        this.customerId = 0
-        this.proposal_struct_id = this.$route.query.customer_id
-      }
-    }
-    // this.getInsuranceList()
-    // this.getSupplierList()
-    this.getInsuranceProductList()
-    setTimeout(() => {
-      this.bindScrollEvent()
-      const shell = document.querySelector('.proposal-card-shell').getBoundingClientRect()
-      this.containerWidth = shell.width
-      const shellRightPoint = shell.left + shell.width
-      this.fixedRightPoint = innerWidth - shellRightPoint
-    }, 300)
+    this.init()
   },
   beforeDestroy() {
     this.unBindScrollEvent()
   },
   methods: {
+    init () {
+      const id = this.$route.query.id
+      const proposalId = this.$route.query.proposal_id
+      this.customerName = this.$route.query.customer_name || ''
+      this.customerId = this.$route.query.customer_id || 0
+      this.familyStructId = this.$route.query.family_struct_id || ''
+      // 计划书入口有三个
+      // 1. 计划书列表 > 新增计划书 (query: customer_id&customer_name)
+      // 2. 我的客户管理 > 新增计划书 (query: id)
+      // 3. 计划书列表 > 编辑/复制 (query: proposal_id)
+      if (proposalId) {
+        // 3 进入 先请求计划书详情接口，再获取家庭关系
+        if (this.customerId > 0) {
+          this.getProposalCustomerSync(this.customerId, () => {
+            if (this.familyStructId) {
+              this.getCopyInfo(proposalId)
+            } else {
+              this.getProposalInfo(proposalId)
+            }
+          })
+        } else {
+          if (this.familyStructId) {
+              this.getCopyInfo(proposalId)
+            } else {
+              this.getProposalInfo(proposalId)
+            }
+        }
+      } else {
+        if (id) {
+          // 2 进入 先获取用户id，再获取家庭关系
+          this.getProposalCustomerSync(id)
+        } else {
+          // 1 进入 获取家庭关系
+          this.getRelations(this.customerId)
+          this.customerId = 0
+          this.proposal_struct_id = this.$route.query.customer_id
+        }
+      }
+      // this.getInsuranceList()
+      // this.getSupplierList()
+      this.getInsuranceProductList()
+      setTimeout(() => {
+        this.bindScrollEvent()
+        const shell = document.querySelector('.proposal-card-shell').getBoundingClientRect()
+        this.containerWidth = shell.width
+        const shellRightPoint = shell.left + shell.width
+        this.fixedRightPoint = innerWidth - shellRightPoint
+      }, 300)
+    },
+    saveChange (value) { // 修改家庭关系结构后调用
+      // console.log('修改类型', type)
+      // this.insureDetailLoading = true
+      // if (type === 'update-member') {
+      //   this.getRelations(this.proposal_struct_id)
+      // } else if (type === 'update-detail') {
+      //   this.init()
+      // }
+      console.log('修改类型', value)
+      if (value === 'update-member') {
+        this.getRelations(this.proposal_struct_id)
+      } else {
+        // this.init()
+        this.getRelations(this.proposal_struct_id)
+        this.changeMemberSchemes(value)
+      }
+    },
+    changeMemberSchemes (list) {
+      let self = this
+      if (list) {
+        list.map(item => {
+          self.removeTabInchange(item)
+        })
+      }
+    },
     removeSelectedProduct(index) {
       this.$confirm('是否删全部产品?', '提示', {
         confirmButtonText: '确定',
@@ -1115,6 +1596,101 @@ export default {
         this.$set(this.productsSelected[index], idx + 1, upItem)
       }
     },
+    getCopyInfo(proposalId) {
+      this.selectedInit = false
+      getCopyInfo({ source_proposal_id: proposalId, family_struct_id: this.familyStructId })
+        .then(res => {
+          this.customerName = res.customer_name
+          this.customerId = res.customer_id
+          this.is_show_company_profile = !!res.is_show_company_profile
+          this.is_show_link = !!res.is_show_link
+          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate
+          this.proposal_struct_id = res.proposal_struct_id
+          // if (this.customerId > 0) {
+          //   this.getProposalCustomerSync(this.customerId)
+          // }
+          this.getRelations(res.proposal_struct_id)
+          this.formData = {
+            name: res.name,
+            remark: res.remark,
+            illustration: res.illustration,
+            is_show_premium: !!res.is_show_premium,
+            has_pdf_illustration: !!res.has_pdf_illustration,
+            pdf_illustration: res.pdf_illustration,
+            pdf_illustration_type: res.pdf_illustration_type,
+            illustration_type: res.illustration_type
+          }
+          this.relationsSelected = res.schemes.map(item => {
+            return {
+              member_id: item.recognizee_policy_member_id.toString() || '',
+              name: item.recognizee_policy_name,
+              recognizee_policy_member: {
+                id: item.recognizee_policy_member_id,
+                name: item.recognizee_policy_name,
+                relation: item.recognizee_policy_relation,
+                sex: item.recognizee_policy_sex,
+                birthday: item.recognizee_policy_birthday,
+                struct_member_id: item.recognizee_policy_struct_member_id
+              },
+              policy_holder_member: {
+                id: item.policy_holder_member_id,
+                name: item.policy_holder_name,
+                relation: item.policy_holder_relation,
+                sex: item.policy_holder_sex,
+                birthday: item.policy_holder_birthday,
+                struct_member_id: item.policy_holder_struct_member_id
+              }
+            }
+          })
+          
+          this.schemesTab = this.relationsSelected.length > 0 ? this.relationsSelected[0].member_id : 0
+          // 获取已选择产品数据，再次进行费率计算
+          const selectedData = res.schemes.map((item, index) => {
+            const relation = this.relationsSelected[index]
+            return item.products.map(product => {
+              return {
+                source: product.source,
+                product_id: product.source_proposal_product_id,
+                guarantee_period_value: product.guarantee_period_value,
+                guarantee_period_unit: product.guarantee_period_unit,
+                pay_period_value: product.pay_period_value,
+                pay_period_unit: product.pay_period_unit,
+                guarantee_quota: product.guarantee_quota,
+                has_social_security: product.has_social_security,
+                recognizee_policy_id: relation.recognizee_policy_member.id,
+                recognizee_policy_sex: relation.recognizee_policy_member.sex,
+                recognizee_policy_birthday:
+                  relation.recognizee_policy_member.birthday,
+                policy_holder_id: relation.policy_holder_member.id,
+                policy_holder_sex: relation.policy_holder_member.sex,
+                policy_holder_birthday: relation.policy_holder_member.birthday,
+                insurances: product.insurances.map(i => ({
+                  id: i.source_proposal_insurance_id,
+                  coverage: i.guarantee_quota
+                }))
+              }
+            })
+          })
+
+          this.ect = res.schemes.map(i => {
+            return {
+              has_illustration: !!i.has_illustration,
+              illustration: i.illustration
+            }
+          })
+
+          this.schemesFilters = res.schemes.map(() => {
+            return JSON.parse(JSON.stringify(this.schemesFilterModel))
+          })
+
+          this.confirmPrice(selectedData, res)
+
+          // this.schemesFilters.forEach((item, index) => {
+          //   this.search({}, index)
+          // })
+        })
+        .catch(err => console.log(err))
+    },
     getProposalInfo(proposalId) {
       this.selectedInit = false
       getProposalInfo({ id: proposalId })
@@ -1141,6 +1717,7 @@ export default {
           }
           this.relationsSelected = res.schemes.map(item => {
             return {
+              member_id: item.recognizee_policy_member_id.toString() || '',
               name: item.recognizee_policy_name,
               recognizee_policy_member: {
                 id: item.recognizee_policy_member_id,
@@ -1160,6 +1737,8 @@ export default {
               }
             }
           })
+          
+          this.schemesTab = this.relationsSelected.length > 0 ? this.relationsSelected[0].member_id : 0
           // 获取已选择产品数据，再次进行费率计算
           const selectedData = res.schemes.map((item, index) => {
             const relation = this.relationsSelected[index]
@@ -1863,10 +2442,16 @@ export default {
       this.relationModel.policy_holder_member = this.relations.filter(
         i => i.id === this.relationModel.policy_holder_member.id
       )[0]
+      this.relationModel.member_id = this.relations.filter(
+        i => i.id === this.relationModel.recognizee_policy_member.id
+      )[0].id.toString()
 
       this.relationsSelected.push(this.relationModel)
       this.addDialogVisible = false
-      this.schemesTab = `${this.relationsSelected.length - 1}`
+      this.schemesTab = this.relationModel.member_id.toString() // `${this.relationsSelected.length - 1}`
+      if (this.products[this.relationsSelected.length - 1]) {
+        this.products[this.relationsSelected.length - 1] = []
+      }
       // this.formData.schemes.push(JSON.parse(JSON.stringify(this.schemesModel)))
       this.schemesFilters.push(
         JSON.parse(JSON.stringify(this.schemesFilterModel))
@@ -1892,7 +2477,8 @@ export default {
           sex: '',
           birthday: ''
         },
-        name: ''
+        name: '',
+        member_id: ''
       }
 
       // this.search({}, this.schemesFilters.length - 1)
@@ -1904,6 +2490,9 @@ export default {
     },
     addProposal() {
       this.addDialogVisible = true
+    },
+    showEditMemberStructFunc () {
+      this.showEditMemberStruct = true
     },
     addHandleClose() {
       this.addDialogVisible = false
@@ -1938,22 +2527,66 @@ export default {
     selectedListTextHidden() {
       this.isSelectedTextHidden = !this.isSelectedTextHidden
     },
+    removeTabInchange(targetName) {
+      let that = this
+      const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
+      if (index > -1) {
+        this.relationsSelected.splice(index, 1)
+        this.schemesFilters.splice(index, 1)
+        this.productsSelected.splice(index, 1)
+        this.ect.splice(index, 1)
+        this.schemesTab = this.relationsSelected[0].member_id.toString()
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功!'
+        // })
+      }
+      // 2021 0907 增加一个判断  如果是本人 但是本人的投保人或者被保人是已经删除的人 也要一并删掉
+      this.relationsSelected.map((item) => {
+        if (+targetName === +item.recognizee_policy_member.id || +targetName === +item.policy_holder_member.id) {
+          const index1 = that.relationsSelected.findIndex(
+            (item1) => item1.member_id == item.member_id
+          )
+          if (index1 > -1) {
+            that.relationsSelected.splice(index1, 1)
+            that.schemesFilters.splice(index1, 1)
+            that.productsSelected.splice(index1, 1)
+            that.ect.splice(index1, 1)
+            that.schemesTab = that.relationsSelected[0].member_id.toString()
+          }
+        }
+      })
+    },
     removeTab(targetName) {
       this.$confirm('请确认删除该项方案?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const index = +targetName
-        this.relationsSelected.splice(index, 1)
-        this.schemesFilters.splice(index, 1)
-        this.productsSelected.splice(index, 1)
-        this.ect.splice(index, 1)
-        this.schemesTab = `${this.relationsSelected.length - 1}`
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
+        const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
+        if (index > -1) {
+          this.relationsSelected.splice(index, 1)
+          this.schemesFilters.splice(index, 1)
+          this.productsSelected.splice(index, 1)
+          this.ect.splice(index, 1)
+          this.schemesTab = this.relationsSelected[0].member_id.toString()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+        
+        
+        // const index = +targetName
+        // this.relationsSelected.splice(index, 1)
+        // this.schemesFilters.splice(index, 1)
+        // this.productsSelected.splice(index, 1)
+        // this.ect.splice(index, 1)
+        // this.schemesTab = `${this.relationsSelected.length - 1}`
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功!'
+        // })
       })
     }
   }
@@ -1961,7 +2594,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'index';
+@import "index";
 </style>
 
 <style lang="scss">
@@ -1984,12 +2617,14 @@ export default {
   top: 4px !important;
   // right: 6vw !important;
   z-index: 34 !important;
-
 }
-.proposal-add-scheme{
+.proposal-add-scheme {
   top: -2px !important;
   display: flex;
   align-items: center;
+}
+.proposal-edit-scheme {
+  right: 126px !important;
 }
 
 .el-tabs__header {
@@ -2000,12 +2635,12 @@ export default {
   width: 100% !important;
 }
 
-.proposal-tabs .el-tabs__item{
+.proposal-tabs .el-tabs__item {
   display: inline-flex;
   align-items: center;
 }
-.el-select-default{
-  .popper__arrow{
+.el-select-default {
+  .popper__arrow {
     display: none !important;
   }
 }
