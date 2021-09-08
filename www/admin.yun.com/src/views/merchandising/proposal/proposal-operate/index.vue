@@ -2447,6 +2447,9 @@ export default {
       this.relationsSelected.push(this.relationModel)
       this.addDialogVisible = false
       this.schemesTab = this.relationModel.member_id.toString() // `${this.relationsSelected.length - 1}`
+      if (this.products[this.relationsSelected.length - 1]) {
+        this.products[this.relationsSelected.length - 1] = []
+      }
       // this.formData.schemes.push(JSON.parse(JSON.stringify(this.schemesModel)))
       this.schemesFilters.push(
         JSON.parse(JSON.stringify(this.schemesFilterModel))
