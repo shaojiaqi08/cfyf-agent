@@ -11,7 +11,7 @@
         <div class="tip">打开后点击右上角按钮转发</div>
       </div>
       <div class="qrcode">
-        <img :src="proposalInfo.qr_code" height="100%" width="100%">
+        <img :src="codeBase64" height="100%" width="100%">
       </div>
     </div>
     <div class="p16 flex-between material-item">
