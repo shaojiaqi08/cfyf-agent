@@ -181,8 +181,9 @@
               size="small"
               plain
               @click="showEditMemberStructFunc"
-              v-allowed="['proposal-customer-edit']"
+              
             >
+            <!-- v-allowed="['proposal-customer-edit']"  20210908 21:43 大佬威说先关掉权限🐶 -->
               <i class="iconfont fs12 iconchaoxiao_jiahao"></i>
               家庭结构编辑
             </el-button>
