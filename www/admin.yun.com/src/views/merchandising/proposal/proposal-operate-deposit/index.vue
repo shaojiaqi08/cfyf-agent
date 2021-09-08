@@ -353,6 +353,7 @@
     <proposal-material
       :is-deposit="true"
       :proposalInfo="proposal"
+      v-if="dialogVisible"
       :show.sync="dialogVisible"
       title="成功生成计划书"
       @fresh="handleMaterialClose"

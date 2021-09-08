@@ -1095,6 +1095,7 @@
       </div>
     </el-dialog>
     <proposal-material
+      v-if="dialogVisible"
       :show.sync="dialogVisible"
       :proposalInfo="proposal"
       title="成功生成计划书"
