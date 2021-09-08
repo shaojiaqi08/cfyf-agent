@@ -311,7 +311,7 @@
               </span>
             </div>
             <div>
-              人核中件数(元)
+              人核中件数
               <span class="warning">
                 {{ statisticInfo.manpower_underwriting_total_quantity }}
               </span>
