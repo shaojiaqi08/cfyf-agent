@@ -276,13 +276,13 @@
             </div>
             <div>
               人核中保费(元)
-              <span class="warning">
+              <span style='color: #09ba08'>
                 {{ statisticInfo.manpower_underwriting_total_premium }}
               </span>
             </div>
             <div>
               人核中件数
-              <span class="warning">
+              <span style='color: #09ba08'>
                 {{ statisticInfo.manpower_underwriting_total_quantity }}
               </span>
             </div>

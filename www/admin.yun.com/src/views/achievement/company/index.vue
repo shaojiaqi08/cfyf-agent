@@ -375,11 +375,11 @@
             </div>
             <div>
               人核中保费(元)
-              <span class="warning">{{ statisticInfo.manpower_underwriting_total_premium }}</span>
+              <span style='color: #09ba08'>{{ statisticInfo.manpower_underwriting_total_premium }}</span>
             </div>
             <div>
               人核中件数
-              <span class="warning">{{ statisticInfo.manpower_underwriting_total_quantity }}</span>
+              <span style='color: #09ba08'>{{ statisticInfo.manpower_underwriting_total_quantity }}</span>
             </div>
             <div>
               未支付保费总计(元)
