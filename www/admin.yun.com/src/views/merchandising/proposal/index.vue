@@ -190,6 +190,7 @@
       @fresh="ajaxUserInfo"
     ></user-info-modal>
     <proposal-material
+      v-if="isProposalMaterialShow"
       :show.sync="isProposalMaterialShow"
       :proposalInfo="proposalInfo"
       :is-deposit="isDeposit"

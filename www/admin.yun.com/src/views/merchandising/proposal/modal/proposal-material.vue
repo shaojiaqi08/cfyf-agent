@@ -11,7 +11,8 @@
         <div class="tip">打开后点击右上角按钮转发</div>
       </div>
       <div class="qrcode">
-        <img :src="proposalInfo.qr_code" width="100%" height="100%">
+        <!-- 20210908 优化计划书列表获取时间 改为前端生成二维码 -->
+        <img :src="codeBase64" width="100%" height="100%">
       </div>
     </div>
     <div class="p16 flex-between material-item">
@@ -48,6 +49,9 @@
 </template>
 
 <script>
+
+import QRCode from 'qrcode'
+
 export default {
   props: {
     show: {
@@ -63,7 +67,15 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      codeBase64: ''
+    }
+  },
+  mounted () {
+    let that = this
+    QRCode.toDataURL(this.proposalInfo.view_url).then(result => {
+      that.codeBase64 = result
+    })
   },
   methods: {
     check(type, mode) {
