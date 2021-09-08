@@ -24,7 +24,7 @@
       <el-select v-model="item.relation"
                  style="width: 120px;"
                  placeholder="家庭关系"
-                 :disabled="index === 0">
+                 :disabled="index === 0 || item.id != ''">
         <el-option v-for="(family, idx) in familyTypes"
                     :key="`${idx}${family.value}`"
                     :value="family.value"
@@ -37,19 +37,24 @@
         <el-radio v-for="sex in sexTypes"
                   v-model="item.sex"
                   :key="sex.value"
+                  :disabled="item.id != ''"
                   :label="sex.value">
           {{ sex.label }}
         </el-radio>
       </div>
       <el-input style="width: 140px;"
                 placeholder="请输入姓名"
-                v-model="item.member_name"></el-input>
+                v-model="item.member_name"
+                :disabled="item.id != ''"
+                ></el-input>
       <el-date-picker
         style="width: 150px;"
         v-model="item.birthday"
         type="date"
         value-format="yyyyMMdd"
-        placeholder="出生日期">
+        placeholder="出生日期"
+        :disabled="item.id != ''"
+        >
       </el-date-picker>
       <div style="width: 80px;">
         {{ item.birthday && calcAge(
