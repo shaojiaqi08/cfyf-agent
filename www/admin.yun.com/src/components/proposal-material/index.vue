@@ -44,6 +44,8 @@
 </template>
 
 <script>
+import QRCode from 'qrcode'
+
   export default {
     props: {
       show: {
@@ -63,6 +65,17 @@
         default: false
       }
     },
+    data() {
+    return {
+      codeBase64: ''
+    }
+  },
+    mounted () {
+    let that = this
+    QRCode.toDataURL(this.proposalInfo.view_url).then(result => {
+      that.codeBase64 = result
+    })
+  },
     methods: {
       check (type) {
         window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/pdf/${type}-by-pcode` : `proposal/file/${type}/pdf`}?pcode=${this.proposalInfo.pcode}`)
