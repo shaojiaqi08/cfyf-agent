@@ -187,7 +187,7 @@
           <div class="content-wrap">
             <span class="title-wrap">
               <i :class="isToday(item.follow_at * 1000) ?'cur-status-dot':'status-dot'"></i>
-              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus" :src="item.follow_obj_avatar_url"></el-avatar>
+              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus && item.action !== messageTypes.systemSendCustomerMessage" :src="item.follow_obj_avatar_url"></el-avatar>
               <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
               <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
               <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
@@ -208,6 +208,10 @@
                 {{item.follow_status_str}}
               </span>
             </span>
+            <div class="msg-wrap" v-if="item.action === messageTypes.systemSendCustomerMessage">
+              <p>{{item.title}}</p>
+              <span>{{item.remark}}</span>
+            </div>
             <div v-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">
               <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
                 <p>{{item.title}}</p>
