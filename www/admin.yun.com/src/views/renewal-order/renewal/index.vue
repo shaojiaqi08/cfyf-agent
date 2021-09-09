@@ -36,6 +36,9 @@
               end-placeholder="结束日期"
               :clearable="false"
               :picker-options="pickerOptions"
+              mode="store"
+      startKey="policy_renewal_date_start"
+      endKey="policy_renewal_date_end"
               @change="searchModelChange"
           ></el-date-picker>
           <template
@@ -55,6 +58,7 @@
         </filter-shell>
         <!--出单人-->
         <filter-shell
+            v-if="$route.name !== 'RenewalOrder'"
             v-model="searchModel.sales_id"
             autoFocus
             class="mb16"
@@ -167,6 +171,7 @@
 
         <!--全部团队-->
         <filter-shell
+          v-if="$route.name !== 'RenewalOrder'"
           autoFocus
           v-model="searchModel.sales_team_id"
           class="mb16"
@@ -281,7 +286,7 @@
             class="mb16"
             :loading="exporting"
             icon="iconfont iconxiao16_xiazai mr4"
-            v-if="$checkAuth('/policy_renewal/export_for_sales' || '/policy_renewal/export_for_team' || '/policy_renewal/export_for_company')"
+            v-if="$checkAuth(['/policy_renewal/export_for_sales','/policy_renewal/export_for_team','/policy_renewal/export_for_company'])"
             @click="policyExport"
         >导出数据</el-button>
       </div>
@@ -318,7 +323,7 @@
         <el-table-column label="续保链接" prop="renewal_url" width="130px" align="center">
           <template v-slot="{ row }">
             <text-hidden-ellipsis :popoverTip="row.renewal_url" @click="copyRenewalLink(row.renewal_url)"></text-hidden-ellipsis>
-            <a class="copy-class" href="javascript:;" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</a>
+            <a class="copy-class" href="javascript:;" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])"><p class="p_margin" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</p></a>
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
@@ -329,26 +334,26 @@
             <el-link
               type="primary"
               @click="trace(row)"
-              class="mr8" v-if="$checkAuth('/policy_renewal/sales_follow' || '/policy_renewal/team_follow' || '/policy_renewal/company_follow')">跟踪</el-link>
+              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_follow','/policy_renewal/team_follow','/policy_renewal/company_follow'])">跟踪</el-link>
             <el-link
               type="primary"
-              class="mr8" v-if="$checkAuth('/policy_renewal/sales_copy_renewal_link' || '/policy_renewal/team_copy_renewal_link' || '/policy_renewal/company_copy_renewal_link')">
-              <p @click="copyLink(row)" v-if="row.renewal_url !== ''">复制链接</p></el-link>
+              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])">
+              <p class="p_margin" @click="copyLink(row)" v-if="row.renewal_url !== ''">复制链接</p></el-link>
             <el-link
               type="primary"
               class="mr8"
-              v-if="$checkAuth('/policy_renewal/sales_renewal_link_qrcode' || '/policy_renewal/renewal_link_qrcode_team' || '/policy_renewal/company_copy_renewal_link  ')"
+              v-if="$checkAuth(['/policy_renewal/sales_renewal_link_qrcode','/policy_renewal/renewal_link_qrcode_team','/policy_renewal/company_copy_renewal_link'])"
               >
-                <p @click="showQrCode(row)" v-if="row.renewal_url !== ''">链接二维码</p>
+                <p class="p_margin" @click="showQrCode(row)" v-if="row.renewal_url !== ''">链接二维码</p>
               </el-link>
             <el-link
               type="primary"
               @click="showSendLetter(row)"
-              class="mr8" v-if="$checkAuth('/policy_renewal/sales_send_msg' || '/policy_renewal/team_send_msg' || '/policy_renewal/company_send_msg')">发送短信</el-link>
+              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_send_msg','/policy_renewal/team_send_msg','/policy_renewal/company_send_msg'])">发送短信</el-link>
             <el-link
               type="primary"
               @click="trace(row, true)"
-              class="mr8" v-if="$checkAuth('/policy_renewal/detail_for_sales' || '/policy_renewal/detail_for_team' || '/policy_renewal/company_for_detail')">查看</el-link>
+              class="mr8" v-if="$checkAuth(['/policy_renewal/detail_for_sales','/policy_renewal/detail_for_team','/policy_renewal/company_for_detail'])">查看</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -406,6 +411,9 @@ export default {
   },
   data() {
     const date = new Date();
+    let flag = true,
+        beforeDate = date.getTime() - 3600 * 1000 * 24 * 60,
+        afterDate = date.getTime() + 3600 * 1000 * 24 * 60;
     return {
       qrCodeDialogVisible: false,
       qrCodeSrc: '',
@@ -446,7 +454,7 @@ export default {
         policy_status: [],
         product_id_type: [],
         supplier_id: [],
-        date_range: [date.getTime() - 3600 * 1000 * 24 * 90, date.getTime() + 3600 * 1000 * 24 * 90],
+        date_range: [beforeDate, afterDate],
         sales_id: [],
         sales_team_id: [],
         include_child_team: '0'
@@ -479,13 +487,56 @@ export default {
         renewalTeam: exportTeamPolicy, 
         RenewalOrder: exportSalesPolicy
       }),
+      // pickerOptions: {
+      //   disabledDate(time) {
+      //     let curDate = (new Date()).getTime();
+      //     let three = 60 * 24 * 3600 * 1000;
+      //     let threeMonths = curDate - three;
+      //     let threeMonths1 = curDate + three;
+      //     return  time.getTime() < threeMonths || time.getTime() > threeMonths1;
+      //   }
+      // }
       pickerOptions: {
-        disabledDate(time) {
-          let curDate = (new Date()).getTime();
-          let three = 90 * 24 * 3600 * 1000;
-          let threeMonths = curDate - three;
-          let threeMonths1 = curDate + three;
-          return  time.getTime() < threeMonths || time.getTime() > threeMonths1;
+        onPick: ({ maxDate, minDate }) => {
+          flag = false;
+          let restrictedScopeDay = 120
+          if ((minDate && !maxDate) || (!minDate && maxDate)) {
+            if (minDate) {
+              this.minDate =
+                minDate.getTime() - restrictedScopeDay * 86400000
+              this.maxDate =
+                minDate.getTime() + restrictedScopeDay * 86400000
+            } else {
+              this.minDate =
+                maxDate.getTime() - restrictedScopeDay * 86400000
+              this.maxDate =
+                maxDate.getTime() + restrictedScopeDay * 86400000
+            }
+          } else if (minDate && maxDate) {
+            this.minDate =
+              minDate.getTime() - restrictedScopeDay * 86400000
+            this.maxDate =
+              maxDate.getTime() + restrictedScopeDay * 86400000
+          }
+        },
+        disabledDate: time => {
+          if(flag) {
+            // 规则: 指定前后天数之外日期全部禁止
+            if (new Date(beforeDate).getTime()-60*86400000 && time.getTime() < new Date(beforeDate).getTime()-60*86400000) {
+              return true
+            } else if (new Date(afterDate).getTime()+60*86400000 && time.getTime() > new Date(afterDate).getTime()+60*86400000) {
+              return true
+            }
+            return false
+          } else {
+            // 规则: 指定前后天数之外日期全部禁止
+            if (this.minDate && time.getTime() < this.minDate) {
+              return true
+            } else if (this.maxDate && time.getTime() > this.maxDate) {
+              return true
+            }
+            return false
+          }
         }
       }
     }
@@ -598,7 +649,7 @@ export default {
       this.exporting = true
       downloadFrameA(
           url,
-          `订单数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`,
+          `续保续期数据-${formatDate(new Date(), 'yyyy-MM-dd')}.xlsx`,
           'get',
           true
       ).then(() => {
@@ -1005,5 +1056,9 @@ export default {
 }
 .copy-class:active {
   opacity: 0.6;
+}
+.p_margin {
+  padding: 0;
+  margin: 0;
 }
 </style>

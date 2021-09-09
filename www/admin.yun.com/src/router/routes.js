@@ -539,7 +539,7 @@ export const routers = [
         path: '/renewal-notify',
         name: 'RenewalNotify',
         meta: {
-          title: '通知客户设置',
+          title: '销售通知客户设置',
           header: true,
           menu: true,
           show: true,
@@ -552,7 +552,7 @@ export const routers = [
         path: '/renewal-admin-notify',
         name: 'RenewalAdminNotify',
         meta: {
-          title: '通知客户设置',
+          title: '公司通知客户设置',
           header: true,
           menu: true,
           show: true,

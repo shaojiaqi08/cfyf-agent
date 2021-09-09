@@ -34,8 +34,8 @@
       <h3>短信示例</h3>
       <div class="main-text">{{notifyData.short_insurance_msg_template}}</div>
       <div class="main-text">{{notifyData.long_insurance_msg_template}}</div>
-      <h3>短信发送规则</h3>
-      <div class="main-text">{{notifyData.send_msg_rule}}</div>
+      <!-- <h3>短信发送规则</h3>
+      <div class="main-text">{{notifyData.send_msg_rule}}</div> -->
       <el-button
         type="primary"
         :loading="submitting"

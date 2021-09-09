@@ -305,7 +305,7 @@
 
         <!--续保续期信息-->
         <!--续保续期信息-->
-        <template>
+        <template v-if="$checkAuth(`${perPreFix}renewal_info`)">
           <h3>续保续期信息</h3>
           <div class="item-block" v-loading="historyLoading">
             <div class="item">
@@ -314,7 +314,7 @@
             </div>
             <div class="item">
               <div class="label">续保时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0? '': getDataInfo.current_renewal_stage.renewal_at}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0? '': formatDate(getDataInfo.current_renewal_stage.renewal_at * 1000, 'yyyy年MM月dd日')}}</div>
             </div>
             <div class="item">
               <div class="label">无需续保原因：</div>
@@ -322,7 +322,7 @@
             </div>
             <div class="item">
               <div class="label">扣款时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0? '': getDataInfo.current_renewal_stage.pay_at}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0? '': formatDate(getDataInfo.current_renewal_stage.pay_at * 1000, 'yyyy年MM月dd日')}}</div>
             </div>
             <div class="item">
               <div class="label">扣款失败原因：</div>
@@ -333,7 +333,7 @@
         </template>
 
         <!--续保续期信息-->
-        <template>
+        <template v-if="$checkAuth(`${perPreFix}renewal_info`)">
           <h3>历史续保记录</h3>
           <div v-loading="historyLoading">
             <el-table class="mt20" border stripe :data="getDataInfo.renewal_stage_history">
@@ -599,16 +599,15 @@ export default {
         'achievement-company-detail': '/company_performance/',
         'achievement-team-detail': '/team_performance/',
         'achievement-self-detail': '/my_performance/',
-        'renewal-company-detail': '/company_performance/',
-        'renewal-team-detail': '/team_performance/',
-        'renewal-self-detail': '/my_performance/',
+        'renewal-company-detail': '/company_policy_renewal/policy/',
+        'renewal-team-detail': '/team_policy_renewal/policy/',
+        'renewal-self-detail': '/my_policy_renewal/policy/',
       }
       return map[this.$route.name]
     }
   },
   mounted() {
     this.init()
-    this.getRenewalInfo()
   },
   methods: {
     formatDate,
@@ -647,6 +646,8 @@ export default {
       this.$checkAuth(`${perPreFix}sales_info`) && this.getPolicySales_()
       // 获取回访信息
       this.$checkAuth(`${perPreFix}visit_info`) && this.getPolicyVisit_()
+      //
+      this.$checkAuth(`${perPreFix}renewal_info`) && this.getRenewalInfo()
       // 设置高度
       this.setHeight()
       window.addEventListener('resize', this.setHeight);

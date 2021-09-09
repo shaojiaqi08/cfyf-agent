@@ -41,7 +41,7 @@
             <el-table-column label="续保链接" align="center" width="130px">
               <template v-slot="{ row }">
                 <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
-                <a class="copy-class" href="javascript:;" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</a>
+                <a class="copy-class" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
               </template>
             </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
@@ -71,6 +71,7 @@
                 <el-link
                   @click="insurancePolicy(row)"
                   type="primary"
+                  v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
                   <el-link
                   @click="showSendLetter(row)"
@@ -98,7 +99,7 @@
             <el-table-column label="续保链接" align="center" width="130px">
               <template v-slot="{ row }">
                 <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
-                <a class="copy-class" href="javascript:;" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</a>
+                <a class="copy-class" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
               </template>
             </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
@@ -128,6 +129,7 @@
                 <el-link
                   @click="insurancePolicy(row)"
                   type="primary"
+                  v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
                   <el-link
                   type="primary"
@@ -197,14 +199,20 @@
                 <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
                 {{messageStatus[item.renewal_status].label}}
               </span> -->
+              <span
+                class="status-block"
+                :class="[item.renewal_status]"
+                v-if="item.action === messageTypes.systemModifyFollowStatus || item.action === messageTypes.modifyFollowStatus"
+              >
+                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
+                {{item.follow_status_str}}
+              </span>
             </span>
-            <div class="msg-wrap" v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
-              <p>{{item.title}}</p>
-              <span>{{item.remark}}</span>
-            </div>
-            <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
-              <p>{{item.title}}</p>
-              <span>{{item.remark}}</span>
+            <div v-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">
+              <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
+                <p>{{item.title}}</p>
+                <span>{{item.remark}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -286,7 +294,7 @@ export default {
       step: 'not_follow',
       stepData: Object.freeze([
         { label: '未跟踪', value: 'not_follow' },
-        { label: '跟踪中', value: 'already_follow' },
+        { label: '已跟踪', value: 'already_follow' },
         { label: '未联系上', value: 'cannot_get_in_touch' },
         { label: '放弃续保', value: 'refuse_renewal' },
         { label: '已续保', value: 'already_renewal' },
@@ -362,6 +370,17 @@ export default {
     // },
     curRenewalDetail() {
       return this.renewalOptions.find(i => i.value === this.obj.stage_version) || {}
+    },
+    perPreFix () {
+      const map = {
+        'RenewalOrderTraceCompany' : '/company_renewal/',
+        'RenewalOrderTraceTeam' : '/team_renewal/',
+        'RenewalOrderTraceMy' : '/sales_renewal/',
+        'RenewalOrderViewMyCompany' : '/company_renewal/',
+        'RenewalOrderViewMyTeam' : '/team_renewal/',
+        'RenewalOrderViewMy' : '/sales_renewal/',
+      }
+      return map[this.$route.name]
     }
   },
   mounted() {
@@ -412,12 +431,16 @@ export default {
     },
     //获取消息模板
     showSendLetter({current_renewal_stage}) {
-      this.letterDialogVisible = true
       this.sendLoading = true
       this.templateVersion = current_renewal_stage.version
       getMsgTemplate({version: current_renewal_stage.version}).then(res => {
         this.sendLoading = false
         this.detailObj = res
+        if(!res.is_sales_profile_ok) {
+          this.letterDialogVisible = false
+        } else {
+          this.letterDialogVisible = true
+        }
       }).catch(() => {
         this.sendLoading = false
       })
@@ -521,10 +544,20 @@ export default {
         follow_status: step
       };
       this.rightLoading = true
-      modifyFollowStatus(data).then(() => {
+      modifyFollowStatus(data).then((res) => {
         this.getFollowLogs()
         this.$message.success(`修改跟踪状态成功!`)
         this.rightLoading = false
+        this.detail.customer_policy.filter(v => {
+          if(v.current_renewal_stage.version === obj.stage_version) {
+            v.current_renewal_stage.follow_status_name = res.follow_status_str
+          }
+        })
+        this.detail.family_policy.filter(v => {
+          if(v.current_renewal_stage.version === obj.stage_version) {
+            v.current_renewal_stage.follow_status_name = res.follow_status_str
+          }
+        })
       }).catch(() => {
         this.$message.error(`修改失败!`)
         this.rightLoading = false
@@ -887,6 +920,10 @@ export default {
           margin-right: 8px;
           display: inline-block;
           text-align: center;
+          /deep/ img {
+            padding: 0;
+            margin: auto;
+          }
         }
         .name-span {
           font-weight: 800;
@@ -934,6 +971,7 @@ export default {
         }
       }
       .msg-wrap {
+        width: 293px;
         background-color: #F5F5F5;
         padding: 16px;
         color: #131415;
@@ -990,6 +1028,10 @@ export default {
 .scroll-content {
   width: 100%;
   height: 100%;
+}
+.p_margin {
+  padding: 0;
+  margin: 0;
 }
 </style>
 <style lang="scss">
