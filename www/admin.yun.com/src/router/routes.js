@@ -114,7 +114,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/company_performance/detail'
+          permission: '/company_renewal/policy_detail'
         },
         component: getView('achievement/order-detail')
       },
@@ -150,7 +150,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/company_performance/detail'
+          permission: '/team_renewal/policy_detail'
         },
         component: getView('achievement/order-detail')
       },
@@ -186,7 +186,7 @@ export const routers = [
           header: true,
           menu: false,
           show: false,
-          permission: '/company_performance/detail'
+          permission: '/sales_renewal/policy_detail'
         },
         component: getView('achievement/order-detail')
       },

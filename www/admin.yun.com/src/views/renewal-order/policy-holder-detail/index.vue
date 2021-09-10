@@ -70,7 +70,7 @@
               <template slot-scope="{row}">
                 <el-link
                   @click="insurancePolicy(row)"
-                  type="primary"
+                  type="primary" 
                   v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
                   <el-link 
@@ -402,7 +402,7 @@ export default {
       return map[this.$route.name]
     },
     // 权限值-发送短信
-    perPreFixMessage () {
+    perPreFixMessage () { 
       const map = {
         'RenewalOrderTraceMy' : '/policy_renewal/sales_send_msg',
         'RenewalOrderTraceTeam' : '/policy_renewal/team_send_msg',
