@@ -207,7 +207,7 @@
                 :class="[item.renewal_status]"
                 v-if="item.action === messageTypes.systemModifyFollowStatus || item.action === messageTypes.modifyFollowStatus"
               >
-                <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
+                <!-- <i class="iconfont iconchaoxiao_kefu_shenhui"></i> -->
                 {{item.follow_status_str}}
               </span>
             </span>
