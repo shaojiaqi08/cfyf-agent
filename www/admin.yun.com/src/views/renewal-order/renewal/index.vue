@@ -334,7 +334,7 @@
             <el-link
               type="primary"
               @click="trace(row)"
-              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_follow','/policy_renewal/team_follow','/policy_renewal/company_follow'])">跟踪</el-link>
+              class="mr8" v-if="$checkAuth(perPreFix)">跟踪</el-link>
             <el-link
               type="primary"
               class="mr8" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])">
@@ -539,6 +539,17 @@ export default {
           }
         }
       }
+    }
+  },
+  computed: {
+    // 权限值前缀
+    perPreFix () {
+      const map = {
+        'RenewalOrder' : '/policy_renewal/sales_follow',
+        'renewalTeam' : '/policy_renewal/team_follow',
+        'renewalCompany' : '/policy_renewal/company_follow'
+      }
+      return map[this.$route.name]
     }
   },
   methods: {
@@ -801,6 +812,7 @@ export default {
     this.getAllProducts()
     this.getSupplierList()
     // this.getCompanyList()
+    console.log('$route', this.$route)
   },
   mounted() {
     window.addEventListener('resize', this.calcTableHeight)
