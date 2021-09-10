@@ -41,7 +41,7 @@
             <el-table-column label="续保链接" align="center" width="130px">
               <template v-slot="{ row }">
                 <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
-                <a class="copy-class" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
+                <a class="copy-class" v-if="$checkAuth(perPreFixCopyLink)" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
               </template>
             </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
@@ -73,11 +73,11 @@
                   type="primary"
                   v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
-                  <el-link
-                  @click="showSendLetter(row)"
+                  <el-link 
                   type="primary"
-                  v-if="!readonly"
-                  class="mr8">短信通知</el-link>
+                  @click="showSendLetter(row)"
+                  v-if="$checkAuth(perPreFixMessage)"
+                  class="mr8"><p class="p_margin" v-if="!readonly">短信通知</p></el-link>
               </template>
             </el-table-column>
           </el-table>
@@ -99,7 +99,7 @@
             <el-table-column label="续保链接" align="center" width="130px">
               <template v-slot="{ row }">
                 <text-hidden-ellipsis :popoverTip="row.current_renewal_stage.renewal_url" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)"></text-hidden-ellipsis>
-                <a class="copy-class" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
+                <a class="copy-class" v-if="$checkAuth(perPreFixCopyLink)" href="javascript:;"><p class="p_margin" v-if="row.current_renewal_stage.renewal_url != ''" @click="copyRenewalLink(row.current_renewal_stage.renewal_url)">复制链接</p></a>
               </template>
             </el-table-column>
             <el-table-column label="投保单号" prop="proposal_sn" align="center" width="160px"></el-table-column>
@@ -131,11 +131,11 @@
                   type="primary"
                   v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
-                  <el-link
+                  <el-link 
                   type="primary"
                   @click="showSendLetter(row)"
-                  v-if="!readonly"
-                  class="mr8">短信通知</el-link>
+                  v-if="$checkAuth(perPreFixMessage)"
+                  class="mr8"><p class="p_margin" v-if="!readonly">短信通知</p></el-link>
               </template>
             </el-table-column>
           </el-table>
@@ -388,7 +388,31 @@ export default {
         'RenewalOrderViewMy' : '/sales_renewal/',
       }
       return map[this.$route.name]
-    }
+    },
+    // 权限值-复制链接
+    perPreFixCopyLink () {
+      const map = {
+        'RenewalOrderTraceMy' : '/copy_renewal_link/sales',
+        'RenewalOrderTraceTeam' : '/copy_renewal_link/team',
+        'RenewalOrderTraceCompany' : '/copy_renewal_link/company',
+        'RenewalOrderViewMy' : '/copy_renewal_link/sales',
+        'RenewalOrderViewMyTeam' : '/copy_renewal_link/team',
+        'RenewalOrderViewMyCompany' : '/copy_renewal_link/company'
+      }
+      return map[this.$route.name]
+    },
+    // 权限值-发送短信
+    perPreFixMessage () {
+      const map = {
+        'RenewalOrderTraceMy' : '/policy_renewal/sales_send_msg',
+        'RenewalOrderTraceTeam' : '/policy_renewal/team_send_msg',
+        'RenewalOrderTraceCompany' : '/policy_renewal/company_send_msg',
+        'RenewalOrderViewMy' : '/policy_renewal/sales_send_msg',
+        'RenewalOrderViewMyTeam' : '/policy_renewal/team_send_msg',
+        'RenewalOrderViewMyCompany' : '/policy_renewal/company_send_msg'
+      }
+      return map[this.$route.name]
+    },
   },
   mounted() {
     let $scrollBody = this.$refs.body

@@ -286,7 +286,7 @@
             class="mb16"
             :loading="exporting"
             icon="iconfont iconxiao16_xiazai mr4"
-            v-if="$checkAuth(['/policy_renewal/export_for_sales','/policy_renewal/export_for_team','/policy_renewal/export_for_company'])"
+            v-if="$checkAuth(perPreFixExport)"
             @click="policyExport"
         >导出数据</el-button>
       </div>
@@ -323,7 +323,7 @@
         <el-table-column label="续保链接" prop="renewal_url" width="130px" align="center">
           <template v-slot="{ row }">
             <text-hidden-ellipsis class="ellipsis" :popoverTip="row.renewal_url" @click="copyRenewalLink(row.renewal_url)"></text-hidden-ellipsis>
-            <a class="copy-class" href="javascript:;" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])"><p class="p_margin" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</p></a>
+            <a class="copy-class" href="javascript:;" v-if="$checkAuth(perPreFixCopyLink)"><p class="p_margin" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</p></a>
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
@@ -337,23 +337,23 @@
               class="mr8" v-if="$checkAuth(perPreFix)">跟踪</el-link>
             <el-link
               type="primary"
-              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])">
+              class="mr8" v-if="$checkAuth(perPreFixCopyLink)">
               <p class="p_margin" @click="copyLink(row)" v-if="row.renewal_url !== ''">复制链接</p></el-link>
             <el-link
               type="primary"
               class="mr8"
-              v-if="$checkAuth(['/policy_renewal/sales_renewal_link_qrcode','/policy_renewal/renewal_link_qrcode_team','/policy_renewal/company_copy_renewal_link'])"
+              v-if="$checkAuth(perPreFixQrCode)"
               >
                 <p class="p_margin" @click="showQrCode(row)" v-if="row.renewal_url !== ''">链接二维码</p>
               </el-link>
             <el-link
               type="primary"
               @click="showSendLetter(row)"
-              class="mr8" v-if="$checkAuth(['/policy_renewal/sales_send_msg','/policy_renewal/team_send_msg','/policy_renewal/company_send_msg'])">发送短信</el-link>
+              class="mr8" v-if="$checkAuth(perPreFixMessage)">发送短信</el-link>
             <el-link
               type="primary"
               @click="trace(row, true)"
-              class="mr8" v-if="$checkAuth(['/policy_renewal/detail_for_sales','/policy_renewal/detail_for_team','/policy_renewal/company_for_detail'])">查看</el-link>
+              class="mr8" v-if="$checkAuth(perPreFixSee)">查看</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -542,7 +542,7 @@ export default {
     }
   },
   computed: {
-    // 权限值前缀
+    // 权限值-跟踪
     perPreFix () {
       const map = {
         'RenewalOrder' : '/policy_renewal/sales_follow',
@@ -550,7 +550,52 @@ export default {
         'renewalCompany' : '/policy_renewal/company_follow'
       }
       return map[this.$route.name]
-    }
+    },
+    // 权限值-查看
+    perPreFixSee () {
+      const map = {
+        'RenewalOrder' : '/policy_renewal/detail_for_sales',
+        'renewalTeam' : '/policy_renewal/detail_for_team',
+        'renewalCompany' : 'policy_renewal/detail_for_company'
+      }
+      return map[this.$route.name]
+    },
+    // 权限值-复制链接
+    perPreFixCopyLink () {
+      const map = {
+        'RenewalOrder' : '/copy_renewal_link/sales',
+        'renewalTeam' : '/copy_renewal_link/team',
+        'renewalCompany' : '/copy_renewal_link/company'
+      }
+      return map[this.$route.name]
+    },
+    // 权限值-链接二维码
+    perPreFixQrCode () {
+      const map = {
+        'RenewalOrder' : '/renewal_qr_code/sales',
+        'renewalTeam' : '/renewal_qr_code/team',
+        'renewalCompany' : '/renewal_qr_code/company'
+      }
+      return map[this.$route.name]
+    },
+    // 权限值-发送短信
+    perPreFixMessage () {
+      const map = {
+        'RenewalOrder' : '/policy_renewal/sales_send_msg',
+        'renewalTeam' : '/policy_renewal/team_send_msg',
+        'renewalCompany' : '/policy_renewal/company_send_msg'
+      }
+      return map[this.$route.name]
+    },
+    // 权限值-导出按钮
+    perPreFixExport () {
+      const map = {
+        'RenewalOrder' : '/policy_renewal/export_for_sales',
+        'renewalTeam' : '/policy_renewal/export_for_team',
+        'renewalCompany' : '/policy_renewal/export_for_company'
+      }
+      return map[this.$route.name]
+    },
   },
   methods: {
     formatYYMMDD,
