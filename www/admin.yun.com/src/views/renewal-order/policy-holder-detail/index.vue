@@ -1003,6 +1003,7 @@ export default {
         padding: 16px;
         color: #131415;
         border-radius: 0px 12px 12px 12px;
+        overflow: hidden;
         & > p {
           margin: 0 0 4px 0;
           line-height: 20px;
@@ -1014,6 +1015,8 @@ export default {
           font-size: 14px;
           text-align: justify;
           line-height: 20px;
+          display: block;
+          overflow: hidden;
         }
       }
     }
