@@ -322,7 +322,7 @@
         <el-table-column label="续保状态" prop="renewal_status_name" align="center"></el-table-column>
         <el-table-column label="续保链接" prop="renewal_url" width="130px" align="center">
           <template v-slot="{ row }">
-            <text-hidden-ellipsis :popoverTip="row.renewal_url" @click="copyRenewalLink(row.renewal_url)"></text-hidden-ellipsis>
+            <text-hidden-ellipsis class="ellipsis" :popoverTip="row.renewal_url" @click="copyRenewalLink(row.renewal_url)"></text-hidden-ellipsis>
             <a class="copy-class" href="javascript:;" v-if="$checkAuth(['/policy_renewal/sales_copy_renewal_link','/policy_renewal/team_copy_renewal_link','/policy_renewal/company_copy_renewal_link'])"><p class="p_margin" v-if="row.renewal_url != ''" @click="copyRenewalLink(row.renewal_url)">复制链接</p></a>
           </template>
         </el-table-column>
@@ -1060,5 +1060,13 @@ export default {
 .p_margin {
   padding: 0;
   margin: 0;
+}
+.ellipsis /deep/ .text {
+  text-align: left;
+  padding-right: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 </style>

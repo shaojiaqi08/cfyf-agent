@@ -188,10 +188,13 @@
             <span class="title-wrap">
               <i :class="isToday(item.follow_at * 1000) ?'cur-status-dot':'status-dot'"></i>
               <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus && item.action !== messageTypes.systemSendCustomerMessage" :src="item.follow_obj_avatar_url"></el-avatar>
-              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
+              <!-- <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span> -->
+              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_name}}</span>
               <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
-              <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
-              <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
+              <!-- <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
+              <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span> -->
+              <span v-if="item.action === messageTypes.modifyFollowStatus" class="name-span ml4 mr4">将跟踪状态标记为</span>
+              <span v-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
               <!-- <span
                 class="status-block"
                 :class="[item.renewal_status]"
@@ -440,11 +443,7 @@ export default {
       getMsgTemplate({version: current_renewal_stage.version}).then(res => {
         this.sendLoading = false
         this.detailObj = res
-        if(!res.is_sales_profile_ok) {
-          this.letterDialogVisible = false
-        } else {
-          this.letterDialogVisible = true
-        }
+        this.letterDialogVisible = true
       }).catch(() => {
         this.sendLoading = false
       })
