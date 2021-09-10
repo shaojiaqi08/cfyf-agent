@@ -796,6 +796,10 @@ export default {
     padding: 0 16px 16px 16px;
     overflow: hidden;
     display: flex;
+    width: 100%;
+    /deep/ .el-scrollbar {
+      width: 100%;
+    }
     ::v-deep .el-scrollbar {
       .el-scrollbar__wrap {
         overflow-x: hidden;
