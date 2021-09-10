@@ -661,14 +661,9 @@ export default {
         'renewalTeam': isView? 'RenewalOrderViewMyTeam' : 'RenewalOrderTraceTeam',
         'RenewalOrder': isView? 'RenewalOrderViewMy' : 'RenewalOrderTraceMy'
       }
-      let pathName = ''
-      Object.keys(paths).filter(v => {
-        if(v === this.$route.name) {
-          pathName = paths[v]
-        }
-      })
+      console.log('paths[this.$route.name]',paths[this.$route.name])
       window.open(this.$router.resolve({
-        name: pathName,
+        name: paths[this.$route.name],
         params: { version }
       }).href)
     },

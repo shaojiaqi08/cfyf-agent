@@ -458,7 +458,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/sales_follow'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
@@ -470,7 +470,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/team_follow'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
@@ -482,7 +482,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/company_follow'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
@@ -506,7 +506,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/detail_for_sales'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
@@ -518,7 +518,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/detail_for_team'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
@@ -530,7 +530,7 @@ export const routers = [
           header: false,
           menu: false,
           show: false,
-          permission: '/sale'
+          permission: '/policy_renewal/detail_for_company'
         },
         component: getView('renewal-order/policy-holder-detail')
       },
