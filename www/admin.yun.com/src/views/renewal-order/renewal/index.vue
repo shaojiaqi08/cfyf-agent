@@ -810,7 +810,7 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 .renewal-container {
   padding: 0 20px 0 20px;
   display: flex;
