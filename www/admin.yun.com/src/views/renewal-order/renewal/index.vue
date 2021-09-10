@@ -556,7 +556,7 @@ export default {
       const map = {
         'RenewalOrder' : '/policy_renewal/detail_for_sales',
         'renewalTeam' : '/policy_renewal/detail_for_team',
-        'renewalCompany' : 'policy_renewal/detail_for_company'
+        'renewalCompany' : '/policy_renewal/detail_for_company'
       }
       return map[this.$route.name]
     },
