@@ -188,13 +188,13 @@
             <span class="title-wrap">
               <i :class="isToday(item.follow_at * 1000) ?'cur-status-dot':'status-dot'"></i>
               <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus && item.action !== messageTypes.systemSendCustomerMessage" :src="item.follow_obj_avatar_url"></el-avatar>
-              <!-- <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span> -->
-              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_name}}</span>
+              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
+              <!-- <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_name}}</span> -->
               <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
               <!-- <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
               <span v-else-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span> -->
-              <span v-if="item.action === messageTypes.modifyFollowStatus" class="name-span ml4 mr4">将跟踪状态标记为</span>
-              <span v-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
+              <!-- <span v-if="item.action === messageTypes.modifyFollowStatus" class="name-span ml4 mr4">将跟踪状态标记为</span>
+              <span v-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span> -->
               <!-- <span
                 class="status-block"
                 :class="[item.renewal_status]"
@@ -202,6 +202,25 @@
                 <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
                 {{messageStatus[item.renewal_status].label}}
               </span> -->
+              <!-- <span
+                class="status-block"
+                :class="[item.renewal_status]"
+                v-if="item.action === messageTypes.systemModifyFollowStatus || item.action === messageTypes.modifyFollowStatus"
+              > -->
+                <!-- <i class="iconfont iconchaoxiao_kefu_shenhui"></i> -->
+                <!-- {{item.follow_status_str}}
+              </span> -->
+            </span>
+            <div class="sign-block">
+              <span v-if="item.action === messageTypes.modifyFollowStatus" class="name-span ml4 mr4">将跟踪状态标记为</span>
+                <span v-if="item.action === messageTypes.systemModifyFollowStatus" class="name-span ml4 mr4">系统 将跟踪状态标记为</span>
+                <!-- <span
+                  class="status-block"
+                  :class="[item.renewal_status]"
+                  v-if="item.action === messageTypes.systemSendCustomerMessage || item.action === messageTypes.systemModifyFollowStatus">
+                  <i class="iconfont iconchaoxiao_kefu_shenhui"></i>
+                  {{messageStatus[item.renewal_status].label}}
+                </span> -->
               <span
                 class="status-block"
                 :class="[item.renewal_status]"
@@ -210,7 +229,7 @@
                 <!-- <i class="iconfont iconchaoxiao_kefu_shenhui"></i> -->
                 {{item.follow_status_str}}
               </span>
-            </span>
+            </div>
             <div class="msg-wrap" v-if="item.action === messageTypes.systemSendCustomerMessage">
               <p>{{item.title}}</p>
               <span>{{item.remark}}</span>
@@ -952,9 +971,6 @@ export default {
             margin: auto;
           }
         }
-        .name-span {
-          font-weight: 800;
-        }
         .name-txt-overflow {
           display: inline-block;
           max-width: 70px;
@@ -967,7 +983,36 @@ export default {
           color: #999;
           margin: 0 4px;
         }
-        .status-block {
+      }
+      .msg-wrap {
+        width: 293px;
+        background-color: #F5F5F5;
+        padding: 16px;
+        color: #131415;
+        border-radius: 0px 12px 12px 12px;
+        overflow: hidden;
+        & > p {
+          margin: 0 0 4px 0;
+          line-height: 20px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        & > span {
+          font-size: 14px;
+          text-align: justify;
+          line-height: 20px;
+          display: block;
+          overflow: hidden;
+        }
+      }
+      .sign-block {
+        display: flex;
+        align-items: center;
+        padding-left: 22px;
+        box-sizing: border-box;
+      }
+      .status-block {
           background-color: #F5F5F5;
           border-style: solid;
           border-width: 1px;
@@ -996,28 +1041,8 @@ export default {
             border: 1px solid #daeafb;
           }
         }
-      }
-      .msg-wrap {
-        width: 293px;
-        background-color: #F5F5F5;
-        padding: 16px;
-        color: #131415;
-        border-radius: 0px 12px 12px 12px;
-        overflow: hidden;
-        & > p {
-          margin: 0 0 4px 0;
-          line-height: 20px;
-          font-size: 14px;
-          font-weight: bold;
-        }
-
-        & > span {
-          font-size: 14px;
-          text-align: justify;
-          line-height: 20px;
-          display: block;
-          overflow: hidden;
-        }
+      .name-span {
+        font-weight: 800;
       }
     }
     &.active {
