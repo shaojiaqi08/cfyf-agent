@@ -241,6 +241,146 @@ export const routers = [
     ]
   },
   {
+    label: '续保续期',
+    icon: 'icona-cebiandaohang20_xubaoxuqi',
+    children: [
+      {
+        path: '/renewal-order/my',
+        name: 'RenewalOrder',
+        meta: {
+          title: '我的续保续期',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'sales_policy_renewal_list'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-order/team',
+        name: 'renewalTeam',
+        meta: {
+          title: '团队续保续期',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'team_policy_renewal_list'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-order/company',
+        name: 'renewalCompany',
+        meta: {
+          title: '公司续保续期',
+          header: true,
+          menu: true,
+          show: true,
+          permission: 'company_policy_renewal_list'
+        },
+        component: getView('renewal-order/renewal')
+      },
+      {
+        path: '/renewal-order-trace/my/:version',
+        name: 'RenewalOrderTraceMy',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/sales_follow'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-trace/team/:version',
+        name: 'RenewalOrderTraceTeam',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/team_follow'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-trace/company/:version',
+        name: 'RenewalOrderTraceCompany',
+        meta: {
+          title: '跟踪续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/company_follow'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/my/:version',
+        name: 'RenewalOrderViewMy',
+        meta: {
+          title: '查看续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/detail_for_sales'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/team/:version',
+        name: 'RenewalOrderViewMyTeam',
+        meta: {
+          title: '查看续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/detail_for_team'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      {
+        path: '/renewal-order-view/company/:version',
+        name: 'RenewalOrderViewMyCompany',
+        meta: {
+          title: '查看续保续期详情',
+          header: false,
+          menu: false,
+          show: false,
+          permission: '/policy_renewal/detail_for_company'
+        },
+        component: getView('renewal-order/policy-holder-detail')
+      },
+      //销售员通知客户设置
+      {
+        path: '/renewal-notify',
+        name: 'RenewalNotify',
+        meta: {
+          title: '销售通知客户',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/policy_renewal/notify_sales_setting'
+        },
+        component: getView('renewal-order/notify/sales')
+      },
+      //管理员通知客户设置
+      {
+        path: '/renewal-admin-notify',
+        name: 'RenewalAdminNotify',
+        meta: {
+          title: '公司通知客户',
+          header: true,
+          menu: true,
+          show: true,
+          permission: '/policy_renewal/notify_admin_setting'
+        },
+        component: getView('renewal-order/notify/admin')
+      }
+    ]
+  },
+  {
     label: '助销工具',
     icon: 'iconcebiandaohang20_zhuxiaogongju',
     children: [
@@ -408,194 +548,6 @@ export const routers = [
         },
         component: () => import('views/customer/family-detail')
       }
-    ]
-  },
-  {
-    label: '续保续期',
-    icon: 'icona-cebiandaohang20_xubaoxuqi',
-    children: [
-      {
-        path: '/renewal-order/my',
-        name: 'RenewalOrder',
-        meta: {
-          title: '我的续保续期',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'sales_policy_renewal_list'
-        },
-        component: getView('renewal-order/renewal')
-      },
-      {
-        path: '/renewal-order/team',
-        name: 'renewalTeam',
-        meta: {
-          title: '团队续保续期',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'team_policy_renewal_list'
-        },
-        component: getView('renewal-order/renewal')
-      },
-      {
-        path: '/renewal-order/company',
-        name: 'renewalCompany',
-        meta: {
-          title: '公司续保续期',
-          header: true,
-          menu: true,
-          show: true,
-          permission: 'company_policy_renewal_list'
-        },
-        component: getView('renewal-order/renewal')
-      },
-      {
-        path: '/renewal-order-trace/my/:version',
-        name: 'RenewalOrderTraceMy',
-        meta: {
-          title: '跟踪续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/sales_follow'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      {
-        path: '/renewal-order-trace/team/:version',
-        name: 'RenewalOrderTraceTeam',
-        meta: {
-          title: '跟踪续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/team_follow'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      {
-        path: '/renewal-order-trace/company/:version',
-        name: 'RenewalOrderTraceCompany',
-        meta: {
-          title: '跟踪续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/company_follow'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      // {
-      //   path: '/renewal-order-view/:version',
-      //   name: 'RenewalOrderView',
-      //   meta: {
-      //     title: '查看续保续期详情',
-      //     header: false,
-      //     menu: false,
-      //     show: false,
-      //     permission: '/sale'
-      //   },
-      //   component: getView('renewal-order/policy-holder-detail')
-      // },
-      {
-        path: '/renewal-order-view/my/:version',
-        name: 'RenewalOrderViewMy',
-        meta: {
-          title: '查看续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/detail_for_sales'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      {
-        path: '/renewal-order-view/team/:version',
-        name: 'RenewalOrderViewMyTeam',
-        meta: {
-          title: '查看续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/detail_for_team'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      {
-        path: '/renewal-order-view/company/:version',
-        name: 'RenewalOrderViewMyCompany',
-        meta: {
-          title: '查看续保续期详情',
-          header: false,
-          menu: false,
-          show: false,
-          permission: '/policy_renewal/detail_for_company'
-        },
-        component: getView('renewal-order/policy-holder-detail')
-      },
-      //销售员通知客户设置
-      {
-        path: '/renewal-notify',
-        name: 'RenewalNotify',
-        meta: {
-          title: '销售通知客户',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/policy_renewal/notify_sales_setting'
-        },
-        component: getView('renewal-order/notify/sales')
-      },
-      //管理员通知客户设置
-      {
-        path: '/renewal-admin-notify',
-        name: 'RenewalAdminNotify',
-        meta: {
-          title: '公司通知客户',
-          header: true,
-          menu: true,
-          show: true,
-          permission: '/policy_renewal/notify_admin_setting'
-        },
-        component: getView('renewal-order/notify/admin')
-      },
-      // {
-      //   path: '/renewal-my/detail/:order_no',
-      //   name: 'renewal-my-detail',
-      //   meta: {
-      //     title: '保单详情',
-      //     header: true,
-      //     menu: false,
-      //     show: false,
-      //     permission: '/my_performance/detail'
-      //   },
-      //   component: getView('renewal-order/order-detail')
-      // },
-      // {
-      //   path: '/renewal-team/detail/:order_no',
-      //   name: 'renewal-team-detail',
-      //   meta: {
-      //     title: '保单详情',
-      //     header: true,
-      //     menu: false,
-      //     show: false,
-      //     permission: '/team_performance/detail'
-      //   },
-      //   component: getView('renewal-order/order-detail')
-      // },
-      // {
-      //   path: '/renewal-company/detail/:order_no',
-      //   name: 'renewal-company-detail',
-      //   meta: {
-      //     title: '保单详情',
-      //     header: true,
-      //     menu: false,
-      //     show: false,
-      //     permission: '/my_performance/detail'
-      //   },
-      //   component: getView('renewal-order/order-detail')
-      // },
     ]
   },
   {

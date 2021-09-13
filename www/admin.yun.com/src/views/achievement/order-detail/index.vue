@@ -314,7 +314,7 @@
             </div>
             <div class="item">
               <div class="label">续保时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0? '': formatDate(getDataInfo.current_renewal_stage.renewal_at * 1000, 'yyyy年MM月dd日')}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0 || getDataInfo.current_renewal_stage.renewal_at === ''? '': formatDate(getDataInfo.current_renewal_stage.renewal_at * 1000, 'yyyy年MM月dd日')}}</div>
             </div>
             <div class="item">
               <div class="label">无需续保原因：</div>
@@ -322,7 +322,7 @@
             </div>
             <div class="item">
               <div class="label">扣款时间：</div>
-              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0? '': formatDate(getDataInfo.current_renewal_stage.pay_at * 1000, 'yyyy年MM月dd日')}}</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0 || getDataInfo.current_renewal_stage.pay_at === ''? '': formatDate(getDataInfo.current_renewal_stage.pay_at * 1000, 'yyyy年MM月dd日')}}</div>
             </div>
             <div class="item">
               <div class="label">扣款失败原因：</div>
