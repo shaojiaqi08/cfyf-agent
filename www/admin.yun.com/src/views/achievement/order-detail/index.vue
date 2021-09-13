@@ -579,7 +579,13 @@ export default {
       collapseCount: 5,
       manPowerInfo: null,
       getDataInfo: {
-        current_renewal_stage: {},
+        current_renewal_stage: {
+          renewal_status_name: '',
+          renewal_at: '',
+          unwanted_reason: '',
+          pay_at: '', 
+          fail_reason: ''
+        },
         renewal_stage_history: []
       }, 
       historyLoading: false
@@ -626,7 +632,10 @@ export default {
     getRenewalInfo() {
       this.historyLoading = true
       getRenewalInfo({order_no: this.$route.params.id}).then(res => {
-        this.getDataInfo = res;
+        if(res.current_renewal_stage !== null) {
+          this.getDataInfo.current_renewal_stage = res.current_renewal_stage;
+        }
+        this.getDataInfo.renewal_stage_history = res.renewal_stage_history;
         this.historyLoading = false
       }).catch(() => {
         this.historyLoading = false
