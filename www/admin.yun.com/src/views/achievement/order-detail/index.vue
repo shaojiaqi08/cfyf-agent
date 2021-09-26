@@ -302,6 +302,53 @@
           </div>
           <el-divider></el-divider>
         </template>
+
+        <!--续保续期信息-->
+        <!--续保续期信息-->
+        <template v-if="$checkAuth(`${perPreFix}renewal_info`)">
+          <h3>续保续期信息</h3>
+          <div class="item-block" v-loading="historyLoading">
+            <div class="item">
+              <div class="label">当年度状态：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_status_name}}</div>
+            </div>
+            <div class="item">
+              <div class="label">续保时间：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.renewal_at === 0 || getDataInfo.current_renewal_stage.renewal_at === ''? '': formatDate(getDataInfo.current_renewal_stage.renewal_at * 1000, 'yyyy年MM月dd日')}}</div>
+            </div>
+            <div class="item">
+              <div class="label">无需续保原因：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.unwanted_reason}}</div>
+            </div>
+            <div class="item">
+              <div class="label">扣款时间：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.pay_at === 0 || getDataInfo.current_renewal_stage.pay_at === ''? '': formatDate(getDataInfo.current_renewal_stage.pay_at * 1000, 'yyyy年MM月dd日')}}</div>
+            </div>
+            <div class="item">
+              <div class="label">扣款失败原因：</div>
+              <div class="content">{{getDataInfo.current_renewal_stage.fail_reason}}</div>
+            </div>
+            <el-divider></el-divider>
+          </div>
+        </template>
+
+        <!--续保续期信息-->
+        <template v-if="$checkAuth(`${perPreFix}renewal_info`)">
+          <h3>历史续保记录</h3>
+          <div v-loading="historyLoading">
+            <el-table class="mt20" border stripe :data="getDataInfo.renewal_stage_history">
+              <el-table-column label="应续日期" prop="renewal_date_format"></el-table-column>
+              <el-table-column label="续保状态" prop="renewal_status_name"></el-table-column>
+              <el-table-column label="续保时间">
+                <template v-slot="{ row }">
+                  <p>{{row.renewal_at === 0? '': formatDate(row.renewal_at * 1000, 'yyyy-MM-dd hh:mm:ss')}}</p>
+                </template>
+              </el-table-column>
+              <el-table-column label="跟踪人员" prop="follow_obj_name"></el-table-column>
+              <el-table-column label="续保单号" prop="next_policy_sn"></el-table-column>
+            </el-table>
+          </div>
+        </template>
       </el-scrollbar>
     </div>
     <el-dialog
@@ -472,7 +519,8 @@ import {
   getPolicyInsurances,
   getPolicySales,
   getManPowerInfo,
-  getPolicyVisit
+  getPolicyVisit,
+  getRenewalInfo
 } from '@/apis/modules/achievement'
 import { formatDate } from '@/utils/formatTime'
 import { downloadFrameA } from '@/utils'
@@ -529,7 +577,18 @@ export default {
       manPowerDetail: {},
       activeName: '0',
       collapseCount: 5,
-      manPowerInfo: null
+      manPowerInfo: null,
+      getDataInfo: {
+        current_renewal_stage: {
+          renewal_status_name: '',
+          renewal_at: '',
+          unwanted_reason: '',
+          pay_at: '', 
+          fail_reason: ''
+        },
+        renewal_stage_history: []
+      }, 
+      historyLoading: false
     }
   },
   computed: {
@@ -545,7 +604,10 @@ export default {
       const map = {
         'achievement-company-detail': '/company_performance/',
         'achievement-team-detail': '/team_performance/',
-        'achievement-self-detail': '/my_performance/'
+        'achievement-self-detail': '/my_performance/',
+        'renewal-company-detail': '/company_policy_renewal/policy/',
+        'renewal-team-detail': '/team_policy_renewal/policy/',
+        'renewal-self-detail': '/my_policy_renewal/policy/',
       }
       return map[this.$route.name]
     }
@@ -567,6 +629,18 @@ export default {
       //   })
       //   .finally(() => (this.downloading = false))
     },
+    getRenewalInfo() {
+      this.historyLoading = true
+      getRenewalInfo({order_no: this.$route.params.id}).then(res => {
+        if(res.current_renewal_stage !== null) {
+          this.getDataInfo.current_renewal_stage = res.current_renewal_stage;
+        }
+        this.getDataInfo.renewal_stage_history = res.renewal_stage_history;
+        this.historyLoading = false
+      }).catch(() => {
+        this.historyLoading = false
+      })
+    },
     init() {
       const { perPreFix } = this
       // 获取保单基本信息
@@ -581,6 +655,8 @@ export default {
       this.$checkAuth(`${perPreFix}sales_info`) && this.getPolicySales_()
       // 获取回访信息
       this.$checkAuth(`${perPreFix}visit_info`) && this.getPolicyVisit_()
+      //
+      this.$checkAuth(`${perPreFix}renewal_info`) && this.getRenewalInfo()
       // 设置高度
       this.setHeight()
       window.addEventListener('resize', this.setHeight);
@@ -729,6 +805,10 @@ export default {
     padding: 0 16px 16px 16px;
     overflow: hidden;
     display: flex;
+    width: 100%;
+    /deep/ .el-scrollbar {
+      width: 100%;
+    }
     ::v-deep .el-scrollbar {
       .el-scrollbar__wrap {
         overflow-x: hidden;

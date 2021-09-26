@@ -42,11 +42,60 @@
           <div class="label">密码</div>
           <div class="value">
             <el-button type="text"
-                       style="margin-right: -12px;"
+                       style="margin-right: 0px;"
                        @click="changePassword">
               <i class="iconfont iconxiao16_bianji"></i>
               修改密码
             </el-button>
+          </div>
+        </div>
+        <div class="item work-info-item">
+          <div class="label">
+            工作昵称
+            <el-tooltip content="昵称用于发送给客户相关短信时的称呼" placement="top">
+              <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
+            </el-tooltip>
+          </div>
+          <div class="value editable">
+            <template v-if="editingFields.includes('nickname')">
+              <el-input placeholder="请输入工作昵称" size="small" v-model="work_nickname"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('nickname')"></i>
+            </template>
+            <template v-else>
+              <span>{{work_nickname === ''? '-': work_nickname}}</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('nickname')"></i>
+            </template>
+          </div>
+        </div>
+        <div class="item work-info-item">
+          <div class="label">
+            工作手机
+            <el-tooltip content="工作手机用于接收本平台各类提醒，同时，也用于发送给客户相关短信，以便客户回拨电话时，联系您" placement="top">
+              <i class="iconfont iconxiao16_gengduoxinxi ml4"></i>
+            </el-tooltip>
+          </div>
+          <div class="value editable">
+            <template v-if="editingFields.includes('mobile')">
+              <el-input placeholder="请输入工作手机" size="small" v-model="work_mobile"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('mobile')"></i>
+            </template>
+            <template v-else>
+              <span>{{work_mobile === ''? '-': work_mobile}}</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('mobile')"></i>
+            </template>
+          </div>
+        </div>
+        <div class="item work-info-item pb16">
+          <div class="label">工作微信</div>
+          <div class="value editable">
+            <template v-if="editingFields.includes('wechat')">
+              <el-input placeholder="请输入工作微信" size="small" v-model="work_wx_account"></el-input>
+              <i class="iconfont iconxiao16_duigou ml8" @click="submitInfo('wechat')"></i>
+            </template>
+            <template v-else>
+              <span>{{work_wx_account === ''? '-': work_wx_account}}</span>
+              <i class="iconfont iconxiao16_bianji ml8" @click="editingFields.push('wechat')"></i>
+            </template>
           </div>
         </div>
       </div>
@@ -57,7 +106,7 @@
 
 <script>
   import modifyPassword from './modal/modify-password'
-  import {uploadHeadImg, getUserDetail} from '@/apis/modules'
+  import {uploadHeadImg, getUserDetail, updateProfile} from '@/apis/modules'
   import {mapState, mapActions} from 'vuex'
   export default {
     components: {
@@ -66,7 +115,11 @@
     data() {
       return {
         isModiifyPasswordShow: false,
-        loading: false
+        loading: false,
+        editingFields: [],
+        work_nickname: '', //工作昵称
+        work_wx_account: '', //工作微信
+        work_mobile: '' //工作手机
       }
     },
     computed: {
@@ -77,6 +130,19 @@
     },
     methods: {
       ...mapActions('users', ['updateUserInfo']),
+      submitInfo(key) {
+        this.editingFields = this.editingFields.filter(i => i !== key)
+        let { work_nickname, work_wx_account, work_mobile} = this;
+        let data = {
+          work_nickname,
+          work_wx_account,
+          work_mobile
+        }
+        updateProfile(data).then(() => {
+          this.$message.success('更新成功!')
+          this.getUserDetail()
+        })
+      },
       changePassword() {
         this.isModiifyPasswordShow = true
       },
@@ -106,6 +172,9 @@
         this.loading = true
         getUserDetail().then(ud => {
           this.updateUserInfo({...this.userInfo, ...ud})
+          this.work_nickname = ud.work_nickname, //工作昵称
+          this.work_wx_account = ud.work_wx_account, //工作微信
+          this.work_mobile = ud.work_mobile //工作手机
         }).finally(() => {
           this.loading = false
         })
@@ -124,7 +193,6 @@
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     width: 320px;
-    height: 452px;
     border: 1px solid rgba(230,230,230,1);
     border-radius: 4px;
     .header {
@@ -143,7 +211,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 14px;
+        padding: 16px;
         font-weight: bold;
         line-height: 1.45;
         .label {
@@ -151,6 +219,16 @@
         }
         .value {
           color: #1A1A1A;
+          width: 200px;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          & > span, & > el-input {
+            flex: 1;
+          }
+          .iconfont {
+            cursor: pointer;
+          }
           .avatar {
             width: 40px;
             height: 40px;
@@ -159,6 +237,16 @@
             background: no-repeat;
             background-size: cover;
             overflow: hidden;
+          }
+          &.editable {
+            height: 32px;
+          }
+        }
+        &.work-info-item {
+          padding: 0 16px 20px 16px;
+          .iconfont {
+            color: #1F78FF;
+            font-weight: normal;
           }
         }
       }

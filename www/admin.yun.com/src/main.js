@@ -21,19 +21,15 @@ Vue.use(Element, {size: 'medium', zIndex: 3000});
 Vue.use(VueClipboard)
 
 // 全局判断权限方法
-Vue.prototype.$checkAuth = function(data) {
+Vue.prototype.$checkAuth = function(keys) {
   const permissions = this.$store.state.users.userInfo.permissions
   if (!permissions) return false
+  keys = [keys].flat()
   // 已读取过的权限
   const reads = this.$store.state.users.readPermission
-  if (data in reads) return reads[data]
-  let res = false
-  if (typeof data === 'string') {
-    res =  permissions.includes(data)
-  } else if (Array.isArray(data) && data.length > 0 ) {
-    res = !!~data.findIndex(i => permissions.includes(i))
-  }
-  this.$store.dispatch('users/setReadPermission', { key: data, value: res})
+  if (keys in reads) return reads[keys]
+  let res = keys.some(i => permissions.includes(i))
+  this.$store.dispatch('users/setReadPermission', [ keys, res ])
   return res
 }
 
