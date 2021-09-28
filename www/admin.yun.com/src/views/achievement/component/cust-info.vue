@@ -75,7 +75,7 @@
       </div>
       <div class="item one-line">
         <div class="label">联系地址：</div>
-        <div class="content">{{data.addr||'-'}}</div>
+        <div class="content">{{data.province_name||''}}{{data.city_name||''}}{{data.district_name||''}}{{data.addr||'-'}}</div>
       </div>
       <!--投保人显示部分-->
       <template v-if="type==='1'">
