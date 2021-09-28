@@ -327,19 +327,26 @@ export default {
       return new Blob([uInt8Array], {type: contentType})
     },
     downQrcode(row){
-      if (row.product_type.includes('api')) {
-        genApiShareLink({type: 'api', product_id: row.id}).then(res => {
-          QRCode.toDataURL(res.link).then(result => {
-            // this.qrcodeUrl = result
-            this.downloadImg(row.share_title + '二维码.jpg', result)
-          })
-        })
-      } else {
-        QRCode.toDataURL(row.share_link).then(result => {
+      console.log(row)
+      genApiShareLink({product_no: row.product_no}).then(res => {
+        QRCode.toDataURL(res.share_link).then(result => {
           // this.qrcodeUrl = result
-          this.downloadImg(row.title + '二维码.jpg', result)
+          this.downloadImg(row.share_title + '二维码.jpg', result)
         })
-      }
+      })
+      // if (row.product_type.includes('api')) {
+      //   genApiShareLink({product_no: row.product_no}).then(res => {
+      //     QRCode.toDataURL(res.share_link).then(result => {
+      //       // this.qrcodeUrl = result
+      //       this.downloadImg(row.share_title + '二维码.jpg', result)
+      //     })
+      //   })
+      // } else {
+      //   QRCode.toDataURL(row.share_link).then(result => {
+      //     // this.qrcodeUrl = result
+      //     this.downloadImg(row.title + '二维码.jpg', result)
+      //   })
+      // }
     },
     exportProcuctList() {
       let params = JSON.parse(JSON.stringify(this.searchModel))
@@ -436,14 +443,18 @@ export default {
       this.$message.success('售前告知内容已复制到粘贴板')
     },
     share(obj) {
-      const { product_id, product_type, target_share_link, agent_id, share_at, cps_product_id, cps_branch_product_id } = obj
+      console.log('obj:',obj)
+      const { product_type, product_no } = obj
       if (product_type === 'cps') {
-        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
-        QRCode.toDataURL(url).then(result => {
-          this.qrcodeUrl = result
+        // const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
+        genApiShareLink({product_no}).then(res => {
+          QRCode.toDataURL(res.share_link).then(result => {
+            this.qrcodeUrl = result
+          })
         })
       } else {
-        getProductShareLink({ product_id, product_type }).then(res => {
+        // getProductShareLink({ product_id, product_type }).then(res => {
+        genApiShareLink({ product_no }).then(res => {
           const share_link = res.share_link
           const query = {}
           const host = share_link.substring(0, share_link.indexOf('/proposal'))
