@@ -444,14 +444,17 @@ export default {
     },
     share(obj) {
       console.log('obj:',obj)
-      const { product_type, product_no } = obj
+      const { product_type, target_share_link, agent_id, share_at, cps_product_id, cps_branch_product_id, product_no } = obj
       if (product_type === 'cps') {
-        // const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
-        genApiShareLink({product_no}).then(res => {
-          QRCode.toDataURL(res.share_link).then(result => {
-            this.qrcodeUrl = result
-          })
+        const url = `${target_share_link}?agent_id=${agent_id}&share_at=${share_at}&cps_product_id=${cps_product_id}&cps_branch_product_id=${cps_branch_product_id}`
+        QRCode.toDataURL(url).then(result => {
+          this.qrcodeUrl = result
         })
+        // genApiShareLink({product_no}).then(res => {
+        //   QRCode.toDataURL(res.share_link).then(result => {
+        //     this.qrcodeUrl = result
+        //   })
+        // })
       } else {
         // getProductShareLink({ product_id, product_type }).then(res => {
         genApiShareLink({ product_no }).then(res => {
