@@ -181,9 +181,8 @@
               size="small"
               plain
               @click="showEditMemberStructFunc"
-              
             >
-            <!-- v-allowed="['proposal-customer-edit']"  20210908 21:43 大佬威说先关掉权限🐶 -->
+              <!-- v-allowed="['proposal-customer-edit']"  20210908 21:43 大佬威说先关掉权限🐶 -->
               <i class="iconfont fs12 iconchaoxiao_jiahao"></i>
               家庭结构编辑
             </el-button>
@@ -208,11 +207,13 @@
               <el-tab-pane
                 v-for="(item, index) in relationsSelected"
                 :key="`${item.recognizee_policy_member.id}-${index}`"
-                :label="`${item.name || ''} (${
-                  familyTypes.filter(
-                    (i) => i.value === item.recognizee_policy_member.relation
-                  )[0].label
-                })`"
+                :label="
+                  `${item.name || ''} (${
+                    familyTypes.filter(
+                      (i) => i.value === item.recognizee_policy_member.relation
+                    )[0].label
+                  })`
+                "
                 :name="`${item.member_id}`"
               >
                 <div class="tab-container">
@@ -438,9 +439,8 @@
                               <el-popover
                                 placement="right"
                                 trigger="hover"
-                                v-for="(
-                                  option, kk
-                                ) in product.product_insurance_group"
+                                v-for="(option,
+                                kk) in product.product_insurance_group"
                                 :key="option.id"
                               >
                                 <el-radio-group
@@ -501,12 +501,11 @@
                                           productsState[index][idx].insurances[
                                             kk
                                           ] &&
-                                          radioItem &&
-                                          radioItem.id &&
-                                          radioItem.type === 'accident' &&
-                                          productsState[index][idx].default_ids[
-                                            kk
-                                          ] === radioItem.id
+                                            radioItem &&
+                                            radioItem.id &&
+                                            radioItem.type === 'accident' &&
+                                            productsState[index][idx]
+                                              .default_ids[kk] === radioItem.id
                                         "
                                       >
                                         <el-option
@@ -529,7 +528,7 @@
                                       (option.select_status + '' !==
                                         'undefined' &&
                                         !option.select_status) ||
-                                      !!option.is_main
+                                        !!option.is_main
                                     "
                                     :label="option.id"
                                     @change="
@@ -620,7 +619,7 @@
                               <span
                                 v-if="
                                   !productsState[index][idx].isError &&
-                                  !productsState[index][idx].isLoading
+                                    !productsState[index][idx].isLoading
                                 "
                                 >{{
                                   productsState[index][idx].total_premium
@@ -633,21 +632,21 @@
                                 class="mb4"
                                 v-if="
                                   productsSelected[index] &&
-                                  productsSelected[index].filter(
-                                    (i) =>
-                                      i.product_id ===
-                                      productsState[index][idx].product_id
-                                  ).length
+                                    productsSelected[index].filter(
+                                      (i) =>
+                                        i.product_id ===
+                                        productsState[index][idx].product_id
+                                    ).length
                                 "
                               >
                                 已添加:
                                 {{
                                   productsSelected[index] &&
-                                  productsSelected[index].filter(
-                                    (i) =>
-                                      i.product_id ===
-                                      productsState[index][idx].product_id
-                                  ).length
+                                    productsSelected[index].filter(
+                                      (i) =>
+                                        i.product_id ===
+                                        productsState[index][idx].product_id
+                                    ).length
                                 }}
                               </div>
                               <el-button
@@ -711,8 +710,8 @@
                       v-loading="!selectedInit"
                       v-if="
                         productsSelected[index] &&
-                        productsSelected[index].length &&
-                        selectedInit
+                          productsSelected[index].length &&
+                          selectedInit
                       "
                     >
                       <div class="proposal-list">
@@ -842,9 +841,8 @@
                               <template v-else>
                                 <template v-if="!isSelectedTextHidden">
                                   <div
-                                    v-for="(
-                                      item, idx
-                                    ) in item.guarantee_responsibilities"
+                                    v-for="(item,
+                                    idx) in item.guarantee_responsibilities"
                                     :key="idx"
                                   >
                                     {{ item }}
@@ -854,7 +852,7 @@
                                   <div>
                                     {{
                                       item.guarantee_responsibilities.length &&
-                                      item.guarantee_responsibilities[0]
+                                        item.guarantee_responsibilities[0]
                                     }}
                                   </div>
                                 </template>
@@ -998,7 +996,7 @@
                           (p, n) => p + Number(n.total_premium),
                           0
                         )) ||
-                      0
+                        0
                     }}元
                   </div>
                   <i
@@ -1190,15 +1188,16 @@
 </template>
 
 <script>
-import VueUeditorWrap from 'vue-ueditor-wrap'
-import InsuranceTypes from './components/filters/insurance-types'
-import Coverage from './components/filters/coverage'
-import GuaranteeTimes from './components/filters/guarantee-times'
-import InsuranceCompany from './components/filters/insurance-company'
-import PaymentPeriod from './components/filters/payment-period'
-import ProposalMaterial from './modal/proposal-material'
-import addDiyProduct from './modal/add-diy-product'
-import editMemberStruct from './modal/edit-member-struct'
+import VueUeditorWrap from "vue-ueditor-wrap";
+import InsuranceTypes from "./components/filters/insurance-types";
+import Coverage from "./components/filters/coverage";
+import GuaranteeTimes from "./components/filters/guarantee-times";
+import InsuranceCompany from "./components/filters/insurance-company";
+import PaymentPeriod from "./components/filters/payment-period";
+import ProposalMaterial from "./modal/proposal-material";
+import addDiyProduct from "./modal/add-diy-product";
+import editMemberStruct from "./modal/edit-member-struct";
+import Sortable from "sortablejs";
 import {
   getInsuranceList,
   getSupplierList,
@@ -1209,8 +1208,8 @@ import {
   getRelationsV2,
   getProposalCustomerSync,
   getProposalInfo,
-  getCopyInfo
-} from '@/apis/modules/proposal'
+  getCopyInfo,
+} from "@/apis/modules/proposal";
 
 import {
   guaranteeTimeTypes,
@@ -1218,18 +1217,18 @@ import {
   baseTypes,
   familyTypes,
   saveProposalTypes,
-  productFrom
-} from './config'
+  productFrom,
+} from "./config";
 
-import calcAge from '@/utils/calc-age'
+import calcAge from "@/utils/calc-age";
 
 const editorTypes = {
-  ORDINARY: 'ordinary',
-  RICH: 'rich'
-}
+  ORDINARY: "ordinary",
+  RICH: "rich",
+};
 
 export default {
-  name: 'proposal',
+  name: "proposal",
   components: {
     VueUeditorWrap,
     InsuranceTypes,
@@ -1239,33 +1238,33 @@ export default {
     PaymentPeriod,
     ProposalMaterial,
     addDiyProduct,
-    editMemberStruct
+    editMemberStruct,
   },
   watch: {
     productsSelected(v) {
-      if (!this.selectedInit) return 0
+      if (!this.selectedInit) return 0;
       this.totalSum = v
         .reduce((prev, next) => {
           return (
             prev +
             next.reduce((p, v) => {
-              return p + v.total_premium
+              return p + v.total_premium;
             }, 0)
-          )
+          );
         }, 0)
-        .toFixed(2)
+        .toFixed(2);
     },
     customerName(v) {
-      document.title = `${v}的计划书`
-    }
+      document.title = `${v}的计划书`;
+    },
   },
   data() {
     return {
       productFrom,
       editorTypes,
       diyData: {},
-      diyType: 'add',
-      diyProductModalTitle: '',
+      diyType: "add",
+      diyProductModalTitle: "",
       // 产品列表每页请求数量
       perPagesize: 7,
       currentSchemeIndex: 0,
@@ -1284,50 +1283,50 @@ export default {
       familyTypes,
       saveProposalTypes,
       schemesTab: 0,
-      customerName: '',
+      customerName: "",
       customerId: 0,
       UEditorConfig: {
         initialFrameWidth: null,
         // serverUrl: ''
-        UEDITOR_HOME_URL: '/UEditor/'
+        UEDITOR_HOME_URL: "/UEditor/",
       },
       schemesFilterModel: {
         first_product_category_ids: [],
         supplier_ids: [],
         product_id_and_types: [],
         pay_period: {
-          min: '',
-          max: '',
-          unit: '1'
+          min: "",
+          max: "",
+          unit: "1",
         },
         guarantee_period: {
-          min: '',
-          max: '',
-          unit: '1'
+          min: "",
+          max: "",
+          unit: "1",
         },
         base_coverage_value: {
-          min: '',
-          max: '',
-          unit: '10_thousand_yuan'
-        }
+          min: "",
+          max: "",
+          unit: "10_thousand_yuan",
+        },
       },
       relationModel: {
         recognizee_policy_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
         policy_holder_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
-        name: '',
-        member_id: ''
+        name: "",
+        member_id: "",
       },
       proposal_struct_id: 0,
       insuranceList: [],
@@ -1340,23 +1339,23 @@ export default {
       relations: [],
       formData: {
         customer_id: 1,
-        pdf_illustration_type: 'rich',
-        illustration_type: 'rich',
-        name: '',
-        remark: '',
-        illustration: '',
+        pdf_illustration_type: "rich",
+        illustration_type: "rich",
+        name: "",
+        remark: "",
+        illustration: "",
         schemes: [],
         is_show_premium: false,
         has_pdf_illustration: 1,
-        pdf_illustration: ''
+        pdf_illustration: "",
       },
       schemesFilters: [],
       schemesModel: {
         recognizee_policy_member_id: null,
         policy_holder_member_id: null,
         has_illustration: false,
-        illustration: '',
-        products: []
+        illustration: "",
+        products: [],
       },
       productsModel: {
         proposal_product_id: null,
@@ -1366,7 +1365,7 @@ export default {
         pay_period_unit: null,
         guarantee_quota: null,
         has_social_security: 1,
-        insurances: []
+        insurances: [],
       },
       addDialogVisible: false,
       dialogVisible: false,
@@ -1382,22 +1381,59 @@ export default {
       is_show_coverage_aggregate: 0,
       fixedRightPoint: 0,
       showEditMemberStruct: false,
-      familyStructId: ''
-    }
+      familyStructId: "",
+    };
   },
   created() {
-    this.init()
+    this.init();
   },
   beforeDestroy() {
-    this.unBindScrollEvent()
+    this.unBindScrollEvent();
   },
   methods: {
-    init () {
-      const id = this.$route.query.id
-      const proposalId = this.$route.query.proposal_id
-      this.customerName = this.$route.query.customer_name || ''
-      this.customerId = this.$route.query.customer_id || 0
-      this.familyStructId = this.$route.query.family_struct_id || ''
+    // 拖拽
+    columnDrop() {
+      // let that = this
+      const wrapperTr = document.querySelector(".proposal-tabs .el-tabs__nav");
+      this.sortable = Sortable.create(wrapperTr, {
+        animation: 180,
+        delay: 0,
+        draggable: ".el-tabs__item",
+        onEnd: (evt) => {
+          if (evt.oldIndex != evt.newIndex) {
+            this.relationsSelected.splice(
+              evt.oldIndex,
+              1,
+              ...this.relationsSelected.splice(
+                evt.newIndex,
+                1,
+                this.relationsSelected[evt.oldIndex]
+              )
+            );
+            this.productsSelected.splice(
+              evt.oldIndex,
+              1,
+              ...this.productsSelected.splice(
+                evt.newIndex,
+                1,
+                this.productsSelected[evt.oldIndex]
+              )
+            );
+            this.ect.splice(
+              evt.oldIndex,
+              1,
+              ...this.ect.splice(evt.newIndex, 1, this.ect[evt.oldIndex])
+            );
+          }
+        },
+      });
+    },
+    init() {
+      const id = this.$route.query.id;
+      const proposalId = this.$route.query.proposal_id;
+      this.customerName = this.$route.query.customer_name || "";
+      this.customerId = this.$route.query.customer_id || 0;
+      this.familyStructId = this.$route.query.family_struct_id || "";
       // 计划书入口有三个
       // 1. 计划书列表 > 新增计划书 (query: customer_id&customer_name)
       // 2. 我的客户管理 > 新增计划书 (query: id)
@@ -1407,41 +1443,44 @@ export default {
         if (this.customerId > 0) {
           this.getProposalCustomerSync(this.customerId, () => {
             if (this.familyStructId) {
-              this.getCopyInfo(proposalId)
+              this.getCopyInfo(proposalId);
             } else {
-              this.getProposalInfo(proposalId)
+              this.getProposalInfo(proposalId);
             }
-          })
+          });
         } else {
           if (this.familyStructId) {
-              this.getCopyInfo(proposalId)
-            } else {
-              this.getProposalInfo(proposalId)
-            }
+            this.getCopyInfo(proposalId);
+          } else {
+            this.getProposalInfo(proposalId);
+          }
         }
       } else {
         if (id) {
           // 2 进入 先获取用户id，再获取家庭关系
-          this.getProposalCustomerSync(id)
+          this.getProposalCustomerSync(id);
         } else {
           // 1 进入 获取家庭关系
-          this.getRelations(this.customerId)
-          this.customerId = 0
-          this.proposal_struct_id = this.$route.query.customer_id
+          this.getRelations(this.customerId);
+          this.customerId = 0;
+          this.proposal_struct_id = this.$route.query.customer_id;
         }
       }
       // this.getInsuranceList()
       // this.getSupplierList()
-      this.getInsuranceProductList()
+      this.getInsuranceProductList();
       setTimeout(() => {
-        this.bindScrollEvent()
-        const shell = document.querySelector('.proposal-card-shell').getBoundingClientRect()
-        this.containerWidth = shell.width
-        const shellRightPoint = shell.left + shell.width
-        this.fixedRightPoint = innerWidth - shellRightPoint
-      }, 300)
+        this.bindScrollEvent();
+        const shell = document
+          .querySelector(".proposal-card-shell")
+          .getBoundingClientRect();
+        this.containerWidth = shell.width;
+        const shellRightPoint = shell.left + shell.width;
+        this.fixedRightPoint = innerWidth - shellRightPoint;
+      }, 300);
     },
-    saveChange (value) { // 修改家庭关系结构后调用
+    saveChange(value) {
+      // 修改家庭关系结构后调用
       // console.log('修改类型', type)
       // this.insureDetailLoading = true
       // if (type === 'update-member') {
@@ -1449,167 +1488,173 @@ export default {
       // } else if (type === 'update-detail') {
       //   this.init()
       // }
-      console.log('修改类型', value)
-      if (value === 'update-member') {
-        this.getRelations(this.proposal_struct_id)
+      console.log("修改类型", value);
+      if (value === "update-member") {
+        this.getRelations(this.proposal_struct_id);
       } else {
         // this.init()
-        this.getRelations(this.proposal_struct_id)
-        this.changeMemberSchemes(value)
+        this.getRelations(this.proposal_struct_id);
+        this.changeMemberSchemes(value);
       }
     },
-    changeMemberSchemes (list) {
-      let self = this
+    changeMemberSchemes(list) {
+      let self = this;
       if (list) {
-        list.map(item => {
-          self.removeTabInchange(item)
-        })
+        list.map((item) => {
+          self.removeTabInchange(item);
+        });
       }
     },
     removeSelectedProduct(index) {
-      this.$confirm('是否删全部产品?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("是否删全部产品?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       }).then(() => {
-        this.productsSelected.splice(index, 1, [])
-      })
+        this.productsSelected.splice(index, 1, []);
+      });
     },
     searchProduct(value, index) {
       if (!value.length) {
-        this.$set(this.totalProducts, index, [])
-        this.$set(this.perTabPage, index, 1)
-        this.$set(this.productsState, index, [])
-        this.$set(this.products, index, [])
+        this.$set(this.totalProducts, index, []);
+        this.$set(this.perTabPage, index, 1);
+        this.$set(this.productsState, index, []);
+        this.$set(this.products, index, []);
       } else {
-        this.search({}, index)
+        this.search({}, index);
       }
     },
     familyTypeFormat(value) {
-      return familyTypes.find(i => i.value === value).label
+      return familyTypes.find((i) => i.value === value).label;
     },
     illustrationTypeChange() {
-      this.formData.illustration = ''
+      this.formData.illustration = "";
     },
     pdfIllustrationTypeChange() {
-      this.formData.pdf_illustration = ''
+      this.formData.pdf_illustration = "";
     },
     proposalProductScrollHandler(index) {
-      if (this.products[index].length === this.totalProducts[index].length) return
-      const box = document.querySelectorAll('.proposal-list-scroll-box')[index]
-      const boxScrollTop = box.scrollTop
-      const boxHeight = box.getBoundingClientRect().height
-      const listHeight = box.firstElementChild.getBoundingClientRect().height
+      if (this.products[index].length === this.totalProducts[index].length)
+        return;
+      const box = document.querySelectorAll(".proposal-list-scroll-box")[index];
+      const boxScrollTop = box.scrollTop;
+      const boxHeight = box.getBoundingClientRect().height;
+      const listHeight = box.firstElementChild.getBoundingClientRect().height;
       if (boxHeight + boxScrollTop >= listHeight) {
         // 等待前面列表加载完成
-        if (this.flag) return
+        if (this.flag) return;
 
-        this.flag = true
-        const start = this.perPagesize * this.perTabPage[index]++
-        const end = start + this.perPagesize
+        this.flag = true;
+        const start = this.perPagesize * this.perTabPage[index]++;
+        const end = start + this.perPagesize;
         // 截取 totalProducts 数据，放进 setProductsState 进行处理
         this.setProductsState(
           index,
           this.totalProducts[index].slice(start, end)
-        )
+        );
       }
     },
     changeRecognizee(v) {
       if (v) {
-        this.relationModel.name = this.relations.find(item => item.id === v)
-          ? this.relations.find(item => item.id === v).member_name
-          : ''
+        this.relationModel.name = this.relations.find((item) => item.id === v)
+          ? this.relations.find((item) => item.id === v).member_name
+          : "";
       } else {
-        this.relationModel.name = ''
+        this.relationModel.name = "";
       }
     },
     checkTermLink(link) {
-      window.open(link)
+      window.open(link);
     },
     checkTerms(terms) {
-      this.termsData = terms.common_terms
-      this.isTermsShow = true
+      this.termsData = terms.common_terms;
+      this.isTermsShow = true;
     },
     unBindScrollEvent() {
       document
-        .querySelector('.whole-scroller-container .el-scrollbar__wrap')
-        .removeEventListener('scroll', this.scrollHandler)
+        .querySelector(".whole-scroller-container .el-scrollbar__wrap")
+        .removeEventListener("scroll", this.scrollHandler);
     },
     bindScrollEvent() {
       document
-        .querySelector('.whole-scroller-container .el-scrollbar__wrap')
-        .addEventListener('scroll', this.scrollHandler)
+        .querySelector(".whole-scroller-container .el-scrollbar__wrap")
+        .addEventListener("scroll", this.scrollHandler);
     },
     addDiyProduct(index) {
-      this.diyProductModalTitle = '新建自定义产品'
-      this.diyType = 'add'
-      this.addDiyProductVisible = true
-      this.currentSchemeIndex = index
+      this.diyProductModalTitle = "新建自定义产品";
+      this.diyType = "add";
+      this.addDiyProductVisible = true;
+      this.currentSchemeIndex = index;
     },
     editDiyProduct(index, idx, item) {
-      this.diyProductModalTitle = '编辑自定义产品'
-      this.diyType = 'edit'
-      this.addDiyProductVisible = true
-      this.currentSchemeIndex = index
-      this.currentEditProductIndex = idx
-      this.diyData = Object.assign({}, item)
+      this.diyProductModalTitle = "编辑自定义产品";
+      this.diyType = "edit";
+      this.addDiyProductVisible = true;
+      this.currentSchemeIndex = index;
+      this.currentEditProductIndex = idx;
+      this.diyData = Object.assign({}, item);
     },
     scrollHandler() {
       // 如果为初始状态，还没选择任何家庭成员，则不执行
-      if (!document.querySelector('.proposal-tabs')) return
-      const tabBlockTop = document.querySelectorAll('.proposal-card-shell')[2]
-        .offsetTop
-      const tabBar = document.querySelector('.proposal-tabs .el-tabs__header')
-      const tabContent = document.querySelector('.proposal-tabs .el-tabs__content')
-      const addSchemeButton = document.querySelector('.proposal-add-scheme')
+      if (!document.querySelector(".proposal-tabs")) return;
+      const tabBlockTop = document.querySelectorAll(".proposal-card-shell")[2]
+        .offsetTop;
+      const tabBar = document.querySelector(".proposal-tabs .el-tabs__header");
+      const tabContent = document.querySelector(
+        ".proposal-tabs .el-tabs__content"
+      );
+      const addSchemeButton = document.querySelector(".proposal-add-scheme");
 
       const operateBlockTop = document.querySelector(
-        '.whole-scroller-container .el-scrollbar__wrap'
-      ).scrollTop
+        ".whole-scroller-container .el-scrollbar__wrap"
+      ).scrollTop;
       if (operateBlockTop > tabBlockTop + 41) {
-        tabBar.classList.add('tab-fixed')
-        tabContent.style.marginTop = `41px`
-        addSchemeButton.classList.add('tab-fixed')
-        addSchemeButton.style.right = `${this.fixedRightPoint + 14}px`
-        tabBar.style.width = `${this.containerWidth - 2}px`
+        tabBar.classList.add("tab-fixed");
+        tabContent.style.marginTop = `41px`;
+        addSchemeButton.classList.add("tab-fixed");
+        addSchemeButton.style.right = `${this.fixedRightPoint + 14}px`;
+        tabBar.style.width = `${this.containerWidth - 2}px`;
       } else {
-        tabBar.classList.remove('tab-fixed')
-        tabContent.style.marginTop = `0`
-        addSchemeButton.classList.remove('tab-fixed')
-        addSchemeButton.style.right = `14px`
-        tabBar.style.width = `auto`
+        tabBar.classList.remove("tab-fixed");
+        tabContent.style.marginTop = `0`;
+        addSchemeButton.classList.remove("tab-fixed");
+        addSchemeButton.style.right = `14px`;
+        tabBar.style.width = `auto`;
       }
     },
     changeSelectedPosition(index, idx, type, bool) {
-      if (bool) return
-      if (type === 'up') {
-        const upItem = this.productsSelected[index][idx - 1]
-        const downItem = this.productsSelected[index][idx]
+      if (bool) return;
+      if (type === "up") {
+        const upItem = this.productsSelected[index][idx - 1];
+        const downItem = this.productsSelected[index][idx];
 
-        this.$set(this.productsSelected[index], idx, upItem)
-        this.$set(this.productsSelected[index], idx - 1, downItem)
+        this.$set(this.productsSelected[index], idx, upItem);
+        this.$set(this.productsSelected[index], idx - 1, downItem);
       } else {
-        const upItem = this.productsSelected[index][idx]
-        const downItem = this.productsSelected[index][idx + 1]
+        const upItem = this.productsSelected[index][idx];
+        const downItem = this.productsSelected[index][idx + 1];
 
-        this.$set(this.productsSelected[index], idx, downItem)
-        this.$set(this.productsSelected[index], idx + 1, upItem)
+        this.$set(this.productsSelected[index], idx, downItem);
+        this.$set(this.productsSelected[index], idx + 1, upItem);
       }
     },
     getCopyInfo(proposalId) {
-      this.selectedInit = false
-      getCopyInfo({ source_proposal_id: proposalId, family_struct_id: this.familyStructId })
-        .then(res => {
-          this.customerName = res.customer_name
-          this.customerId = res.customer_id
-          this.is_show_company_profile = !!res.is_show_company_profile
-          this.is_show_link = !!res.is_show_link
-          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate
-          this.proposal_struct_id = res.proposal_struct_id
+      this.selectedInit = false;
+      getCopyInfo({
+        source_proposal_id: proposalId,
+        family_struct_id: this.familyStructId,
+      })
+        .then((res) => {
+          this.customerName = res.customer_name;
+          this.customerId = res.customer_id;
+          this.is_show_company_profile = !!res.is_show_company_profile;
+          this.is_show_link = !!res.is_show_link;
+          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate;
+          this.proposal_struct_id = res.proposal_struct_id;
           // if (this.customerId > 0) {
           //   this.getProposalCustomerSync(this.customerId)
           // }
-          this.getRelations(res.proposal_struct_id)
+          this.getRelations(res.proposal_struct_id);
           this.formData = {
             name: res.name,
             remark: res.remark,
@@ -1618,11 +1663,11 @@ export default {
             has_pdf_illustration: !!res.has_pdf_illustration,
             pdf_illustration: res.pdf_illustration,
             pdf_illustration_type: res.pdf_illustration_type,
-            illustration_type: res.illustration_type
-          }
-          this.relationsSelected = res.schemes.map(item => {
+            illustration_type: res.illustration_type,
+          };
+          this.relationsSelected = res.schemes.map((item) => {
             return {
-              member_id: item.recognizee_policy_member_id.toString() || '',
+              member_id: item.recognizee_policy_member_id.toString() || "",
               name: item.recognizee_policy_name,
               recognizee_policy_member: {
                 id: item.recognizee_policy_member_id,
@@ -1630,7 +1675,7 @@ export default {
                 relation: item.recognizee_policy_relation,
                 sex: item.recognizee_policy_sex,
                 birthday: item.recognizee_policy_birthday,
-                struct_member_id: item.recognizee_policy_struct_member_id
+                struct_member_id: item.recognizee_policy_struct_member_id,
               },
               policy_holder_member: {
                 id: item.policy_holder_member_id,
@@ -1638,16 +1683,19 @@ export default {
                 relation: item.policy_holder_relation,
                 sex: item.policy_holder_sex,
                 birthday: item.policy_holder_birthday,
-                struct_member_id: item.policy_holder_struct_member_id
-              }
-            }
-          })
-          
-          this.schemesTab = this.relationsSelected.length > 0 ? this.relationsSelected[0].member_id : 0
+                struct_member_id: item.policy_holder_struct_member_id,
+              },
+            };
+          });
+
+          this.schemesTab =
+            this.relationsSelected.length > 0
+              ? this.relationsSelected[0].member_id
+              : 0;
           // 获取已选择产品数据，再次进行费率计算
           const selectedData = res.schemes.map((item, index) => {
-            const relation = this.relationsSelected[index]
-            return item.products.map(product => {
+            const relation = this.relationsSelected[index];
+            return item.products.map((product) => {
               return {
                 source: product.source,
                 product_id: product.source_proposal_product_id,
@@ -1664,47 +1712,47 @@ export default {
                 policy_holder_id: relation.policy_holder_member.id,
                 policy_holder_sex: relation.policy_holder_member.sex,
                 policy_holder_birthday: relation.policy_holder_member.birthday,
-                insurances: product.insurances.map(i => ({
+                insurances: product.insurances.map((i) => ({
                   id: i.source_proposal_insurance_id,
-                  coverage: i.guarantee_quota
-                }))
-              }
-            })
-          })
+                  coverage: i.guarantee_quota,
+                })),
+              };
+            });
+          });
 
-          this.ect = res.schemes.map(i => {
+          this.ect = res.schemes.map((i) => {
             return {
               has_illustration: !!i.has_illustration,
-              illustration: i.illustration
-            }
-          })
+              illustration: i.illustration,
+            };
+          });
 
           this.schemesFilters = res.schemes.map(() => {
-            return JSON.parse(JSON.stringify(this.schemesFilterModel))
-          })
+            return JSON.parse(JSON.stringify(this.schemesFilterModel));
+          });
 
-          this.confirmPrice(selectedData, res)
+          this.confirmPrice(selectedData, res);
 
           // this.schemesFilters.forEach((item, index) => {
           //   this.search({}, index)
           // })
         })
-        .catch(err => console.log(err))
+        .catch((err) => console.log(err));
     },
     getProposalInfo(proposalId) {
-      this.selectedInit = false
+      this.selectedInit = false;
       getProposalInfo({ id: proposalId })
-        .then(res => {
-          this.customerName = res.customer_name
-          this.customerId = res.customer_id
-          this.is_show_company_profile = !!res.is_show_company_profile
-          this.is_show_link = !!res.is_show_link
-          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate
-          this.proposal_struct_id = res.proposal_struct_id
+        .then((res) => {
+          this.customerName = res.customer_name;
+          this.customerId = res.customer_id;
+          this.is_show_company_profile = !!res.is_show_company_profile;
+          this.is_show_link = !!res.is_show_link;
+          this.is_show_coverage_aggregate = !!res.is_show_coverage_aggregate;
+          this.proposal_struct_id = res.proposal_struct_id;
           // if (this.customerId > 0) {
           //   this.getProposalCustomerSync(this.customerId)
           // }
-          this.getRelations(res.proposal_struct_id)
+          this.getRelations(res.proposal_struct_id);
           this.formData = {
             name: res.name,
             remark: res.remark,
@@ -1713,11 +1761,11 @@ export default {
             has_pdf_illustration: !!res.has_pdf_illustration,
             pdf_illustration: res.pdf_illustration,
             pdf_illustration_type: res.pdf_illustration_type,
-            illustration_type: res.illustration_type
-          }
-          this.relationsSelected = res.schemes.map(item => {
+            illustration_type: res.illustration_type,
+          };
+          this.relationsSelected = res.schemes.map((item) => {
             return {
-              member_id: item.recognizee_policy_member_id.toString() || '',
+              member_id: item.recognizee_policy_member_id.toString() || "",
               name: item.recognizee_policy_name,
               recognizee_policy_member: {
                 id: item.recognizee_policy_member_id,
@@ -1725,7 +1773,7 @@ export default {
                 relation: item.recognizee_policy_relation,
                 sex: item.recognizee_policy_sex,
                 birthday: item.recognizee_policy_birthday,
-                struct_member_id: item.recognizee_policy_struct_member_id
+                struct_member_id: item.recognizee_policy_struct_member_id,
               },
               policy_holder_member: {
                 id: item.policy_holder_member_id,
@@ -1733,16 +1781,19 @@ export default {
                 relation: item.policy_holder_relation,
                 sex: item.policy_holder_sex,
                 birthday: item.policy_holder_birthday,
-                struct_member_id: item.policy_holder_struct_member_id
-              }
-            }
-          })
-          
-          this.schemesTab = this.relationsSelected.length > 0 ? this.relationsSelected[0].member_id : 0
+                struct_member_id: item.policy_holder_struct_member_id,
+              },
+            };
+          });
+
+          this.schemesTab =
+            this.relationsSelected.length > 0
+              ? this.relationsSelected[0].member_id
+              : 0;
           // 获取已选择产品数据，再次进行费率计算
           const selectedData = res.schemes.map((item, index) => {
-            const relation = this.relationsSelected[index]
-            return item.products.map(product => {
+            const relation = this.relationsSelected[index];
+            return item.products.map((product) => {
               return {
                 source: product.source,
                 product_id: product.source_proposal_product_id,
@@ -1759,41 +1810,41 @@ export default {
                 policy_holder_id: relation.policy_holder_member.id,
                 policy_holder_sex: relation.policy_holder_member.sex,
                 policy_holder_birthday: relation.policy_holder_member.birthday,
-                insurances: product.insurances.map(i => ({
+                insurances: product.insurances.map((i) => ({
                   id: i.source_proposal_insurance_id,
-                  coverage: i.guarantee_quota
-                }))
-              }
-            })
-          })
+                  coverage: i.guarantee_quota,
+                })),
+              };
+            });
+          });
 
-          this.ect = res.schemes.map(i => {
+          this.ect = res.schemes.map((i) => {
             return {
               has_illustration: !!i.has_illustration,
-              illustration: i.illustration
-            }
-          })
+              illustration: i.illustration,
+            };
+          });
 
           this.schemesFilters = res.schemes.map(() => {
-            return JSON.parse(JSON.stringify(this.schemesFilterModel))
-          })
+            return JSON.parse(JSON.stringify(this.schemesFilterModel));
+          });
 
-          this.confirmPrice(selectedData, res)
+          this.confirmPrice(selectedData, res);
 
           // this.schemesFilters.forEach((item, index) => {
           //   this.search({}, index)
           // })
         })
-        .catch(err => console.log(err))
+        .catch((err) => console.log(err));
     },
     async confirmPrice(data, res) {
-      let tabIndex = 0
+      let tabIndex = 0;
       for (let tab of data) {
-        let itemIndex = 0
-        this.$set(this.productsSelected, tabIndex, [])
+        let itemIndex = 0;
+        this.$set(this.productsSelected, tabIndex, []);
         for (let item of tab) {
           // 设置已选商品
-          const product = res.schemes[tabIndex].products[itemIndex]
+          const product = res.schemes[tabIndex].products[itemIndex];
           if (item.source === productFrom.MANUALLY_ENTER) {
             this.productsSelected[tabIndex].push({
               source: product.source,
@@ -1809,24 +1860,26 @@ export default {
               supplier_name: product.supplier_name,
               source_supplier_id: product.source_supplier_id,
               source_category_id: product.source_category_id,
-              proposal_product_guarantee_content: product.proposal_product_guarantee_content,
+              proposal_product_guarantee_content:
+                product.proposal_product_guarantee_content,
               category_icon: product.category_icon,
               pay_period: `${product.pay_period_value}_${product.pay_period_unit}`,
               insurance_premium: null,
               insurance_ids: [],
-              guarantee_responsibilities: []
-            })
+              guarantee_responsibilities: [],
+            });
             // this.totalSum = (product.premium + this.totalSum).toFixed(2)
           } else {
             try {
-              let response = await getCost(item)
+              let response = await getCost(item);
               let insurances = response.insurances.filter(
-                      item => item.select_status === 1
-              )
+                (item) => item.select_status === 1
+              );
               this.productsSelected[tabIndex].push({
                 source: product.source,
                 common_terms: product.common_terms || [], // 查看条款
-                first_product_category_name: product.first_product_category_name,
+                first_product_category_name:
+                  product.first_product_category_name,
                 supplier_name: product.supplier_name,
                 source_supplier_id: product.source_supplier_id,
                 product_name: product.proposal_product_name,
@@ -1835,88 +1888,93 @@ export default {
                 base_coverage_value: product.guarantee_quota,
                 product_id: product.source_proposal_product_id,
                 has_social_security: product.has_social_security,
-                insurances: insurances.map(i => ({
+                insurances: insurances.map((i) => ({
                   name: i.name,
                   id: i.id,
                   coverage: i.coverage,
                   type: i.type,
                   coverageText: i.coverages
-                          ? i.coverages.filter(y => +y.value === +i.coverage)[0]
-                                  .value_text
-                          : ''
+                    ? i.coverages.filter((y) => +y.value === +i.coverage)[0]
+                        .value_text
+                    : "",
                 })),
                 guarantee_responsibilities: insurances
-                        .filter(i => i.guarantee_responsibilities)
-                        .reduce((prev, next) => {
-                          return prev.concat(
-                                  next.guarantee_responsibilities.map(
-                                          y => `${y.name}: ${y.value_text}`
-                                  )
-                          )
-                        }, []),
-                total_premium: response.total_premium
-              })
+                  .filter((i) => i.guarantee_responsibilities)
+                  .reduce((prev, next) => {
+                    return prev.concat(
+                      next.guarantee_responsibilities.map(
+                        (y) => `${y.name}: ${y.value_text}`
+                      )
+                    );
+                  }, []),
+                total_premium: response.total_premium,
+              });
 
-              this.totalSum = (response.total_premium + this.totalSum).toFixed(2)
-            } catch (error) {console.log(error)}
+              this.totalSum = (response.total_premium + this.totalSum).toFixed(
+                2
+              );
+            } catch (error) {
+              console.log(error);
+            }
           }
 
-          itemIndex += 1
+          itemIndex += 1;
         }
 
-        tabIndex += 1
+        tabIndex += 1;
       }
 
-      this.selectedInit = true
+      this.selectedInit = true;
+      this.columnDrop();
     },
     getProposalCustomerSync(id, cb) {
       getProposalCustomerSync({ customer_id: id })
-        .then(res => {
+        .then((res) => {
           // this.customerId = res.id
-          this.proposal_struct_id = res.id
-          this.getRelations(res.id)
+          this.proposal_struct_id = res.id;
+          this.getRelations(res.id);
           if (cb) {
-            cb()
+            cb();
           }
         })
-        .catch(err => console.log(err))
+        .catch((err) => console.log(err));
     },
     calcAge(val) {
-      if (!val) return
-      let formatVal = [...(val + '')]
-      formatVal.splice(4, 0, '-')
-      formatVal.splice(7, 0, '-')
-      return calcAge(formatVal.join(''))
+      if (!val) return;
+      let formatVal = [...(val + "")];
+      formatVal.splice(4, 0, "-");
+      formatVal.splice(7, 0, "-");
+      return calcAge(formatVal.join(""));
     },
     insuranceFormat(data) {
       return data
-        .filter(i => i.id)
-        .map(item => {
+        .filter((i) => i.id)
+        .map((item) => {
           return `${item.name}${
-            item.type === 'accident' ? `:${item.coverageText}` : ''
-          }`
-        })
+            item.type === "accident" ? `:${item.coverageText}` : ""
+          }`;
+        });
     },
     previewPdf(type, mode) {
-      this.submit(type, res => {
-        const id = res.pcode
+      this.submit(type, (res) => {
+        const id = res.pcode;
         window.open(
           `${process.env.VUE_APP_API_URL}/agent/proxy/proposal/file/view/${mode}?pcode=${id}`
-        )
-      })
+        );
+      });
     },
     checkPdf(type) {
       window.open(
         `${process.env.VUE_APP_API_URL}/agent/proxy/proposal/pdf/${type}?proposal_id=${this.proposal.id}`
-      )
+      );
     },
     submit(type, cb) {
-      this.isButtonLoading = true
-      this.proposal = {}
+      this.isButtonLoading = true;
+      this.proposal = {};
       const data = {
         id: this.$route.query.proposal_id
-                ? this.$route.query.proposal_id
-                : null,
+          ? this.$route.query.proposal_id
+          : null,
         customer_id: this.$route.query.id || this.customerId || 0,
         proposal_struct_id: this.proposal_struct_id,
         name: this.formData.name,
@@ -1929,26 +1987,26 @@ export default {
         illustration: this.formData.illustration,
         is_show_premium: this.formData.is_show_premium ? 1 : 0,
         pdf_illustration: this.formData.has_pdf_illustration
-                ? this.formData.pdf_illustration
-                : '',
+          ? this.formData.pdf_illustration
+          : "",
         has_pdf_illustration: this.formData.has_pdf_illustration ? 1 : 0,
         pdf_illustration_type: this.formData.pdf_illustration_type,
         illustration_type: this.formData.illustration_type,
         schemes: this.productsSelected.map((i, index) => {
           const recognizeePolicyMember = this.relationsSelected[index]
-                  .recognizee_policy_member
+            .recognizee_policy_member;
           const policyHolderMember = this.relationsSelected[index]
-                  .policy_holder_member
+            .policy_holder_member;
           return {
             recognizee_policy_member_id: recognizeePolicyMember.id,
             recognizee_policy_name: this.relationsSelected[index].name
-                    ? this.relationsSelected[index].name
-                    : recognizeePolicyMember.name,
+              ? this.relationsSelected[index].name
+              : recognizeePolicyMember.name,
             recognizee_policy_relation: recognizeePolicyMember.relation,
             recognizee_policy_sex: recognizeePolicyMember.sex,
             recognizee_policy_birthday: recognizeePolicyMember.birthday,
             recognizee_policy_struct_member_id:
-            recognizeePolicyMember.struct_member_id,
+              recognizeePolicyMember.struct_member_id,
             policy_holder_member_id: policyHolderMember.id,
             policy_holder_name: policyHolderMember.name,
             policy_holder_relation: policyHolderMember.relation,
@@ -1957,157 +2015,171 @@ export default {
             policy_holder_struct_member_id: policyHolderMember.struct_member_id,
             has_illustration: this.ect[index].has_illustration ? 1 : 0,
             illustration: this.ect[index].illustration,
-            products: i.map(y => {
+            products: i.map((y) => {
               if (y.source === productFrom.MANUALLY_ENTER) {
                 return {
                   source: y.source,
                   product_name: y.product_name,
                   premium: y.total_premium,
-                  proposal_product_guarantee_content: y.proposal_product_guarantee_content,
+                  proposal_product_guarantee_content:
+                    y.proposal_product_guarantee_content,
                   category_name: y.first_product_category_name,
                   category_icon: y.category_icon,
                   source_category_id: y.source_category_id,
                   proposal_product_id: 0,
-                  guarantee_period_value: y.guarantee_period.split('_')[0],
-                  guarantee_period_unit: y.guarantee_period.split('_')[1],
-                  pay_period_value: y.pay_period.split('_')[0],
-                  pay_period_unit: y.pay_period.split('_')[1],
+                  guarantee_period_value: y.guarantee_period.split("_")[0],
+                  guarantee_period_unit: y.guarantee_period.split("_")[1],
+                  pay_period_value: y.pay_period.split("_")[0],
+                  pay_period_unit: y.pay_period.split("_")[1],
                   guarantee_quota: y.base_coverage_value,
                   has_social_security: 0,
                   supplier_name: y.supplier_name,
                   source_supplier_id: y.source_supplier_id,
-                  insurances: []
-                }
+                  insurances: [],
+                };
               }
               return {
                 source: productFrom.FROM_INSURANCE,
                 proposal_product_id: y.product_id,
-                guarantee_period_value: y.guarantee_period.split('_')[0],
-                guarantee_period_unit: y.guarantee_period.split('_')[1],
-                pay_period_value: y.pay_period.split('_')[0],
-                pay_period_unit: y.pay_period.split('_')[1],
+                guarantee_period_value: y.guarantee_period.split("_")[0],
+                guarantee_period_unit: y.guarantee_period.split("_")[1],
+                pay_period_value: y.pay_period.split("_")[0],
+                pay_period_unit: y.pay_period.split("_")[1],
                 guarantee_quota: y.base_coverage_value,
                 has_social_security: y.has_social_security,
-                insurances: y.insurances.filter(z => z.id)
-              }
-            })
-          }
-        })
-      }
-      saveProposal({ data: JSON.stringify(data) }).then(res => {
-          this.isButtonLoading = false
-          this.proposal = res
+                insurances: y.insurances.filter((z) => z.id),
+              };
+            }),
+          };
+        }),
+      };
+      saveProposal({ data: JSON.stringify(data) })
+        .then((res) => {
+          this.isButtonLoading = false;
+          this.proposal = res;
           if (cb) {
-            return cb(res)
+            return cb(res);
           }
           if (type === 1) {
-            this.previewVisible = true
+            this.previewVisible = true;
           } else if (type === 2) {
-            this.dialogVisible = true
+            this.dialogVisible = true;
           } else {
             this.$message({
-              message: '计划书暂存成功',
-              type: 'success'
-            })
-            window.localStorage.setItem('refreshPage', new Date().getTime())
-            window.close()
+              message: "计划书暂存成功",
+              type: "success",
+            });
+            window.localStorage.setItem("refreshPage", new Date().getTime());
+            window.close();
           }
         })
         .catch(() => {
-          this.isButtonLoading = false
-        })
+          this.isButtonLoading = false;
+        });
     },
     changeSelector(value, index, idx) {
-      this.getCost(value, index, idx)
+      this.getCost(value, index, idx);
     },
     changeRadio(value, index, idx) {
-      this.getCost(value, index, idx)
+      this.getCost(value, index, idx);
     },
     changeAccidentCheckbox(value, index, idx) {
-      this.getCost(value, index, idx)
+      this.getCost(value, index, idx);
     },
     changeCheckbox(value, index, idx) {
       const f = this.products[index][idx].product_insurances.map((i, kk) => {
         if (this.productsState[index][idx].insurance_ids.indexOf(i.id) !== -1) {
-          if (i.type === 'accident') {
+          if (i.type === "accident") {
             return Object.assign({}, i, {
               coverage:
                 (this.productsState[index][idx].insurances[kk] &&
                   this.productsState[index][idx].insurances[kk].coverage) ||
                 this.products[index][idx].product_insurances[kk].coverages[0]
-                  .value
-            })
+                  .value,
+            });
           }
           return Object.assign({}, i, {
             coverage:
               (this.productsState[index][idx].insurances[kk] &&
                 this.productsState[index][idx].insurances[kk].coverage) ||
-              ''
-          })
+              "",
+          });
         } else {
           return {
             id: null,
             coverage: null,
-            type: i.type
-          }
+            type: i.type,
+          };
         }
-      })
-      this.productsState[index][idx].insurances = f
+      });
+      this.productsState[index][idx].insurances = f;
 
-      this.getCost(value, index, idx)
+      this.getCost(value, index, idx);
     },
-	changeClickCheckbox(value, index, idx, kk){
-	if(this.productsState[index][idx].default_ids[kk] == ''){
-		return;
-	}
-	this.$set( this.productsState[index][idx].default_ids, kk, '' );
-	this.changeRadioCheckbox('', index, idx);
-	},
-	changeRadioCheckbox(value, index, idx){
-		let product_insurances = [];
-		for (let i = 0; i < this.products[index][idx].product_insurance_group.length; i++) {
-			for (let j = 0; j < this.products[index][idx].product_insurance_group[i].insurances.length; j++) {
-				product_insurances.push(this.products[index][idx].product_insurance_group[i].insurances[j])
-			}
-		}
-		const f = product_insurances.map((i, kk) => {
-		if (this.productsState[index][idx].default_ids.indexOf(i.id) !== -1) {
-			if (i.type === 'accident') {
-				return Object.assign({}, i, {
-					coverage:
-						(this.productsState[index][idx].insurances[kk]
-						&& this.productsState[index][idx].insurances[kk].coverage)
-						|| product_insurances[kk].coverages[0].value
-					})
-			}
-			return Object.assign({}, i, {
-			coverage:
-				(this.productsState[index][idx].insurances[kk] &&
-					this.productsState[index][idx].insurances[kk].coverage) ||
-					''
-			})
-		} else {
-			return {
-				id: null,
-				coverage: null,
-				type: i.type
-			}
-		}
-		})
-		this.productsState[index][idx].insurances = f;
-		this.getCost(value, index, idx)
-	},
+    changeClickCheckbox(value, index, idx, kk) {
+      if (this.productsState[index][idx].default_ids[kk] == "") {
+        return;
+      }
+      this.$set(this.productsState[index][idx].default_ids, kk, "");
+      this.changeRadioCheckbox("", index, idx);
+    },
+    changeRadioCheckbox(value, index, idx) {
+      let product_insurances = [];
+      for (
+        let i = 0;
+        i < this.products[index][idx].product_insurance_group.length;
+        i++
+      ) {
+        for (
+          let j = 0;
+          j <
+          this.products[index][idx].product_insurance_group[i].insurances
+            .length;
+          j++
+        ) {
+          product_insurances.push(
+            this.products[index][idx].product_insurance_group[i].insurances[j]
+          );
+        }
+      }
+      const f = product_insurances.map((i, kk) => {
+        if (this.productsState[index][idx].default_ids.indexOf(i.id) !== -1) {
+          if (i.type === "accident") {
+            return Object.assign({}, i, {
+              coverage:
+                (this.productsState[index][idx].insurances[kk] &&
+                  this.productsState[index][idx].insurances[kk].coverage) ||
+                product_insurances[kk].coverages[0].value,
+            });
+          }
+          return Object.assign({}, i, {
+            coverage:
+              (this.productsState[index][idx].insurances[kk] &&
+                this.productsState[index][idx].insurances[kk].coverage) ||
+              "",
+          });
+        } else {
+          return {
+            id: null,
+            coverage: null,
+            type: i.type,
+          };
+        }
+      });
+      this.productsState[index][idx].insurances = f;
+      this.getCost(value, index, idx);
+    },
     getCost(value, index, idx) {
-      const relation = this.relationsSelected[index]
-      const productState = this.productsState[index][idx]
-      productState.isLoading = true
+      const relation = this.relationsSelected[index];
+      const productState = this.productsState[index][idx];
+      productState.isLoading = true;
 
       const data = {
         product_id: productState.product_id,
-        guarantee_period_value: productState.guarantee_period.split('_')[0],
-        guarantee_period_unit: productState.guarantee_period.split('_')[1],
-        pay_period_value: productState.pay_period.split('_')[0],
-        pay_period_unit: productState.pay_period.split('_')[1],
+        guarantee_period_value: productState.guarantee_period.split("_")[0],
+        guarantee_period_unit: productState.guarantee_period.split("_")[1],
+        pay_period_value: productState.pay_period.split("_")[0],
+        pay_period_unit: productState.pay_period.split("_")[1],
         guarantee_quota: productState.base_coverage_value,
         has_social_security: productState.has_social_security,
         recognizee_policy_id: relation.recognizee_policy_member.id,
@@ -2117,57 +2189,57 @@ export default {
         policy_holder_sex: relation.policy_holder_member.sex,
         policy_holder_birthday: relation.policy_holder_member.birthday,
         insurances: productState.insurances
-          .filter(x => x.id)
-          .map(i => ({ id: i.id, coverage: i.coverage })),
-        insurance_ids: productState.default_ids.filter(i => i != '')
-      }
+          .filter((x) => x.id)
+          .map((i) => ({ id: i.id, coverage: i.coverage })),
+        insurance_ids: productState.default_ids.filter((i) => i != ""),
+      };
 
       getCost(data)
-        .then(res => {
+        .then((res) => {
           let insurances = res.insurances.filter(
-            item => item.select_status === 1
-          )
+            (item) => item.select_status === 1
+          );
           this.products[index][idx].product_insurances = res.insurances.map(
-            i => i
-          )
-          productState.insurances = productState.insurances.map(
-            (item) => {
-              let target = res.insurances.filter(i => i.id === item.id)[0]
-              if (target && target.coverages) {
-                return Object.assign({}, item, {
-                  coverageText: target.coverages.filter(
-                    y => item.coverage === y.value
-                  )[0].value_text
-                })
-              }
-              return item
+            (i) => i
+          );
+          productState.insurances = productState.insurances.map((item) => {
+            let target = res.insurances.filter((i) => i.id === item.id)[0];
+            if (target && target.coverages) {
+              return Object.assign({}, item, {
+                coverageText: target.coverages.filter(
+                  (y) => item.coverage === y.value
+                )[0].value_text,
+              });
             }
-          )
+            return item;
+          });
 
-          productState.total_premium = res.total_premium
-          productState.isLoading = false
-          productState.isError = false
-          productState.insurance_ids = insurances.map(y => y.id)
+          productState.total_premium = res.total_premium;
+          productState.isLoading = false;
+          productState.isError = false;
+          productState.insurance_ids = insurances.map((y) => y.id);
           productState.guarantee_responsibilities = insurances
-            .filter(i => i.guarantee_responsibilities)
+            .filter((i) => i.guarantee_responsibilities)
             .reduce((prev, next) => {
               return prev.concat(
                 next.guarantee_responsibilities.map(
-                  y => `${y.name}: ${y.value_text}`
+                  (y) => `${y.name}: ${y.value_text}`
                 )
-              )
-            }, [])
+              );
+            }, []);
         })
-        .catch(error => {
-          const message = error.message
-          productState.total_premium = message
-          productState.guarantee_responsibilities = ['无']
-          productState.isLoading = false
-          productState.isError = true
-        })
+        .catch((error) => {
+          const message = error.message;
+          productState.total_premium = message;
+          productState.guarantee_responsibilities = ["无"];
+          productState.isLoading = false;
+          productState.isError = true;
+        });
     },
     diyProductSubmit(data, type) {
-      const baseCoverageMult = baseTypes.find(i => i.value === data.guarantee_quota_unit).multiple
+      const baseCoverageMult = baseTypes.find(
+        (i) => i.value === data.guarantee_quota_unit
+      ).multiple;
       const d = {
         source: productFrom.MANUALLY_ENTER,
         base_coverage_value: data.guarantee_quota_value * baseCoverageMult,
@@ -2186,25 +2258,30 @@ export default {
         source_supplier_id: data.source_supplier_id,
         total_premium: +data.premium,
         source_category_id: data.source_category_id || 0,
-        proposal_product_guarantee_content: data.proposal_product_guarantee_content,
-        category_icon: data.category_icon
-      }
+        proposal_product_guarantee_content:
+          data.proposal_product_guarantee_content,
+        category_icon: data.category_icon,
+      };
 
-      const product = JSON.parse(JSON.stringify(d))
-      if (type === 'edit') {
-        this.$set(this.productsSelected[this.currentSchemeIndex], this.currentEditProductIndex, product)
+      const product = JSON.parse(JSON.stringify(d));
+      if (type === "edit") {
+        this.$set(
+          this.productsSelected[this.currentSchemeIndex],
+          this.currentEditProductIndex,
+          product
+        );
         // this.productsSelected[this.currentSchemeIndex][this.currentEditProductIndex] = product
       } else {
-        this.productsSelected[this.currentSchemeIndex].push(product)
+        this.productsSelected[this.currentSchemeIndex].push(product);
       }
     },
     // 已选产品
     addProduct(index, idx) {
-      const data = JSON.parse(JSON.stringify(this.productsState[index][idx]))
-      this.productsSelected[index].push(data)
+      const data = JSON.parse(JSON.stringify(this.productsState[index][idx]));
+      this.productsSelected[index].push(data);
     },
     removeProduct(index, idx) {
-      this.productsSelected[index].splice(idx, 1)
+      this.productsSelected[index].splice(idx, 1);
       // this.$confirm('是否删除该产品?', '提示', {
       //   confirmButtonText: '确定',
       //   cancelButtonText: '取消',
@@ -2214,136 +2291,154 @@ export default {
       // })
     },
     search(value, index) {
-      this.productListLoading = true
+      this.productListLoading = true;
 
-      this.$set(this.productsState, index, [])
+      this.$set(this.productsState, index, []);
 
-      const filter = Object.assign(this.schemesFilters[index], value)
+      const filter = Object.assign(this.schemesFilters[index], value);
       const data = Object.assign(
         {},
         filter,
         {
           product_id_and_types:
             (filter.product_id_and_types.length &&
-              filter.product_id_and_types.map(i => ({
-                id: i.split('_')[0],
-                type: i.split('_')[1]
+              filter.product_id_and_types.map((i) => ({
+                id: i.split("_")[0],
+                type: i.split("_")[1],
               }))) ||
-            ''
+            "",
         },
         {
           pay_period: filter.pay_period.unit
             ? JSON.stringify(filter.pay_period)
-            : '',
+            : "",
           guarantee_period: filter.guarantee_period.unit
             ? JSON.stringify(filter.guarantee_period)
-            : '',
+            : "",
           base_coverage_value: filter.base_coverage_value.unit
             ? JSON.stringify(filter.base_coverage_value)
-            : ''
+            : "",
         }
-      )
-      this.getProductList(data, index)
+      );
+      this.getProductList(data, index);
     },
     updateInsuranceProductList(index) {
-      const firstIds = this.schemesFilters[index].first_product_category_ids
-      const supplierIds = this.schemesFilters[index].supplier_ids
+      const firstIds = this.schemesFilters[index].first_product_category_ids;
+      const supplierIds = this.schemesFilters[index].supplier_ids;
 
       if (firstIds.length && supplierIds.length) {
-        this.getInsuranceProductList(null, firstIds, supplierIds)
+        this.getInsuranceProductList(null, firstIds, supplierIds);
       }
     },
     getInsuranceProductList(name, firstIds, supplierIds) {
       getInsuranceProductList({
         name,
         first_product_category_ids: firstIds,
-        supplier_ids: supplierIds
-      }).then(res => {
-        this.insuranceProductList = res
-      })
+        supplier_ids: supplierIds,
+      }).then((res) => {
+        this.insuranceProductList = res;
+      });
     },
     getProductList(data, index) {
       getProductList(data)
-        .then(res => {
+        .then((res) => {
           // 将全部产品储存在 totalProducts 以供后续数据截取使用
-          this.$set(this.totalProducts, index, JSON.parse(JSON.stringify(res)))
+          this.$set(this.totalProducts, index, JSON.parse(JSON.stringify(res)));
           // 初始化为第一页
-          this.$set(this.perTabPage, index, 1)
-          this.productListLoading = false
+          this.$set(this.perTabPage, index, 1);
+          this.productListLoading = false;
           if (res.length <= this.perPagesize) {
             // this.$set(this.products, index, JSON.parse(JSON.stringify(res)))
-            this.setProductsState(index, JSON.parse(JSON.stringify(res)))
+            this.setProductsState(index, JSON.parse(JSON.stringify(res)));
           } else {
             // this.$set(this.products, index, JSON.parse(JSON.stringify(res.slice(0, this.perPagesize))))
             // 初始，截取，处理
             this.setProductsState(
               index,
               JSON.parse(JSON.stringify(res.slice(0, this.perPagesize)))
-            )
+            );
           }
         })
         .catch(() => {
-          this.productListLoading = false
-        })
+          this.productListLoading = false;
+        });
     },
     async setProductsState(index, res) {
-      const relation = this.relationsSelected[index]
+      const relation = this.relationsSelected[index];
 
-      let data = res.map(item => {
-			return {
-			common_terms: item.common_terms,
-			first_product_category_name: item.first_product_category_name,
-			supplier_name: item.supplier_name,
-      source_supplier_id: item.source_supplier_id,
-			product_name: item.proposal_product_name,
-			pay_period: `${item.pay_period[0].value}_${item.pay_period[0].unit}`,
-			guarantee_period: `${item.guarantee_period[0].value}_${item.guarantee_period[0].unit}`,
-			base_coverage_value: `${item.base_coverage_value[0].value}`,
-			product_id: item.id,
-			has_social_security: '1',
-			insurances: item.product_insurance_group.map((i)=>{
-				let isHasDefault = i.insurances.filter(ii=> ii.is_default === 1).length;
-					if(isHasDefault){
-						return{
-							id:i.insurances.filter(ii=> ii.is_default === 1)[0].id,
-							name:i.insurances.filter(ii=> ii.is_default === 1)[0].name,
-							coverage:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value : '',
-							type:i.insurances.filter(ii=> ii.is_default === 1)[0].type,
-							coverageText:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value_text : ''
-						}
-					}else{
-						return {
-							id:'',
-							name:'',
-							coverage:'',
-							type:'',
-							coverageText:''
-						}
-					}
-			}),
-			insurance_ids:item.product_insurance_group.map(i => i.insurances.filter(ii=> ii.is_default === 1).length ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
-			default_ids:item.product_insurance_group.map(i => i.insurances.filter(ii=> ii.is_default === 1).length ? i.insurances.filter(ii=> ii.is_default === 1)[0].id : ''),
-			insurance_premium: null,
-			guarantee_responsibilities: [],
-			total_premium: null,
-			isLoading: true,
-			isError: false
-        }
-      })
+      let data = res.map((item) => {
+        return {
+          common_terms: item.common_terms,
+          first_product_category_name: item.first_product_category_name,
+          supplier_name: item.supplier_name,
+          source_supplier_id: item.source_supplier_id,
+          product_name: item.proposal_product_name,
+          pay_period: `${item.pay_period[0].value}_${item.pay_period[0].unit}`,
+          guarantee_period: `${item.guarantee_period[0].value}_${item.guarantee_period[0].unit}`,
+          base_coverage_value: `${item.base_coverage_value[0].value}`,
+          product_id: item.id,
+          has_social_security: "1",
+          insurances: item.product_insurance_group.map((i) => {
+            let isHasDefault = i.insurances.filter((ii) => ii.is_default === 1)
+              .length;
+            if (isHasDefault) {
+              return {
+                id: i.insurances.filter((ii) => ii.is_default === 1)[0].id,
+                name: i.insurances.filter((ii) => ii.is_default === 1)[0].name,
+                coverage: i.insurances.filter((ii) => ii.is_default === 1)[0]
+                  .coverages.length
+                  ? i.insurances.filter((ii) => ii.is_default === 1)[0]
+                      .coverages[0].value
+                  : "",
+                type: i.insurances.filter((ii) => ii.is_default === 1)[0].type,
+                coverageText: i.insurances.filter(
+                  (ii) => ii.is_default === 1
+                )[0].coverages.length
+                  ? i.insurances.filter((ii) => ii.is_default === 1)[0]
+                      .coverages[0].value_text
+                  : "",
+              };
+            } else {
+              return {
+                id: "",
+                name: "",
+                coverage: "",
+                type: "",
+                coverageText: "",
+              };
+            }
+          }),
+          insurance_ids: item.product_insurance_group.map((i) =>
+            i.insurances.filter((ii) => ii.is_default === 1).length
+              ? i.insurances.filter((ii) => ii.is_default === 1)[0].id
+              : ""
+          ),
+          default_ids: item.product_insurance_group.map((i) =>
+            i.insurances.filter((ii) => ii.is_default === 1).length
+              ? i.insurances.filter((ii) => ii.is_default === 1)[0].id
+              : ""
+          ),
+          insurance_premium: null,
+          guarantee_responsibilities: [],
+          total_premium: null,
+          isLoading: true,
+          isError: false,
+        };
+      });
 
-      let state = this.productsState[index] || []
-      let total = this.totalProducts[index]
+      let state = this.productsState[index] || [];
+      let total = this.totalProducts[index];
       // 产品状态列表
-      state = state.concat(data)
+      state = state.concat(data);
       // 产品列表
-      total = total.slice(0, this.perPagesize * this.perTabPage[index])
+      total = total.slice(0, this.perPagesize * this.perTabPage[index]);
       // 设置赋值
-      this.$set(this.productsState, index, state)
-      this.$set(this.products, index, total)
+      this.$set(this.productsState, index, state);
+      this.$set(this.products, index, total);
       // 前期信息处理完毕
-      this.flag = false
+      this.flag = false;
 
-      let tag = 0
+      let tag = 0;
 
       for (let item of res) {
         const d = {
@@ -2353,7 +2448,7 @@ export default {
           pay_period_value: item.pay_period[0].value,
           pay_period_unit: item.pay_period[0].unit,
           guarantee_quota: item.base_coverage_value[0].value,
-          has_social_security: '1',
+          has_social_security: "1",
           recognizee_policy_id: relation.recognizee_policy_member.id,
           recognizee_policy_sex: relation.recognizee_policy_member.sex,
           recognizee_policy_birthday:
@@ -2361,70 +2456,81 @@ export default {
           policy_holder_id: relation.policy_holder_member.id,
           policy_holder_sex: relation.policy_holder_member.sex,
           policy_holder_birthday: relation.policy_holder_member.birthday,
-          insurances: item.product_insurance_group.map((i)=>{
-			let isHasDefault = i.insurances.filter(ii=> ii.is_default === 1).length;
-				if(isHasDefault){
-					return{
-						id:i.insurances.filter(ii=> ii.is_default === 1)[0].id,
-						name:i.insurances.filter(ii=> ii.is_default === 1)[0].name,
-						coverage:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value : '',
-						type:i.insurances.filter(ii=> ii.is_default === 1)[0].type,
-						coverageText:i.insurances.filter(ii=> ii.is_default === 1)[0].coverages.length ? i.insurances.filter(ii=> ii.is_default === 1)[0].coverages[0].value_text : ''
-					}
-				}
-			}),
+          insurances: item.product_insurance_group.map((i) => {
+            let isHasDefault = i.insurances.filter((ii) => ii.is_default === 1)
+              .length;
+            if (isHasDefault) {
+              return {
+                id: i.insurances.filter((ii) => ii.is_default === 1)[0].id,
+                name: i.insurances.filter((ii) => ii.is_default === 1)[0].name,
+                coverage: i.insurances.filter((ii) => ii.is_default === 1)[0]
+                  .coverages.length
+                  ? i.insurances.filter((ii) => ii.is_default === 1)[0]
+                      .coverages[0].value
+                  : "",
+                type: i.insurances.filter((ii) => ii.is_default === 1)[0].type,
+                coverageText: i.insurances.filter(
+                  (ii) => ii.is_default === 1
+                )[0].coverages.length
+                  ? i.insurances.filter((ii) => ii.is_default === 1)[0]
+                      .coverages[0].value_text
+                  : "",
+              };
+            }
+          }),
           // insurances: item.product_insurances.map(i => ({ id: i.id, coverage: i.coverages.length ? i.coverages[0].value : '' }))
           // insurance_ids: item.product_insurances.map(i => i.id),
-        }
+        };
 
         try {
-          let response = await getCost(d)
+          let response = await getCost(d);
 
           let insurances = response.insurances.filter(
-            item => item.select_status === 1
-          )
-          this.products[index][this.perPagesize * (this.perTabPage[index] - 1) + tag]
-          .product_insurances = response.insurances.map(i => i)
+            (item) => item.select_status === 1
+          );
+          this.products[index][
+            this.perPagesize * (this.perTabPage[index] - 1) + tag
+          ].product_insurances = response.insurances.map((i) => i);
           // 总额
-          data[tag].total_premium = response.total_premium
+          data[tag].total_premium = response.total_premium;
           // 请求状态
-          data[tag].isLoading = false
+          data[tag].isLoading = false;
           // 附加险已勾选
           // data[tag].insurances = response.insurances.map(y => ({ id: y.id, coverage: y.coverage, name: y.name, target: y.target }))
           // 保障内容
           data[tag].guarantee_responsibilities = insurances
-            .filter(i => i.guarantee_responsibilities)
+            .filter((i) => i.guarantee_responsibilities)
             .reduce((prev, next) => {
               return prev.concat(
                 next.guarantee_responsibilities.map(
-                  y => `${y.name}: ${y.value_text}`
+                  (y) => `${y.name}: ${y.value_text}`
                 )
-              )
-            }, [])
+              );
+            }, []);
 
           // this.$set(this.productsState, index, data)
         } catch (error) {
-          const message = error.message
-          data[tag].total_premium = message
-          data[tag].guarantee_responsibilities = ['无']
-          data[tag].isLoading = false
-          data[tag].isError = true
+          const message = error.message;
+          data[tag].total_premium = message;
+          data[tag].guarantee_responsibilities = ["无"];
+          data[tag].isLoading = false;
+          data[tag].isError = true;
 
           // this.$set(this.productsState, index, data)
         }
 
-        tag += 1
+        tag += 1;
       }
     },
     getSupplierList() {
-      getSupplierList().then(res => {
-        this.supplierList = res
-      })
+      getSupplierList().then((res) => {
+        this.supplierList = res;
+      });
     },
     getInsuranceList() {
-      getInsuranceList().then(res => {
-        this.insuranceList = res
-      })
+      getInsuranceList().then((res) => {
+        this.insuranceList = res;
+      });
     },
     selectRelation() {
       if (
@@ -2432,110 +2538,114 @@ export default {
         !this.relationModel.recognizee_policy_member.id
       ) {
         return this.$message({
-          message: '请选择投保人以及被保人关系',
-          type: 'warning'
-        })
+          message: "请选择投保人以及被保人关系",
+          type: "warning",
+        });
       }
       this.relationModel.recognizee_policy_member = this.relations.filter(
-        i => i.id === this.relationModel.recognizee_policy_member.id
-      )[0]
+        (i) => i.id === this.relationModel.recognizee_policy_member.id
+      )[0];
       this.relationModel.policy_holder_member = this.relations.filter(
-        i => i.id === this.relationModel.policy_holder_member.id
-      )[0]
-      this.relationModel.member_id = this.relations.filter(
-        i => i.id === this.relationModel.recognizee_policy_member.id
-      )[0].id.toString()
+        (i) => i.id === this.relationModel.policy_holder_member.id
+      )[0];
+      this.relationModel.member_id = this.relations
+        .filter(
+          (i) => i.id === this.relationModel.recognizee_policy_member.id
+        )[0]
+        .id.toString();
 
-      this.relationsSelected.push(this.relationModel)
-      this.addDialogVisible = false
-      this.schemesTab = this.relationModel.member_id.toString() // `${this.relationsSelected.length - 1}`
+      this.relationsSelected.push(this.relationModel);
+      this.addDialogVisible = false;
+      this.schemesTab = this.relationModel.member_id.toString(); // `${this.relationsSelected.length - 1}`
       if (this.products[this.relationsSelected.length - 1]) {
-        this.products[this.relationsSelected.length - 1] = []
+        this.products[this.relationsSelected.length - 1] = [];
       }
       // this.formData.schemes.push(JSON.parse(JSON.stringify(this.schemesModel)))
       this.schemesFilters.push(
         JSON.parse(JSON.stringify(this.schemesFilterModel))
-      )
-      this.productsSelected.push([])
+      );
+      this.productsSelected.push([]);
       this.ect.push({
         has_illustration: false,
-        illustration: ''
-      })
+        illustration: "",
+      });
 
       this.relationModel = {
         recognizee_policy_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
         policy_holder_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
-        name: '',
-        member_id: ''
-      }
+        name: "",
+        member_id: "",
+      };
 
       // this.search({}, this.schemesFilters.length - 1)
     },
     getRelations(id) {
-      getRelationsV2({ id }).then(res => {
-        this.relations = res
-      })
+      getRelationsV2({ id }).then((res) => {
+        this.relations = res;
+      });
     },
     addProposal() {
-      this.addDialogVisible = true
+      this.addDialogVisible = true;
     },
-    showEditMemberStructFunc () {
-      this.showEditMemberStruct = true
+    showEditMemberStructFunc() {
+      this.showEditMemberStruct = true;
     },
     addHandleClose() {
-      this.addDialogVisible = false
+      this.addDialogVisible = false;
       this.relationModel = {
         recognizee_policy_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
         policy_holder_member: {
           id: null,
-          name: '',
-          relation: '',
-          sex: '',
-          birthday: ''
+          name: "",
+          relation: "",
+          sex: "",
+          birthday: "",
         },
-        name: ''
-      }
+        name: "",
+      };
     },
     previewHandleClose() {
-      this.previewVisible = false
+      this.previewVisible = false;
     },
     handleClose(done) {
-      this.$router.push('/proposal/proposal-list')
-      done()
+      this.$router.push("/proposal/proposal-list");
+      done();
     },
     listTextHidden() {
-      this.isTextHidden = !this.isTextHidden
+      this.isTextHidden = !this.isTextHidden;
     },
     selectedListTextHidden() {
-      this.isSelectedTextHidden = !this.isSelectedTextHidden
+      this.isSelectedTextHidden = !this.isSelectedTextHidden;
     },
     removeTabInchange(targetName) {
-      let that = this
-      const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
+      let that = this;
+      const index = this.relationsSelected.findIndex(
+        (item) => item.member_id == targetName
+      );
       if (index > -1) {
-        this.relationsSelected.splice(index, 1)
-        this.schemesFilters.splice(index, 1)
-        this.productsSelected.splice(index, 1)
-        this.ect.splice(index, 1)
-        this.schemesTab = this.relationsSelected[0].member_id.toString()
+        this.relationsSelected.splice(index, 1);
+        this.schemesFilters.splice(index, 1);
+        this.productsSelected.splice(index, 1);
+        this.ect.splice(index, 1);
+        this.schemesTab = this.relationsSelected[0].member_id.toString();
         // this.$message({
         //   type: 'success',
         //   message: '删除成功!'
@@ -2543,40 +2653,44 @@ export default {
       }
       // 2021 0907 增加一个判断  如果是本人 但是本人的投保人或者被保人是已经删除的人 也要一并删掉
       this.relationsSelected.map((item) => {
-        if (+targetName === +item.recognizee_policy_member.id || +targetName === +item.policy_holder_member.id) {
+        if (
+          +targetName === +item.recognizee_policy_member.id ||
+          +targetName === +item.policy_holder_member.id
+        ) {
           const index1 = that.relationsSelected.findIndex(
             (item1) => item1.member_id == item.member_id
-          )
+          );
           if (index1 > -1) {
-            that.relationsSelected.splice(index1, 1)
-            that.schemesFilters.splice(index1, 1)
-            that.productsSelected.splice(index1, 1)
-            that.ect.splice(index1, 1)
-            that.schemesTab = that.relationsSelected[0].member_id.toString()
+            that.relationsSelected.splice(index1, 1);
+            that.schemesFilters.splice(index1, 1);
+            that.productsSelected.splice(index1, 1);
+            that.ect.splice(index1, 1);
+            that.schemesTab = that.relationsSelected[0].member_id.toString();
           }
         }
-      })
+      });
     },
     removeTab(targetName) {
-      this.$confirm('请确认删除该项方案?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      this.$confirm("请确认删除该项方案?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       }).then(() => {
-        const index = this.relationsSelected.findIndex(item => item.member_id == targetName)
+        const index = this.relationsSelected.findIndex(
+          (item) => item.member_id == targetName
+        );
         if (index > -1) {
-          this.relationsSelected.splice(index, 1)
-          this.schemesFilters.splice(index, 1)
-          this.productsSelected.splice(index, 1)
-          this.ect.splice(index, 1)
-          this.schemesTab = this.relationsSelected[0].member_id.toString()
+          this.relationsSelected.splice(index, 1);
+          this.schemesFilters.splice(index, 1);
+          this.productsSelected.splice(index, 1);
+          this.ect.splice(index, 1);
+          this.schemesTab = this.relationsSelected[0].member_id.toString();
           this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
+            type: "success",
+            message: "删除成功!",
+          });
         }
-        
-        
+
         // const index = +targetName
         // this.relationsSelected.splice(index, 1)
         // this.schemesFilters.splice(index, 1)
@@ -2587,10 +2701,10 @@ export default {
         //   type: 'success',
         //   message: '删除成功!'
         // })
-      })
-    }
-  }
-}
+      });
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">

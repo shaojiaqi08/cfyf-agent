@@ -315,12 +315,17 @@ export default {
       } else {
         //   复制家庭成员
         //http://proxy.yun.beta.2239.com/agent/proxy/proposal/customer/copy-family?source_proposal_id=1&////proposal_type=safeguard_proposa
-        copyProposalFamily({source_proposal_id: item.id, proposal_type: 'safeguard_proposal'}).then((res) => {
-            console.log(res)
+        copyProposalFamily({
+          source_proposal_id: item.id,
+          proposal_type: "safeguard_proposal",
+        }).then((res) => {
+          console.log(res);
           let routeUrl = this.$router.resolve(
             `/proposal/proposal-operate${
               this.isDeposit ? "-deposit" : ""
-            }?proposal_id=${item.id}&customer_id=${item.customer_id}&family_struct_id=${res.id}`
+            }?proposal_id=${item.id}&customer_id=${
+              item.customer_id
+            }&family_struct_id=${res.id}`
           );
           this.loading = false;
           window.open(routeUrl.href, "_blank");
@@ -385,7 +390,7 @@ export default {
           }
         });
     },
-    search: debounce(function () {
+    search: debounce(function() {
       this.searchForm.page = 1;
       this.total = 0;
       this.ajaxData();
@@ -393,7 +398,7 @@ export default {
     onStorage(e) {
       e.key === "refreshPage" && this.search();
     },
-    setTableMaxHeight: debounce(function () {
+    setTableMaxHeight: debounce(function() {
       this.maxHeight = this.$refs.content.offsetHeight - 64;
     }, 300),
   },
