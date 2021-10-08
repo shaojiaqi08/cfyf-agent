@@ -103,7 +103,7 @@
     </div>
     <div class="content" ref="content">
       <div class="flex-between flex" style="margin-bottom:10px">
-        <div style=""></div>
+        <!-- <div style=""></div>
         <div class="flex">
           <el-tooltip placement="bottom" content="计划书个人展示">
             <div @click="editUserInfo" class="avatar mr16">
@@ -117,7 +117,7 @@
             size="small"
             ><i class="iconfont iconxiao16_jiahao mr4"></i>新建计划书</el-button
           >
-        </div>
+        </div> -->
       </div>
       <el-table
         v-loading="loading"
@@ -174,15 +174,15 @@
                 type="primary"
                 class="mr8"
                 @click="checkMaterial(row)"
-                >计划书材料</el-link
+                >查看PDF计划书</el-link
               >
-              <el-link
+              <!-- <el-link
                 v-if="checkCopyProposal"
                 type="primary"
                 class="mr8"
                 @click="copyProposal(row)"
                 >复制</el-link
-              >
+              > -->
               <el-link
                 v-if="checkH5Proposal"
                 type="primary"
@@ -191,14 +191,14 @@
                 >查看h5计划书</el-link
               >
             </template>
-            <template v-else>
+            <!-- <template v-else>
               <el-link
                 v-if="checkEditProposal"
                 type="primary"
                 @click="editProposal(row)"
                 >编辑计划书</el-link
               >
-            </template>
+            </template> -->
           </template>
         </el-table-column>
       </el-table>
@@ -389,8 +389,9 @@ export default {
       window.open(routeUrl.href, "_blank");
     },
     checkMaterial(item) {
-      this.isProposalMaterialShow = true;
+      // this.isProposalMaterialShow = true;
       this.proposalInfo = item;
+      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/pdf/view-by-pcode` : `proposal/file/view/pdf`}?pcode=${item.pcode}`)
     },
     scroll2Bottom() {
       const { total, searchForm } = this;
