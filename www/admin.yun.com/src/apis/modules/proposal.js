@@ -2,6 +2,10 @@ import {get, post} from '../helper'
 
 // 保障计划书分页列表
 export const getProposalList = (data) => get('/agent/proxy/proposal/list-with-page', data)
+// 保障计划书分页列表(所有)
+export const getProposalListAll = (data) => get('/agent/proxy/proposal/all-list-with-page', data)
+// 保障计划书分页列表(团队)
+export const getProposalListTeam = (data) => get('/agent/proxy/proposal/team-list-with-page', data)
 // 计划书个人展示详情
 export const getProposalMasterInfo = (data) => get('/agent/proxy/proposal/sales-info/detail', data)
 // 保存计划书个人展示详情
@@ -50,6 +54,10 @@ export const depositProposalCustCalc = data => post('/agent/proxy/deposit-propos
 export const IRRCalc = data => post('/agent/proxy/deposit-proposal/reduction-check', data)
 // 储蓄计划书列表
 export const getDepositProposalList = data => get('/agent/proxy/deposit-proposal/list-with-page', data)
+// 储蓄计划书列表(所有)
+export const getDepositProposalListAll = data => get('/agent/proxy/deposit-proposal/all-list-with-page', data)
+// 储蓄计划书列表(团队)
+export const getDepositProposalListTeam = data => get('/agent/proxy/deposit-proposal/team-list-with-page', data)
 // 储蓄计划书自定义产品IRR计算
 export const custProdIRRCalc = data => post('/agent/proxy/deposit-proposal/custom-product-reduction-check', data)
 // 储蓄计划书保存

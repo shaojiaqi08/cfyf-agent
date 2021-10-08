@@ -1,0 +1,62 @@
+.filter-item {
+  position: relative;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  margin-right: 4px;
+  height: 28px;
+  line-height: 28px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+  background-color: #E6E6E6;
+  cursor: pointer;
+}
+.filter-item:hover {
+  background-color: #D9D9D9;
+}
+.close-btn {
+  display: none;
+  position: absolute;
+    top: -6px;
+    right: -6px;
+    color: #FF5151;
+    cursor: pointer;
+    background: #fff;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    line-height: 16px;
+}
+.filter-item.has-value {
+  background-color: #FFF4E4;
+  color: #FF9000;
+}
+.filter-item.has-value:hover .close-btn {
+  display: block;
+}
+.select-count {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  font-size: 12px;
+  background-color: #FF9000;
+  color: #fff;
+  border: 50%;
+  border-radius: 50%;
+}
+.mini-count-input {
+  display: inline-block;
+  width: 60px;
+}
+.count-select {
+  display: inline-block;
+  margin-left: 12px;
+  width: 120px;
+}
+
+.proposal-filter-popper{
+  padding: 16px;
+}

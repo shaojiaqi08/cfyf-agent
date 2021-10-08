@@ -72,6 +72,34 @@
             }}</span>
           </template>
         </filter-shell>
+       
+      </div>
+      <div class="proposal-1">
+        
+        <filter-shell
+          v-model="searchForm.sales_id"
+          autoFocus
+          @input="handlesalesChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchForm.sales_id"
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="handlesalesChange"
+          >
+            <el-option
+              v-for="item in salesList"
+              :key="item.id"
+              :label="item.real_name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+          <template
+            v-slot:label
+          >{{hasValue(searchForm.sales_id) ? salesList.find(i => i.id === searchForm.sales_id).real_name : '创建人员'}}</template>
+        </filter-shell>
       </div>
     </div>
     <div class="content" ref="content">
@@ -217,11 +245,14 @@ import UserInfoModal from "./modal/user-info";
 import ProposalMaterial from "./modal/proposal-material";
 import AddMemberStruct from "./modal/add-member-struct";
 import { debounce } from "@/utils";
+import {
+  getSalesData,
+} from '@/apis/modules/achievement'
 import { proposal_status, proposalStatusMap } from "@/enums/merchandising";
 import {
-  getProposalList,
+  getProposalListTeam,
   getProposalMasterInfo,
-  getDepositProposalList,
+  getDepositProposalListTeam,
   copyProposalFamily,
 } from "@/apis/modules/proposal";
 export default {
@@ -247,6 +278,7 @@ export default {
       userInfo: {},
       userHeadImg: "",
       proposalInfo: {},
+      salesList: [],
       keyword: "",
       keywordType: Object.freeze([
         { value: "name", label: "计划书名称" },
@@ -261,11 +293,13 @@ export default {
         limit: 20,
         start_created_at: "",
         end_created_at: "",
+        sales_id: '',
       },
       total: 0,
       maxHeight: null,
       paramsChanged: false,
       curTabIdx: "",
+      
       tabsData: [
         {
           name: "guarantee-pane",
@@ -282,6 +316,13 @@ export default {
     };
   },
   methods: {
+    getSalesData() {
+      getSalesData()
+        .then((res) => {
+          this.salesList = res
+        })
+        .catch((err) => console.log(err))
+    },
     clearValue,
     hasValue,
     // 筛选日期change
@@ -289,6 +330,10 @@ export default {
       const [start = "", end = ""] = v || [];
       this.searchForm.start_created_at = start;
       this.searchForm.end_created_at = end;
+      this.search();
+    }, 
+    handlesalesChange (v) {
+      this.searchForm.sales_id = v;
       this.search();
     },
     editUserInfo() {
@@ -372,7 +417,7 @@ export default {
       this.loading = true;
       const { searchForm, keywordType, keyword, type } = this;
       const key = keywordType.find((item) => item.value === type).value;
-      (this.isDeposit ? getDepositProposalList : getProposalList)({
+      (this.isDeposit ? getDepositProposalListTeam : getProposalListTeam)({
         ...searchForm,
         [key]: keyword,
       })
@@ -409,6 +454,7 @@ export default {
   },
   created() {
     this.ajaxUserInfo();
+    this.getSalesData()
     // this.ajaxData()
     window.addEventListener("storage", this.onStorage);
     window.addEventListener("resize", this.setTableMaxHeight);

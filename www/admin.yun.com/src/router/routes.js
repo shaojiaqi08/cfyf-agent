@@ -394,7 +394,7 @@ export const routers = [
           show: true,
           permission: ['/proposal', '/deposit-proposal/list-with-page']
         },
-        component: () => import('views/merchandising/proposal')
+        component: () => import('views/merchandising/prospectus')
       },
       {
         path: '/proposal/proposal-operate',
