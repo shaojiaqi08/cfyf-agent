@@ -392,7 +392,7 @@ export const routers = [
           header: true,
           menu: true,
           show: true,
-          permission: ['/proposal', '/deposit-proposal/list-with-page']
+          permission: ['/proposal', '/deposit-proposal/list-with-page',"/proposal/team_list_with_page","/deposit-proposal/team-list-with-pag","/proposal/all_list_with_page","/deposit-proposal/all-list-with-page"]
         },
         component: () => import('views/merchandising/prospectus')
       },

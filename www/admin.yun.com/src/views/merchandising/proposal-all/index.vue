@@ -170,7 +170,6 @@
           <template v-slot="{ row, index }">
             <template v-if="row.status === proposalStatusMap.done.value">
               <el-link
-                v-if="checkProposalMaterial"
                 type="primary"
                 class="mr8"
                 @click="checkMaterial(row)"
@@ -184,7 +183,6 @@
                 >复制</el-link
               > -->
               <el-link
-                v-if="checkH5Proposal"
                 type="primary"
                 class="mr8"
                 @click="checkInfo(row, index)"
@@ -302,12 +300,12 @@ export default {
         {
           name: "guarantee-pane",
           label: "保障计划书",
-          permission: "/proposal",
+          permission: "/proposal/all_list_with_page",
         },
         {
           name: "deposit-pane",
           label: "储蓄计划书",
-          permission: "/deposit-proposal/list-with-page",
+          permission: "/deposit-proposal/all-list-with-page",
         },
       ],
       isDeposit: false,

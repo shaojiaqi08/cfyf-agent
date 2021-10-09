@@ -31,17 +31,17 @@ export default {
         {
           name: "proposal",
           label: "个人计划书",
-          permission: "/underwrite-health-notice/underwrite_rule",
+          permission: ["/proposal","/deposit-proposal/list-with-page"],
         },
         {
           name: "proposal-team",
           label: "团队计划书",
-          permission: "/underwrite-health-notice/health_report_inquiry",
+          permission: ["/proposal/team_list_with_page","/deposit-proposal/team-list-with-pag"],
         },
         {
           name: "proposal-all",
           label: "所有计划书",
-          permission: "/underwrite-health-notice/underwriting",
+          permission: ["/proposal/all_list_with_page","/deposit-proposal/all-list-with-page"],
         },
       ],
       productName: "",
