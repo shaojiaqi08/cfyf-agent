@@ -16,6 +16,7 @@
                         size="small"
                         v-clipboard:success="$emit('copy')"
                         plain
+                        :loading="copyLoading"
                         @click="copy"><i class="iconfont iconxiao16_fuzhi mr4"></i>复制链接</el-button>
                 <el-button
                         type="primary"
@@ -44,7 +45,8 @@
         },
         data() {
             return {
-                isMobileScreen: true
+                isMobileScreen: true,
+                copyLoading: false
             }
         },
         methods: {
@@ -57,10 +59,14 @@
                 this.isMobileScreen = v
             },
             copy() {
+                this.copyLoading = true
                 genApiShareLink({product_no: this.productObj.product_no}).then(res => {
                     this.$copyText(res.share_link).then(() => {
                         this.$message.success('链接已经复制到剪贴板')
                     })
+                    this.copyLoading = false
+                }).catch(() => {
+                    this.copyLoading = false
                 })
             }
         }
