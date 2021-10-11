@@ -2589,6 +2589,8 @@ export default {
         member_id: "",
       };
 
+      // this.relationsSelected
+      this.columnDrop();
       // this.search({}, this.schemesFilters.length - 1)
     },
     getRelations(id) {
