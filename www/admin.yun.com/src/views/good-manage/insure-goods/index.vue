@@ -229,7 +229,8 @@
 
 <script>
 import commonTabsHeader from '../../../components/common-tabs-header'
-import { getInsureApiList, getInsureCpsList, getProductDocs, getProductShareLink, exportProductLink, getShelvesList, genApiShareLink} from '@/apis/modules/good-manage'
+// getProductShareLink
+import { getInsureApiList, getInsureCpsList, getProductDocs, exportProductLink, getShelvesList, genApiShareLink} from '@/apis/modules/good-manage'
 import { getSupplierList, getProductAgeList, getProductCategory} from '@/apis/modules'
 import { formatDate } from '@/utils/formatTime'
 import FilterShell, { clearValue, hasValue } from '@/components/filters/filter-shell'
