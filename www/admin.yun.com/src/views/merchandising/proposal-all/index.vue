@@ -157,6 +157,11 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="创建人员"
+          prop="sales_realname"
+          align="center"
+        ></el-table-column>
+        <el-table-column
           label="被保人"
           prop="recognizee_policies_text"
           align="center"
