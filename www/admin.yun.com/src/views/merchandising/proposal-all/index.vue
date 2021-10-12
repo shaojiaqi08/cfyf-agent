@@ -74,7 +74,6 @@
         </filter-shell>
       </div>
       <div class="proposal-1">
-        
         <filter-shell
           v-model="searchForm.sales_id"
           autoFocus
@@ -95,9 +94,11 @@
               :value="item.id"
             ></el-option>
           </el-select>
-          <template
-            v-slot:label
-          >{{hasValue(searchForm.sales_id) ? salesList.find(i => i.id === searchForm.sales_id).real_name : '创建人员'}}</template>
+          <template v-slot:label>{{
+            hasValue(searchForm.sales_id)
+              ? salesList.find((i) => i.id === searchForm.sales_id).real_name
+              : "创建人员"
+          }}</template>
         </filter-shell>
       </div>
     </div>
@@ -175,6 +176,7 @@
           <template v-slot="{ row, index }">
             <template v-if="row.status === proposalStatusMap.done.value">
               <el-link
+                v-if="checkPDF"
                 type="primary"
                 class="mr8"
                 @click="checkMaterial(row)"
@@ -188,6 +190,7 @@
                 >复制</el-link
               > -->
               <el-link
+                v-if="checkh5"
                 type="primary"
                 class="mr8"
                 @click="checkInfo(row, index)"
@@ -244,9 +247,7 @@ import FilterShell, {
 } from "@/components/filters/filter-shell";
 import CommonTabsHeader from "./modal/tabs-header";
 import UserInfoModal from "./modal/user-info";
-import {
-  getSalesData,
-} from '@/apis/modules/achievement'
+import { getSalesData } from "@/apis/modules/achievement";
 import ProposalMaterial from "./modal/proposal-material";
 import AddMemberStruct from "./modal/add-member-struct";
 import { debounce } from "@/utils";
@@ -295,7 +296,7 @@ export default {
         limit: 20,
         start_created_at: "",
         end_created_at: "",
-        sales_id: '',
+        sales_id: "",
       },
       total: 0,
       maxHeight: null,
@@ -322,9 +323,9 @@ export default {
     getSalesData() {
       getSalesData()
         .then((res) => {
-          this.salesList = res
+          this.salesList = res;
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
     },
     // 筛选日期change
     handleDateChange(v) {
@@ -333,7 +334,7 @@ export default {
       this.searchForm.end_created_at = end;
       this.search();
     },
-    handlesalesChange (v) {
+    handlesalesChange(v) {
       this.searchForm.sales_id = v;
       this.search();
     },
@@ -394,7 +395,13 @@ export default {
     checkMaterial(item) {
       // this.isProposalMaterialShow = true;
       this.proposalInfo = item;
-      window.open(`${process.env.VUE_APP_API_URL}/agent/proxy/${this.isDeposit ? `deposit-proposal/pdf/view-by-pcode` : `proposal/file/view/pdf`}?pcode=${item.pcode}`)
+      window.open(
+        `${process.env.VUE_APP_API_URL}/agent/proxy/${
+          this.isDeposit
+            ? `deposit-proposal/pdf/view-by-pcode`
+            : `proposal/file/view/pdf`
+        }?pcode=${item.pcode}`
+      );
     },
     scroll2Bottom() {
       const { total, searchForm } = this;
@@ -456,7 +463,7 @@ export default {
   },
   created() {
     this.ajaxUserInfo();
-    this.getSalesData()
+    this.getSalesData();
     // this.ajaxData()
     window.addEventListener("storage", this.onStorage);
     window.addEventListener("resize", this.setTableMaxHeight);
@@ -482,30 +489,27 @@ export default {
     },
   },
   computed: {
-    checkAddProposal() {
+    checkPDF() {
+      // 团队保障计划书-查看PDF: /proposal/team-pdf
+      // 团队保障计划书-查看H5:  /proposal/team-h5
+
+      // 团队储蓄计划书-查看PDF: /deposit-proposal/team-pdf
+      // 团队储蓄计划书-查看H5:  /deposit-proposal/team-h5
+
+      // 所有保障计划书-查看PDF: /proposal/all-pdf
+      // 所有保障计划书-查看H5:  /proposal/all-h5
+
+      // 所有储蓄计划书-查看PDF: /deposit-proposal/all-pdf
+      // 所有储蓄计划书-查看H5:  /deposit-proposal/all-h5
+      console.log("111111", this.isDeposit)
       return this.isDeposit
-        ? this.$checkAuth("/deposit-proposal/store")
-        : this.$checkAuth("/proposal/store");
+        ? this.$checkAuth("/deposit-proposal/all-pdf")
+        : this.$checkAuth("/proposal/all-pdf");
     },
-    checkEditProposal() {
+    checkh5() {
       return this.isDeposit
-        ? this.$checkAuth("/deposit-proposal/update")
-        : this.$checkAuth("/proposal/proposal-operate/update");
-    },
-    checkProposalMaterial() {
-      return this.isDeposit
-        ? this.$checkAuth("/deposit-proposal/materials")
-        : this.$checkAuth("/proposal/materials");
-    },
-    checkCopyProposal() {
-      return this.isDeposit
-        ? this.$checkAuth("/deposit-proposal/copy")
-        : this.$checkAuth("/proposal/proposal-operate/copy");
-    },
-    checkH5Proposal() {
-      return this.isDeposit
-        ? this.$checkAuth("/deposit-proposal/h5")
-        : this.$checkAuth("/proposal/h5");
+        ? this.$checkAuth("/deposit-proposal/all-h5")
+        : this.$checkAuth("/proposal/all-h5");
     },
   },
 };
