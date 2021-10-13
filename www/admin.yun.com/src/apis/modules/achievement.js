@@ -22,7 +22,7 @@ export const getPolicyDetail = params => get('/agent/proxy/policy/detail', param
 
 // 销售下拉数据
 export const getSalesData = params => get('/agent/proxy/sales/list', params)
-
+export const getTeamList = params => get('/agent/proxy/sales/teamList', params)
 // 销售团队下拉数据
 export const getSalesTeamData = params => get('/agent/proxy/sales/get_all_teams_list', params)
 // b端公司

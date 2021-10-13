@@ -243,7 +243,7 @@ import UserInfoModal from "./modal/user-info";
 import ProposalMaterial from "./modal/proposal-material";
 import AddMemberStruct from "./modal/add-member-struct";
 import { debounce } from "@/utils";
-import { getSalesData } from "@/apis/modules/achievement";
+import { getTeamList } from "@/apis/modules/achievement";
 import { proposal_status, proposalStatusMap } from "@/enums/merchandising";
 import {
   getProposalListTeam,
@@ -313,7 +313,7 @@ export default {
   },
   methods: {
     getSalesData() {
-      getSalesData()
+      getTeamList()
         .then((res) => {
           this.salesList = res;
         })
