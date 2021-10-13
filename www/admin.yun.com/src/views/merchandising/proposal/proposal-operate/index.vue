@@ -173,7 +173,9 @@
           </div>
         </el-card>
         <el-card class="proposal-card-shell" shadow="never">
-          <div class="proposal-card-header no-bottom">保险方案设计</div>
+          <div class="proposal-card-header no-bottom">保险方案设计<el-tooltip class="item" effect="dark" content="需调整方案顺序可鼠标左键按住拖动进行调整" placement="left">
+              <i class="iconfont fs16 el-icon-question"></i>
+            </el-tooltip></div>
           <div class="proposal-card-body" style="overflow: visible">
             <el-button
               class="proposal-add-scheme proposal-edit-scheme"
