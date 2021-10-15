@@ -93,6 +93,18 @@
                   class="content"
               >{{(baseInfo.policy_plan && baseInfo.policy_plan.guarantee_start_at) ? formatDate(baseInfo.policy_plan.guarantee_start_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
             </div>
+            <div class="item">
+              <div class="label">支付时间：</div>
+              <div class="content">{{baseInfo.pay_at ? formatDate(baseInfo.pay_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">支付方式：</div>
+              <div class="content">{{baseInfo.pay_channel_str || '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">支付失败原因：</div>
+              <div class="content">{{baseInfo.pay_failed_reason || '-'}}</div>
+            </div>
             <el-divider></el-divider>
           </div>
         </template>
