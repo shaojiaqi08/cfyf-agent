@@ -378,7 +378,7 @@ export default {
     }
   },
   created() {
-    this.requestList()
+    // this.requestList()
   },
   mounted() {
     this.tableHeight = this.$refs.rightBox.offsetHeight - 32
