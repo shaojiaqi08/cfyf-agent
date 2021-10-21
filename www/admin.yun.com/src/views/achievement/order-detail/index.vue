@@ -97,6 +97,18 @@
               <div class="label">承保失败原因：</div>
               <div class="content">{{baseInfo.proposal_err_reason||'-'}}</div>
             </div>
+            <div class="item">
+              <div class="label">支付时间：</div>
+              <div class="content">{{baseInfo.pay_at ? formatDate(baseInfo.pay_at * 1000, 'yyyy-MM-dd hh:mm:ss') : '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">支付方式：</div>
+              <div class="content">{{baseInfo.pay_channel_str || '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">支付失败原因：</div>
+              <div class="content">{{baseInfo.pay_failed_reason || '-'}}</div>
+            </div>
             <el-divider></el-divider>
           </div>
         </template>
@@ -486,8 +498,8 @@
 
       <template v-else-if="manPowerDetail.type === 'waiting_counteroffer_reply'">
         <iframe v-if="manPowerDialogVisible"
-            :src="manPowerDetail.data.file_url"
-            style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
+                :src="manPowerDetail.data.file_url"
+                style="display: block; width: 960px; height: 800px; border: transparent; margin: -20px auto 0 auto;"></iframe>
       </template>
 
       <template v-else-if="manPowerDetail.type === 'counteroffer_all_confirming' || manPowerDetail.type === 'counteroffer_all_confirmed'">
