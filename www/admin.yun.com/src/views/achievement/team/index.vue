@@ -109,6 +109,39 @@
           {{hasValue(searchModel.sales_id) ? salesList.find(i => i.id === searchModel.sales_id[0]).real_name : '出单人'}}
         </template>
       </filter-shell>
+      <!--全部团队-->
+      <filter-shell v-model="searchModel.sales_team_id" class="mb16" @input="searchModelChange">
+        <el-select
+          class="block"
+          v-model="searchModel.sales_team_id"
+          multiple
+          clearable
+          filterable
+          placeholder="请选择"
+          @change="searchModelChange"
+        >
+          <el-option
+            v-for="item in salesTeamList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+<!--        <div class="mt20 mb10 flex-between">-->
+<!--          包含子团队-->
+<!--          <el-switch-->
+<!--            :disabled="searchModel.sales_team_id.length<=0"-->
+<!--            style="float: right"-->
+<!--            inactive-value="0"-->
+<!--            active-value="1"-->
+<!--            v-model="searchModel.include_child_team"-->
+<!--            @change="searchModelChange"-->
+<!--          ></el-switch>-->
+<!--        </div>-->
+        <template
+          v-slot:label
+        >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '团队' }}</template>
+      </filter-shell>
       <!--全部保单状态-->
       <filter-shell v-model="searchModel.policy_status"
                     autoFocus
@@ -367,6 +400,18 @@
           @click="scrollTo(1)"
         ></el-button>
       </div>
+      <div class="table-header">
+        团队业绩
+        <el-button
+          size="small"
+          type="primary"
+          class="fr"
+          :loading="exporting"
+          icon="iconfont iconxiao16_xiazai mr4"
+          v-if="$checkAuth('/team_performance/export')"
+          @click="policyExport"
+        >导出数据</el-button>
+      </div>
       <el-table :data="list"
                 :max-height="tableMaxHeight"
                 border
@@ -452,7 +497,14 @@
 </template>
 
 <script>
-import { getTeamPolicyList, getTeamPolicyStatistics, getSalesData, getDateRange, exportTeamPolicy } from '@/apis/modules/achievement'
+import {
+  getTeamPolicyList,
+  getTeamPolicyStatistics,
+  getSalesData,
+  getDateRange,
+  exportTeamPolicy,
+  getSalesMyTeamData
+} from '@/apis/modules/achievement'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
 import { debounce, downloadFrameA } from '@/utils'
@@ -513,13 +565,22 @@ export default {
         product_insurance_class: [],
         date_range: [+new Date(), +new Date()],
         visit_status: [],
-        manpower_underwriting_status: ''
+        manpower_underwriting_status: '',
+        sales_team_id: ''
       },
-      tableMaxHeight: null
+      tableMaxHeight: null,
+      salesTeamList: []
     };
   },
   methods: {
     formatYYMMDD,
+    getSalesMyTeamData() {
+      getSalesMyTeamData()
+        .then((res) => {
+          this.salesTeamList = res
+        })
+        .catch((err) => console.log(err))
+    },
     tabChange() {
       Object.assign(this.searchModel, {
         keyword: '',
@@ -659,6 +720,7 @@ export default {
     this.getTeamPolicyStatistics()
     this.getAllProducts()
     this.getSupplierList()
+    this.getSalesMyTeamData()
     this.getSalesData()
     this.getDateRange()
   }

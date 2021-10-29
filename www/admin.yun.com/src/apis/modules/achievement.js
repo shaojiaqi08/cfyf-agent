@@ -25,6 +25,8 @@ export const getSalesData = params => get('/agent/proxy/sales/list', params)
 export const getTeamList = params => get('/agent/proxy/sales/teamList', params)
 // 销售团队下拉数据
 export const getSalesTeamData = params => get('/agent/proxy/sales/get_all_teams_list', params)
+// 团队获取个人当前团队和子团队
+export const getSalesMyTeamData = params => get('/agent/proxy/sales/my-teams', params)
 // b端公司
 export const getManagementCompanyList = (params) => get('/management/proxy/company/list', params)
 // 投退保时间选项
