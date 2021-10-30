@@ -464,6 +464,8 @@
         ></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
+        <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
         <el-table-column
@@ -480,8 +482,6 @@
             >{{ item.basic_info }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="保费(元)" prop="actually_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
