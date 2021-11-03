@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <div class="page-container">
-      <div class="banner" v-if="bannerList">
+      <div class="banner" v-if="bannerList.length">
         <el-carousel arrow="hover" trigger="click" ref="bannerWrap" :height="bannerHeight" :interval="5000">
           <el-carousel-item v-for="item in bannerList" :key="item.banner_no">
             <img :src="item.banner_pic_url" :alt="item.title" class="banner-img" @click="bannerHandle(item)">
@@ -9,9 +9,9 @@
         </el-carousel>
       </div>
 
-      <div class="announcement-sector">
+      <div class="announcement-sector" :style="bannerList.length ? '' : 'padding-top: 20px;'">
         <template v-for="item in filterAnnouncementList">
-          <div class="sector" v-loading="item.loading" :key="item.key" v-if="item.data.length" :style="{width: (100 / filterAnnouncementList.length <= 50 ? 100 / filterAnnouncementList.length - 1 : 100 / filterAnnouncementList.length) + '%'}">
+          <div class="sector" v-loading="item.loading" :key="item.key" v-if="item.data.length" :style="{width: (100 / filterAnnouncementList.length <= 50 ? 100 / filterAnnouncementList.length - 1 + 0.5 : 100 / filterAnnouncementList.length) + '%'}">
             <div class="common-sector-header">
               <span class="title"><span class="title-text">{{ item.title }}</span></span>
               <span class="more" @click="toMore(item.key)">
@@ -213,7 +213,7 @@ export default {
     getRegulateList(){
       let regulate = this.announcementList.find(item => item.key.includes('regulate'))
       regulate.loading = true
-      getRegulateList({page: 1, page_size: 3, read_type: ''}).then(res => {
+      getRegulateList({page: 1, page_size: 5, read_type: ''}).then(res => {
         res.list ? regulate.data = res.list.data : ''
         this.updateDots({...this.dots, regulate_quantity: res.un_read_count})
       }).catch(err => {
@@ -225,7 +225,7 @@ export default {
     getNewLinesList(){
       let newLines = this.announcementList.find(item => item.key.includes('new-lines'))
       newLines.loading = true
-      getNewLinesList({page: 1, page_size: 3, read_type: ''}).then(res => {
+      getNewLinesList({page: 1, page_size: 5, read_type: ''}).then(res => {
         res.list ? newLines.data = res.list.data : ''
         this.updateDots({...this.dots, new_lines_quantity: res.un_read_count})
       }).catch(err => {
@@ -237,7 +237,7 @@ export default {
     getAnnouncementList(){
       let announcement = this.announcementList.find(item => item.key.includes('announcement'))
       announcement.loading = true
-      getAnnouncementList({page: 1, page_size: 3, read_type: ''}).then(res => {
+      getAnnouncementList({page: 1, page_size: 5, read_type: ''}).then(res => {
         res.list ? announcement.data = res.list.data : ''
         this.updateDots({...this.dots, announcement_quantity: res.un_read_count})
       }).catch(err => {
@@ -478,7 +478,9 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      this.bannerHeight = Math.round((200 / 1208) * this.$refs.bannerWrap.$el.clientWidth) + 'px'
+      this.bannerHeight = this.$refs.bannerWrap
+        ? Math.round((200 / 1208) * this.$refs.bannerWrap.$el.clientWidth) + 'px'
+        : null
       window.addEventListener('resize', this.computedBannerHeight)
     })
   },
@@ -617,7 +619,7 @@ export default {
 
         .sector-content {
           padding: 8px;
-          height: 196px;
+          height: 316px;
 
           .sector-row {
             cursor: pointer;
