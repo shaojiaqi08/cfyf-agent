@@ -233,10 +233,10 @@
         <el-table-column label="团队" prop="policy.sales_team_name" align="center" width="250px" v-if="tabIndex !== 'manpower-order-team'"></el-table-column>
         <el-table-column label="出单人" prop="policy.sales_real_name" align="center" v-if="tabIndex !== 'manpower-order-sales'" min-width="120px"></el-table-column>
         <el-table-column label="产品名称" prop="origin_product_name" align="center" width="250px"></el-table-column>
-        <el-table-column label="保费" prop="policy.premium" align="center" width="100px"></el-table-column>
         <el-table-column label="保额" prop="policy.guarantee_quota_str" align="center"></el-table-column>
-        <el-table-column label="保障期限" prop="policy.guarantee_period_desc" align="center"></el-table-column>
+        <el-table-column label="保费" prop="policy.premium" align="center" width="100px"></el-table-column>
         <el-table-column label="缴费期限" prop="policy.payment_period_desc" align="center"></el-table-column>
+        <el-table-column label="保障期限" prop="policy.guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="人核状态" prop="status_str" align="center" min-width="120px"></el-table-column>
