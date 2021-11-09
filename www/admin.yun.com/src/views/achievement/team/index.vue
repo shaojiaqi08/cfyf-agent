@@ -420,12 +420,14 @@
                 v-loading="tableLoading"
                 ref="table"
                 :row-style="rowStyleFormat">
-        <el-table-column label="团队" prop="sales_team_name" align="center" width="150px" fixed="left"></el-table-column>
-        <el-table-column label="出单人" prop="sales_real_name" align="center" width="150px" fixed="left"></el-table-column>
+        <el-table-column label="团队" prop="sales_team_name" align="center" width="120px" fixed="left"></el-table-column>
+        <el-table-column label="出单人" prop="sales_real_name" align="center" width="120px" fixed="left"></el-table-column>
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保费(元)" prop="actually_premium" align="center"></el-table-column>
         <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
+        <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
+        <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="投保时间" prop="proposal_at_str" align="center" width="170px"></el-table-column>
         <el-table-column label="承保时间" prop="policy_at_str" width="170px" align="center"></el-table-column>
         <el-table-column label="投保人" prop="policy_holder_basic_info_str" width="180px" align="center"></el-table-column>
@@ -437,8 +439,6 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="缴费期限" prop="payment_period_desc" align="center"></el-table-column>
-        <el-table-column label="保障期限" prop="guarantee_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
         <el-table-column label="订单号" prop="order_no" align="center" width="210px"></el-table-column>
         <el-table-column label="保单状态" prop="policy_status_str" align="center"></el-table-column>
