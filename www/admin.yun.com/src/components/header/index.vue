@@ -79,7 +79,7 @@
             viewClass="body-list"
             v-loading="annLoading"
           >
-            <div class="search-gg">
+            <div class="search-gg" style="z-index:9999;">
               <el-input
                 placeholder="请输入内容"
                 prefix-icon="el-icon-search"
@@ -324,6 +324,7 @@ export default {
         this.getAnnouncementList();
       } else {
         this.annList = [];
+        this.keyword = '';
       }
     },
     keyword(v) {
@@ -442,8 +443,17 @@ export default {
     }
   }
 }
+/deep/ .el-input__inner:focus {
+  border-color: whitesmoke;
+  border: 0;
+}
+/deep/ .el-input__inner {
+  background: whitesmoke;
+  border-radius: 10px;
+  border: 0;
+}
 .search-gg {
-  padding: 5px 30px;
+  padding: 15px 30px;
   position: absolute;
   top: 0;
   left: 0;
