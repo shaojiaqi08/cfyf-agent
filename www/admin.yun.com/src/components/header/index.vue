@@ -86,6 +86,7 @@
                 v-model="keyword"
                 clearable
                 style="margin-right:5px;"
+                @keyup.enter="searchHandler"
               >
               </el-input>
               <el-button slot="append" type="primary" @click="searchHandler"
