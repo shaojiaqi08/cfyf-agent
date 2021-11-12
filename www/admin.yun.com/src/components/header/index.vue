@@ -85,8 +85,12 @@
                 prefix-icon="el-icon-search"
                 v-model="keyword"
                 clearable
+                style="margin-right:5px;"
               >
               </el-input>
+              <el-button slot="append" type="primary" @click="searchHandler"
+                >搜索</el-button
+              >
             </div>
             <div class="search-gg" style="visibility:hidden;position:relative;">
               <el-input
@@ -328,7 +332,9 @@ export default {
       }
     },
     keyword(v) {
+      if (v == '') {
       this.throttle(this.searchHandler, this, 500, v)
+      }
     },
     hasAnnAuth: {
       immediate: true,
@@ -445,12 +451,12 @@ export default {
 }
 /deep/ .el-input__inner:focus {
   border-color: whitesmoke;
-  border: 0;
+  border: 1px solid #e6e6e6;
 }
 /deep/ .el-input__inner {
   background: whitesmoke;
-  border-radius: 10px;
-  border: 0;
+  border-radius: 5px;
+  border: 1px solid #e6e6e6;
 }
 .search-gg {
   padding: 15px 30px;
@@ -460,6 +466,8 @@ export default {
   right: 0;
   background: #fff;
   z-index: 99;
+  display: flex;
+  align-items: center;
 }
 ::v-deep .el-badge__content.is-fixed.is-dot {
   top: 6px;
