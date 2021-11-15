@@ -171,7 +171,9 @@
 
 <style scoped lang="scss">
   /deep/ .el-dialog{
-    margin-top: 10vh!important;
+    //top: 15%!important;
+    top: 30px;
+    transform: none;
     .el-dialog__body {
       .tips {
         height: 54px;
