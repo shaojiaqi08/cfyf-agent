@@ -56,7 +56,12 @@
                                     size="small"><i class="iconfont iconxiao16_bianji mr4"></i>编辑</el-button>
                     </div>
                 </div>
-                <el-table :data="tableList" v-loading="tableLoading" border :max-height="maxHeight - 70">
+                <el-table
+                    v-table-infinite-scroll="scroll2Bottom"
+                    :data="tableList"
+                    v-loading="tableLoading"
+                    border
+                    :max-height="maxHeight - 70">
                     <el-table-column label="姓名" prop="real_name" width="150px" align="center"></el-table-column>
                     <el-table-column label="账号" prop="username" width="150px" align="center"></el-table-column>
                     <el-table-column label="手机号" prop="mobile" width="150px" align="center"></el-table-column>
@@ -209,6 +214,9 @@
                 positionData: [],
                 lvData: [],
                 tableList: [],
+                page: 1,
+                page_size: 10,
+                total: 0,
                 curTabIdx: 'people',
                 statusTagType: Object.freeze({
                     disable: 'danger',
@@ -250,6 +258,14 @@
             }
         },
         methods: {
+            scroll2Bottom() {
+              const { page, page_size, total } = this
+              if (page * page_size < total) {
+                this.tableLoading = true
+                this.page += 1
+                this.ajaxAllSalesList()
+              }
+            },
             submitPosition() {
                 if (!this.formModel.name) {
                     return this.$message.success('请输入职位名称')
@@ -372,14 +388,21 @@
                 this.curTabIdx = 'people'
                 this.selPosVal = v.value
                 this.selPosName = v.label
+                this.page = 1
+                this.total = 0
                 // this.ajaxDetail(v.value)
                 this.ajaxAllSalesList()
             },
             ajaxAllSalesList() {
                 this.tableLoading = true
-                const params = { position_id: this.selPosVal }
+                const params = {
+                  position_id: this.selPosVal,
+                  page: this.page,
+                  page_size: this.page_size
+                }
                 getAllSalesList(params).then(res => {
-                    this.tableList = res.data
+                    this.total = res.total
+                    this.tableList = this.page === 1 ? res.data : [...this.tableList, ...res.data]
                 }).finally(() => {
                     this.tableLoading = false
                 })
