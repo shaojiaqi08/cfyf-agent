@@ -17,13 +17,13 @@
             autoFocus
             auto-close
             no-margin
-            @input="searchModelChange"
+            @input="searchModel.read_type = ''"
           >
             <el-select v-model="searchModel.read_type"
                        class="block"
                        clearable
-                       placeholder="请选择"
-                       @change="searchModelChange">
+                       filterable
+                       placeholder="请选择">
               <el-option
                 v-for="item in readMap"
                 :key="item.value"
@@ -34,6 +34,13 @@
             <template v-slot:label>{{ searchModel.read_type ? readMap.find(i => i.value === searchModel.read_type).label : '全部' }}
             </template>
           </filter-shell>
+          <el-input v-model="searchModel.keyword"
+                    style="width: 300px; margin: 0 20px"
+                    placeholder="请输入需要搜索的公告内容或标题"
+                    size="small" clearable></el-input>
+          <el-button type="primary"
+                     @click="searchModelChange"
+                     size="small">搜索</el-button>
         </div>
       </div>
       <div class="content-wrap" v-if="list && list.length > 0" v-infinite-scroll="scroll2Bottom">
@@ -94,6 +101,7 @@
           announcement: 'announcement_quantity'
         }),
         searchModel: {
+          keyword: '',
           read_type: '',
           page: 1,
           page_size: 25
@@ -112,6 +120,8 @@
     watch: {
       tabIndex () {
         this.searchModel.page = 1
+        this.searchModel.keyword = ''
+        this.searchModel.read_type = ''
         this.ajaxListData()
       },
     },
@@ -177,6 +187,10 @@
 </script>
 
 <style lang="scss" scoped>
+  .unread-filter {
+    display: flex;
+    align-items: center;
+  }
   .announcement {
     padding: 0 20px;
     height: 100%;
