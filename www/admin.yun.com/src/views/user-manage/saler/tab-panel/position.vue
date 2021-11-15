@@ -215,7 +215,7 @@
                 lvData: [],
                 tableList: [],
                 page: 1,
-                page_size: 10,
+                page_size: 20,
                 total: 0,
                 curTabIdx: 'people',
                 statusTagType: Object.freeze({
