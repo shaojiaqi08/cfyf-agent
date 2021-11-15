@@ -732,6 +732,7 @@
         if (item.source === this.productFrom.MANUALLY_ENTER &&
           relation &&
           item.cash_value &&
+          item.cash_value.length &&
           item.cash_value.every(i => i.cash_value) &&
           pay_unit &&
           (pay_unit === paytimeTypes[2].value || pay_time) &&
