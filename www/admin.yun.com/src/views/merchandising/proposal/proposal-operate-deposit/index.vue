@@ -706,12 +706,12 @@
               }
               break
             case guaranteeTimeTypes[1].value: // 周岁
-              if (age && guarantee_time) {
+              if (age != undefined && guarantee_time) {
                 count = guarantee_time - age
               }
               break
             case guaranteeTimeTypes[2].value: // 终身
-              if (age) {
+              if (age != undefined) {
                 count = 105 - age
               }
               break
@@ -732,6 +732,7 @@
         if (item.source === this.productFrom.MANUALLY_ENTER &&
           relation &&
           item.cash_value &&
+          item.cash_value.length &&
           item.cash_value.every(i => i.cash_value) &&
           pay_unit &&
           (pay_unit === paytimeTypes[2].value || pay_time) &&
