@@ -155,7 +155,7 @@ export default {
       successList: [],
       statusColorMap: Object.freeze({
         0: "danger",
-        1: "info",
+        1: "success",
       }),
     };
   },
