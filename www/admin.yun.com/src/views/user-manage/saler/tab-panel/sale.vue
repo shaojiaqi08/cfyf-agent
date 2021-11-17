@@ -1,5 +1,10 @@
 <template>
     <div class="sale-people-container" ref="container">
+        <el-button class="import-button"
+                   type="primary"
+                   v-if="$checkAuth('/sale/create-by-import')"
+                   @click="importXS('')"
+                   size="small"><i class="iconfont iconxiao16_jiahao"></i> 批量导入销售</el-button>
         <el-button class="add-button"
                    type="primary"
                    @click="editSales('')"
@@ -268,6 +273,8 @@
                 </el-scrollbar>
             </template>
         </div>
+        <!--导入销售-->
+        <import-sales-dialog :visible.sync="importDialogVisible"  @success="ajaxAllSalesList"></import-sales-dialog>
         <!--编辑/新增销售-->
         <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
@@ -312,6 +319,7 @@
     import ModifyPasswordDialog from '../../component/modify-password-dialog'
     import validatorMixin from "../../validatorMixin";
     import EditSalesDialog  from '../component/edit-sales-dialog'
+    import ImportSalesDialog  from '../component/import-sales-dialog'
     import AddTeamDialog  from '../component/add-team-dialog'
     import SetLeaderDialog  from '../component/set-leader-dialog'
     import ListItem from '@/components/side-filter-list/side-filter-list-item'
@@ -328,7 +336,8 @@
             EditSalesDialog,
             AddTeamDialog,
             SetLeaderDialog,
-            TransferTeamDialog
+            TransferTeamDialog,
+            ImportSalesDialog
         },
         data() {
             return {
@@ -365,6 +374,7 @@
                 tableData: [],
                 editDialogId: '',
                 editDialogVisible: false,
+                importDialogVisible: false,
                 addTeamDialogVisible: false,
                 setLeaderDialogVisible: false,
                 transferTeamDialogVisible: false,
@@ -473,6 +483,10 @@
             handleAddTeam() {
                 this.addTeamDialogVisible = true
                 this.ajaxNoTeamSalesData()
+            },
+            // 导入销售
+            importXS() {
+                this.importDialogVisible = true
             },
             // 新增/编辑销售
             editSales(id) {
@@ -725,6 +739,12 @@
         z-index: 3;
         top: 12px;
         right: 36px;
+    }
+    .import-button{
+        position: absolute;
+        z-index: 3;
+        top: 12px;
+        right: 146px;
     }
     .dismiss-button:hover {
         color: #FF4C4C;

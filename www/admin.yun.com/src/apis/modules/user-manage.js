@@ -54,6 +54,10 @@ export const modifySales = (params) => post('/agent/proxy/sales/update', params)
 export const dimission = (params) => post('/agent/proxy/sales/dimission', params)
 // 重置密码
 export const updateSalesPassword = (params) => post('/agent/proxy/sales/update_password', params)
+// 导入销售列表
+export const importSalesList = (params) => post('/agent/proxy/sales/batch-create', params)
+// 获取导入的销售列表
+export const getImportSalesList = (params) => get('/agent/proxy/sales/batch-create-process-log', params)
 // 销售详情
 export const getSalesDetail = (params) => get('/agent/proxy/sales/detail', params)
 // 职位列表
