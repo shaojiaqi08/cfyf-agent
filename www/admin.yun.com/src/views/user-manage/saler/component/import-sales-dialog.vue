@@ -211,6 +211,7 @@ export default {
     closeDialog() {
       this.$nextTick(() => {
         this.$emit("update:visible", false);
+        this.$emit('success')
       });
     },
     comparePwdValidator(rule, value, callback) {
