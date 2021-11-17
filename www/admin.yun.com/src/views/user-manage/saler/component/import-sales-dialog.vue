@@ -106,7 +106,7 @@
       >
     </span>
     <span slot="footer" v-else>
-      <el-button type="primary" @click="closeDialog">确认</el-button>
+      <el-button type="primary" @click="closeDialog1">确认</el-button>
     </span>
   </el-dialog>
 </template>
@@ -208,10 +208,15 @@ export default {
       this.formData = { file_id: file.file_id, file_name: file.file_name };
       this.uploading = false;
     },
-    closeDialog() {
+    closeDialog1() {
       this.$nextTick(() => {
         this.$emit("update:visible", false);
         this.$emit('success')
+      });
+    },
+    closeDialog() {
+      this.$nextTick(() => {
+        this.$emit("update:visible", false);
       });
     },
     comparePwdValidator(rule, value, callback) {

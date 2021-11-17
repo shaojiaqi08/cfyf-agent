@@ -274,7 +274,7 @@
             </template>
         </div>
         <!--导入销售-->
-        <import-sales-dialog :visible.sync="importDialogVisible"  @success="ajaxTeamData"></import-sales-dialog>
+        <import-sales-dialog :visible.sync="importDialogVisible"  @success="importListSuccess"></import-sales-dialog>
         <!--编辑/新增销售-->
         <edit-sales-dialog :visible.sync="editDialogVisible" :id="editDialogId" :position-data="positionData" @success="ajaxAllSalesList"></edit-sales-dialog>
         <!--新增团队-->
@@ -584,6 +584,9 @@
                     this.groupSelected = []
                     this.submitting = false
                 })
+            },
+            importListSuccess() {
+                this.$router.go(0)
             },
             ajaxTeamData() {
                 this.teamLoading = true
