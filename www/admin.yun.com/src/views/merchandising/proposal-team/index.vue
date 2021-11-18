@@ -125,7 +125,6 @@
         border
         :data="data"
         :max-height="maxHeight"
-        v-table-infinite-scroll="scroll2Bottom"
       >
         <el-table-column
           label="计划书名称"
@@ -201,6 +200,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 20211118 修改分页方式 去除无限滚动 -->
+      <div class="table-pagination" v-if="data.length > 0">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="searchForm.page"
+          :page-size="searchForm.limit"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </div>
     <div
       class="new-preview-wrapper"
@@ -312,6 +321,11 @@ export default {
     };
   },
   methods: {
+    // 分页
+    handleCurrentChange(v) {
+      this.searchForm.page = v;
+      this.ajaxData();
+    },
     getSalesData() {
       getTeamList()
         .then((res) => {
@@ -427,11 +441,11 @@ export default {
         .then((res) => {
           // 当前不是最后一次请求或者最后一次请求结束
           if (idx < this.fetchIndex || !this.fetchIndex) return;
-          if (searchForm.page <= 1) {
+          // if (searchForm.page <= 1) {
             this.data = res.data;
-          } else {
-            this.data = [...this.data, ...res.data];
-          }
+          // } else {
+          //   this.data = [...this.data, ...res.data];
+          // }
           this.total = res.total;
         })
         .catch(() => {})
@@ -452,7 +466,7 @@ export default {
       e.key === "refreshPage" && this.search();
     },
     setTableMaxHeight: debounce(function() {
-      this.maxHeight = this.$refs.content.offsetHeight - 64;
+      this.maxHeight = this.$refs.content.offsetHeight - 80;
     }, 300),
   },
   created() {
