@@ -898,11 +898,11 @@ export default {
     };
   },
   mounted() {
-    this.setTableMaxHeight();
+    // this.setTableMaxHeight();
   },
   methods: {
     setTableMaxHeight: debounce(function() {
-      this.tableMaxHeight = this.$refs.content.offsetHeight;
+      this.tableMaxHeight = this.$refs.content.offsetHeight - 290 + "px";
     }, 300),
     // 分页
     handleCurrentChange(v) {
@@ -1032,11 +1032,12 @@ export default {
       return model;
     },
     getCompanyPolicyList() {
-      const { page, page_size, list } = this;
+      const { page, page_size } = this;
       getCompanyPolicyList({ ...this.searchModelFormat(), page, page_size })
         .then((res) => {
           this.tableLoading = false;
-          this.list = this.page === 1 ? res.data : [...list, ...res.data];
+          // this.list = this.page === 1 ? res.data : [...list, ...res.data];
+          this.list = res.data;
           this.total = res.total;
         })
         .catch(() => {
@@ -1091,7 +1092,7 @@ export default {
       getDateRange().then((res) => {
         this.dateRange = res;
         // 确定表格top值, 可以计算表格最高度
-        this.$nextTick(() => this.calcTableHeight());
+        this.$nextTick(() => {this.calcTableHeight()});
       });
     },
   },
