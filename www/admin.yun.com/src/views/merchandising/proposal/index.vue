@@ -92,7 +92,7 @@
           >
         </div>
       </div>
-      <el-table v-loading="loading" border :data="data" :max-height="maxHeight">
+      <el-table v-loading="loading" border :data="data" :height="maxHeight">
         <el-table-column
           label="计划书名称"
           prop="name"

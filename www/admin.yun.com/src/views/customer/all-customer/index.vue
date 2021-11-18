@@ -157,7 +157,7 @@
       </div>
       <el-table
         :data="list"
-        height="calc(100vh - 233px)"
+        height="calc(100vh - 240px)"
         border
         stripe
         :key="tabIndex"
@@ -442,7 +442,7 @@ export default {
     },
     search(page = 1) {
       this.page = page;
-      this.total = 0;
+      // this.total = 0;
       this.tabIndex === "customer"
         ? this.getCustomerList()
         : this.getCustomerFamilyList();

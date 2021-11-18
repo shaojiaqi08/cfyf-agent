@@ -60,9 +60,8 @@
           @click="createFamily">添加家庭</el-button>
       </div>
       <el-table :data="list"
-                height="calc(100vh - 173px)"
+                height="calc(100vh - 240px)"
                 style="width: 100%"
-                v-table-infinite-scroll="scroll2Bottom"
                 border
                 stripe
                 :key="tabIndex">
@@ -94,6 +93,16 @@
           </el-table-column>
         </template>
       </el-table>
+      <!-- 20211118 修改分页方式 去除无限滚动 -->
+      <div class="table-pagination" v-if="list.length > 0">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="page"
+          :page-size="page_size"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </div>
     <operate-family-dialog :visible.sync="familyDialogVisible" @confirm="addFamilySuccess"></operate-family-dialog>
   </div>
@@ -136,7 +145,7 @@ export default {
       teamList: [],
       relativeFamilyList: [],
       page: 1,
-      page_size: 50,
+      page_size: 20,
       total: 0,
       keyword: '',
       loading: false,
@@ -148,6 +157,11 @@ export default {
     };
   },
   methods: {
+    // 分页
+    handleCurrentChange(v) {
+      this.page = v;
+      this.search(this.page);
+    },
     // 导出
     exportList() {
       const isCustomerTab = this.tabIndex === 'customer'
@@ -220,7 +234,7 @@ export default {
     },
     search(page = 1) {
       this.page = page;
-      this.total = 0;
+      // this.total = 0;
       this.tabIndex === 'customer' ? this.getMyCustomerList() : this.getMyCustomerFamilyList()
     },
     addFamilySuccess() {
@@ -243,7 +257,8 @@ export default {
         page_size
       }).then(res => {
         this.total = res.total
-        this.list = page === 1 ? res.data : this.list.concat(res.data)
+        // this.list = page === 1 ? res.data : this.list.concat(res.data)
+        this.list = res.data
       }).finally(() => {
         this.loading = false
       })

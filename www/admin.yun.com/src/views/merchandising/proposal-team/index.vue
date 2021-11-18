@@ -124,7 +124,7 @@
         v-loading="loading"
         border
         :data="data"
-        :max-height="maxHeight"
+        :height="maxHeight"
       >
         <el-table-column
           label="计划书名称"
