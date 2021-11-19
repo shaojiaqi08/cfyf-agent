@@ -419,7 +419,7 @@ export default {
     min-height: 200px;
 
     .el-scrollbar {
-      height: 76vh !important;
+      height: 73vh !important;
     }
 
     @media screen and (max-width: 1366px) {
