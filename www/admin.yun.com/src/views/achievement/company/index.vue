@@ -27,12 +27,13 @@
         class="fw400"
         clearable
         v-if="tabIndex === 'order'"
-        @input="searchModelChange"
+        @keyup.enter.native="searchModelChange"
       >
         <i
           slot="prefix"
           class="ml4 iconfont iconxiao16_sousuo el-input__icon"
         ></i>
+        <el-button slot="append" @click="searchModelChange">搜索</el-button>
       </el-input>
       <el-input
         v-model="rankKeywords"
@@ -41,11 +42,13 @@
         class="fw400"
         clearable
         v-if="tabIndex === 'rank'"
+        @keyup.enter.native="searchRank"
       >
         <i
           slot="prefix"
           class="ml4 iconfont iconxiao16_sousuo el-input__icon"
         ></i>
+        <el-button slot="append" @click="searchRank">搜索</el-button>
       </el-input>
       <el-input
         v-model="statisticsKeywords"
@@ -54,11 +57,13 @@
         class="fw400"
         clearable
         v-if="tabIndex === 'statistics'"
+        @keyup.enter.native="searchStatistics"
       >
         <i
           slot="prefix"
           class="ml4 iconfont iconxiao16_sousuo el-input__icon"
         ></i>
+        <el-button slot="append" @click="searchStatistics">搜索</el-button>
       </el-input>
       <!-- 公司业绩
       <div class="flex-between">
@@ -794,13 +799,13 @@
       class="scroll-box"
       :keywords="rankKeywords"
       v-if="tabIndex === 'rank'"
-      ref="content"
+      ref="rank"
     ></Rank>
     <Statistics
       class="scroll-box"
       :keywords="statisticsKeywords"
       v-if="tabIndex === 'statistics'"
-      ref="content"
+      ref="statistics"
     ></Statistics>
     <edit-modal
       :show.sync="belongVisible"
@@ -901,9 +906,12 @@ export default {
     // this.setTableMaxHeight();
   },
   methods: {
-    setTableMaxHeight: debounce(function() {
-      this.tableMaxHeight = this.$refs.content.offsetHeight - 290 + "px";
-    }, 300),
+    searchStatistics () {
+      this.$refs.statistics.searchModelChange();
+    },
+    searchRank () {
+      this.$refs.rank.searchModelChange();
+    },
     // 分页
     handleCurrentChange(v) {
       this.tableLoading = true;
