@@ -37,8 +37,10 @@
                   size="small"
                   class="fw400"
                   clearable
-                  @input="searchModelChange">
+                  @keyup.enter.native="searchModelChange"
+        >
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+          <el-button slot="append" @click="searchModelChange">搜索</el-button>
         </el-input>
       </div>
     </div>

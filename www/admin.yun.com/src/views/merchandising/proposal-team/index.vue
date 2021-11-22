@@ -11,7 +11,7 @@
         v-model="keyword"
         placeholder="请输入"
         clearable
-        @input="search"
+        @keyup.enter.native="search"
         size="small"
       >
         <filter-shell
@@ -41,6 +41,7 @@
             }}</span>
           </template>
         </filter-shell>
+        <el-button slot="append" @click="search">搜索</el-button>
       </el-input>
       <div class="proposal-1">
         <filter-shell
@@ -520,7 +521,13 @@ export default {
   display: flex;
   padding: 0 20px 0 20px;
   flex-direction: column;
-
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   & > .header {
     font-size: 16px;
     font-weight: bold;
@@ -533,7 +540,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     .el-input {
-      width: 360px;
+      width:400px;
     }
     & > ::v-deep .el-input {
       .el-input-group__prepend {

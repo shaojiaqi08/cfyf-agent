@@ -11,7 +11,7 @@
         v-model="keyword"
         placeholder="请输入"
         clearable
-        @input="search"
+        @keyup.enter.native="search"
         size="small"
       >
         <filter-shell
@@ -41,6 +41,7 @@
             }}</span>
           </template>
         </filter-shell>
+        <el-button slot="append" @click="search">搜索</el-button>
       </el-input>
       <div class="proposal-1">
         <filter-shell
@@ -120,12 +121,7 @@
           >
         </div> -->
       </div>
-      <el-table
-        v-loading="loading"
-        border
-        :data="data"
-        :height="maxHeight"
-      >
+      <el-table v-loading="loading" border :data="data" :height="maxHeight">
         <el-table-column
           label="计划书名称"
           prop="name"
@@ -448,7 +444,7 @@ export default {
           // 当前不是最后一次请求或者最后一次请求结束
           if (idx < this.fetchIndex || !this.fetchIndex) return;
           // if (searchForm.page <= 1) {
-            this.data = res.data;
+          this.data = res.data;
           // } else {
           //   this.data = [...this.data, ...res.data];
           // }
@@ -515,7 +511,7 @@ export default {
 
       // 所有储蓄计划书-查看PDF: /deposit-proposal/all-pdf
       // 所有储蓄计划书-查看H5:  /deposit-proposal/all-h5
-      console.log("111111", this.isDeposit)
+      console.log("111111", this.isDeposit);
       return this.isDeposit
         ? this.$checkAuth("/deposit-proposal/all-pdf")
         : this.$checkAuth("/proposal/all-pdf");
@@ -534,7 +530,13 @@ export default {
   display: flex;
   padding: 0 20px 0 20px;
   flex-direction: column;
-
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   & > .header {
     font-size: 16px;
     font-weight: bold;
@@ -547,7 +549,7 @@ export default {
     justify-content: flex-start;
     align-items: center;
     .el-input {
-      width: 360px;
+      width: 400px;
     }
     & > ::v-deep .el-input {
       .el-input-group__prepend {

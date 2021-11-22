@@ -8,9 +8,10 @@
           size="small"
           class="fw400"
           clearable
-          @input="searchModelChange"
+          @keyup.enter.native="searchModelChange"
       >
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+        <el-button slot="append" @click="searchModelChange">搜索</el-button>
       </el-input>
     </div>
     <div class="scroll-box p16" ref="content" v-loading="loading">
@@ -883,6 +884,13 @@ export default {
   padding: 0 20px 0 20px;
   display: flex;
   flex-direction: column;
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   .header {
     font-size: 16px;
     font-weight: bold;

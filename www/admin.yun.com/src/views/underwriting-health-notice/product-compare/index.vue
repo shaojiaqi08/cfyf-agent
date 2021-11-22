@@ -8,10 +8,11 @@
           v-model="searchValue"
           placeholder="请输入搜索产品"
           size="small"
-          @input="search"
           @keyup.enter.native="search"
+          clearable
         >
           <i slot="prefix" class="el-input__icon el-icon-search"></i>
+          <el-button slot="append" @click="search">搜索</el-button>
         </el-input>
       </div>
     </div>
@@ -254,7 +255,13 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   & > .header {
     font-size: 16px;
     font-weight: bold;
