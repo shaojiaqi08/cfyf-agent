@@ -37,7 +37,9 @@
           <el-input v-model="searchModel.keyword"
                     style="width: 300px; margin: 0 20px"
                     placeholder="请输入需要搜索的公告内容或标题"
-                    size="small" clearable></el-input>
+                    size="small"
+                    clearable
+                    @keyup.enter.native="searchModelChange"></el-input>
           <el-button type="primary"
                      @click="searchModelChange"
                      size="small">搜索</el-button>
