@@ -303,6 +303,12 @@
               <div class="label">回访失败原因：</div>
               <div class="content">{{visitInfo.visit_ques_reason||'-'}}</div>
             </div>
+            <div class="item">
+              <div class="label">回执时间：</div>
+              <div
+                  class="content"
+              >{{visitInfo.receipt_at ? formatDate(visitInfo.receipt_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
+            </div>
             <el-divider></el-divider>
           </div>
         </template>
