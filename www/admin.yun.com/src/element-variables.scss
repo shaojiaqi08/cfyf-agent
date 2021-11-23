@@ -324,3 +324,9 @@ $--font-path: '~element-ui/lib/theme-chalk/fonts';
 .el-image-viewer__wrapper .el-image-viewer__close{
   color: #4c93ff;
 }
+
+// 下拉框滚动条
+.el-select-dropdown .el-scrollbar__bar.is-vertical,
+.el-cascader-panel .el-scrollbar__bar.is-vertical{
+  width: 10px;
+}
