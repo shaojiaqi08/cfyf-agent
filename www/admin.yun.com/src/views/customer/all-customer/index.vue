@@ -41,12 +41,13 @@
           clearable
           style="width:360px"
           :readonly="loading"
-          @input="search()"
+          @keyup.enter.native="search()"
         >
           <i
             slot="prefix"
             class="ml4 iconfont iconxiao16_sousuo el-input__icon"
           ></i>
+          <el-button slot="append" @click="search()">搜索</el-button>
         </el-input>
       </div>
     </div>
@@ -512,6 +513,13 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   .header {
     height: 56px;
     background-color: #f5f5f5;
