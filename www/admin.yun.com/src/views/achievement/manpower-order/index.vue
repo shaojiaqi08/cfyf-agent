@@ -632,7 +632,7 @@ export default {
       this.loading = true;
       const id = ++reqId;
       routeMap[this.tabIndex]
-        .apiFunc(this.searchModelFormat())
+        .apiFunc({...this.searchModelFormat(), page:this.page,page_size: this.page_size})
         .then((res) => {
           if (id === reqId) {
             // this.list = this.page === 1 ? res.data : this.list.concat(res.data);
