@@ -8,8 +8,12 @@ export let insurance_class = [ // 险种
     value: 'health',
     type: ['putter', 'adviser']
   }, {
-    label: '寿险',
+    label: '普通寿险',
     value: 'life',
+    type: ['putter', 'adviser']
+  },{
+    label: '增额寿险',
+    value: 'incremental_life',
     type: ['putter', 'adviser']
   }, {
     label: '意外险',

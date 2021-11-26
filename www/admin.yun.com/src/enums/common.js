@@ -138,6 +138,7 @@ export const insuranceTypes = {
   STRICKEN: 'stricken',
   HEALTH: 'health',
   LIFE: 'life',
+  INCREMENTAL_LIFE: 'incremental_life',
   ANNUITY: 'annuity',
   ACCIDENT: 'accident',
   PROPERTY: 'property',
@@ -154,8 +155,12 @@ export const insuranceTypeArray = [
     value: insuranceTypes.HEALTH
   },
   {
-    label: '寿险',
+    label: '普通寿险',
     value: insuranceTypes.LIFE
+  },
+  {
+    label: '增额寿险',
+    value: insuranceTypes.INCREMENTAL_LIFE
   },
   {
     label: '年金险',
