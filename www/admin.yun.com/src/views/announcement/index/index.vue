@@ -20,7 +20,7 @@
             autoFocus
             auto-close
             no-margin
-            @input="searchModelChange"
+            @input="searchModel.read_type = ''"
           >
             <el-select
               v-model="searchModel.read_type"
@@ -44,6 +44,15 @@
               }}
             </template>
           </filter-shell>
+          <el-input v-model="searchModel.keyword"
+                    style="width: 300px; margin: 0 20px"
+                    placeholder="请输入需要搜索的公告内容或标题"
+                    size="small"
+                    clearable
+                    @keyup.enter.native="searchModelChange"></el-input>
+          <el-button type="primary"
+                     @click="searchModelChange"
+                     size="small">搜索</el-button>
         </div>
       </div>
       <div class="content-wrap" v-if="list && list.length > 0">

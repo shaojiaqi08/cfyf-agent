@@ -109,6 +109,14 @@
               <div class="label">支付失败原因：</div>
               <div class="content">{{baseInfo.pay_failed_reason || '-'}}</div>
             </div>
+            <div class="item">
+              <div class="label">退保类型：</div>
+              <div class="content">{{baseInfo.surrender_type_str || '-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">退保时间：</div>
+              <div class="content">{{baseInfo.surrender_at_str || '-'}}</div>
+            </div>
             <el-divider></el-divider>
           </div>
         </template>
@@ -294,6 +302,12 @@
             <div class="item">
               <div class="label">回访失败原因：</div>
               <div class="content">{{visitInfo.visit_ques_reason||'-'}}</div>
+            </div>
+            <div class="item">
+              <div class="label">回执时间：</div>
+              <div
+                  class="content"
+              >{{visitInfo.receipt_at ? formatDate(visitInfo.receipt_at * 1000, 'yyyy-MM-dd') : '-'}}</div>
             </div>
             <el-divider></el-divider>
           </div>

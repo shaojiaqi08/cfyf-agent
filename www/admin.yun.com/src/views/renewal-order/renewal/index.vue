@@ -213,7 +213,7 @@
         <div>
           <span>续保状态</span>
           <el-tooltip content="续保状态为系统内该续保续期订单的续保状态" placement="top">
-            <i class="iconfont iconxiao16_gengduoxinxi"></i>    
+            <i class="iconfont iconxiao16_gengduoxinxi"></i>
           </el-tooltip>
           <el-checkbox-group v-model="searchModel.renewal_status" @change="searchModelChange">
             <el-checkbox
@@ -385,9 +385,9 @@ import {
   getSalesData,
   getSalesTeamData
 } from '@/apis/modules/achievement'
-import { 
-  getRenewalCompanyList, 
-  getRenewalTeamList, 
+import {
+  getRenewalCompanyList,
+  getRenewalTeamList,
   getRenewalSalesList,
   getStatisticsForSales,
   getStatisticsForTeam,
@@ -487,14 +487,14 @@ export default {
         { label: '不可续保', value: 'cannot_renewal' }
       ]),
       renewalApiMap: Object.freeze({
-        renewalCompany: getRenewalCompanyList, 
-        renewalTeam: getRenewalTeamList, 
+        renewalCompany: getRenewalCompanyList,
+        renewalTeam: getRenewalTeamList,
         RenewalOrder: getRenewalSalesList
       }),
       templateVersion: '',
       exportApiMap: Object.freeze({
-        renewalCompany: exportCompanyPolicy, 
-        renewalTeam: exportTeamPolicy, 
+        renewalCompany: exportCompanyPolicy,
+        renewalTeam: exportTeamPolicy,
         RenewalOrder: exportSalesPolicy
       }),
       // pickerOptions: {
@@ -615,8 +615,8 @@ export default {
     },
     getStaticData() {
       let getApiRequest = Object.freeze({
-        RenewalOrder: getStatisticsForSales, 
-        renewalTeam: getStatisticsForTeam, 
+        RenewalOrder: getStatisticsForSales,
+        renewalTeam: getStatisticsForTeam,
         renewalCompany: getStatisticsForCompany
       })
       let getStatic = getApiRequest[this.$route.name];
@@ -662,7 +662,7 @@ export default {
         })
       } else if(v === 'modify') {
         this.$router.push('/user-info')
-      } 
+      }
     },
     // 跟踪
     trace({version}, isView) {
@@ -863,11 +863,13 @@ export default {
   created() {
     this.getData()
     this.getStaticData()
-    this.getSalesData()
     this.getDateRange()
-    this.getSalesTeamData()
     this.getAllProducts()
     this.getSupplierList()
+    if (this.$route.name !== 'RenewalOrder') {
+      this.getSalesData()
+      this.getSalesTeamData()
+    }
     // this.getCompanyList()
     console.log('$route', this.$route)
   },
