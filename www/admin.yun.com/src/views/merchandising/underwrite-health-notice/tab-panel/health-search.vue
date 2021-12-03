@@ -3,7 +3,9 @@
     <side-filter-list v-loading="loading" label-key="product_name" value-key="product_name" :showFilter="false" v-model="selVal" @change="showDetail" :cur-channel="selChannel" :disabled="detailLoading" style="width: 280px" :listData="tableData">
       <div slot="extraFilter">
         <div class="search-input-container">
-          <el-input clearable placeholder="搜索产品名称" v-model="formData.product_name" prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" @blur="search"></el-input>
+          <el-input clearable placeholder="搜索产品名称" v-model="formData.product_name" prefix-icon="ml4 iconfont iconxiao16_sousuo el-input__icon" @keyup.enter.native="search">
+            <el-button slot="append" @click="search">搜索</el-button>
+          </el-input>
         </div>
         <div class="">
           <el-form class="search-form common-form filter-container flex-between">
@@ -362,6 +364,13 @@ export default {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   .search-input-container {
     padding: 16px;
   }

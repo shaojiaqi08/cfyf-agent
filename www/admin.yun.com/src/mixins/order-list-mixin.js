@@ -39,7 +39,7 @@ export default {
     calcTableHeight: debounce(function() {
       const bodyHeight = document.body.clientHeight
       const { top } = this.$refs.table.$el.getBoundingClientRect()
-      this.tableMaxHeight = bodyHeight - top - 10
+      this.tableMaxHeight = bodyHeight - top - 65
     }, 300)
   },
   mounted() {

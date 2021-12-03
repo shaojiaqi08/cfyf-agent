@@ -8,9 +8,10 @@
           size="small"
           class="fw400"
           clearable
-          @input="searchModelChange"
+          @keyup.enter.native="searchModelChange"
       >
         <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+        <el-button slot="append" @click="searchModelChange">搜索</el-button>
       </el-input>
     </div>
     <div class="scroll-box p16" ref="content" v-loading="loading">
@@ -292,8 +293,7 @@
       </div>
       <el-table
           :data="list"
-          :max-height="tableMaxHeight"
-          v-table-infinite-scroll="scroll2Bottom"
+          :height="tableMaxHeight"
           border
           stripe
           ref="table"
@@ -357,6 +357,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 20211118 修改分页方式 去除无限滚动 -->
+      <div class="table-pagination" v-if="list.length > 0">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="page"
+          :page-size="page_size"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </div>
     <qr-code-dialog
       :visible.sync="qrCodeDialogVisible"
@@ -723,6 +733,12 @@ export default {
       }
       this.searchModelChange()
     },
+    // 分页
+    handleCurrentChange(v) {
+      this.tableLoading = true
+      this.page = v;
+      this.getData()
+    },
     scroll2Bottom() {
       const { page, page_size, total } = this
       if(total < 20 || this.list.length > total) {
@@ -790,7 +806,8 @@ export default {
       this.loading = true;
       let getList = this.renewalApiMap[this.$route.name];
       getList(this.searchModelFormat(true)).then(res => {
-        this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+        // this.list = this.page === 1 ? res.data : this.list.concat(res.data)
+        this.list = res.data
         this.total = res.total
         this.page = res.current_page
       }).finally(() => {
@@ -840,7 +857,7 @@ export default {
     calcTableHeight: debounce(function() {
       const bodyHeight = document.body.clientHeight
       const { top } = this.$refs.table.$el.getBoundingClientRect()
-      this.tableMaxHeight = bodyHeight - top - 10
+      this.tableMaxHeight = bodyHeight - top - 64
     }, 300)
   },
   created() {
@@ -869,6 +886,13 @@ export default {
   padding: 0 20px 0 20px;
   display: flex;
   flex-direction: column;
+  ::v-deep .el-input-group__append {
+    background-color: #1f78ff;
+    border-color: #1f78ff;
+    .el-button {
+      color: #fff;
+    }
+  }
   .header {
     font-size: 16px;
     font-weight: bold;

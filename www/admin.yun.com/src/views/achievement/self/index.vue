@@ -37,8 +37,10 @@
                   size="small"
                   class="fw400"
                   clearable
-                  @input="searchModelChange">
+                  @keyup.enter.native="searchModelChange"
+        >
           <i slot="prefix" class="ml4 iconfont iconxiao16_sousuo el-input__icon"></i>
+          <el-button slot="append" @click="searchModelChange">搜索</el-button>
         </el-input>
       </div>
     </div>
@@ -338,13 +340,11 @@
         ></el-button>
       </div>
       <el-table :data="list"
-                :max-height="tableMaxHeight"
                 border
                 stripe
-                v-table-infinite-scroll="scroll2Bottom"
                 v-loading="tableLoading"
                 ref="table"
-                :row-style="rowStyleFormat">
+                :row-style="rowStyleFormat" :height="tableMaxHeight">
         <el-table-column label="保险公司" prop="supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="保额(元)" prop="guarantee_quota_str" align="center"></el-table-column>
@@ -413,6 +413,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 20211118 修改分页方式 去除无限滚动 -->
+      <div class="table-pagination" v-if="list.length > 0">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="page"
+          :page-size="page_size"
+          layout="total, prev, pager, next, jumper"
+          :total="total"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -511,6 +521,12 @@ export default {
         this.getSelfPolicyStatistics()
       }
     },
+    handleCurrentChange(v) {
+      this.page = v;
+      this.tableLoading = true;
+      this.getSelfPolicyList()
+        this.getSelfPolicyStatistics()
+    },
     searchModelChange() {
       const func = debounce(() => {
         this.tableLoading = true
@@ -543,10 +559,10 @@ export default {
       return model
     },
     getSelfPolicyList() {
-      const {page, page_size, list} = this
+      const {page, page_size} = this
       getSelfPolicyList({...this.searchModelFormat(), page, page_size}).then(res => {
         this.tableLoading = false
-        this.list = this.page === 1 ? res.data : [...list, ...res.data]
+        this.list = res.data
         this.total = res.total
       })
       .catch(() => {

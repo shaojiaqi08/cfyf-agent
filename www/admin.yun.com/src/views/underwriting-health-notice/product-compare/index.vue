@@ -8,10 +8,11 @@
                     v-model="searchValue"
                     placeholder="请输入搜索产品"
                     size="small"
-                    @input="search"
                     @keyup.enter.native="search"
+                    clearable
                 >
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    <el-button slot="append" @click="search">搜索</el-button>
                 </el-input>
             </div>
         </div>
@@ -51,8 +52,8 @@
                     </el-popover>
                 </div>
                 <div v-loading="isLoading" class="body">
-                    <el-scrollbar class="scroll-bar" style="height: 800px">
-                        <div v-infinite-scroll="load">
+                    <el-scrollbar class="scroll-bar">
+                        <div>
                             <div
                                 v-for="(item, index) in list"
                                 :key="item.id + item.product_name + index"
@@ -83,6 +84,16 @@
                             </div>
                         </div>
                     </el-scrollbar>
+                </div>
+                <!-- 20211118 修改分页方式 去除无限滚动 -->
+                <div class="table-pagination" v-if="list.length > 0">
+                    <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="searchModel.page"
+                        :page-size="20"
+                        layout="total, prev, pager, next, jumper"
+                        :total="total"
+                    ></el-pagination>
                 </div>
             </div>
             <div class="right-content selected-list">
@@ -135,16 +146,16 @@
 
 <script>
 // import HeaderContent from './components/header-content'
-import { getEvaluationProductPageList } from '@/apis/modules/underwriting'
-import { debounce } from '@/utils'
+import { getEvaluationProductPageList } from "@/apis/modules/underwriting";
+import { debounce } from "@/utils";
 
 const insuranceClasses = [
-    { value: 'stricken', name: '重疾险' },
-    { value: 'health', name: '医疗险' },
-    { value: 'life', name: '普通寿险' },
-    { value: 'incremental_life', name: '增额寿险' },
-    { value: 'accident', name: '意外险' }
-]
+    { value: "stricken", name: "重疾险" },
+    { value: "health", name: "医疗险" },
+    { value: "life", name: "普通寿险" },
+    { value: "incremental_life", name: "增额寿险" },
+    { value: "accident", name: "意外险" },
+];
 export default {
     components: {
         // HeaderContent
@@ -161,80 +172,92 @@ export default {
                 product_insurance_class: null,
                 product_name: null,
                 supplier_name: null,
-                page: 1
+                page: 1,
             },
-            searchValue: '',
-        }
+            searchValue: "",
+            maxHeight: null,
+        };
     },
     mounted() {
-        this.search()
+        this.setTableMaxHeight();
+        this.search();
     },
     methods: {
+        setTableMaxHeight: debounce(function () {
+            this.maxHeight = this.$refs.content.offsetHeight - 110;
+        }, 300),
+        // 分页
+        handleCurrentChange(v) {
+            this.searchModel.page = v;
+            this.getEvaluationProductPageList();
+        },
         load() {
-            if (this.total <= this.searchModel.page * 20) return
-            this.searchModel.page += 1
-            this.getEvaluationProductPageList()
+            if (this.total <= this.searchModel.page * 20) return;
+            this.searchModel.page += 1;
+            this.getEvaluationProductPageList();
         },
         removeProduct(index) {
-            this.selected.splice(index, 1)
+            this.selected.splice(index, 1);
         },
         getName(value) {
-            return this.insuranceClasses.find(i => i.value === value).name
+            return this.insuranceClasses.find((i) => i.value === value).name;
         },
         filterSelected() {
-            this.filterSelectVisible = false
-            this.list = []
-            this.searchModel.page = 1
-            this.total = 0
-            this.search()
+            this.filterSelectVisible = false;
+            this.list = [];
+            this.searchModel.page = 1;
+            this.total = 0;
+            this.search();
         },
         add2Compare(index) {
             if (this.selected.length >= 6) {
                 return this.$message({
-                    message: '最多只能添加六个产品',
-                    type: 'error'
-                })
+                    message: "最多只能添加六个产品",
+                    type: "error",
+                });
             }
-            this.selected.push(this.list[index])
+            this.selected.push(this.list[index]);
         },
         compare() {
-            const ids = this.selected.map(i => i.id)
+            const ids = this.selected.map((i) => i.id);
             if (!ids.length) {
                 return this.$message({
-                    type: 'warning',
-                    message: '请添加对比产品'
-                })
+                    type: "warning",
+                    message: "请添加对比产品",
+                });
             }
 
             let route = this.$router.resolve({
-                name: `product-compare-lab`, query: { ids: JSON.stringify(ids) }
-            })
+                name: `product-compare-lab`,
+                query: { ids: JSON.stringify(ids) },
+            });
 
-            window.open(route.href, '_blank')
+            window.open(route.href, "_blank");
         },
 
         search: debounce(function () {
-            this.list = []
-            this.searchModel.product_name = this.searchValue
-            this.searchModel.page = 1
-            this.total = 0
+            this.list = [];
+            this.searchModel.product_name = this.searchValue;
+            this.searchModel.page = 1;
+            this.total = 0;
 
-            this.getEvaluationProductPageList()
+            this.getEvaluationProductPageList();
         }, 1000),
         getEvaluationProductPageList() {
-            this.isLoading = true
+            this.isLoading = true;
             getEvaluationProductPageList(this.searchModel)
-                .then(res => {
+                .then((res) => {
                     // this.list.push(res.data)
-                    this.list = this.list.concat(res.data)
-                    this.total = res.total
-                    this.page = res.current_page
-                    this.isLoading = false
+                    // this.list = this.list.concat(res.data);
+                    this.list = res.data;
+                    this.total = res.total;
+                    this.page = res.current_page;
+                    this.isLoading = false;
                 })
-                .catch(err => console.log(err))
-        }
-    }
-}
+                .catch((err) => console.log(err));
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -243,7 +266,13 @@ export default {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-
+    ::v-deep .el-input-group__append {
+        background-color: #1f78ff;
+        border-color: #1f78ff;
+        .el-button {
+            color: #fff;
+        }
+    }
     & > .header {
         font-size: 16px;
         font-weight: bold;
@@ -314,69 +343,69 @@ export default {
                             color: #999;
                             text-align: center;
                         }
+                    }
 
-                        .item {
-                            position: relative;
-                            margin-bottom: 16px;
-                            padding: 16px;
-                            background-color: #f5f5f5;
-                            border: 1px solid #e6e6e6;
-                            border-radius: 4px;
+                    .item {
+                        position: relative;
+                        margin-bottom: 16px;
+                        padding: 16px;
+                        background-color: #f5f5f5;
+                        border: 1px solid #e6e6e6;
+                        border-radius: 4px;
 
-                            .close-btn {
-                                position: absolute;
-                                right: 15px;
-                                top: 18px;
-                                color: red;
+                        .close-btn {
+                            position: absolute;
+                            right: 15px;
+                            top: 18px;
+                            color: red;
+                            cursor: pointer;
+                        }
+
+                        .content {
+                            display: flex;
+
+                            .title {
+                                color: #131415;
+                                font-size: 16px;
+                                line-height: 24px;
+                                font-weight: bold;
+                            }
+
+                            .close {
+                                flex: 1 1 100px;
                                 cursor: pointer;
                             }
-
-                            .content {
-                                display: flex;
-
-                                .title {
-                                    color: #131415;
-                                    font-size: 16px;
-                                    line-height: 24px;
-                                    font-weight: bold;
-                                }
-
-                                .close {
-                                    flex: 1 1 100px;
-                                    cursor: pointer;
-                                }
-                            }
                         }
                     }
+                }
 
-                    .footer {
-                        margin-top: 10px;
+                .footer {
+                    margin-top: 10px;
 
-                        .tag {
-                            display: inline-block;
-                            padding: 2px 10px;
-                            border: 1px solid rgba(233, 233, 235, 1);
-                            color: #999999;
-                            font-size: 12px;
-                            font-weight: 500;
-                            border-radius: 4px;
-                        }
-                    }
-
-                    .footer-button {
-                        position: absolute;
-                        bottom: 20px;
-                        left: 20px;
-                        right: 20px;
-                        height: 36px;
-                        background-color: #1f78ff;
-                        color: #fff;
-                        text-align: center;
+                    .tag {
+                        display: inline-block;
+                        padding: 2px 10px;
+                        border: 1px solid rgba(233, 233, 235, 1);
+                        color: #999999;
+                        font-size: 12px;
                         font-weight: 500;
-                        line-height: 36px;
                         border-radius: 4px;
-                        cursor: pointer;
                     }
+                }
+
+                .footer-button {
+                    position: absolute;
+                    bottom: 20px;
+                    left: 20px;
+                    right: 20px;
+                    height: 36px;
+                    background-color: #1f78ff;
+                    color: #fff;
+                    text-align: center;
+                    font-weight: 500;
+                    line-height: 36px;
+                    border-radius: 4px;
+                    cursor: pointer;
                 }
             }
         }
@@ -408,7 +437,7 @@ export default {
         min-height: 200px;
 
         .el-scrollbar {
-            height: 80vh !important;
+            height: 73vh !important;
         }
 
         @media screen and (max-width: 1366px) {
@@ -462,5 +491,8 @@ export default {
             }
         }
     }
+}
+.table-pagination {
+    padding-right: 30px;
 }
 </style>

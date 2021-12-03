@@ -317,7 +317,7 @@ export default {
   watch: {
     keywords(v) {
       this.searchModel.product_name = v
-      this.searchModelChange()
+      // this.searchModelChange()
     }
   },
   methods: {

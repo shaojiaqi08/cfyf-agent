@@ -242,7 +242,7 @@ export default {
   watch: {
     keywords(v) {
       this.searchModel.keyword = v
-      this.searchModelChange()
+      // this.searchModelChange()
     }
   },
   methods: {
