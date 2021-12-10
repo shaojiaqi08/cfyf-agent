@@ -95,3 +95,7 @@ export const getManpowerOptions = params => get('/agent/proxy/manpower-order/sel
 //续保续期信息-历史续保记录
 export const getRenewalInfo = params => get('/agent/proxy/policy_info/get_renewal', params)
 
+// 最近跟踪人员 (团队)
+export const getTrackListTeam = params => get('/agent/proxy/sales/teamList', params)
+// 最近跟踪人员 （公司）
+export const getTrackListComp = params => get('/agent/proxy/sales/list', params)

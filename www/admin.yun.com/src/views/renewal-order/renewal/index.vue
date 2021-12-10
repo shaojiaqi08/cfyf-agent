@@ -142,6 +142,55 @@
           >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}</template>
         </filter-shell>
 
+        <!--最近跟踪人员-->
+        <filter-shell
+            v-if="$route.name !== 'RenewalOrder'"
+            v-model="searchModel.follow_obj_id"
+            autoFocus
+            class="mb16"
+            @input="searchModelChange"
+        >
+          <el-select
+              class="block"
+              v-model="searchModel.follow_obj_id"
+              clearable
+              filterable
+               placeholder="请选择"
+              @change="searchModelChange"
+          >
+            <el-option
+                v-for="item in trackList"
+                :key="item.id"
+                :label="item.real_name"
+                :value="item.id"
+            ></el-option>
+          </el-select>
+          <template
+              v-slot:label
+          >{{hasValue(searchModel.follow_obj_id) ? trackList.find(i => i.id === searchModel.follow_obj_id[0]).real_name : '最近跟踪人员'}}</template>
+        </filter-shell>
+
+        <!--跟踪状态-->
+        <filter-shell
+            class="mb16"
+            v-model="selectCitys"
+        >
+          <el-cascader
+            ref="addressPicker"
+            popper-class="address-picker"
+            collapse-tags
+            :options="optionsTrack"
+            :props="propsTrack"
+            v-model="selectCitys"
+            @change="changeCitys"
+            clearable
+          ></el-cascader>
+          <template
+              v-slot:label
+          >{{ '跟踪状态' }}
+          </template>
+        </filter-shell>
+
         <!--B端公司-->
         <!-- <filter-shell
             v-model="searchModel.sales_company_id"
@@ -223,7 +272,7 @@
               :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div>
+        <!-- <div>
           <span>跟踪状态</span>
           <el-tooltip content="跟踪状态为跟踪人员手工选择状态，不代表真实的续保状态" placement="top">
             <i class="iconfont iconxiao16_gengduoxinxi"></i>
@@ -236,7 +285,7 @@
                :label="item.value"
                :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
-        </div>
+        </div> -->
       </div>
       <div class="flex-between" style="align-items: flex-end;">
         <div class="data-row" ref="dataRow">
@@ -327,6 +376,7 @@
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
+        <el-table-column label="跟踪方式" prop="follow_way_str" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪人员" prop="follow_obj_name" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
@@ -383,7 +433,9 @@
 <script>
 import {
   getSalesData,
-  getSalesTeamData
+  getSalesTeamData,
+  getTrackListTeam,
+  getTrackListComp
 } from '@/apis/modules/achievement'
 import {
   getRenewalCompanyList,
@@ -437,12 +489,70 @@ export default {
       filterValue: false,
       belongVisible: false,
       belongData: {},
+      optionsTrack: [
+        {
+          name: '未跟踪',
+          id: '未跟踪',
+          children: [],
+        },
+        {
+          name: '跟踪中',
+          id: '跟踪中',
+          children: [
+            { name: '电话未接听', id: 'not_answered' },
+            { name: '宽限期交费', id: 'grace_period_pay' },
+            { name: '考虑中', id: 'considering' },
+            { name: '其他原因', id: 'other' },
+          ],
+        },
+        {
+          name: '无法联系',
+          id: '无法联系',
+          children: [
+            { name: '电话空号', id: 'invalid_phone_no' },
+            { name: '非投保人电话', id: 'not_insure_phone' },
+            { name: '非电话号码', id: 'not_phone' },
+          ],
+        },
+        {
+          name: '放弃投保',
+          id: '放弃投保',
+          children: [
+            { name: '经济原因', id: 'economic_reasons' },
+            { name: '产品原因', id: 'product_reasons' },
+            { name: '其他原因', id: 'other' },
+          ],
+        },
+        {
+          name: '已续保',
+          id: '已续保',
+          children: [],
+        },
+        {
+          name: '已理赔',
+          id: '已理赔',
+          children: [
+            { name: '合同终止', id: 'termination_of_contract' },
+            { name: '保费豁免', id: 'premium_exemption' },
+          ],
+        },
+        {
+          name: '其他',
+          id: '其他',
+          children: [
+            { name: '已退保', id: 'refunded_premium' },
+            { name: '其他原因', id: 'other' },
+          ],
+        },
+      ],
+      selectCitys: [],
       list: [],
       page: 1,
       page_size: 20,
       total: 0,
       productList: [],
       salesList: [],
+      trackList: [],
       salesTeamList: [],
       supplierList: [],
       // companyList: [],
@@ -456,6 +566,11 @@ export default {
         { label: '短险续保', name: '1' },
         { label: '长险续期', name: '0' }
       ]),
+      propsTrack: {
+        multiple: true,
+        value: 'id',
+        label: 'name',
+      },
       searchModel: {
         product_insurance_duration_type: '',
         keyword: '',
@@ -467,7 +582,8 @@ export default {
         date_range: [beforeDate, afterDate],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: '0'
+        include_child_team: '0',
+        second_follow_status: [],
       },
       tableMaxHeight: null,
       followStatusOptions: Object.freeze([
@@ -733,6 +849,35 @@ export default {
       }
       this.searchModelChange()
     },
+    changeCitys(v) {
+      if (v.length) {
+        let already_claim = Array.from(new Set(v.map((item) => item[0])))
+        let second_follow_status = v.map((item) => item[1])
+        this.selectCitys = v
+        this.searchModel.second_follow_status = second_follow_status
+        this.searchModel.follow_status = already_claim
+        console.log(JSON.stringify(v))
+        this.searchModelChange()
+        // this.$router.replace({
+        //   name: this.$route.name,
+        //   query: {
+        //     ...this.$route.query,
+        //     [this.provinceIdKey]: already_claim,
+        //     [this.cityIdsKey]: second_follow_status,
+        //   },
+        // })
+      } else {
+        // this.$router.replace({
+        //   name: this.$route.name,
+        //   query: {
+        //     ...this.$route.query,
+        //     [this.provinceIdKey]: [],
+        //     [this.cityIdsKey]: [],
+        //   },
+        // })
+        // this.prevProvince = null
+      }
+    },
     // 分页
     handleCurrentChange(v) {
       this.tableLoading = true
@@ -768,6 +913,9 @@ export default {
       this.searchModelChange = func
     },
     hasValue,
+    getChildName(id) {
+      return id[0]
+    },
     showInfoDialog(row) {
       // 20210525 LiuZicong 改为传订单号order_no
       let routeUrl = this.$router.resolve(`/achievement-company/detail/${row.order_no}`)
@@ -813,6 +961,20 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    getTrackListTeam() {
+      getTrackListTeam()
+          .then((res) => {
+            this.trackList = res
+          })
+          .catch((err) => console.log(err))
+    },
+    getTrackListComp() {
+      getTrackListComp()
+          .then((res) => {
+            this.trackList = res
+          })
+          .catch((err) => console.log(err))
     },
     getSalesData() {
       getSalesData()
@@ -870,10 +1032,17 @@ export default {
       this.getSalesData()
       this.getSalesTeamData()
     }
+    if (this.$route.name == 'renewalTeam') {
+      this.getTrackListTeam();
+    }
+    if (this.$route.name == 'renewalCompany') {
+      this.getTrackListComp();
+    }
     // this.getCompanyList()
     console.log('$route', this.$route)
   },
   mounted() {
+    console.log("$route.name", this.$route.name)
     window.addEventListener('resize', this.calcTableHeight)
   },
   beforeDestroy() {
@@ -1147,4 +1316,17 @@ export default {
   white-space: nowrap;
   box-sizing: border-box;
 }
+.dot {
+    margin-left: 4px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: #0d76fa;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    text-align: center;
+    transform: scale(0.75);
+    line-height: 22px;
+  }
 </style>
