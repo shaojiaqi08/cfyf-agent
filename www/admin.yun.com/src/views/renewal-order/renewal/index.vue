@@ -167,7 +167,7 @@
           </el-select>
           <template
               v-slot:label
-          >{{hasValue(searchModel.follow_obj_id) ? trackList.find(i => i.id === searchModel.follow_obj_id[0]).real_name : '最近跟踪人员'}}</template>
+          >{{hasValue(searchModel.follow_obj_id) ? trackList.find(i => i.id === searchModel.follow_obj_id).real_name : '最近跟踪人员'}}</template>
         </filter-shell>
 
         <!--跟踪状态-->
@@ -449,7 +449,8 @@ import {
   exportSalesPolicy,
   exportTeamPolicy,
   exportCompanyPolicy,
-  getDateRange
+  getDateRange,
+  getFollowStatus
 } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
@@ -489,62 +490,7 @@ export default {
       filterValue: false,
       belongVisible: false,
       belongData: {},
-      optionsTrack: [
-        {
-          name: '未跟踪',
-          id: '未跟踪',
-          children: [],
-        },
-        {
-          name: '跟踪中',
-          id: '跟踪中',
-          children: [
-            { name: '电话未接听', id: 'not_answered' },
-            { name: '宽限期交费', id: 'grace_period_pay' },
-            { name: '考虑中', id: 'considering' },
-            { name: '其他原因', id: 'other' },
-          ],
-        },
-        {
-          name: '无法联系',
-          id: '无法联系',
-          children: [
-            { name: '电话空号', id: 'invalid_phone_no' },
-            { name: '非投保人电话', id: 'not_insure_phone' },
-            { name: '非电话号码', id: 'not_phone' },
-          ],
-        },
-        {
-          name: '放弃投保',
-          id: '放弃投保',
-          children: [
-            { name: '经济原因', id: 'economic_reasons' },
-            { name: '产品原因', id: 'product_reasons' },
-            { name: '其他原因', id: 'other' },
-          ],
-        },
-        {
-          name: '已续保',
-          id: '已续保',
-          children: [],
-        },
-        {
-          name: '已理赔',
-          id: '已理赔',
-          children: [
-            { name: '合同终止', id: 'termination_of_contract' },
-            { name: '保费豁免', id: 'premium_exemption' },
-          ],
-        },
-        {
-          name: '其他',
-          id: '其他',
-          children: [
-            { name: '已退保', id: 'refunded_premium' },
-            { name: '其他原因', id: 'other' },
-          ],
-        },
-      ],
+      optionsTrack: [],
       selectCitys: [],
       list: [],
       page: 1,
@@ -568,8 +514,9 @@ export default {
       ]),
       propsTrack: {
         multiple: true,
-        value: 'id',
-        label: 'name',
+        value: 'value',
+        label: 'label',
+        children: 'second_follow_status'
       },
       searchModel: {
         product_insurance_duration_type: '',
@@ -584,6 +531,7 @@ export default {
         sales_team_id: [],
         include_child_team: '0',
         second_follow_status: [],
+        follow_obj_id: ''
       },
       tableMaxHeight: null,
       followStatusOptions: Object.freeze([
@@ -724,6 +672,25 @@ export default {
     },
   },
   methods: {
+    getFollowStatus(){
+      getFollowStatus().then(res => {
+        this.optionsTrack = res.follow_status.map(item => {
+          if (item.second_follow_status.length) {
+            return {
+              label: item.label,
+              value: item.value,
+              second_follow_status: item.second_follow_status
+            }
+          }else{
+            return {
+              label: item.label,
+              value: item.value
+            }
+          }
+        })
+        // console.log('opt' ,res)
+      })
+    },
     formatYYMMDD,
     handleCheckAll(v) {
       this.searchModel.follow_status = v ? this.followStatusOptions.map(i => i.value) : []
@@ -854,29 +821,15 @@ export default {
         let already_claim = Array.from(new Set(v.map((item) => item[0])))
         let second_follow_status = v.map((item) => item[1])
         this.selectCitys = v
-        this.searchModel.second_follow_status = second_follow_status
+        this.searchModel.second_follow_status = second_follow_status.filter(item => item).length ? second_follow_status : []
         this.searchModel.follow_status = already_claim
-        console.log(JSON.stringify(v))
-        this.searchModelChange()
-        // this.$router.replace({
-        //   name: this.$route.name,
-        //   query: {
-        //     ...this.$route.query,
-        //     [this.provinceIdKey]: already_claim,
-        //     [this.cityIdsKey]: second_follow_status,
-        //   },
-        // })
+        // console.log(JSON.stringify(v))
       } else {
-        // this.$router.replace({
-        //   name: this.$route.name,
-        //   query: {
-        //     ...this.$route.query,
-        //     [this.provinceIdKey]: [],
-        //     [this.cityIdsKey]: [],
-        //   },
-        // })
-        // this.prevProvince = null
+        this.searchModel.second_follow_status = []
+        this.searchModel.follow_status = []
+        this.selectCitys = []
       }
+      this.searchModelChange()
     },
     // 分页
     handleCurrentChange(v) {
@@ -1023,6 +976,7 @@ export default {
     }, 300)
   },
   created() {
+    this.getFollowStatus()
     this.getData()
     this.getStaticData()
     this.getDateRange()

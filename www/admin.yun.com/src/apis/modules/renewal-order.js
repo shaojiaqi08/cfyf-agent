@@ -63,3 +63,6 @@ export const exportCompanyPolicy = `${process.env.VUE_APP_API_URL}/agent/proxy/p
 
 //时间选择项
 export const getDateRange = (data) => get('/common/policy-renewal-date-ranges', data)
+
+// 获取续保续期跟踪状态
+export const getFollowStatus = (data) => get('/agent/proxy/policy-renewal/select-options', data)

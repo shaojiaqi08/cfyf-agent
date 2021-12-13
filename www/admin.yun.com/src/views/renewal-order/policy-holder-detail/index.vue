@@ -53,7 +53,7 @@
                 <div v-if="row.policy_recognizee_policies.length">
                   {{row.policy_recognizee_policies | namefilter }}
                 </div>
-              </template>  
+              </template>
             </el-table-column>
             <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
@@ -70,10 +70,10 @@
               <template slot-scope="{row}">
                 <el-link
                   @click="insurancePolicy(row)"
-                  type="primary" 
+                  type="primary"
                   v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
-                  <el-link 
+                  <el-link
                   type="primary"
                   @click="showSendLetter(row)"
                   v-if="$checkAuth(perPreFixMessage)"
@@ -111,7 +111,7 @@
                 <div v-if="row.policy_recognizee_policies.length">
                   {{row.policy_recognizee_policies | namefilter }}
                 </div>
-              </template>  
+              </template>
             </el-table-column>
             <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
@@ -131,7 +131,7 @@
                   type="primary"
                   v-if="$checkAuth(`${perPreFix}policy_detail`)"
                   class="mr8">保单详情</el-link>
-                  <el-link 
+                  <el-link
                   type="primary"
                   @click="showSendLetter(row)"
                   v-if="$checkAuth(perPreFixMessage)"
@@ -160,18 +160,6 @@
             >{{ item.label }}</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
-      </div>
-      <div class="step-wrap">
-        <div
-          v-for="(item, index) in stepData"
-          :key="index"
-          class="step-item"
-          :class="{ active: item.value === step }"
-          @click="handleItem(item)"
-        >
-          <i class="iconfont" :class="item.value === step ? 'icona-zhong20_duigou_xuanzhong' : 'icona-zhong20_duigou_weixuanzhong'"></i>
-          <span>{{item.label}}</span>
-        </div>
       </div>
       <div class="year-wrap">{{ currentYear }}</div>
       <div class="scrollbar scrollbar-theme" ref="body">
@@ -234,7 +222,35 @@
               <p>{{item.title}}</p>
               <span>{{item.remark}}</span>
             </div>
-            <div v-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">
+            <div v-if="item.action === messageTypes.following" class='ml5 message-item-info'>
+              <div class='flex'>
+                <span style='font-weight: 800' class="mr5">将跟踪状态标记为</span>
+                <span
+                  class="status-block"
+                  :class="[item.renewal_status]">
+                    {{item.follow_status_str}}
+                  </span>
+              </div>
+              <div class='detail-info'>
+                <div class='info-item flex' v-if='item.second_follow_status_str'>
+                  <div class='item-label'>状态详情：</div>
+                  <div class='item-content'>{{item.second_follow_status_str}}</div>
+                </div>
+                <div class='info-item flex'>
+                  <div class='item-label'>跟踪方式：</div>
+                  <div class='item-content'>{{item.follow_way_str}}</div>
+                </div>
+                <div class='info-item flex' v-if='item.title'>
+                  <div class='item-label'>跟踪标题：</div>
+                  <div class='item-content'>{{item.title}}</div>
+                </div>
+                <div class='info-item flex'>
+                  <div class='item-label'>跟踪内容：</div>
+                  <div class='item-content'>{{item.remark}}</div>
+                </div>
+              </div>
+            </div>
+            <div v-else-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">
               <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
                 <p>{{item.title}}</p>
                 <span>{{item.remark}}</span>
@@ -242,6 +258,46 @@
             </div>
           </div>
         </div>
+        </div>
+      </div>
+      <div class="step-wrap">
+        <div
+          v-for="(item, index) in stepData"
+          :key="index"
+          class="step-item"
+          :class="{ active: item.value === step }"
+          @click="handleItem(item)"
+        >
+          <i class="iconfont" :class="item.value === step ? 'icona-zhong20_duigou_xuanzhong' : 'icona-zhong20_duigou_weixuanzhong'"></i>
+          <span>{{item.label}}</span>
+        </div>
+      </div>
+      <div class='child-track-status flex-between' v-if="secondFollowStatusMap[step] && secondFollowStatusMap[step].length">
+        <div class='child-track-label'>
+          状态详情
+        </div>
+        <div class='child-track-item'>
+          <el-radio-group v-model='sendData.second_follow_status' :disabled="readonly">
+            <el-radio
+              class='mb10'
+              :label='item.value'
+              v-for='item in secondFollowStatusMap[step]'
+              :key='item.value'>{{item.label}}</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
+      <div class='child-track-status flex-between' v-if="optMap">
+        <div class='child-track-label'>
+          跟踪方式
+        </div>
+        <div class='child-track-item'>
+          <el-radio-group v-model='sendData.follow_way' :disabled="readonly">
+            <el-radio
+              class='mb10'
+              :label='item.value'
+              v-for='item in optMap.follow_way'
+              :key='item.value'>{{item.label}}</el-radio>
+          </el-radio-group>
         </div>
       </div>
       <div class="follow-footer" v-if="!readonly">
@@ -286,15 +342,16 @@
 <script>
 // 投保人详情
 import { formatDate } from '@/utils/formatTime'
-import { 
-  getSalesDetail, 
+import {
+  getSalesDetail,
   getTeamDetail,
   getCompanyDetail,
   addFollowStatusLogs,
-  modifyFollowStatus, 
+  modifyFollowStatus,
   getFollowLogs,
   getMsgTemplate,
-  sendCustomerMsg
+  sendCustomerMsg,
+  getFollowStatus
 } from '@/apis/modules/renewal-order'
 import LetterDialog from '../component/dialog/letter-dialog.vue'
 import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
@@ -317,13 +374,15 @@ export default {
       followLoading: false,
       sending: false,
       currentYear: new Date().getFullYear(),
-      step: 'not_follow',
+      step: '',
+      optMap: null,
       stepData: Object.freeze([
         { label: '未跟踪', value: 'not_follow' },
         { label: '已跟踪', value: 'already_follow' },
         { label: '未联系上', value: 'cannot_get_in_touch' },
         { label: '放弃续保', value: 'refuse_renewal' },
         { label: '已续保', value: 'already_renewal' },
+        { label: '已理赔', value: 'already_claim' },
         { label: '其他', value: 'other' }
       ]),
       list: [{}],
@@ -352,11 +411,14 @@ export default {
         cannot_get_in_touch: '未联系上',
         refuse_renewal: '放弃续保',
         already_renewal: '已续保',
+        already_claim: '已理赔',
         other: '其他'
       },
       sendData: {
         title: '', //标题写点什么
         remark: '', //内容
+        follow_way: '', // 跟踪方式
+        second_follow_status: ''  // 跟踪详情
       },
       rightLoading: false, //加载提示
       contentLoading: false, //内容加载提示
@@ -369,18 +431,29 @@ export default {
         stage_list: []
       },
       detailApiMap: Object.freeze({
-        RenewalOrderTraceMy: getSalesDetail, 
-        RenewalOrderTraceTeam: getTeamDetail, 
+        RenewalOrderTraceMy: getSalesDetail,
+        RenewalOrderTraceTeam: getTeamDetail,
         RenewalOrderTraceCompany: getCompanyDetail,
-        RenewalOrderViewMy: getSalesDetail, 
-        RenewalOrderViewMyTeam: getTeamDetail, 
+        RenewalOrderViewMy: getSalesDetail,
+        RenewalOrderViewMyTeam: getTeamDetail,
         RenewalOrderViewMyCompany: getCompanyDetail
       }),
       renewalOptions: [],
-      current_version: ''
+      current_version: '',
+      onlyFirstStatus: Object.freeze([
+        'not_follow',
+        'already_renewal'
+      ])
     }
   },
   computed: {
+    secondFollowStatusMap(){
+      const followStatus = {}
+      this.optMap && this.optMap.follow_status.forEach(item => {
+        followStatus[item.value] = item.second_follow_status
+      })
+      return followStatus
+    },
     // renewalOptions() {
     //   let { stage_list } = this.followData
     //   const { id } = this.row.current_renewal_stage
@@ -421,7 +494,7 @@ export default {
       return map[this.$route.name]
     },
     // 权限值-发送短信
-    perPreFixMessage () { 
+    perPreFixMessage () {
       const map = {
         'RenewalOrderTraceMy' : '/policy_renewal/sales_send_msg',
         'RenewalOrderTraceTeam' : '/policy_renewal/team_send_msg',
@@ -446,6 +519,12 @@ export default {
     $scrollBody.removeEventListener('scroll', this.bindSetCurrentYear)
   },
   methods: {
+    getFollowStatus() {
+      getFollowStatus()
+        .then((res) => {
+          this.optMap = res
+        })
+    },
     formatDate,
     setCurrentYear(e) {
       let $container = e && e.target ? e.target : this.$refs.body
@@ -508,7 +587,7 @@ export default {
         })
       } else if(v === 'modify') {
         this.$router.push('/user-info')
-      } 
+      }
     },
     getData() {
       let route = this.$route.params
@@ -553,7 +632,7 @@ export default {
       }
       let pathName = paths[this.$route.name],
           id = order_no;
-          
+
       console.log(pathName)
       window.open(this.$router.resolve({
         name: pathName,
@@ -569,7 +648,8 @@ export default {
         return
       }
       this.step = item.value;
-      this.modifyFollow();
+      this.sendData.second_follow_status = ''
+      // this.modifyFollow();
     },
     handleClick(id) {
       this.rightLoading = true;
@@ -613,7 +693,7 @@ export default {
     getFollowLogs() {
       let { obj } = this,
       data = {
-        stage_version: obj.stage_version, 
+        stage_version: obj.stage_version,
         order_no: obj.order_no
       };
       this.rightLoading = true
@@ -631,6 +711,12 @@ export default {
           product_name: item.policy.product_name,
           is_current: item.version === obj.stage_version
         }))
+        if (res.follow_logs.length) {
+          const len = res.follow_logs.length
+          this.$set(this.sendData, 'second_follow_status', res.follow_logs[len - 1].second_follow_status)
+          this.$set(this.sendData, 'follow_way', res.follow_logs[len - 1].follow_way)
+          this.$set(this, 'step', res.follow_logs[len - 1].follow_status)
+        }
         this.$nextTick(() => {
           if (this.$refs.body) {
             if (this.$refs.body.scrollHeight <= this.$refs.body.clientHeight) {
@@ -678,12 +764,22 @@ export default {
           message: '请输入内容！'
         });
         return;
+      }else if (!d.follow_way || !d.second_follow_status) {
+        if (!this.onlyFirstStatus.includes(this.step) && !d.second_follow_status) {
+          this.$notify({
+            type: 'error',
+            title: '',
+            message: '请完善选项！'
+          });
+          return;
+        }
       }
       let data = {
         stage_version: this.obj.stage_version, //续期记录version，列表中的version
-        title: d.title, //标题写点什么
-        remark: d.remark, //内容
-        follow_status: this.step //跟进状态
+        // title: d.title, //标题写点什么
+        // remark: d.remark, //内容
+        follow_status: this.step, //跟进状态
+        ...this.sendData
       }
       this.rightLoading = true
       addFollowStatusLogs(data).then(() => {
@@ -695,7 +791,7 @@ export default {
       }).catch(() => {
         this.$message.error(`发送失败!`)
         this.rightLoading = false
-      }) 
+      })
     },
     isToday(timestamp) {
       return new Date(timestamp).toLocaleDateString() === new Date().toLocaleDateString()
@@ -712,9 +808,10 @@ export default {
     }
   },
   created() {
+    this.getFollowStatus()
     this.getData()
     let routeName = ['RenewalOrderViewMy', 'RenewalOrderViewMyTeam', 'RenewalOrderViewMyCompany']
-  
+
     if(routeName.includes(this.$route.name)) {
       this.readonly = true;
     }
@@ -801,7 +898,7 @@ export default {
       }
     }
     .step-wrap {
-      padding: 0 16px 12px 16px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       .step-item {
@@ -826,6 +923,23 @@ export default {
             color: #1F78FF;
           }
         }
+      }
+    }
+    .child-track-status{
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 5px 10px;
+
+      .child-track-label{
+        width: 80px;
+        font-size: 14px;
+        font-weight: 600;
+        //margin-top: -3px;
+      }
+      .child-track-item{
+        flex: 1;
+        font-size: 14px;
       }
     }
     .year-wrap {
@@ -982,6 +1096,57 @@ export default {
         .action-span {
           color: #999;
           margin: 0 4px;
+        }
+      }
+      .message-item-info{
+        padding-left: 22px;
+        box-sizing: border-box;
+        .status-block {
+          background-color: #F5F5F5;
+          border-style: solid;
+          border-width: 1px;
+          border-color: rgba(204, 204, 204, 0.2);
+          border-radius: 2px;
+          height: 20px;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          padding: 0 8px;
+          color: #999;
+          font-size: 12px;
+          & > .iconfont {
+            font-size: 12px;
+            color: #999;
+            margin-right: 4px;
+          }
+          &.cannot_get_in_touch, &.refuse_renewal {
+            color: #ff5151;
+            background: #ffeded;
+            border: 1px solid rgba(255, 81, 81, 0.1);
+          }
+          &.already_renewal {
+            color: #4497eb;
+            background: #ecf4fd;
+            border: 1px solid #daeafb;
+          }
+        }
+        .name-span {
+          font-weight: 800;
+        }
+        .detail-info{
+          .info-item{
+            align-items: flex-start!important;
+            margin-top: 5px;
+            .item-label{
+              width: 60px;
+              color: #333;
+            }
+            .item-content{
+              flex: 1;
+              color: #999;
+              //font-weight: 600;
+            }
+          }
         }
       }
       .msg-wrap {
