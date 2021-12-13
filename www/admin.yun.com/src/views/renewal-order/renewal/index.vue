@@ -174,6 +174,7 @@
         <filter-shell
             class="mb16"
             v-model="selectCitys"
+            @input="changeCitys"
         >
           <el-cascader
             ref="addressPicker"
@@ -187,7 +188,8 @@
           ></el-cascader>
           <template
               v-slot:label
-          >{{ '跟踪状态' }}
+          >
+            {{hasValue(selectCitys) && selectCitys.length === 1 ? selectName : '跟踪状态'}}
           </template>
         </filter-shell>
 
@@ -616,6 +618,31 @@ export default {
     }
   },
   computed: {
+    selectName(){
+      if (this.selectCitys.length) {
+        if (this.selectCitys.length === 1) {
+          let province = this.optionsTrack.filter(
+            (item) => item.value === this.selectCitys[0][0]
+          )[0]
+          let provinceName = province ? province.label : ''
+          let city = province
+            ? province.second_follow_status
+              ? province.second_follow_status.filter(
+                (item) => item.value === this.selectCitys[0][1]
+              )[0]
+              : provinceName
+            : {}
+          let cityName = city.label || city || ''
+          if (provinceName === cityName) {
+            return provinceName
+          }
+          return `${provinceName}/${cityName}`
+        } else {
+          return this.selectCitys.length
+        }
+      }
+      return null
+    },
     // 权限值-跟踪
     perPreFix () {
       const map = {
