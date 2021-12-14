@@ -238,7 +238,7 @@
                 </div>
                 <div class='info-item flex'>
                   <div class='item-label'>跟踪方式：</div>
-                  <div class='item-content'>{{item.follow_way_str}}</div>
+                  <div class='item-content'>{{item.follow_way_str || '无'}}</div>
                 </div>
                 <div class='info-item flex' v-if='item.title'>
                   <div class='item-label'>跟踪标题：</div>
@@ -1144,6 +1144,8 @@ export default {
             .item-content{
               flex: 1;
               color: #999;
+              white-space: break-spaces;
+              word-break: break-all;
               //font-weight: 600;
             }
           }
