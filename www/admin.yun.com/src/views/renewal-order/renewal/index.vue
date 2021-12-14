@@ -953,6 +953,7 @@ export default {
       getTrackListComp()
           .then((res) => {
             this.trackList = res
+            if (this.$route.name === 'renewalCompany') this.salesList = res
           })
           .catch((err) => console.log(err))
     },
