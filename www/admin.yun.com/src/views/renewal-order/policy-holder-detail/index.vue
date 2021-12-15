@@ -898,7 +898,7 @@ export default {
       }
     }
     .step-wrap {
-      padding: 12px 16px 20px;
+      padding: 12px 6px 20px;
       display: flex;
       align-items: center;
       border-top: 1px solid #E6E6E6;
