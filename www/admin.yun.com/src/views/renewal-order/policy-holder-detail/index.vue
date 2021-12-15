@@ -1159,7 +1159,7 @@ export default {
             }
             .item-content{
               flex: 1;
-              color: #999;
+              color: #333;
               white-space: break-spaces;
               word-break: break-all;
               //font-weight: 600;
