@@ -260,55 +260,42 @@
         </div>
         </div>
       </div>
-      <div class="step-wrap">
-        <div
-          v-for="(item, index) in stepData"
-          :key="index"
-          class="step-item"
-          :class="{ active: item.value === step }"
-          @click="handleItem(item)"
-        >
-          <i class="iconfont" :class="item.value === step ? 'icona-zhong20_duigou_xuanzhong' : 'icona-zhong20_duigou_weixuanzhong'"></i>
-          <span>{{item.label}}</span>
+      <div class="track-record-footer-wrap">
+        <div class='child-track-status flex-between mt20' >
+          <div class='child-track-label'>
+            状态详情
+          </div>
+          <div class='child-track-item'>
+            <el-cascader
+              :props='{multiple: false, label: "label", children: "second_follow_status"}'
+              v-model="followStatusValue"
+              :options="followStatusMap"
+              :disabled="readonly"
+              @change="handleItem"></el-cascader>
+          </div>
         </div>
-      </div>
-      <div class='child-track-status flex-between' v-if="secondFollowStatusMap[step] && secondFollowStatusMap[step].length">
-        <div class='child-track-label'>
-          状态详情
+        <div class='child-track-status flex-between' v-if="optMap">
+          <div class='child-track-label'>
+            跟踪方式
+          </div>
+          <div class='child-track-item'>
+            <el-radio-group v-model='sendData.follow_way' :disabled="readonly">
+              <el-radio
+                :label='item.value'
+                v-for='item in optMap.follow_way'
+                :key='item.value'>{{item.label}}</el-radio>
+            </el-radio-group>
+          </div>
         </div>
-        <div class='child-track-item'>
-          <el-radio-group v-model='sendData.second_follow_status' :disabled="readonly">
-            <el-radio
-              class='mb10'
-              :label='item.value'
-              v-for='item in secondFollowStatusMap[step]'
-              :key='item.value'>{{item.label}}</el-radio>
-          </el-radio-group>
-        </div>
-      </div>
-      <div class='child-track-status flex-between' v-if="optMap">
-        <div class='child-track-label'>
-          跟踪方式
-        </div>
-        <div class='child-track-item'>
-          <el-radio-group v-model='sendData.follow_way' :disabled="readonly">
-            <el-radio
-              class='mb10'
-              :label='item.value'
-              v-for='item in optMap.follow_way'
-              :key='item.value'>{{item.label}}</el-radio>
-          </el-radio-group>
-        </div>
-      </div>
-      <div class="follow-footer" v-if="!readonly">
-        <div>
-          跟踪标题
-          <el-input v-model="sendData.title" size="mini" placeholder="选填"></el-input>
-        </div>
-        <div>
+        <div class="follow-footer" v-if="!readonly">
           <div>
-            跟踪内容
-            <el-input
+            跟踪标题
+            <el-input v-model="sendData.title" size="mini" placeholder="选填"></el-input>
+          </div>
+          <div>
+            <div>
+              跟踪内容
+              <el-input
                 :rows="2"
                 resize="none"
                 type="textarea"
@@ -317,17 +304,30 @@
                 v-model="sendData.remark"
                 @keyup.ctrl.enter.native="send"
                 class="mr8"></el-input>
-          </div>
-          <el-tooltip content="回车换行，Ctrl键+回车键发送" placement="top">
-            <el-button
+            </div>
+            <el-tooltip content="回车换行，Ctrl键+回车键发送" placement="top">
+              <el-button
                 type="primary"
                 size="mini"
                 :loading="sending"
                 :disabled="sending"
                 @click="send">发送</el-button>
-          </el-tooltip>
+            </el-tooltip>
+          </div>
         </div>
       </div>
+<!--      <div class="step-wrap">-->
+<!--        <div-->
+<!--          v-for="(item, index) in stepData"-->
+<!--          :key="index"-->
+<!--          class="step-item"-->
+<!--          :class="{ active: item.value === step }"-->
+<!--          @click="handleItem(item)"-->
+<!--        >-->
+<!--          <i class="iconfont" :class="item.value === step ? 'icona-zhong20_duigou_xuanzhong' : 'icona-zhong20_duigou_weixuanzhong'"></i>-->
+<!--          <span>{{item.label}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
     <letter-dialog
       :visible.sync="letterDialogVisible"
@@ -376,6 +376,7 @@ export default {
       currentYear: new Date().getFullYear(),
       step: '',
       optMap: null,
+      followStatusValue: null,
       stepData: Object.freeze([
         { label: '未跟踪', value: 'not_follow' },
         { label: '已跟踪', value: 'already_follow' },
@@ -447,12 +448,22 @@ export default {
     }
   },
   computed: {
-    secondFollowStatusMap(){
-      const followStatus = {}
-      this.optMap && this.optMap.follow_status.forEach(item => {
-        followStatus[item.value] = item.second_follow_status
+    followStatusMap(){
+      if (!this.optMap) return []
+      return this.optMap.follow_status.map(item => {
+        if (item.second_follow_status.length > 0) {
+          return {
+            label: item.label,
+            value: item.value,
+            second_follow_status: item.second_follow_status
+          }
+        }else {
+          return {
+            label: item.label,
+            value: item.value
+          }
+        }
       })
-      return followStatus
     },
     // renewalOptions() {
     //   let { stage_list } = this.followData
@@ -640,15 +651,15 @@ export default {
       }).href)
     },
     //选中跟踪状态
-    handleItem(item) {
+    handleItem(v) {
       if(this.obj.stage_version === '') {
         return
       }
       if(this.readonly) {
         return
       }
-      this.step = item.value;
-      this.sendData.second_follow_status = ''
+      this.step = v.length > 0 ? v[0] : []
+      this.sendData.second_follow_status = v.length > 0 ? v[1] : []
       // this.modifyFollow();
     },
     handleClick(id) {
@@ -716,6 +727,11 @@ export default {
           this.$set(this.sendData, 'second_follow_status', res.follow_logs[len - 1].second_follow_status)
           this.$set(this.sendData, 'follow_way', res.follow_logs[len - 1].follow_way)
           this.$set(this, 'step', res.follow_logs[len - 1].follow_status)
+          this.$nextTick(() => {
+            this.sendData.second_follow_status
+              ? this.$set(this, 'followStatusValue', [this.step, this.sendData.second_follow_status])
+              : this.$set(this, 'followStatusValue', [this.step])
+          })
         }
         this.$nextTick(() => {
           if (this.$refs.body) {
@@ -929,8 +945,8 @@ export default {
     .child-track-status{
       display: flex;
       justify-content: flex-start;
-      align-items: flex-start;
-      padding: 5px 16px;
+      align-items: center;
+      padding: 5px 16px 20px;
 
       .child-track-label{
         width: 80px;
@@ -956,7 +972,7 @@ export default {
     .follow-footer {
       min-height: 84px;
       overflow: hidden;
-      //border-top: 1px solid #E6E6E6;
+      border-top: 1px solid #E6E6E6;
       box-sizing: border-box;
       padding: 0 16px 13px 16px;
       display: flex;
@@ -1247,6 +1263,9 @@ export default {
       }
     }
   }
+}
+.track-record-footer-wrap{
+  border-top: 1px solid #E6E6E6;
 }
 .scroll-content {
   width: 100%;
