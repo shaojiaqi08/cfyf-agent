@@ -898,9 +898,10 @@ export default {
       }
     }
     .step-wrap {
-      padding: 12px 16px;
+      padding: 12px 16px 20px;
       display: flex;
       align-items: center;
+      border-top: 1px solid #E6E6E6;
       .step-item {
         display: flex;
         flex-direction: column;
@@ -929,7 +930,7 @@ export default {
       display: flex;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 5px 10px;
+      padding: 5px 16px;
 
       .child-track-label{
         width: 80px;
@@ -948,14 +949,14 @@ export default {
       color: #333;
       font-size: 16px;
       text-align: center;
-      border-top: 1px solid #E6E6E6;
+      //border-top: 1px solid #E6E6E6;
       border-bottom: 1px solid #E6E6E6;
       font-weight: bold;
     }
     .follow-footer {
       min-height: 84px;
       overflow: hidden;
-      border-top: 1px solid #E6E6E6;
+      //border-top: 1px solid #E6E6E6;
       box-sizing: border-box;
       padding: 0 16px 13px 16px;
       display: flex;
