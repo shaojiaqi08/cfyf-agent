@@ -240,13 +240,9 @@
                   <div class='item-label'>跟踪方式：</div>
                   <div class='item-content'>{{item.follow_way_str || '无'}}</div>
                 </div>
-                <div class='info-item flex' v-if='item.title'>
-                  <div class='item-label'>跟踪标题：</div>
-                  <div class='item-content'>{{item.title}}</div>
-                </div>
-                <div class='info-item flex'>
-                  <div class='item-label'>跟踪内容：</div>
-                  <div class='item-content'>{{item.remark}}</div>
+                <div class="msg-wrap">
+                  <p>{{item.title}}</p>
+                  <span>{{item.remark}}</span>
                 </div>
               </div>
             </div>
@@ -261,7 +257,7 @@
         </div>
       </div>
       <div class="track-record-footer-wrap">
-        <div class='child-track-status flex-between mt20' >
+        <div class='child-track-status flex-between mt12'>
           <div class='child-track-label'>
             状态详情
           </div>
@@ -836,6 +832,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.mt12{
+  margin-top: 12px;
+}
 .renewal-notify {
   display: flex;
   height: 100%;
@@ -1166,6 +1165,31 @@ export default {
               //font-weight: 600;
             }
           }
+          .msg-wrap {
+            margin-top: 8px;
+            width: 293px;
+            background-color: #F5F5F5;
+            padding: 16px;
+            color: #131415;
+            border-radius: 0px 12px 12px 12px;
+            overflow: hidden;
+            white-space: break-spaces;
+            word-break: break-all;
+            & > p {
+              margin: 0 0 4px 0;
+              line-height: 20px;
+              font-size: 14px;
+              font-weight: bold;
+            }
+
+            & > span {
+              font-size: 14px;
+              text-align: justify;
+              line-height: 20px;
+              display: block;
+              overflow: hidden;
+            }
+          }
         }
       }
       .msg-wrap {
@@ -1235,8 +1259,8 @@ export default {
           background-color: #1F78FF;
         }
         .msg-wrap {
-          background-color: #1F78FF;
-          color: #fff;
+          background-color: #1F78FF!important;
+          color: #fff!important;
         }
       }
     }
