@@ -1152,7 +1152,7 @@ export default {
         .detail-info{
           .info-item{
             align-items: flex-start!important;
-            margin-top: 5px;
+            margin-top: 8px;
             .item-label{
               width: 60px;
               color: #333;
