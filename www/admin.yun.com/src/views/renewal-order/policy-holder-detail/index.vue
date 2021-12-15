@@ -222,12 +222,12 @@
               <p>{{item.title}}</p>
               <span>{{item.remark}}</span>
             </div>
-            <div v-if="item.action === messageTypes.following" class='ml5 message-item-info'>
+            <div v-if="item.action === messageTypes.following" class='message-item-info'>
               <div class='flex'>
                 <span style='font-weight: 800' class="mr5">将跟踪状态标记为</span>
                 <span
                   class="status-block"
-                  :class="[item.renewal_status]">
+                  :class="[item.follow_status]">
                     {{item.follow_status_str}}
                   </span>
               </div>
@@ -1115,7 +1115,7 @@ export default {
         }
       }
       .message-item-info{
-        padding-left: 22px;
+        //padding-left: 22px;
         box-sizing: border-box;
         .status-block {
           background-color: #F5F5F5;
@@ -1144,6 +1144,19 @@ export default {
             color: #4497eb;
             background: #ecf4fd;
             border: 1px solid #daeafb;
+          }
+          &.refuse_renewal,
+          &.cannot_get_in_touch,
+          &.not_follow{
+            color: #ff4c4c;
+            background: rgba(255,76,76,.1);
+            border: 1px solid rgba(25,76,76,.3);
+          }
+          &.already_claim,
+          &.already_follow{
+            color: #4497eb;
+            background: rgba(68, 151, 235,.1);
+            border: 1px solid rgba(68, 151, 235,.3);
           }
         }
         .name-span {
