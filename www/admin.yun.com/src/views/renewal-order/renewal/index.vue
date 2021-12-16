@@ -845,8 +845,13 @@ export default {
     },
     changeCitys(v) {
       if (v.length) {
+        const that = this
         let already_claim = Array.from(new Set(v.map((item) => item[0])))
-        let second_follow_status = v.map((item) => item[1])
+        let second_follow_status = v.map((secondItem) => {
+          const firstStatus = that.optionsTrack.find(item => item.value === secondItem[0])
+          const secondStatus = v.filter(item => item[0] === secondItem[0])
+          return firstStatus.second_follow_status?.length === secondStatus.length ? '' : secondItem[1]
+        }).filter(item => !!item)
         this.selectCitys = v
         this.searchModel.second_follow_status = second_follow_status.filter(item => item).length ? second_follow_status : []
         this.searchModel.follow_status = already_claim
