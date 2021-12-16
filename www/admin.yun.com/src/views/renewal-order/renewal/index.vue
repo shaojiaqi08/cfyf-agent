@@ -142,6 +142,57 @@
           >{{ hasValue(searchModel.supplier_id) ? supplierList.find(i => i.id === searchModel.supplier_id[0]).name : '保险公司' }}</template>
         </filter-shell>
 
+        <!--最近跟踪人员-->
+        <filter-shell
+            v-if="$route.name !== 'RenewalOrder'"
+            v-model="searchModel.follow_obj_id"
+            autoFocus
+            class="mb16"
+            @input="searchModelChange"
+        >
+          <el-select
+              class="block"
+              v-model="searchModel.follow_obj_id"
+              clearable
+              filterable
+               placeholder="请选择"
+              @change="searchModelChange"
+          >
+            <el-option
+                v-for="item in trackList"
+                :key="item.id"
+                :label="item.real_name"
+                :value="item.id"
+            ></el-option>
+          </el-select>
+          <template
+              v-slot:label
+          >{{hasValue(searchModel.follow_obj_id) ? trackList.find(i => i.id === searchModel.follow_obj_id).real_name : '最近跟踪人员'}}</template>
+        </filter-shell>
+
+        <!--跟踪状态-->
+        <filter-shell
+            class="mb16"
+            v-model="selectCitys"
+            @input="changeCitys"
+        >
+          <el-cascader
+            ref="addressPicker"
+            popper-class="address-picker"
+            collapse-tags
+            :options="optionsTrack"
+            :props="propsTrack"
+            v-model="selectCitys"
+            @change="changeCitys"
+            clearable
+          ></el-cascader>
+          <template
+              v-slot:label
+          >
+            {{hasValue(selectCitys) && selectCitys.length === 1 ? selectName : '跟踪状态'}}
+          </template>
+        </filter-shell>
+
         <!--B端公司-->
         <!-- <filter-shell
             v-model="searchModel.sales_company_id"
@@ -223,7 +274,7 @@
               :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
         </div>
-        <div>
+        <!-- <div>
           <span>跟踪状态</span>
           <el-tooltip content="跟踪状态为跟踪人员手工选择状态，不代表真实的续保状态" placement="top">
             <i class="iconfont iconxiao16_gengduoxinxi"></i>
@@ -236,7 +287,7 @@
                :label="item.value"
                :key="item.value">{{item.label}}</el-checkbox>
           </el-checkbox-group>
-        </div>
+        </div> -->
       </div>
       <div class="flex-between" style="align-items: flex-end;">
         <div class="data-row" ref="dataRow">
@@ -327,6 +378,7 @@
           </template>
         </el-table-column>
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
+        <el-table-column label="跟踪方式" prop="follow_way_str" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪人员" prop="follow_obj_name" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
@@ -383,7 +435,9 @@
 <script>
 import {
   getSalesData,
-  getSalesTeamData
+  getSalesTeamData,
+  getTrackListTeam,
+  getTrackListComp
 } from '@/apis/modules/achievement'
 import {
   getRenewalCompanyList,
@@ -397,7 +451,8 @@ import {
   exportSalesPolicy,
   exportTeamPolicy,
   exportCompanyPolicy,
-  getDateRange
+  getDateRange,
+  getFollowStatus
 } from '@/apis/modules/renewal-order'
 import { getAllProducts, getSupplierList } from '@/apis/modules/index'
 import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
@@ -437,12 +492,15 @@ export default {
       filterValue: false,
       belongVisible: false,
       belongData: {},
+      optionsTrack: [],
+      selectCitys: [],
       list: [],
       page: 1,
       page_size: 20,
       total: 0,
       productList: [],
       salesList: [],
+      trackList: [],
       salesTeamList: [],
       supplierList: [],
       // companyList: [],
@@ -456,6 +514,12 @@ export default {
         { label: '短险续保', name: '1' },
         { label: '长险续期', name: '0' }
       ]),
+      propsTrack: {
+        multiple: true,
+        value: 'value',
+        label: 'label',
+        children: 'second_follow_status'
+      },
       searchModel: {
         product_insurance_duration_type: '',
         keyword: '',
@@ -467,7 +531,9 @@ export default {
         date_range: [beforeDate, afterDate],
         sales_id: [],
         sales_team_id: [],
-        include_child_team: '0'
+        include_child_team: '0',
+        second_follow_status: [],
+        follow_obj_id: ''
       },
       tableMaxHeight: null,
       followStatusOptions: Object.freeze([
@@ -552,6 +618,31 @@ export default {
     }
   },
   computed: {
+    selectName(){
+      if (this.selectCitys.length) {
+        if (this.selectCitys.length === 1) {
+          let province = this.optionsTrack.filter(
+            (item) => item.value === this.selectCitys[0][0]
+          )[0]
+          let provinceName = province ? province.label : ''
+          let city = province
+            ? province.second_follow_status
+              ? province.second_follow_status.filter(
+                (item) => item.value === this.selectCitys[0][1]
+              )[0]
+              : provinceName
+            : {}
+          let cityName = city.label || city || ''
+          if (provinceName === cityName) {
+            return provinceName
+          }
+          return `${provinceName}/${cityName}`
+        } else {
+          return this.selectCitys.length
+        }
+      }
+      return null
+    },
     // 权限值-跟踪
     perPreFix () {
       const map = {
@@ -608,6 +699,25 @@ export default {
     },
   },
   methods: {
+    getFollowStatus(){
+      getFollowStatus().then(res => {
+        this.optionsTrack = res.follow_status.map(item => {
+          if (item.second_follow_status.length) {
+            return {
+              label: item.label,
+              value: item.value,
+              second_follow_status: item.second_follow_status
+            }
+          }else{
+            return {
+              label: item.label,
+              value: item.value
+            }
+          }
+        })
+        // console.log('opt' ,res)
+      })
+    },
     formatYYMMDD,
     handleCheckAll(v) {
       this.searchModel.follow_status = v ? this.followStatusOptions.map(i => i.value) : []
@@ -733,6 +843,21 @@ export default {
       }
       this.searchModelChange()
     },
+    changeCitys(v) {
+      if (v.length) {
+        let already_claim = Array.from(new Set(v.map((item) => item[0])))
+        let second_follow_status = v.map((item) => item[1])
+        this.selectCitys = v
+        this.searchModel.second_follow_status = second_follow_status.filter(item => item).length ? second_follow_status : []
+        this.searchModel.follow_status = already_claim
+        // console.log(JSON.stringify(v))
+      } else {
+        this.searchModel.second_follow_status = []
+        this.searchModel.follow_status = []
+        this.selectCitys = []
+      }
+      this.searchModelChange()
+    },
     // 分页
     handleCurrentChange(v) {
       this.tableLoading = true
@@ -768,6 +893,9 @@ export default {
       this.searchModelChange = func
     },
     hasValue,
+    getChildName(id) {
+      return id[0]
+    },
     showInfoDialog(row) {
       // 20210525 LiuZicong 改为传订单号order_no
       let routeUrl = this.$router.resolve(`/achievement-company/detail/${row.order_no}`)
@@ -813,6 +941,21 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    getTrackListTeam() {
+      getTrackListTeam()
+          .then((res) => {
+            this.trackList = res
+          })
+          .catch((err) => console.log(err))
+    },
+    getTrackListComp() {
+      getTrackListComp()
+          .then((res) => {
+            this.trackList = res
+            if (this.$route.name === 'renewalCompany') this.salesList = res
+          })
+          .catch((err) => console.log(err))
     },
     getSalesData() {
       getSalesData()
@@ -861,6 +1004,7 @@ export default {
     }, 300)
   },
   created() {
+    this.getFollowStatus()
     this.getData()
     this.getStaticData()
     this.getDateRange()
@@ -870,10 +1014,17 @@ export default {
       this.getSalesData()
       this.getSalesTeamData()
     }
+    if (this.$route.name == 'renewalTeam') {
+      this.getTrackListTeam();
+    }
+    if (this.$route.name == 'renewalCompany') {
+      this.getTrackListComp();
+    }
     // this.getCompanyList()
     console.log('$route', this.$route)
   },
   mounted() {
+    console.log("$route.name", this.$route.name)
     window.addEventListener('resize', this.calcTableHeight)
   },
   beforeDestroy() {
@@ -1147,4 +1298,17 @@ export default {
   white-space: nowrap;
   box-sizing: border-box;
 }
+.dot {
+    margin-left: 4px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: #0d76fa;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    text-align: center;
+    transform: scale(0.75);
+    line-height: 22px;
+  }
 </style>
