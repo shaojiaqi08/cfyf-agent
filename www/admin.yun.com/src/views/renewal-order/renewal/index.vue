@@ -433,58 +433,68 @@
   </div>
 </template>
 <script>
-import {
-  getSalesData,
-  getSalesTeamData,
-  getTrackListTeam,
-  getTrackListComp
-} from '@/apis/modules/achievement'
-import {
-  getRenewalCompanyList,
-  getRenewalTeamList,
-  getRenewalSalesList,
-  getStatisticsForSales,
-  getStatisticsForTeam,
-  getStatisticsForCompany,
-  getMsgTemplate,
-  sendCustomerMsg,
-  exportSalesPolicy,
-  exportTeamPolicy,
-  exportCompanyPolicy,
-  getDateRange,
-  getFollowStatus
-} from '@/apis/modules/renewal-order'
-import { getAllProducts, getSupplierList } from '@/apis/modules/index'
-import { formatDate, dateStr2Timestamp,formatYYMMDD } from '@/utils/formatTime'
-import { debounce, downloadFrameA } from '@/utils'
-import qs from 'qs'
-import FilterShell, { hasValue } from '@/components/filters/filter-shell'
-import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
-import CommonTabsHeader from '@/components/common-tabs-header'
-import QrCodeDialog from './dialog/qrcode-dialog'
-import LetterDialog from '../component/dialog/letter-dialog.vue'
-import QRCode from 'qrcode'
-// 续保续期订单
-export default {
-  name: 'renewal-order',
-  components: {
-    FilterShell,
-    textHiddenEllipsis,
-    CommonTabsHeader,
-    QrCodeDialog,
-    LetterDialog
-  },
-  data() {
-    const date = new Date();
-    let flag = true,
-        beforeDate = date.getTime() - 3600 * 1000 * 24 * 60,
-        afterDate = date.getTime() + 3600 * 1000 * 24 * 60;
-    return {
-      qrCodeDialogVisible: false,
-      qrCodeSrc: '',
-      letterDialogVisible: false,
-      detailObj: {
-        message: ''
+  import {
+    getSalesData,
+    getSalesTeamData,
+    getTrackListComp,
+    getTrackListTeam
+  } from '@/apis/modules/achievement'
+  import {
+    exportCompanyPolicy,
+    exportSalesPolicy,
+    exportTeamPolicy,
+    getDateRange,
+    getFollowStatus,
+    getMsgTemplate,
+    getRenewalCompanyList,
+    getRenewalSalesList,
+    getRenewalTeamList,
+    getStatisticsForCompany,
+    getStatisticsForSales,
+    getStatisticsForTeam,
+    sendCustomerMsg
+  } from '@/apis/modules/renewal-order'
+  import {
+    getAllProducts,
+    getSupplierList
+  } from '@/apis/modules/index'
+  import {
+    dateStr2Timestamp,
+    formatDate,
+    formatYYMMDD
+  } from '@/utils/formatTime'
+  import {
+    debounce,
+    downloadFrameA
+  } from '@/utils'
+  import qs from 'qs'
+  import FilterShell, { hasValue } from '@/components/filters/filter-shell'
+  import textHiddenEllipsis from '@/components/text-hidden-ellipsis'
+  import CommonTabsHeader from '@/components/common-tabs-header'
+  import QrCodeDialog from './dialog/qrcode-dialog'
+  import LetterDialog from '../component/dialog/letter-dialog.vue'
+  import QRCode from 'qrcode'
+  // 续保续期订单
+  export default {
+    name: 'renewal-order',
+    components: {
+      FilterShell,
+      textHiddenEllipsis,
+      CommonTabsHeader,
+      QrCodeDialog,
+      LetterDialog
+    },
+    data() {
+      const date = new Date();
+      let flag       = true,
+          beforeDate = date.getTime() - 3600 * 1000 * 24 * 60,
+          afterDate  = date.getTime() + 3600 * 1000 * 24 * 60;
+      return {
+        qrCodeDialogVisible: false,
+        qrCodeSrc: '',
+        letterDialogVisible: false,
+        detailObj: {
+          message: ''
       },
       sendLoading: false,
       loading: false,
@@ -1304,16 +1314,23 @@ export default {
   box-sizing: border-box;
 }
 .dot {
-    margin-left: 4px;
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    background: #0d76fa;
-    color: #fff;
-    border-radius: 50%;
-    font-size: 12px;
-    text-align: center;
-    transform: scale(0.75);
-    line-height: 22px;
+  margin-left: 4px;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: #0d76fa;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+  text-align: center;
+  transform: scale(0.75);
+  line-height: 22px;
+}
+</style>
+<style lang="scss">
+  .address-picker {
+    .el-cascader-menu__wrap {
+      height: 315px;
+    }
   }
 </style>

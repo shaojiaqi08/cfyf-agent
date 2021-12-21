@@ -263,6 +263,7 @@
           </div>
           <div class='child-track-item'>
             <el-cascader
+              popper-class="address-picker"
               :props='{multiple: false, label: "label", children: "second_follow_status"}'
               v-model="followStatusValue"
               :options="followStatusMap"
@@ -404,8 +405,8 @@ export default {
       },
       messageStatus: {
         not_follow: '未跟踪',
-        already_follow: '已跟踪',
-        cannot_get_in_touch: '未联系上',
+        already_follow: '跟踪中',
+        cannot_get_in_touch: '无法联系',
         refuse_renewal: '放弃续保',
         already_renewal: '已续保',
         already_claim: '已理赔',
@@ -1135,28 +1136,32 @@ export default {
             color: #999;
             margin-right: 4px;
           }
-          &.cannot_get_in_touch, &.refuse_renewal {
-            color: #ff5151;
-            background: #ffeded;
-            border: 1px solid rgba(255, 81, 81, 0.1);
+          &.cannot_get_in_touch,
+          &.refuse_renewal {
+            color: #FB104A;
+            background: rgba(251, 16, 74, 0.06);
+            border: 1px solid rgba(251, 16, 74, 0.1);
           }
           &.already_renewal {
-            color: #4497eb;
-            background: #ecf4fd;
-            border: 1px solid #daeafb;
+            color: #29CC97;
+            background: rgba(41, 204, 151, 0.06);
+            border: 1px solid rgba(41, 204, 151, 0.1);
           }
-          &.refuse_renewal,
-          &.cannot_get_in_touch,
+          &.other,
           &.not_follow{
-            color: #ff4c4c;
-            background: rgba(255,76,76,.1);
-            border: 1px solid rgba(25,76,76,.3);
+            color: #9C9C9C;
+            background: rgba(156, 156, 156, 0.06);
+            border: 1px solid rgba(156, 156, 156, 0.1);
           }
-          &.already_claim,
+          &.already_claim{
+            color: #FF9D03;
+            background: rgba(255, 157, 3, 0.06);
+            border: 1px solid rgba(255, 157, 3, 0.1);
+          }
           &.already_follow{
-            color: #4497eb;
-            background: rgba(68, 151, 235,.1);
-            border: 1px solid rgba(68, 151, 235,.3);
+            color: #2C66FF;
+            background: rgba(44, 102, 255, 0.06);
+            border: 1px solid rgba(44, 102, 255, 0.1);
           }
         }
         .name-span {
@@ -1317,5 +1322,10 @@ export default {
 .renewal-dropdown-active {
   background-color: rgba(31,120,255,.1) !important;
   color: #1f78ff !important;
+}
+.address-picker{
+  .el-cascader-menu__wrap{
+    height: 315px;
+  }
 }
 </style>
