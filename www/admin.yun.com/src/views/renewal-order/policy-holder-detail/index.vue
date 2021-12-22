@@ -1158,6 +1158,7 @@ export default {
             background: rgba(255, 157, 3, 0.06);
             border: 1px solid rgba(255, 157, 3, 0.1);
           }
+          &.second_follow,
           &.already_follow{
             color: #2C66FF;
             background: rgba(44, 102, 255, 0.06);
