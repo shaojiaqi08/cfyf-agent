@@ -408,7 +408,7 @@ export default {
     // 人核下载所有
     downloadAllFile() {
       const {id} = this.$route.params
-      const url = `${process.env.VUE_APP_API_URL}/management/proxy/policy_info/manpower_zip?order_no=${id}`
+      const url = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_info/manpower_zip?order_no=${id}`
       this.manPowerDownloading = true
       downloadFrameA(url, `${formatDate(new Date(), 'yyyyMMddhhmmss')}.zip`, 'get', true).finally(() => {
         this.manPowerDownloading = false
