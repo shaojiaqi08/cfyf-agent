@@ -238,7 +238,7 @@
                   <template slot="header">
                     <div class="flex flex-align-center">
                       <span class="mr10">操作</span>
-                      <el-link v-if="manPowerFileList.length > 0" type="primary" @click="downloadAllFile" :disabled="manPowerDownloading"><i class="el-icon-loading" v-if="manPowerDownloading" style="margin-right: 4px;"></i>下载所有</el-link>
+                      <el-link v-if="manPowerFileList.length > 0 && $checkAuth('/my_performance/manpower/manpower_zip')" type="primary" @click="downloadAllFile" :disabled="manPowerDownloading"><i class="el-icon-loading" v-if="manPowerDownloading" style="margin-right: 4px;"></i>下载所有</el-link>
                     </div>
                   </template>
                   <template v-slot="{row}">
@@ -613,11 +613,11 @@ export default {
           renewal_status_name: '',
           renewal_at: '',
           unwanted_reason: '',
-          pay_at: '', 
+          pay_at: '',
           fail_reason: ''
         },
         renewal_stage_history: []
-      }, 
+      },
       historyLoading: false
     }
   },
@@ -718,9 +718,9 @@ export default {
     // 人核下载所有
     downloadAllFile() {
       const {id} = this.$route.params
-      const url = `${process.env.DOMAIN}/policy/detail/manpower-zip?id=${id}`
+      const url = `${process.env.VUE_APP_API_URL}/agent/proxy/policy_info/manpower_zip?order_no=${id}`
       this.manPowerDownloading = true
-      downloadFrameA(url, `${formatDate(new Date(), 'yyyyMMddhhmmss')}.zip`).finally(() => {
+      downloadFrameA(url, `${formatDate(new Date(), 'yyyyMMddhhmmss')}.zip`, 'get', true).finally(() => {
         this.manPowerDownloading = false
       })
     },
