@@ -6,12 +6,14 @@
                 :data="tabsData"
             ></common-tabs-header>
             <div>
-                <el-button :loading="exporting"
+                <el-button v-if="showExportBtn"
                            :disabled="exporting"
+                           :loading="exporting"
                            class="mr20"
                            icon="iconfont iconxiao16_xiazai mr4"
                            size="small"
-                           type="primary">导出数据
+                           type="primary"
+                           @click="exportFile">导出数据
                 </el-button>
                 <el-input
                     v-model="searchModel.keyword"
@@ -486,21 +488,28 @@
 
 <script>
     import {
+        exportFileForComp,
+        exportFileForself,
+        exportFileForTeam,
         getManpowerOptions,
         getSalesData,
         getSalesTeamData,
         manpowerListForCompany,
         manpowerListForSales,
-        manpowerListForTeam,
+        manpowerListForTeam
     } from "@/apis/modules/achievement";
     import { formatDate } from "@/utils/formatTime";
-    import { debounce } from "@/utils";
+    import {
+        debounce,
+        downloadFrameA
+    } from "@/utils";
     import {
         insuranceTypeArray,
         policyStatusArray
     } from "@/enums/common";
     import FilterShell, { hasValue } from "@/components/filters/filter-shell";
     import CommonTabsHeader from "@/components/common-tabs-header";
+    import qs from 'qs'
 
     let reqId = 0;
     const routeMap = {
@@ -508,16 +517,22 @@
             apiFunc: manpowerListForCompany, // 接口函数
             relationRouteName: "achievement-company-detail", // 关联订单路由名称,
             permission: "manpower-order-company-detail", // 详情权限
+            exportFileApi: exportFileForComp,
+            exportPermission: 'manpower-order-company-export'
         },
         "manpower-order-team": {
             apiFunc: manpowerListForTeam,
             relationRouteName: "achievement-team-detail", // 关联订单路由名称,
             permission: "manpower-order-team-detail", // 详情权限
+            exportFileApi: exportFileForTeam,
+            exportPermission: 'manpower-order-team-export'
         },
         "manpower-order-sales": {
             apiFunc: manpowerListForSales,
             relationRouteName: "achievement-self-detail", // 关联订单路由名称,
             permission: "manpower-order-sales-detail", // 详情权限
+            exportFileApi: exportFileForself,
+            exportPermission: 'manpower-order-self-export'
         },
     };
     // 人核订单
@@ -594,6 +609,10 @@
             };
         },
         computed: {
+            showExportBtn() {
+                const obj = routeMap[this.tabIndex];
+                return obj ? this.$checkAuth(obj.exportPermission) : false;
+            },
             showDetailBtn() {
                 const obj = routeMap[this.tabIndex];
                 return obj ? this.$checkAuth(obj.permission) : false;
@@ -626,6 +645,15 @@
             },
         },
         methods: {
+            exportFile() {
+                const url = `${ routeMap[this.tabIndex].exportFileApi }?${ qs.stringify({ ...this.searchModelFormat(true) }) }`
+                this.exporting = true
+                downloadFrameA(url, `订单数据-${ formatDate(new Date(), 'yyyy-MM-dd') }.xlsx`, 'get', true).then(() => {
+                    // this.$message.success('导出成功')
+                }).finally(() => {
+                    this.exporting = false
+                })
+            },
             // 分页
             handleCurrentChange(v) {
                 this.loading = true;
