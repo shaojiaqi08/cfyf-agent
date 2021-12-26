@@ -55,7 +55,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+            <el-table-column label="预计保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
             <el-table-column label="宽限日期" width="170px" align="center">
               <template v-slot="{ row }">
@@ -113,7 +113,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="保费" prop="actually_premium" align="center" width="100px"></el-table-column>
+            <el-table-column label="预计保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
             <el-table-column label="宽限日期" width="170px" align="center">
               <template v-slot="{ row }">
