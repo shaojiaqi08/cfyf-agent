@@ -489,7 +489,7 @@
 <script>
     import {
         exportFileForComp,
-        exportFileForself,
+        exportFileForSelf,
         exportFileForTeam,
         getManpowerOptions,
         getSalesData,
@@ -531,8 +531,8 @@
             apiFunc: manpowerListForSales,
             relationRouteName: "achievement-self-detail", // 关联订单路由名称,
             permission: "manpower-order-sales-detail", // 详情权限
-            exportFileApi: exportFileForself,
-            exportPermission: 'manpower-order-self-export'
+            exportFileApi: exportFileForSelf,
+            exportPermission: 'manpower-order-sales-export'
         },
     };
     // 人核订单

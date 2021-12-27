@@ -103,4 +103,4 @@ export const getTrackListComp = params => get('/agent/proxy/sales/list', params)
 // 人核订单导出
 export const exportFileForComp = `${process.env.VUE_APP_API_URL}/agent/proxy/manpower-order/export-for-company`
 export const exportFileForTeam = `${process.env.VUE_APP_API_URL}/agent/proxy/manpower-order/export-for-team`
-export const exportFileForSelf = `${process.env.VUE_APP_API_URL}/agent/proxy/manpower-order/export-for-self`
+export const exportFileForSelf = `${process.env.VUE_APP_API_URL}/agent/proxy/manpower-order/export-for-sales`
