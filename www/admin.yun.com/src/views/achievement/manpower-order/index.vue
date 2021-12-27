@@ -767,9 +767,11 @@
                 return model;
             },
             calcTableHeight: debounce(function () {
-                const bodyHeight = document.body.clientHeight;
-                const { top } = this.$refs.table.$el.getBoundingClientRect();
-                this.tableMaxHeight = bodyHeight - top - 64;
+                this.$nextTick(() => {
+                    const bodyHeight = document.body.clientHeight;
+                    const { top } = this.$refs.table.$el.getBoundingClientRect();
+                    this.tableMaxHeight = bodyHeight - top - 64;
+                })
             }, 300),
         },
         watch: {
