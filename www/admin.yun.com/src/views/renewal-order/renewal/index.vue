@@ -366,7 +366,7 @@
         <el-table-column label="投保人" prop="policy.policy_holder_info.name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy.recognizee_policy_name" width="180px" align="center"></el-table-column>
         <el-table-column label="预计保费" prop="predict_premium" align="center" width="100px"></el-table-column>
-        <el-table-column label="实际保费" prop="premium" align="center" width="100px"></el-table-column>
+        <el-table-column label="实际保费" prop="premium_str" align="center" width="100px"></el-table-column>
         <el-table-column label="续收期间" prop="stage_desc" align="center"></el-table-column>
         <el-table-column label="缴费期限" prop="policy.payment_period_desc" align="center"></el-table-column>
         <el-table-column label="保单号" prop="policy_sn" align="center" width="200px"></el-table-column>
