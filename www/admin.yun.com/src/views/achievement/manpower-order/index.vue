@@ -518,21 +518,24 @@
             relationRouteName: "achievement-company-detail", // 关联订单路由名称,
             permission: "manpower-order-company-detail", // 详情权限
             exportFileApi: exportFileForComp,
-            exportPermission: 'manpower-order-company-export'
+            exportPermission: 'manpower-order-company-export',
+            label: '公司人核订单'
         },
         "manpower-order-team": {
             apiFunc: manpowerListForTeam,
             relationRouteName: "achievement-team-detail", // 关联订单路由名称,
             permission: "manpower-order-team-detail", // 详情权限
             exportFileApi: exportFileForTeam,
-            exportPermission: 'manpower-order-team-export'
+            exportPermission: 'manpower-order-team-export',
+            label: '团队人核订单'
         },
         "manpower-order-sales": {
             apiFunc: manpowerListForSales,
             relationRouteName: "achievement-self-detail", // 关联订单路由名称,
             permission: "manpower-order-sales-detail", // 详情权限
             exportFileApi: exportFileForSelf,
-            exportPermission: 'manpower-order-sales-export'
+            exportPermission: 'manpower-order-sales-export',
+            label: '我的人核订单'
         },
     };
     // 人核订单
@@ -648,7 +651,7 @@
             exportFile() {
                 const url = `${ routeMap[this.tabIndex].exportFileApi }?${ qs.stringify({ ...this.searchModelFormat(true) }) }`
                 this.exporting = true
-                downloadFrameA(url, `订单数据-${ formatDate(new Date(), 'yyyy-MM-dd') }.xlsx`, 'get', true).then(() => {
+                downloadFrameA(url, `${routeMap[this.tabIndex].label}-${ formatDate(new Date(), 'yyyy-MM-dd') }.xlsx`, 'get', true).then(() => {
                     // this.$message.success('导出成功')
                 }).finally(() => {
                     this.exporting = false
