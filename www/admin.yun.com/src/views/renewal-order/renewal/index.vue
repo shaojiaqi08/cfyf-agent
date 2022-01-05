@@ -192,7 +192,15 @@
             {{hasValue(selectCitys) && selectCitys.length === 1 ? selectName : '跟踪状态'}}
           </template>
         </filter-shell>
-
+        <!--期数-->
+        <el-select class="stageHeig" v-model="searchModel.stage" placeholder="请选择期数" @change="stageChange" clearable>
+          <el-option
+            v-for="item in stageOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <!--B端公司-->
         <!-- <filter-shell
             v-model="searchModel.sales_company_id"
@@ -259,6 +267,7 @@
               v-slot:label
           >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '团队' }}</template>
         </filter-shell>
+
       </div>
       <div class="status-filter-wrap">
         <div>
@@ -354,6 +363,7 @@
         <el-table-column label="保险公司" prop="policy.supplier_name" align="center" width="250px"></el-table-column>
         <el-table-column label="产品名称" prop="policy.product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="应续日期" prop="renewal_date_format" width="170px" align="center"></el-table-column>
+        <el-table-column label="续收期间" prop="stage" width="150px" align="center"></el-table-column>
         <el-table-column label="宽限日期" prop="policy_at_str" width="170px" align="center">
           <template v-slot="{ row }">
             <div v-if="row.grace_start_at && row.grace_end_at">
@@ -490,6 +500,14 @@
       let flag       = true,
           beforeDate = date.getTime() - 3600 * 1000 * 24 * 60,
           afterDate  = date.getTime() + 3600 * 1000 * 24 * 60;
+      //期数列表
+      let stageOptions = []
+      for(let i = 2; i <= 30; i++) {
+        stageOptions.push({
+          label: `${i}期`,
+          value: i
+        })
+      }
       return {
         qrCodeDialogVisible: false,
         qrCodeSrc: '',
@@ -544,7 +562,8 @@
         sales_team_id: [],
         include_child_team: '0',
         second_follow_status: [],
-        follow_obj_id: ''
+        follow_obj_id: '',
+        stage: ''
       },
       tableMaxHeight: null,
       followStatusOptions: Object.freeze([
@@ -625,7 +644,8 @@
             return false
           }
         }
-      }
+      },
+      stageOptions, //期数列表
     }
   },
   computed: {
@@ -710,6 +730,12 @@
     },
   },
   methods: {
+    //期数
+    stageChange(stage) {
+      this.searchModel.stage = stage
+      this.getStaticData()
+      this.getData()
+    },
     getFollowStatus(){
       getFollowStatus().then(res => {
         this.optionsTrack = res.follow_status.map(item => {
@@ -1326,6 +1352,25 @@
   text-align: center;
   transform: scale(0.75);
   line-height: 22px;
+}
+
+  
+.stageHeig /deep/ .el-input { 
+  .el-input__inner {
+    height: 25px;
+    line-height: 25px;
+    width: 124px;
+  } 
+  .el-icon-arrow-up:before {
+    position: absolute;
+    top: -6px;
+    right: 6px;
+  }
+  .el-icon-circle-close {
+    position: absolute;
+    top: 6px;
+    right: 0px;
+  }
 }
 </style>
 <style lang="scss">
