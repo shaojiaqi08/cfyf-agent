@@ -192,15 +192,6 @@
             {{hasValue(selectCitys) && selectCitys.length === 1 ? selectName : '跟踪状态'}}
           </template>
         </filter-shell>
-        <!--期数-->
-        <el-select class="stageHeig" v-model="searchModel.stage" placeholder="请选择期数" @change="stageChange" clearable>
-          <el-option
-            v-for="item in stageOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
         <!--B端公司-->
         <!-- <filter-shell
             v-model="searchModel.sales_company_id"
@@ -267,7 +258,42 @@
               v-slot:label
           >{{ hasValue(searchModel.sales_team_id) ? salesTeamList.find(i => i.id === searchModel.sales_team_id[0]).name : '团队' }}</template>
         </filter-shell>
-
+        
+        <!--期数-->
+        <filter-shell
+          v-model="searchModel.stage"
+          autoFocus
+          class="mb16"
+          @input="searchModelChange"
+        >
+          <el-select
+            class="block"
+            v-model="searchModel.stage"
+            clearable
+            filterable
+            placeholder="请选择"
+            @change="searchModelChange"
+          >
+            <el-option
+              v-for="item in stageOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+          <template v-slot:label>
+            <span>
+              {{
+                hasValue(searchModel.stage)
+                  ? stageOptions.find(
+                      (i) =>
+                        i.value === searchModel.stage
+                    ).label
+                  : "期数"
+              }}
+            </span>
+          </template>
+        </filter-shell>
       </div>
       <div class="status-filter-wrap">
         <div>
@@ -364,7 +390,7 @@
         <el-table-column label="产品名称" prop="policy.product_name" align="center" width="250px"></el-table-column>
         <el-table-column label="应续日期" prop="renewal_date_format" width="170px" align="center"></el-table-column>
         <el-table-column label="续收期间" prop="stage" width="150px" align="center"></el-table-column>
-        <el-table-column label="宽限日期" prop="policy_at_str" width="170px" align="center">
+        <el-table-column label="宽限日期" prop="grace_days_str" width="170px" align="center">
           <template v-slot="{ row }">
             <div v-if="row.grace_start_at && row.grace_end_at">
               {{ formatDate(row.grace_start_at * 1000, 'yyyyMMdd') }}
