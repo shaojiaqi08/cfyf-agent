@@ -391,13 +391,13 @@
         <el-table-column label="应续日期" prop="renewal_date_format" width="170px" align="center"></el-table-column>
         <el-table-column label="续收期间" prop="stage" width="150px" align="center"></el-table-column>
         <el-table-column label="宽限日期" prop="grace_days_str" width="170px" align="center">
-          <template v-slot="{ row }">
+          <!-- <template v-slot="{ row }">
             <div v-if="row.grace_start_at && row.grace_end_at">
               {{ formatDate(row.grace_start_at * 1000, 'yyyyMMdd') }}
               -
               {{ formatDate(row.grace_end_at * 1000, 'yyyyMMdd') }}
             </div>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column label="投保人" prop="policy.policy_holder_info.name" width="180px" align="center"></el-table-column>
         <el-table-column label="被保人" prop="policy.recognizee_policy_name" width="180px" align="center"></el-table-column>
