@@ -160,7 +160,7 @@ export default {
     components: {
         // HeaderContent
     },
-    data() {
+    data () {
         return {
             list: [],
             selected: [],
@@ -175,41 +175,36 @@ export default {
                 page: 1,
             },
             searchValue: "",
-            maxHeight: null,
         };
     },
-    mounted() {
-        this.setTableMaxHeight();
+    mounted () {
         this.search();
     },
     methods: {
-        setTableMaxHeight: debounce(function () {
-            this.maxHeight = this.$refs.content.offsetHeight - 110;
-        }, 300),
         // 分页
-        handleCurrentChange(v) {
+        handleCurrentChange (v) {
             this.searchModel.page = v;
             this.getEvaluationProductPageList();
         },
-        load() {
+        load () {
             if (this.total <= this.searchModel.page * 20) return;
             this.searchModel.page += 1;
             this.getEvaluationProductPageList();
         },
-        removeProduct(index) {
+        removeProduct (index) {
             this.selected.splice(index, 1);
         },
-        getName(value) {
+        getName (value) {
             return this.insuranceClasses.find((i) => i.value === value).name;
         },
-        filterSelected() {
+        filterSelected () {
             this.filterSelectVisible = false;
             this.list = [];
             this.searchModel.page = 1;
             this.total = 0;
             this.search();
         },
-        add2Compare(index) {
+        add2Compare (index) {
             if (this.selected.length >= 6) {
                 return this.$message({
                     message: "最多只能添加六个产品",
@@ -218,7 +213,7 @@ export default {
             }
             this.selected.push(this.list[index]);
         },
-        compare() {
+        compare () {
             const ids = this.selected.map((i) => i.id);
             if (!ids.length) {
                 return this.$message({
@@ -243,7 +238,7 @@ export default {
 
             this.getEvaluationProductPageList();
         }, 1000),
-        getEvaluationProductPageList() {
+        getEvaluationProductPageList () {
             this.isLoading = true;
             getEvaluationProductPageList(this.searchModel)
                 .then((res) => {
