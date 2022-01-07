@@ -417,7 +417,13 @@
         <el-table-column label="跟踪状态" prop="follow_status_name" width="170px" align="center"></el-table-column>
         <el-table-column label="跟踪方式" prop="follow_way_str" width="170px" align="center"></el-table-column>
         <el-table-column label="最近跟踪人员" prop="follow_obj_name" width="170px" align="center"></el-table-column>
-        <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center"></el-table-column>
+        <el-table-column label="最近跟踪记录" prop="last_customer_follow_log_content" width="170px" align="center">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.last_customer_follow_log_content" placement="top-start">
+              <div class="follow_log">{{scope.row.last_customer_follow_log_content}}</div>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right" width="150px" align="center">
           <template slot-scope="{row}">
             <el-link
@@ -1397,6 +1403,11 @@
     top: 6px;
     right: 0px;
   }
+}
+.follow_log {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
 }
 </style>
 <style lang="scss">
