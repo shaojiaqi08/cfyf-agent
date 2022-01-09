@@ -57,14 +57,14 @@
             </el-table-column>
             <el-table-column label="预计保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
-            <el-table-column label="宽限日期" width="170px" align="center">
-              <template v-slot="{ row }">
+            <el-table-column label="宽限日期" prop="current_renewal_stage.grace_days_str" width="170px" align="center">
+              <!-- <template v-slot="{ row }">
                 <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
                   {{ formatDate(row.current_renewal_stage.grace_start_at * 1000, 'yyyyMMdd') }}
                   -
                   {{ formatDate(row.current_renewal_stage.grace_end_at * 1000, 'yyyyMMdd') }}
                 </div>
-              </template>
+              </template> -->
           </el-table-column>
             <el-table-column label="操作" align="center" width="150px" fixed="right">
               <template slot-scope="{row}">
@@ -115,14 +115,14 @@
             </el-table-column>
             <el-table-column label="预计保费" prop="actually_premium" align="center" width="100px"></el-table-column>
             <el-table-column label="应续日期" prop="current_renewal_stage.renewal_date_format" align="center" width="130px" ></el-table-column>
-            <el-table-column label="宽限日期" width="170px" align="center">
-              <template v-slot="{ row }">
+            <el-table-column label="宽限日期" prop="current_renewal_stage.grace_days_str" width="170px" align="center">
+              <!-- <template v-slot="{ row }">
                 <div v-if="row.current_renewal_stage.grace_start_at && row.current_renewal_stage.grace_end_at">
                   {{ formatDate(row.current_renewal_stage.grace_start_at * 1000, 'yyyyMMdd') }}
                   -
                   {{ formatDate(row.current_renewal_stage.grace_end_at * 1000, 'yyyyMMdd') }}
                 </div>
-              </template>
+              </template> -->
           </el-table-column>
             <el-table-column label="操作" align="center" width="150px" fixed="right">
               <template slot-scope="{row}">
