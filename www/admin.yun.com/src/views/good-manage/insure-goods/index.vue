@@ -904,19 +904,19 @@ export default {
     .tag-blue {
       background-color: #E8F1FF;
       border-color: rgba(31, 120, 255, 0.4);
-      color: #1F78FF;
+      color: #1F78FF !important; 
       margin-left: 10px;
     }
     /deep/ .el-tag--warning {
       background-color: rgba(255, 144, 0, 0.04);
       border-color: rgba(255, 144, 0, 0.4);
-      color: #FF9000;
+      color: #FF9000 !important;
       margin-left: 10px;
     }
     /deep/ .el-tag--info {
       background-color: rgba(21, 205, 168, 0.04);
       border-color: rgba(21, 205, 168, 0.4);
-      color: #15CDA8;
+      color: #15CDA8 !important;
       margin-left: 10px;
     }
   }
