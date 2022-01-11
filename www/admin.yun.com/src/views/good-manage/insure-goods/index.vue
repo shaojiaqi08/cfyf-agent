@@ -119,7 +119,12 @@
             <div class="flex-between company-base-info mb16">
               <img :src="row.company_logo">
               <div>
-                {{row.title}} <span>{{row.sales_channel_tag_str}}</span>
+                <div class="title-box">
+                  <div class="bt-div">{{row.title}}</div> 
+                  <template v-if="row.sales_channel_tag_str !== '-' && row.sales_channel_tag_str !== ''">
+                    <el-tag class="tag-blue" size="mini">{{row.sales_channel_tag_str}}</el-tag>
+                  </template>
+                </div>
                 <el-row class="mb16 mt8" :gutter="20">
                   <el-col :span="8" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;">
                     <text-hidden-ellipsis width="100%" :popoverTip="item"><i class="iconfont iconxiao16_duigou mr4"></i>{{item}}</text-hidden-ellipsis>
@@ -886,5 +891,11 @@ export default {
   .export-btn{
     margin-left: auto;
   }
-
+  .title-box {
+    display: flex;
+  }
+  .tag-blue {
+    color: #409eff !important;
+    margin-left: 10px;
+  }
 </style>
