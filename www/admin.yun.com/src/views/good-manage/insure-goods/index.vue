@@ -122,7 +122,7 @@
                 <div class="title-box">
                   <div class="bt-div">{{row.title}}</div> 
                   <template v-if="row.sales_channel_tag_str !== '-' && row.sales_channel_tag_str !== ''">
-                    <el-tag class="tag-blue" size="mini">{{row.sales_channel_tag_str}}</el-tag>
+                    <el-tag :class="row.sales_channel_tag === 'internet' ? 'tag-blue':''" :type="tag_str(row)" size="mini">{{row.sales_channel_tag_str}}</el-tag>
                   </template>
                 </div>
                 <el-row class="mb16 mt8" :gutter="20">
@@ -308,6 +308,14 @@ export default {
     }
   },
   methods: {
+    tag_str(row) {
+      const type = {
+        'online_agency': 'warning',
+        'offline_agency': 'info',
+        'internet': ''
+      }
+      return type[row.sales_channel_tag]
+    },
     // 下载图片
     downloadImg(fileName, content) {
       let aLink = document.createElement('a')
@@ -893,9 +901,23 @@ export default {
   }
   .title-box {
     display: flex;
-  }
-  .tag-blue {
-    color: #409eff !important;
-    margin-left: 10px;
+    .tag-blue {
+      background-color: #E8F1FF;
+      border-color: rgba(31, 120, 255, 0.4);
+      color: #1F78FF;
+      margin-left: 10px;
+    }
+    /deep/ .el-tag--warning {
+      background-color: rgba(255, 144, 0, 0.04);
+      border-color: rgba(255, 144, 0, 0.4);
+      color: #FF9000;
+      margin-left: 10px;
+    }
+    /deep/ .el-tag--info {
+      background-color: rgba(21, 205, 168, 0.04);
+      border-color: rgba(21, 205, 168, 0.4);
+      color: #15CDA8;
+      margin-left: 10px;
+    }
   }
 </style>
