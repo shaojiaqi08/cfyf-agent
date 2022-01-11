@@ -119,7 +119,7 @@
             <div class="flex-between company-base-info mb16">
               <img :src="row.company_logo">
               <div>
-                {{row.title}}
+                {{row.title}} <span>{{row.sales_channel_tag_str}}</span>
                 <el-row class="mb16 mt8" :gutter="20">
                   <el-col :span="8" v-for="(item, index) in row.subtitles" :key="index" style="font-weight: 400;">
                     <text-hidden-ellipsis width="100%" :popoverTip="item"><i class="iconfont iconxiao16_duigou mr4"></i>{{item}}</text-hidden-ellipsis>
