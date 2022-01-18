@@ -640,7 +640,7 @@ const necessaryRoutes = [
       header: true,
       menu: true,
       show: true,
-      permission: '/self_and_child_teams'
+      permission: '/edit_api_configure'
     },
     component: getView('dev-interface')
   },
