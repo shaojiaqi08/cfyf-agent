@@ -121,7 +121,7 @@
                         <div class="item">
                             <div class="label">缴费期间：</div>
                             <div class="content">
-                                {{baseInfo.payment_period_desc ? `${baseInfo.payment_period_desc}（${PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency]}）` : baseInfo.payment_period_frequency ? `-（${PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency]}）` : '-'}}
+                                {{getPaymentPeriodTxt()}}
                             </div>
                         </div>
                         <div class="item">
@@ -1180,6 +1180,17 @@ export default {
     },
     methods: {
         formatDate,
+        getPaymentPeriodTxt () {
+            const { payment_period_desc, payment_period_frequency } = this.baseInfo
+            let txt = '-'
+            if (payment_period_desc) {
+                txt = payment_period_desc
+            }
+            if (payment_period_frequency) {
+                txt += `（${PAYMENT_PERIOD_FREQUENCY_TEXT[payment_period_frequency]}）`
+            }
+            return txt
+        },
         download (url) {
             window.open(url)
             // this.downloading = true
