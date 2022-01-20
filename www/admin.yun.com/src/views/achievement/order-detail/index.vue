@@ -121,7 +121,7 @@
                         <div class="item">
                             <div class="label">缴费期间：</div>
                             <div class="content">
-                                {{baseInfo.payment_period_desc ? `${baseInfo.payment_period_desc}（${PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency]}）` : baseInfo.payment_period_frequency ? PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency] : '-'}}
+                                {{baseInfo.payment_period_desc ? `${baseInfo.payment_period_desc}（${PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency]}）` : baseInfo.payment_period_frequency ? `-（${PAYMENT_PERIOD_FREQUENCY_TEXT[baseInfo.payment_period_frequency]}）` : '-'}}
                             </div>
                         </div>
                         <div class="item">
