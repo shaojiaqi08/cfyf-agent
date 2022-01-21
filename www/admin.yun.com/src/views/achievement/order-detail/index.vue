@@ -119,7 +119,7 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="label">缴费期间：</div>
+                            <div class="label">缴费期间(频次)：</div>
                             <div class="content">
                                 {{getPaymentPeriodTxt()}}
                             </div>
