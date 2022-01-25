@@ -432,307 +432,289 @@
                     </div>
                 </div>
                 <div v-else>
-                    <el-scrollbar>
-                        <div class="team-info">
-                            <div class="flex-column">
-                                <div class="name-wrap">
-                                    <template v-if="!editting">
-                                        {{ detailData && detailData.name }}
-                                        <el-link
-                                            v-if="
-                                                $checkAuth(
-                                                    '/sale/team/modify_name'
-                                                ) && detailData.parent_id
-                                            "
-                                            @click="modifyTeamName"
-                                            :underline="false"
-                                            type="primary"
-                                            class="iconfont iconda24_bianji"
-                                        ></el-link>
-                                    </template>
-                                    <div v-else class="flex">
-                                        <el-input
-                                            size="small"
-                                            v-model.trim="editName"
-                                            class="mr8"
-                                            @keyup.native.enter="submitTeamName"
-                                        ></el-input>
-                                        <el-button
-                                            size="mini"
-                                            @click="editting = false"
-                                            :loading="submittingEditName"
-                                            :disabled="submittingEditName"
-                                            >取消</el-button
-                                        >
-                                        <el-button
-                                            size="mini"
-                                            type="primary"
-                                            @click="submitTeamName"
-                                            :loading="submittingEditName"
-                                            :disabled="submittingEditName"
-                                            >确定</el-button
-                                        >
-                                    </div>
+                    <!-- <el-scrollbar> -->
+                    <div class="team-info">
+                        <div class="flex-column">
+                            <div class="name-wrap">
+                                <template v-if="!editting">
+                                    {{ detailData && detailData.name }}
+                                    <el-link
+                                        v-if="
+                                            $checkAuth(
+                                                '/sale/team/modify_name'
+                                            ) && detailData.parent_id
+                                        "
+                                        @click="modifyTeamName"
+                                        :underline="false"
+                                        type="primary"
+                                        class="iconfont iconda24_bianji"
+                                    ></el-link>
+                                </template>
+                                <div v-else class="flex">
+                                    <el-input
+                                        size="small"
+                                        v-model.trim="editName"
+                                        class="mr8"
+                                        @keyup.native.enter="submitTeamName"
+                                    ></el-input>
+                                    <el-button
+                                        size="mini"
+                                        @click="editting = false"
+                                        :loading="submittingEditName"
+                                        :disabled="submittingEditName"
+                                        >取消</el-button
+                                    >
+                                    <el-button
+                                        size="mini"
+                                        type="primary"
+                                        @click="submitTeamName"
+                                        :loading="submittingEditName"
+                                        :disabled="submittingEditName"
+                                        >确定</el-button
+                                    >
                                 </div>
-                                <span
-                                    >当前上级团队：{{
-                                        detailData.parent
-                                            ? detailData.parent.name
-                                            : '-'
-                                    }}</span
-                                >
                             </div>
-                            <div class="flex-center">
-                                <el-link
-                                    :underline="false"
-                                    v-if="
-                                        $checkAuth('/sale/team/disband_team') &&
-                                        detailData.parent_id
-                                    "
-                                    type="minor"
-                                    class="flex-center dismiss-button mr30"
-                                    @click="dismissTeam"
-                                    ><i
-                                        class="iconfont iconxiao16_lajitong mr4"
-                                    ></i
-                                    >解散团队</el-link
-                                >
-                                <el-button
-                                    v-if="
-                                        $checkAuth(
-                                            '/sale/team/change_team_parent'
-                                        ) && detailData.parent_id
-                                    "
-                                    type="primary"
-                                    @click="handleSetTeam"
-                                    size="small"
-                                    ><i
-                                        class="iconfont iconxiao16_tihuan mr4"
-                                    ></i
-                                    >修改上级团队</el-button
-                                >
-                            </div>
-                        </div>
-                        <div class="table-wrap">
-                            <div class="flex-between table-header">
-                                <span
-                                    >当前团队主管人数：{{
-                                        detailData.leader
-                                            ? detailData.leader.length
-                                            : 0
-                                    }}
-                                    人</span
-                                >
-                                <el-button
-                                    v-if="
-                                        $checkAuth('/sale/team/set_team_leader')
-                                    "
-                                    type="primary"
-                                    @click="handleSetLeader"
-                                    size="small"
-                                    ><i
-                                        class="iconfont iconxiao16_tihuan mr4"
-                                    ></i
-                                    >更换团队主管</el-button
-                                >
-                            </div>
-                            <el-table
-                                :data="detailData.leader || []"
-                                border
-                                width="100%"
-                                class="mb16"
-                                :max-height="maxHeight / 2"
+                            <span
+                                >当前上级团队：{{
+                                    detailData.parent
+                                        ? detailData.parent.name
+                                        : '-'
+                                }}</span
                             >
-                                <el-table-column
-                                    label="姓名"
-                                    prop="real_name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="账号"
-                                    prop="username"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="手机号"
-                                    prop="mobile"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="系统工号"
-                                    prop="interior_job_no"
-                                    width="200px"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="职位"
-                                    prop="sales_position.name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="所属团队"
-                                    prop="team.name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="新增时间"
-                                    prop="join_date"
-                                    align="center"
-                                >
-                                    <template v-slot="{ row }">
-                                        <span>{{
-                                            formatDate(
-                                                row.resignation_at * 1000,
-                                                'yyyy-MM-dd'
-                                            )
-                                        }}</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column
-                                    label="注销时间"
-                                    prop="close_at"
-                                    align="center"
-                                >
-                                    <template v-slot="{ row }">
-                                        <span v-if="row.close_at">{{
-                                            formatDate(
-                                                row.close_at * 1000,
-                                                'yyyy-MM-dd'
-                                            )
-                                        }}</span>
-                                        <span v-else>-</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column
-                                    label="状态"
-                                    prop="join_date"
-                                    align="center"
-                                    width="150px"
-                                >
-                                    <template v-slot="{ row }">
-                                        <el-tag
-                                            :type="
-                                                statusTagType[
-                                                    row.account_status
-                                                ]
-                                            "
-                                            >{{
-                                                row.account_status_str
-                                            }}</el-tag
-                                        >
-                                    </template>
-                                </el-table-column>
-                            </el-table>
                         </div>
-                        <div class="table-wrap">
-                            <div class="flex-between table-header">
-                                <span
-                                    >当前团队成员人数：{{
-                                        detailData.member
-                                            ? detailData.member.length
-                                            : 0
-                                    }}
-                                    人</span
-                                >
-                                <el-button
-                                    v-if="$checkAuth('/sale/team/set_member')"
-                                    type="primary"
-                                    @click="handleSetMember"
-                                    size="small"
-                                    ><i
-                                        class="iconfont iconxiao16_tihuan mr4"
-                                    ></i
-                                    >调整团队成员</el-button
-                                >
-                            </div>
-                            <el-table
-                                :data="detailData.member || []"
-                                border
-                                width="100%"
-                                :max-height="maxHeight / 2"
+                        <div class="flex-center">
+                            <el-link
+                                :underline="false"
+                                v-if="
+                                    $checkAuth('/sale/team/disband_team') &&
+                                    detailData.parent_id
+                                "
+                                type="minor"
+                                class="flex-center dismiss-button mr30"
+                                @click="dismissTeam"
+                                ><i class="iconfont iconxiao16_lajitong mr4"></i
+                                >解散团队</el-link
                             >
-                                <el-table-column
-                                    label="姓名"
-                                    prop="real_name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="账号"
-                                    prop="username"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="手机号"
-                                    prop="mobile"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="系统工号"
-                                    prop="interior_job_no"
-                                    width="200px"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="职位"
-                                    prop="sales_position.name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="所属团队"
-                                    prop="team.name"
-                                    align="center"
-                                ></el-table-column>
-                                <el-table-column
-                                    label="新增时间"
-                                    prop="join_date"
-                                    align="center"
-                                >
-                                    <template v-slot="{ row }">
-                                        <span>{{
-                                            formatDate(
-                                                row.resignation_at * 1000,
-                                                'yyyy-MM-dd'
-                                            )
-                                        }}</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column
-                                    label="注销时间"
-                                    prop="close_at"
-                                    align="center"
-                                >
-                                    <template v-slot="{ row }">
-                                        <span v-if="row.close_at">{{
-                                            formatDate(
-                                                row.close_at * 1000,
-                                                'yyyy-MM-dd'
-                                            )
-                                        }}</span>
-                                        <span v-else>-</span>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column
-                                    label="状态"
-                                    prop="join_date"
-                                    align="center"
-                                    width="150px"
-                                >
-                                    <template v-slot="{ row }">
-                                        <el-tag
-                                            :type="
-                                                statusTagType[
-                                                    row.account_status
-                                                ]
-                                            "
-                                            >{{
-                                                row.account_status_str
-                                            }}</el-tag
-                                        >
-                                    </template>
-                                </el-table-column>
-                            </el-table>
+                            <el-button
+                                v-if="
+                                    $checkAuth(
+                                        '/sale/team/change_team_parent'
+                                    ) && detailData.parent_id
+                                "
+                                type="primary"
+                                @click="handleSetTeam"
+                                size="small"
+                                ><i class="iconfont iconxiao16_tihuan mr4"></i
+                                >修改上级团队</el-button
+                            >
                         </div>
-                    </el-scrollbar>
+                    </div>
+                    <div class="table-wrap">
+                        <div class="flex-between table-header">
+                            <span
+                                >当前团队主管人数：{{
+                                    detailData.leader
+                                        ? detailData.leader.length
+                                        : 0
+                                }}
+                                人</span
+                            >
+                            <el-button
+                                v-if="$checkAuth('/sale/team/set_team_leader')"
+                                type="primary"
+                                @click="handleSetLeader"
+                                size="small"
+                                ><i class="iconfont iconxiao16_tihuan mr4"></i
+                                >更换团队主管</el-button
+                            >
+                        </div>
+                        <el-table
+                            :data="detailData.leader || []"
+                            border
+                            width="100%"
+                            class="mb16"
+                            :max-height="maxHeight / 2"
+                        >
+                            <el-table-column
+                                label="姓名"
+                                prop="real_name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="账号"
+                                prop="username"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="手机号"
+                                prop="mobile"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="系统工号"
+                                prop="interior_job_no"
+                                width="200px"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="职位"
+                                prop="sales_position.name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="所属团队"
+                                prop="team.name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="新增时间"
+                                prop="join_date"
+                                align="center"
+                            >
+                                <template v-slot="{ row }">
+                                    <span>{{
+                                        formatDate(
+                                            row.resignation_at * 1000,
+                                            'yyyy-MM-dd'
+                                        )
+                                    }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                label="注销时间"
+                                prop="close_at"
+                                align="center"
+                            >
+                                <template v-slot="{ row }">
+                                    <span v-if="row.close_at">{{
+                                        formatDate(
+                                            row.close_at * 1000,
+                                            'yyyy-MM-dd'
+                                        )
+                                    }}</span>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                label="状态"
+                                prop="join_date"
+                                align="center"
+                                width="150px"
+                            >
+                                <template v-slot="{ row }">
+                                    <el-tag
+                                        :type="
+                                            statusTagType[row.account_status]
+                                        "
+                                        >{{ row.account_status_str }}</el-tag
+                                    >
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                    <div class="table-wrap">
+                        <div class="flex-between table-header">
+                            <span
+                                >当前团队成员人数：{{
+                                    detailData.member
+                                        ? detailData.member.length
+                                        : 0
+                                }}
+                                人</span
+                            >
+                            <el-button
+                                v-if="$checkAuth('/sale/team/set_member')"
+                                type="primary"
+                                @click="handleSetMember"
+                                size="small"
+                                ><i class="iconfont iconxiao16_tihuan mr4"></i
+                                >调整团队成员</el-button
+                            >
+                        </div>
+                        <el-table
+                            :data="detailData.member || []"
+                            border
+                            width="100%"
+                            :max-height="maxHeight / 2"
+                        >
+                            <el-table-column
+                                label="姓名"
+                                prop="real_name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="账号"
+                                prop="username"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="手机号"
+                                prop="mobile"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="系统工号"
+                                prop="interior_job_no"
+                                width="200px"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="职位"
+                                prop="sales_position.name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="所属团队"
+                                prop="team.name"
+                                align="center"
+                            ></el-table-column>
+                            <el-table-column
+                                label="新增时间"
+                                prop="join_date"
+                                align="center"
+                            >
+                                <template v-slot="{ row }">
+                                    <span>{{
+                                        formatDate(
+                                            row.resignation_at * 1000,
+                                            'yyyy-MM-dd'
+                                        )
+                                    }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                label="注销时间"
+                                prop="close_at"
+                                align="center"
+                            >
+                                <template v-slot="{ row }">
+                                    <span v-if="row.close_at">{{
+                                        formatDate(
+                                            row.close_at * 1000,
+                                            'yyyy-MM-dd'
+                                        )
+                                    }}</span>
+                                    <span v-else>-</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                label="状态"
+                                prop="join_date"
+                                align="center"
+                                width="150px"
+                            >
+                                <template v-slot="{ row }">
+                                    <el-tag
+                                        :type="
+                                            statusTagType[row.account_status]
+                                        "
+                                        >{{ row.account_status_str }}</el-tag
+                                    >
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                    <!-- </el-scrollbar> -->
                 </div>
             </template>
         </div>
