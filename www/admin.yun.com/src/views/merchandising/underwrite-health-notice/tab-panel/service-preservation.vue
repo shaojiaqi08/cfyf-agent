@@ -24,9 +24,9 @@
               <!-- <el-form-item label="产品类别">
                 <el-input v-model="formData.insurance_class" placeholder="请输入搜索关键字"></el-input>
               </el-form-item> -->
-              <el-form-item label="对接渠道">
-                <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>
-              </el-form-item>
+<!--              <el-form-item label="对接渠道">-->
+<!--                <el-input v-model="formData.channel" placeholder="请输入搜索关键字"></el-input>-->
+<!--              </el-form-item>-->
               <el-form-item label="是否在售">
                 <!-- <el-input v-model="formData.is_sale" placeholder="请输入搜索关键字"></el-input> -->
                 <el-select v-model="formData.is_sale" placeholder="请选择是否在售" clearable  style="width: 100%;">
@@ -170,7 +170,7 @@ export default {
       tableData: [
         { name: '保险公司', key: 'company' },
         { name: '产品类别', key: 'insurance_class' },
-        { name: '对接渠道', key: 'channel' },
+        // { name: '对接渠道', key: 'channel' },
         { name: '是否在售', key: 'is_sale' },
         { name: '保司客服电话', key: 'customer_service_mobile' },
         { name: '电子回访/电话回访', key: 'return_visit' },
