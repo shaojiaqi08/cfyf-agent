@@ -161,12 +161,12 @@
                                 placeholder="请输入搜索关键字"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="对接渠道">
-                            <el-input
-                                v-model="formData.channel"
-                                placeholder="请输入搜索关键字"
-                            ></el-input>
-                        </el-form-item>
+<!--                        <el-form-item label="对接渠道">-->
+<!--                            <el-input-->
+<!--                                v-model="formData.channel"-->
+<!--                                placeholder="请输入搜索关键字"-->
+<!--                            ></el-input>-->
+<!--                        </el-form-item>-->
                         <el-form-item label="对接方式">
                             <el-input
                                 v-model="formData.join_way"
@@ -380,7 +380,7 @@ export default {
             tableData: [
                 { name: '保险公司', key: 'company' },
                 { name: '产品类别', key: 'insurance_class' },
-                { name: '对接渠道', key: 'channel' },
+                // { name: '对接渠道', key: 'channel' },
                 { name: '对接方式', key: 'join_way' },
                 { name: '投保人年龄', key: 'applicant_age' },
                 { name: '投保人豁免是否占风险保额', key: 'applicant_occupied_risk_coverage' },

@@ -119,9 +119,9 @@
                             </div>
                         </div>
                         <div class="item">
-                            <div class="label">缴费期间：</div>
+                            <div class="label">缴费期间(频次)：</div>
                             <div class="content">
-                                {{ baseInfo.payment_period_desc || '-' }}
+                                {{getPaymentPeriodTxt()}}
                             </div>
                         </div>
                         <div class="item">
@@ -1088,6 +1088,7 @@ import { downloadFrameA } from '@/utils'
 import custInfo from '../component/cust-info'
 import manpowerTable from '../component/manpower-table.vue'
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import { PAYMENT_PERIOD_FREQUENCY_TEXT } from '../config'
 
 export default {
     name: 'order-detail',
@@ -1098,6 +1099,7 @@ export default {
     },
     data () {
         return {
+            PAYMENT_PERIOD_FREQUENCY_TEXT,
             policyInfo: {},
             payInfo: {},
             baseInfo: {},
@@ -1178,6 +1180,17 @@ export default {
     },
     methods: {
         formatDate,
+        getPaymentPeriodTxt () {
+            const { payment_period_desc, payment_period_frequency } = this.baseInfo
+            let txt = '-'
+            if (payment_period_desc) {
+                txt = payment_period_desc
+            }
+            if (payment_period_frequency) {
+                txt += `（${PAYMENT_PERIOD_FREQUENCY_TEXT[payment_period_frequency]}）`
+            }
+            return txt
+        },
         download (url) {
             window.open(url)
             // this.downloading = true
