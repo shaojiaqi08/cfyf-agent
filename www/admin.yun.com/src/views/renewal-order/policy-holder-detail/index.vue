@@ -224,7 +224,7 @@
               class="msg-wrap"
               v-if="item.action === messageTypes.systemSendCustomerMessage
                 || systemFollowStatus.includes(item.action)">
-              <p>{{item.title}}</p>
+              <p>{{item.action === messageTypes.systemSendCustomerMessage ? item.title : '微信提醒'}}</p>
               <span v-if="item.action === messageTypes.systemSendCustomerMessage">{{item.remark}}</span>
               <span v-else>{{ item.title }}</span>
             </div>
