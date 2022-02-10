@@ -175,8 +175,10 @@
           <div class="content-wrap">
             <span class="title-wrap">
               <i :class="isToday(item.follow_at * 1000) ?'cur-status-dot':'status-dot'"></i>
-              <el-avatar v-if="item.action !== messageTypes.systemModifyFollowStatus && item.action !== messageTypes.systemSendCustomerMessage" :src="item.follow_obj_avatar_url"></el-avatar>
-              <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
+              <el-avatar v-if="item.action === messageTypes.following || item.action === messageTypes.modifyFollowStatus" :src="item.follow_obj_avatar_url"></el-avatar>
+              <span v-if="item.action === messageTypes.systemSendCustomerMessage
+                    || item.action === messageTypes.modifyFollowStatus
+                    || item.action === messageTypes.following" class="name-span">{{item.follow_obj_type === 'sales'? item.follow_obj_name : item.follow_obj_type === 'cfyf_admin'? '创富云服客服-'+item.follow_obj_name:''}}</span>
               <!-- <span v-if="item.action !== messageTypes.systemModifyFollowStatus" class="name-span">{{item.follow_obj_name}}</span> -->
               <!-- <span v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus" class="name-span ml4">{{item.cs_admin_position}}</span> -->
               <!-- <span v-else-if="item.action === messageTypes.systemSendCustomerMessage" class="name-span ml4 mr4">将跟踪状态标记为</span>
@@ -218,9 +220,13 @@
                 {{item.follow_status_str}}
               </span>
             </div>
-            <div class="msg-wrap" v-if="item.action === messageTypes.systemSendCustomerMessage">
+            <div
+              class="msg-wrap"
+              v-if="item.action === messageTypes.systemSendCustomerMessage
+                || systemFollowStatus.includes(item.action)">
               <p>{{item.title}}</p>
-              <span>{{item.remark}}</span>
+              <span v-if="item.action === messageTypes.systemSendCustomerMessage">{{item.remark}}</span>
+              <span v-else>{{ item.title }}</span>
             </div>
             <div v-if="item.action === messageTypes.following" class='message-item-info'>
               <div class='flex'>
@@ -246,12 +252,12 @@
                 </div>
               </div>
             </div>
-            <div v-else-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">
-              <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">
-                <p>{{item.title}}</p>
-                <span>{{item.remark}}</span>
-              </div>
-            </div>
+<!--            <div v-else-if="item.action === messageTypes.systemModifyFollowStatus || item.action !== messageTypes.modifyFollowStatus">-->
+<!--              <div class="msg-wrap" v-if="item.action !== messageTypes.systemSendCustomerMessage && item.action !== messageTypes.systemModifyFollowStatus">-->
+<!--                <p>{{item.title}}</p>-->
+<!--                <span>{{item.remark}}</span>-->
+<!--              </div>-->
+<!--            </div>-->
           </div>
         </div>
         </div>
@@ -401,7 +407,15 @@ export default {
         // 系统发送续期短信
         systemSendCustomerMessage: 'system_send_customer_message',
         // 系统修改跟进状态
-        systemModifyFollowStatus: 'system_modify_follow_status'
+        systemModifyFollowStatus: 'system_modify_follow_status',
+        // 系统发送续期微信模版信息
+        systemNeedRenewalWxMsg: 'system_need_renewal_wx_msg',
+        // 系统发送已续期微信模版信息
+        systemAlreadyRenewalWxMsg: 'system_already_renewal_wx_msg',
+        // 系统发送续期失败微信模版提示信息
+        systemFailedRenewalWxMsg: 'system_failed_renewal_wx_msg',
+        // 系统发送续期失败微信模版提示信息, 到期后50天推送类型
+        systemRenewalFailed50Days: 'system_renewal_failed_50_days'
       },
       messageStatus: {
         not_follow: '未跟踪',
@@ -445,6 +459,20 @@ export default {
     }
   },
   computed: {
+    systemFollowStatus(){
+        const {
+            systemNeedRenewalWxMsg,
+            systemAlreadyRenewalWxMsg,
+            systemFailedRenewalWxMsg,
+            systemRenewalFailed50Days
+        } = this.messageTypes
+        return [
+            systemNeedRenewalWxMsg,
+            systemAlreadyRenewalWxMsg,
+            systemFailedRenewalWxMsg,
+            systemRenewalFailed50Days
+        ]
+    },
     followStatusMap(){
       if (!this.optMap) return []
       return this.optMap.follow_status.map(item => {
